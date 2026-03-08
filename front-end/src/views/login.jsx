@@ -1,15 +1,27 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import api from '../api'
-import { useNavigate } from "react-router-dom"
+import { Navigate, useNavigate } from "react-router-dom"
+import usuarioContext from "../contextos/usuarioContext"
 
 function Login()
 {
+    
+    // dados form
     const [nome, setNome] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [dados, setDados] = useState([])
-    const navigate = useNavigate();
 
+    const {
+        usuarioAtualToken,
+        setUsuarioAtual,
+        setUsuarioAtualToken,
+    } = useContext(usuarioContext)
+
+    if(usuarioAtualToken)
+    {
+       return <Navigate to="/dashboard" />
+    }
     
     const login = async (e) => {
         e.preventDefault()
@@ -20,8 +32,12 @@ function Login()
                 email: email,
                 password: password
             })
-            let usuario = response.data
-            navigate('/', {state: usuario})
+            let dados = response.data
+
+            setUsuarioAtualToken(dados.usuarioToken)
+            localStorage.setItem('token', dados.usuarioToken)
+
+            return <Navigate to="/dashboard" />
         } 
         catch (error) {
             console.error(error.response?.data || error.message);

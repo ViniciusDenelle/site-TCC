@@ -1,13 +1,15 @@
+import { useContext } from "react"
 import { useLocation } from "react-router-dom"
+import usuarioContext from "../contextos/usuarioContext"
 
 function App() {
-  const location = useLocation()
-  const usuario = location.state
+  const {usuarioAtual, usuarioAtualToken} = useContext(usuarioContext)
+
 
   return (
     <>
       <h1>
-        {usuario.name}
+        {usuarioAtual}
       </h1>
     </>
   )

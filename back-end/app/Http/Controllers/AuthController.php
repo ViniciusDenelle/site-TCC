@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -16,8 +17,22 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        $user = User::create($validado);
+        $usuario = User::create($validado);
 
-        return response()->json($user);
+        $usuarioToken = $usuario->createToken('main')->plainTextToken;
+
+        return response()->json([
+            'usuario' => $usuario,
+            'usuarioToken' => $usuarioToken
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        // Auth::user()->currentAccessToken()->delete();
+
+        return response([
+            'mensagem' => 'sucesso'
+        ]);
     }
 }
