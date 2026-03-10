@@ -18,6 +18,8 @@ Route::group(['middleware' =>'auth:sanctum'], function () {
         'controller' => DashboardController::class
     ], function () {
         Route::post('/criar', 'criar');
+        Route::put('/update/{item}', 'update');
+        Route::delete('/delete/{item}', 'delete');
         Route::get('/index', 'index');
     });
 });

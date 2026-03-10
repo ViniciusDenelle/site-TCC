@@ -89,7 +89,7 @@ const Dashboard = () => {
                 <p>nenhum item criado</p>
               ) : (
                 items.map(item => (
-                  <Item nome={item.nome} key={item.id}/>
+                  <Item nome={item.nome} key={item.id} id={item.id}/>
                 ))
               )
             }

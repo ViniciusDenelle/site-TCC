@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreItemRequest;
+use App\Http\Requests\UpdateItemRequest;
+use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,5 +25,20 @@ class DashboardController extends Controller
                     ->items()
                     ->create($request->validated())
         ]);
+    }
+
+    public function update(UpdateItemRequest $request, Item $item)
+    {
+        $item->update($request->validated());
+
+        return response([
+            'itemNome' => $item->nome,
+        ]);
+    }
+
+    public function delete( Item $item)
+    {
+        $item->delete();
+
     }
 }
