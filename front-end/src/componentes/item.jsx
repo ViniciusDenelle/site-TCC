@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import api from '../api'
 
-const Item = ({nome, id}) => {
+const Item = ({nome, id, onDelete}) => {
     const classe = `
         rounded-md bg-zinc-200/50 ring-1 ring-zinc-200/50
         p-3 hover:bg-zinc-200 hover:ring-zinc-200 transition-all
@@ -25,13 +25,9 @@ const Item = ({nome, id}) => {
       }
     }
 
-    async function deletar()
+    function deletar()
     {
-      try {
-        const res = await api.delete(`/dashboard/delete/${id}`)
-      } catch (error) {
-        console.error(error.response.data)
-      }
+      onDelete(id)
     }
 
   return (

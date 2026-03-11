@@ -41,4 +41,15 @@ class DashboardController extends Controller
         $item->delete();
 
     }
+
+    public function pesquisar(Request $request)
+    {
+        $validado = $request->validate([
+            'query' => 'required'
+        ]);
+
+        return response([
+            'items' => Item::whereLike('nome', '%'.$validado['query'].'%')->get()
+        ]);
+    }
 }

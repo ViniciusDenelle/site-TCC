@@ -21,6 +21,7 @@ Route::group(['middleware' =>'auth:sanctum'], function () {
         Route::put('/update/{item}', 'update');
         Route::delete('/delete/{item}', 'delete');
         Route::get('/index', 'index');
+        Route::post('/pesquisa', 'pesquisar');
     });
 });
 
