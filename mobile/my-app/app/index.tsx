@@ -1,15 +1,17 @@
+import { useTheme } from "@/context/ThemeContext";
 import { Text, View } from "react-native";
 
 export default function Index() {
+  const { currentTheme } = useTheme();
+
   return (
     <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
+      className={
+        "flex-1 items-center justify-center " +
+        (currentTheme === "dark" ? "bg-gray-900" : "bg-white")
+      }
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <Text style={{ color: "purple" }}>Hello, World!</Text>
     </View>
   );
 }
