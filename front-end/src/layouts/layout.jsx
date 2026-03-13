@@ -1,23 +1,27 @@
-import { NavLink, Outlet } from "react-router-dom"
+import { Outlet } from "react-router-dom"
+import BotãoSimples from "../componentes/BotãoSimples"
+import { TextAlignJustify } from 'lucide-react'
 
 function LayoutDefault()
 {
     return (
         <>
-            <header className="bg-stone-100 w-full">
-                <div className="container mx-auto">
-                    <nav className="flex justify-between p-3">
-                        <h1 className="text-2xl">
+            <header className="absolute top-0 left-0 w-full font-poppins">
+                <div className="container mx-auto px-2">
+
+                    <nav className="flex justify-between
+                    w-full p-2 px-5 mt-3 rounded-full bg-linear-to-r
+                    from-base-terciaria via-base-secundaria
+                    to-base-terciaria ring-1 ring-base-terciaria">  
+
+                        <h1 className="text-xl font-bold">
                             site
                         </h1>
 
-                        <ul className="flex gap-5">
-                            <li>
-                                <NavLink to='/login'>
-                                    login
-                                </NavLink>
-                            </li>
-                        </ul>
+                        <BotãoSimples classeAdcional="">
+                            <TextAlignJustify/>
+                        </BotãoSimples>
+
                     </nav>
                 </div>
             </header>

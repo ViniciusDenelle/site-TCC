@@ -1,14 +1,13 @@
-import { useLocation } from "react-router-dom"
+
 
 function App() {
-  const location = useLocation()
-  const usuario = location.state
 
   return (
     <>
-      <h1>
-        {usuario.name}
-      </h1>
+      <main className="h-screen bg-linear-to-r 
+      from-base-secundaria via-base-primaria to-base-secundaria">
+
+      </main>
     </>
   )
 }
