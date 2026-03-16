@@ -9,11 +9,11 @@ export function TemaContextoProvider({children})
 
     function alterarTema(ev)
     {
-    let temaFinal = !ev.target.value ? (tema === 'dark' ? '' : 'dark') : ev.target.value;
+        let temaFinal = !ev.target.value ? (tema === 'dark' ? '' : 'dark') : ev.target.value;
 
-    document.documentElement.dataset.theme = temaFinal
-    setTema(temaFinal)
-    localStorage.setItem('tema', temaFinal)
+        document.documentElement.dataset.theme = temaFinal
+        setTema(temaFinal)
+        localStorage.setItem('tema', temaFinal)
     
     }
 

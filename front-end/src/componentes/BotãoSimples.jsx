@@ -21,7 +21,7 @@ const BotãoSimples = ({children, tipo, classeAdcional, onClick}) => {
     whileHover={{scale: 1.05, y: -2}}
     whileTap={{scale: 0.95, y: 2}}
     transition={{type: "spring", stiffness: 100}}
-    className={`${classeBase} ${classeTipo} ${classeAdcional}`}
+    className={`${classeBase} ${classeTipo} ${classeAdcional ?? ''}`}
     onClick={onClick ?? ''}>
         {children}
     </motion.button>

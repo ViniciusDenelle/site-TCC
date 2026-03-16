@@ -32,7 +32,7 @@ function LayoutDefault()
 
     return (
         <>
-            <header className="absolute top-0 left-0 w-full font-poppins z-10">
+            <header className="absolute top-0 left-0 w-full z-10">
                 <div className="container mx-auto px-2">
 
                     <nav className={`relative flex justify-between
@@ -49,21 +49,23 @@ function LayoutDefault()
                         </NavLink>
 
                         <div className="hidden gap-2 items-center lg:flex">
-                            <LinkSimples>
+                            <LinkSimples to="cadastro">
                                 cadastro
                             </LinkSimples>
                             <LinkSimples to="login">
                                 login
                             </LinkSimples>
+
                             <BotãoSimples 
-                                tipo="cheio"
-                                classeAdcional="flex items-center 
-                                justify-center px-2 bg-">
+                            tipo="cheio"
+                            classeAdcional="flex items-center 
+                            justify-center px-2 bg-">
                                 mobile
                                 <ArrowDownToLine/>
                             </BotãoSimples>
+
                             <BotãoSimples onClick={alterarTema}>
-                                <Lightbulb></Lightbulb>    
+                                <Lightbulb/>    
                             </BotãoSimples>
                         </div>
 
@@ -86,7 +88,7 @@ function LayoutDefault()
                                 bg-base-terciaria/40 backdrop-blur-md rounded-b-xl border-b-2 
                                 border-base-terciaria border-x-2 -z-10 lg:hidden">
                                     
-                                    <ul className="flex gap-2 items-center justify-center">
+                                    <div className="flex gap-2 items-center justify-center">
 
                                         <LinkQuadrado to="cadastro">
                                             <UserRoundPlus />
@@ -105,7 +107,10 @@ function LayoutDefault()
                                             <ArrowDownToLine/>
                                              mobile
                                         </BotãoSimples>
-                                    </ul>
+                                        <BotãoSimples onClick={alterarTema}>
+                                            <Lightbulb/>    
+                                        </BotãoSimples>
+                                    </div>
 
                                 </motion.div>
                             )}

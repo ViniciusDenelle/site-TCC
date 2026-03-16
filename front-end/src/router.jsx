@@ -1,14 +1,15 @@
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom'
 import LayoutDefault from './layouts/layout'
 import App from './views/App'
-import Login from './views/login'
+import Login from './views/Login'
+import Cadastro from './views/cadastro/cadastro'
 
 const Rota = createBrowserRouter(
     createRoutesFromElements(
         <Route path='/' element={<LayoutDefault />}>
             <Route index element={<App />} /> 
             <Route path="/login" element={<Login />} /> 
-        </Route>
+            <Route path="/cadastro" element={<Cadastro />} /> C        </Route>
     )
 )
 
