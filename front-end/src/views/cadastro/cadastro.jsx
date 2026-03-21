@@ -83,19 +83,21 @@ const Cadastro = () => {
         <div className="container mx-auto h-full w-full">
             <div className="w-full h-full flex justify-center items-center">
 
-                <div className="relative p-3 rounded-lg bg-base-terciaria/50 ring-2 
-                ring-base-terciaria w-full shadow-md shadow-base-quaternaria/50">
-                    <div className={`absolute -top-1 left-0 h-1 bg-destaque-s-medio rounded-full
-                    transiton-all duration-500`} 
+                <div className="relative p-5 rounded-b-lg
+                 bg-base-terciaria/40 ring-2 ring-base-terciaria 
+                 w-9/10 lg:w-150 shadow-md shadow-base-quaternaria/50">
+                    
+                    <div className={`absolute -top-1 -left-0.5 h-1 bg-destaque-p-medio 
+                    rounded-r-full transiton-all duration-500`} 
                     style={{ width: `${progresso}%` }}>
                     </div>
 
-                    <BotãoSimples 
+                    {passo > 1 ? (<BotãoSimples 
                     classeAdcional="absolute top-2 left-2 ring-transparent 
                     hover:ring-transparent"
                     onClick={voltarPasso}>
                         <ArrowLeft/>    
-                    </BotãoSimples>
+                    </BotãoSimples>) : ""}
 
                     <div className="flex items-center justify-center w-full p-2">
                         <h1 className="text-lg text-t-primaria">
@@ -107,10 +109,13 @@ const Cadastro = () => {
                         
                         {renderizarPasso()}
 
-                        <button onClick={proximoPasso}
-                        disabled={!podeProximo}>
-                            proximo
-                        </button>
+                        <BotãoSimples
+                        onClick={proximoPasso}
+                        disabled={!podeProximo}
+                        tipo="cheio"
+                        >
+                            proximo    
+                        </BotãoSimples>
                     </div>
                 </div>
 

@@ -12,14 +12,14 @@ const Informações = ({mudarDados, info}) => {
 
     return (
         <>
-            <div className="grid grid-cols-2 grid-rows-2 
-            w-full sm:w-2/3 mx-auto h-full gap-x-10 gap-y-1">
+            <div className="grid grid-cols-1 grid-rows-4 
+             grid-flow-col w-full sm:w-2/3 mx-auto h-full gap-y-2">
 
                     <div className="flex flex-col gap-1">
                         <h1 className="text-t-principal">
                             escolha seu genero:
                         </h1>
-                        <div className="flex gap-1">
+                        <div className="flex gap-3">
                             <RadioCustomizado 
                             name="genero" 
                             valor="feminino" 
@@ -35,9 +35,17 @@ const Informações = ({mudarDados, info}) => {
                         </div>
                     </div>
                     
+                    
+
+                    <div className="flex flex-col gap-1">
+                        <h1 className="text-t-principal">
+                            escolha sua data de nascimento:
+                        </h1>
+                        
+                    </div>
                     <div className="flex flex-col gap-1">
                         <label htmlFor="">
-                            seu peso {peso}
+                            seu peso
                         </label>
                         <div className="flex w-full">
                             <InputSimples
@@ -47,11 +55,11 @@ const Informações = ({mudarDados, info}) => {
                             dataBinding={ev => mudarDados('peso', ev.target.value)}
                             value={peso}
                             maximo={tipoPeso === 'kilos' ? '500' : '1000'}
-                            classeAdcional="w-2/3 rounded-r-none border-r-0"
+                            classeAdcional="w-full rounded-r-none border-r-0"
                             />
 
                             <BotãoSimples
-                            classeAdcional="rounded-l-none w-1/3"
+                            classeAdcional="rounded-l-none w-1/5"
                             tipo="cheio"
                             onClick={ev => mudarDados(
                                 'tipoPeso', tipoPeso === 'kilos' ? 'libras' : 'kilos'
@@ -60,14 +68,6 @@ const Informações = ({mudarDados, info}) => {
                             </BotãoSimples>
                         </div>
                     </div>
-
-                    <div className="flex flex-col gap-1">
-                        <h1 className="text-t-principal">
-                            escolha sua data de nascimento:
-                        </h1>
-                        
-                    </div>
-                
                     <div className="flex flex-col gap-1">
                         <label htmlFor="">
                             sua altura
@@ -79,10 +79,10 @@ const Informações = ({mudarDados, info}) => {
                             placeholder={`sua altura ${tipoAltura}`}
                             dataBinding={ev => mudarDados('altura', ev.target.value)}
                             value={altura}
-                            classeAdcional="w-2/3 rounded-r-none border-r-0"/>
+                            classeAdcional="w-full rounded-r-none border-r-0"/>
 
                             <BotãoSimples
-                            classeAdcional="rounded-l-none w-1/3"
+                            classeAdcional="rounded-l-none w-1/5"
                             tipo="cheio"
                             onClick={ev => mudarDados(
                                 'tipoAltura', tipoAltura === 'cm' ? 'pês' : 'cm'
