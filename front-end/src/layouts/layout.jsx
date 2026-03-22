@@ -1,11 +1,12 @@
 import { NavLink, Outlet } from "react-router-dom"
-import BotãoSimples from "../componentes/BotãoSimples"
+import BotaoSimples from "../componentes/BotaoSimples"
 import { ArrowDownToLine, Lightbulb, TextAlignJustify, UserLock, UserRoundPlus, Zap } from 'lucide-react'
 import LinkQuadrado from "../componentes/LinkQuadrado"
 import { useContext, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import LinkSimples from "../componentes/LinkSimples"
 import TemaContexto from "../contextos/TemaContexto"
+import BotaoPrimario from "../componentes/BotaoPrimario"
 
 
 function LayoutDefault()
@@ -56,25 +57,25 @@ function LayoutDefault()
                                 login
                             </LinkSimples>
 
-                            <BotãoSimples 
+                            <BotaoSimples 
                             tipo="cheio"
                             classeAdcional="flex items-center 
                             justify-center px-2 bg-">
                                 mobile
                                 <ArrowDownToLine/>
-                            </BotãoSimples>
+                            </BotaoSimples>
 
-                            <BotãoSimples onClick={alterarTema}>
+                            <BotaoSimples onClick={alterarTema}>
                                 <Lightbulb/>    
-                            </BotãoSimples>
+                            </BotaoSimples>
                         </div>
 
                         {/* mobile */}
-                        <BotãoSimples 
+                        <BotaoSimples 
                         onClick={abrirMenu}
                         classeAdcional="ring-transparent hover:ring-transparent lg:hidden">
                             <TextAlignJustify/>
-                        </BotãoSimples>
+                        </BotaoSimples>
 
                         <AnimatePresence>
                             {menuAberto && (
@@ -84,7 +85,7 @@ function LayoutDefault()
                                 animate="visivel"
                                 exit="invisivel"
                                 transition={{ duration: 0.2 }}
-                                className="absolute top-full left-0 w-full py-5 
+                                className="absolute top-full -left-0.5 w-[100.8%] py-5 
                                 bg-base-terciaria/40 backdrop-blur-md rounded-b-xl border-b-2 
                                 border-base-terciaria border-x-2 -z-10 lg:hidden">
                                     
@@ -100,16 +101,16 @@ function LayoutDefault()
                                             login
                                         </LinkQuadrado>
                                             
-                                        <BotãoSimples 
+                                        <BotaoPrimario 
                                         tipo="cheio"
                                         classeAdcional="flex w-30 h-10 items-center 
                                         justify-center gap-2 bg-">
                                             <ArrowDownToLine/>
                                              mobile
-                                        </BotãoSimples>
-                                        <BotãoSimples onClick={alterarTema}>
+                                        </BotaoPrimario>
+                                        <BotaoSimples onClick={alterarTema}>
                                             <Lightbulb/>    
-                                        </BotãoSimples>
+                                        </BotaoSimples>
                                     </div>
 
                                 </motion.div>

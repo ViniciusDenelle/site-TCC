@@ -1,7 +1,7 @@
 import React from 'react'
 import { motion } from 'motion/react'
 
-const BotãoSimples = ({
+const BotaoPrimario = ({
   children,
   tipo,
   classeAdcional,
@@ -14,11 +14,12 @@ const BotãoSimples = ({
         duration-300 ${disabled ? `` : `cursor-pointer`}`
     const classeTipo = `
         ${tipo === 'cheio' ?
-           `bg-destaque-p-escuro text-base-terciaria hover:bg-destaque-p-medio` 
+           `bg-destaque-p-escuro text-base-secundaria hover:bg-destaque-p-medio
+            hover:shadow-sm shadow-destaque-p-medio/30` 
            : 
-           `text-destaque-s-escuro bg-base-secundaria ring-1
-            ring-destaque-s-escuro hover:text-destaque-s-medio
-            hover:bg-base-primaria hover:ring-destaque-s-medio `
+           `text-destaque-p-escuro bg-base-secundaria ring-2
+            ring-destaque-p-medio hover:text-destaque-p-medio
+            hover:bg-base-primaria hover:ring-destaque-p-medio `
           }
         `
 
@@ -35,4 +36,4 @@ const BotãoSimples = ({
   )
 }
 
-export default BotãoSimples
+export default BotaoPrimario

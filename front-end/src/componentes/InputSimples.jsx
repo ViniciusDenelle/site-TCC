@@ -27,7 +27,7 @@ const InputSimples = ({
 
   return (
     <motion.input 
-    whileFocus={{y: -2, scale: 1.02}}
+    whileFocus={{ scale: 1.02}}
     type={type} 
     name={name} 
     value={value} 

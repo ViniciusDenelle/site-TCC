@@ -1,4 +1,4 @@
-import BotãoSimples from "../../../componentes/BotãoSimples"
+import BotaoSimples from "../../../componentes/BotaoSimples"
 import InputSimples from "../../../componentes/InputSimples"
 import RadioCustomizado from "../../../componentes/radioCustomizado"
 
@@ -13,7 +13,7 @@ const Informações = ({mudarDados, info}) => {
     return (
         <>
             <div className="grid grid-cols-1 grid-rows-4 
-             grid-flow-col w-full sm:w-2/3 mx-auto h-full gap-y-2">
+             grid-flow-col w-full mx-auto h-full gap-y-2">
 
                     <div className="flex flex-col gap-1">
                         <h1 className="text-t-principal">
@@ -42,6 +42,11 @@ const Informações = ({mudarDados, info}) => {
                             escolha sua data de nascimento:
                         </h1>
                         
+                        <InputSimples
+                        type="date"
+                        classeAdcional="h-10"
+                        />
+                        
                     </div>
                     <div className="flex flex-col gap-1">
                         <label htmlFor="">
@@ -58,14 +63,14 @@ const Informações = ({mudarDados, info}) => {
                             classeAdcional="w-full rounded-r-none border-r-0"
                             />
 
-                            <BotãoSimples
+                            <BotaoSimples
                             classeAdcional="rounded-l-none w-1/5"
                             tipo="cheio"
                             onClick={ev => mudarDados(
                                 'tipoPeso', tipoPeso === 'kilos' ? 'libras' : 'kilos'
                             )}>
                                 {tipoPeso}    
-                            </BotãoSimples>
+                            </BotaoSimples>
                         </div>
                     </div>
                     <div className="flex flex-col gap-1">
@@ -81,14 +86,14 @@ const Informações = ({mudarDados, info}) => {
                             value={altura}
                             classeAdcional="w-full rounded-r-none border-r-0"/>
 
-                            <BotãoSimples
+                            <BotaoSimples
                             classeAdcional="rounded-l-none w-1/5"
                             tipo="cheio"
                             onClick={ev => mudarDados(
                                 'tipoAltura', tipoAltura === 'cm' ? 'pês' : 'cm'
                                 )}>
                                 {tipoAltura}    
-                            </BotãoSimples>
+                            </BotaoSimples>
                             
                         </div>
                     </div>
