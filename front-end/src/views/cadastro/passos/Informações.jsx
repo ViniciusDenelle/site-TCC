@@ -1,18 +1,48 @@
+import {useEffect} from 'react'
 import BotaoSimples from "../../../componentes/BotaoSimples"
 import InputSimples from "../../../componentes/InputSimples"
 import RadioCustomizado from "../../../componentes/radioCustomizado"
+import { motion } from 'motion/react'
 
 const Informações = ({mudarDados, info}) => {
     const {
         peso, 
         tipoPeso,
         altura,
-        tipoAltura
+        tipoAltura,
+        dataDeNascimento
     } = info
+
+    useEffect(() => {
+        if(peso == 0) return
+
+        if(tipoPeso === 'kilos'){
+            mudarDados('peso', parseInt(peso / 2.2))
+        } else {
+            mudarDados('peso', parseInt(peso / 0.45))
+        }
+    }, [tipoPeso])
+
+    useEffect(() => {
+        if (altura == '') return
+
+        if(tipoAltura === 'cm'){
+            let [pes, polegadas] = String(altura).split(".")
+            let alturaFinal = `${Math.round((pes * 30.48) + (polegadas * 2.54))}`
+            mudarDados('altura', alturaFinal)
+        } else {
+            mudarDados('altura', Math.round(10 * (altura * 0.0328084)) / 10)
+        }
+    }, [tipoAltura])
 
     return (
         <>
-            <div className="grid grid-cols-1 grid-rows-4 
+            <motion.div
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            exit={{opacity: 0,}}
+            transition={{duration: 0.4, ease: "easeOut"}}
+            className="grid grid-cols-1 grid-rows-4 
              grid-flow-col w-full mx-auto h-full gap-y-2">
 
                     <div className="flex flex-col gap-1">
@@ -45,6 +75,7 @@ const Informações = ({mudarDados, info}) => {
                         <InputSimples
                         type="date"
                         classeAdcional="h-10"
+                        dataBinding={ev => mudarDados('dataDeNascimento', ev.target.value)}
                         />
                         
                     </div>
@@ -97,7 +128,7 @@ const Informações = ({mudarDados, info}) => {
                             
                         </div>
                     </div>
-            </div>
+            </motion.div>
         </>
     )
 }

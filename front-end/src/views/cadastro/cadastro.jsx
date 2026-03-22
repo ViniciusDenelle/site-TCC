@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import LinkSimples from '../../componentes/LinkSimples'
 import Informações from './passos/informações'
+import NivelAtividade from './passos/NivelAtividade'
 import BotaoSimples from '../../componentes/BotaoSimples'
 import { ArrowLeft, PenLine } from 'lucide-react'
 import BotaoPrimario from '../../componentes/BotaoPrimario'
+import { AnimatePresence } from 'motion/react'
 
 const Cadastro = () => {
     const [dados, setDados] = useState({
@@ -12,17 +14,23 @@ const Cadastro = () => {
         tipoPeso: 'kilos',
         altura: '',
         tipoAltura: 'cm',
+        dataDeNascimento: ''
     })
     
     const validacoes = {
-        1: () => dados.genero !== '' && dados.peso > 0 && dados.altura !== ''
+        1: () => (
+            dados.genero !== '' 
+            && dados.peso > 0 
+            && dados.altura !== ''
+            && dados.dataDeNascimento !== ''
+        )
     }
     const [passo, setPasso] = useState(1)
     const podeProximo = validacoes[passo]?.() ?? false
 
     function proximoPasso()
     {
-        if(!podeProximo) return
+        
 
         setPasso(prev => prev+1)
     }
@@ -40,28 +48,6 @@ const Cadastro = () => {
         }))
     }
 
-    useEffect(() => {
-        if(dados.peso == 0) return
-
-        if(dados.tipoPeso === 'kilos'){
-            mudarDados('peso', parseInt(dados.peso / 2.2))
-        } else {
-            mudarDados('peso', parseInt(dados.peso / 0.45))
-        }
-    }, [dados.tipoPeso])
-
-    useEffect(() => {
-        if (dados.altura == '') return
-
-        if(dados.tipoAltura === 'cm'){
-            let [pes, polegadas] = String(dados.altura).split(".")
-            let alturaFinal = `${Math.round((pes * 30.48) + (polegadas * 2.54))}`
-            mudarDados('altura', alturaFinal)
-        } else {
-            mudarDados('altura', Math.round(10 * (dados.altura * 0.0328084)) / 10)
-        }
-    }, [dados.tipoAltura])
-
     function renderizarPasso()
     {
         switch (passo) {
@@ -72,7 +58,7 @@ const Cadastro = () => {
                 info={dados}/>
                 )
             case 2:
-                return <LinkSimples>pagina 2</LinkSimples>
+                return <NivelAtividade />
             default:
                 break;
         }
@@ -90,7 +76,8 @@ const Cadastro = () => {
 
                 <div className="relative p-5 rounded-b-lg
                  bg-base-terciaria/40 backdrop-blur-md ring-1 ring-base-quaternaria 
-                 w-9/10 lg:w-120 md:px-10 shadow-md shadow-base-quaternaria/50">
+                 w-9/10 lg:w-120 md:px-10 shadow-md shadow-base-quaternaria/50
+                 ">
                     
                     <div className={`absolute -top-1 -left-0.5 h-1 bg-destaque-p-medio 
                     rounded-r-full transiton-all duration-500`} 
@@ -110,13 +97,15 @@ const Cadastro = () => {
                         </h1>
                     </div>
 
-                    <div className="flex w-full h-full flex-col gap-2">
+                    <div className="flex w-full h-full flex-col gap-2 overflow-hidden">
                         
-                        {renderizarPasso()}
+                        <AnimatePresence mode='wait'>
+                            {renderizarPasso()}
+                        </AnimatePresence>
 
                         <BotaoPrimario
                         onClick={proximoPasso}
-                        disabled={!podeProximo}
+                        
                         tipo="cheio"
                         >
                             proximo    

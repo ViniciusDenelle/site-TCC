@@ -1,7 +1,14 @@
 import React from 'react'
 import {motion} from 'motion/react'
 
-const RadioCustomizado = ({name, valor, dataBinding, children}) => {
+const RadioCustomizado = ({name, valor, dataBinding, children, classeAdcional}) => {
+    const classeBase = `
+        flex gap-2 justify-center items-center
+        border-2 border-base-quaternaria hover:from-base-terciaria to-base-secundaria
+        rounded-lg bg-linear-to-b shadow-destaque-p-medio/50 w-35 h-12 transition-colors duration-200
+        peer-checked:border-destaque-p-escuro/50 peer-checked:shadow-md
+    `
+
     return (
         <>
         
@@ -17,11 +24,7 @@ const RadioCustomizado = ({name, valor, dataBinding, children}) => {
             <motion.div 
             whileHover={{scale: 1.02}}
             whileTap={{scale: 0.95}}
-            className="flex gap-2 justify-center items-center
-            border-2 border-base-quaternaria hover:from-base-primaria to-base-secundaria
-            rounded-lg bg-linear-to-b w-35 h-12 shadow-md shadow-base-quaternaria transition-colors duration-200
-            peer-checked:border-destaque-p-escuro/50 peer-checked:shadow-destaque-p-medio/50
-            peer-checked:from-base-primaria">
+            className={`${classeBase} ${classeAdcional ?? ``}`}>
 
                 <span className="flex justify-center items-center size-4 
                 rounded-full ring ring-base-quartenaria group-has-checked:ring-destaque-p-medio">
