@@ -26,8 +26,9 @@ const RadioCustomizado = ({name, valor, dataBinding, children, classeAdcional}) 
             whileTap={{scale: 0.95}}
             className={`${classeBase} ${classeAdcional ?? ``}`}>
 
-                <span className="flex justify-center items-center size-4 
+                <span className="flex justify-center items-center p-1 
                 rounded-full ring ring-base-quartenaria group-has-checked:ring-destaque-p-medio">
+
                     <div className="span size-2.5 rounded-full bg-transparent group-has-checked:bg-destaque-p-medio
                     transition-colors duration-200">
 

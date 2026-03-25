@@ -13,15 +13,14 @@ const Informações = ({mudarDados, info}) => {
         dataDeNascimento
     } = info
 
-    useEffect(() => {
-        if(peso == 0) return
-
-        if(tipoPeso === 'kilos'){
+    function alterarPeso(peso)
+    {
+        if(tipoPeso !== 'kilos'){
             mudarDados('peso', parseInt(peso / 2.2))
         } else {
             mudarDados('peso', parseInt(peso / 0.45))
         }
-    }, [tipoPeso])
+    }
 
     useEffect(() => {
         if (altura == '') return
@@ -97,9 +96,10 @@ const Informações = ({mudarDados, info}) => {
                             <BotaoSimples
                             classeAdcional="rounded-l-none w-1/5"
                             tipo="cheio"
-                            onClick={ev => mudarDados(
-                                'tipoPeso', tipoPeso === 'kilos' ? 'libras' : 'kilos'
-                            )}>
+                            onClick={() => {
+                                mudarDados('tipoPeso', tipoPeso === 'kilos' ? 'libras' : 'kilos')
+                                alterarPeso(peso)
+                            }}>
                                 {tipoPeso}    
                             </BotaoSimples>
                         </div>

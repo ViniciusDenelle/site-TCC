@@ -14,7 +14,8 @@ const Cadastro = () => {
         tipoPeso: 'kilos',
         altura: '',
         tipoAltura: 'cm',
-        dataDeNascimento: ''
+        dataDeNascimento: '',
+        nivelAtividade: ''
     })
     
     const validacoes = {
@@ -58,7 +59,11 @@ const Cadastro = () => {
                 info={dados}/>
                 )
             case 2:
-                return <NivelAtividade />
+                return (
+                    <NivelAtividade 
+                    mudarDados={mudarDados}
+                    />
+                )
             default:
                 break;
         }
@@ -76,8 +81,7 @@ const Cadastro = () => {
 
                 <div className="relative p-5 rounded-b-lg
                  bg-base-terciaria/40 backdrop-blur-md ring-1 ring-base-quaternaria 
-                 w-9/10 lg:w-120 md:px-10 shadow-md shadow-base-quaternaria/50
-                 ">
+                 w-9/10 lg:w-120 md:px-10 shadow-md shadow-base-quaternaria/50">
                     
                     <div className={`absolute -top-1 -left-0.5 h-1 bg-destaque-p-medio 
                     rounded-r-full transiton-all duration-500`} 
@@ -97,7 +101,7 @@ const Cadastro = () => {
                         </h1>
                     </div>
 
-                    <div className="flex w-full h-full flex-col gap-2 overflow-hidden">
+                    <div className="flex w-full h-full flex-col gap-2">
                         
                         <AnimatePresence mode='wait'>
                             {renderizarPasso()}
