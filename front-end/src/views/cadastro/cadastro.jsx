@@ -8,6 +8,7 @@ import BotaoPrimario from '../../componentes/BotaoPrimario'
 import { AnimatePresence } from 'motion/react'
 
 const Cadastro = () => {
+    // dados do cadastro
     const [dados, setDados] = useState({
         genero: '',
         peso: '',
@@ -21,18 +22,22 @@ const Cadastro = () => {
     const validacoes = {
         1: () => (
             dados.genero !== '' 
-            && dados.peso > 0 
+            && dados.peso > 0       
             && dados.altura !== ''
             && dados.dataDeNascimento !== ''
         )
     }
+
+    const passoPilula = [
+        '1', '2', '3', '4', '5'
+    ]
+    
     const [passo, setPasso] = useState(1)
     const podeProximo = validacoes[passo]?.() ?? false
 
     function proximoPasso()
     {
-        
-
+        if (!podeProximo) return
         setPasso(prev => prev+1)
     }
 
@@ -41,7 +46,7 @@ const Cadastro = () => {
         setPasso(prev => prev-1)
     }
 
-    // functions
+    // data binding
     function mudarDados(campo, valor)
     {
         setDados(prev => ({
@@ -68,7 +73,7 @@ const Cadastro = () => {
                 break;
         }
     }
-    let progresso = passo * 10
+    let progresso = passo * 20
   return (
     <main className='h-screen w-full bg-base-primaria'>
         
@@ -79,24 +84,38 @@ const Cadastro = () => {
         <div className="container mx-auto h-full w-full">
             <div className="w-full h-full flex justify-center items-center">
 
-                <div className="relative p-5 rounded-b-lg
+                <div className="relative p-10 rounded-b-lg
                  bg-base-terciaria/40 backdrop-blur-md ring-1 ring-base-quaternaria 
-                 w-9/10 lg:w-120 md:px-10 shadow-md shadow-base-quaternaria/50">
+                 w-9/10 md:w-120 md:px-10 shadow-md shadow-base-quaternaria/50">
                     
-                    <div className={`absolute -top-1 -left-0.5 h-1 bg-destaque-p-medio 
-                    rounded-r-full transiton-all duration-500`} 
-                    style={{ width: `${progresso}%` }}>
+                    <div className={`absolute -top-20 left-1/2 -translate-x-1/2 h-1 
+                    flex gap-2`}>
+
+                        {passoPilula.map(pilula => (
+                            <div 
+                            key={pilula}
+                            className={`relative rounded-full w-6 h-3 ring-1 ring-contraste-primaria overflow-hidden
+                            after:absolute after:left-0 after:top-0 after:h-3 bg-base-secundaria 
+                            after:bg-destaque-p-medio/80 after:w-0 after:transition-all after:duration-500
+                            ${passo >= pilula ? `after:w-full` : ``}`}>
+                                
+                            </div>
+                        ))}
+
                     </div>
 
-                    {passo > 1 ? (<BotaoSimples 
-                    classeAdcional="absolute top-2 left-2 ring-transparent 
-                    hover:ring-transparent"
-                    onClick={voltarPasso}>
-                        <ArrowLeft/>    
-                    </BotaoSimples>) : ""}
+                    {passo > 1 ? (
+                        <BotaoSimples 
+                        classeAdcional="absolute top-2 left-2 ring-transparent 
+                        hover:ring-transparent"
+                        onClick={voltarPasso}>
+                            <ArrowLeft/>    
+                        </BotaoSimples>
+                    ) : ""}
 
-                    <div className="flex items-center justify-center w-full p-2">
-                        <h1 className="text-lg font-semibold text-t-primaria">
+                    <div className="absolute -top-15 left-1/2 -translate-x-1/2 
+                    flex items-center justify-center w-full p-2">
+                        <h1 className="text-xl font-semibold text-t-primaria">
                             crie sua conta
                         </h1>
                     </div>
@@ -109,7 +128,7 @@ const Cadastro = () => {
 
                         <BotaoPrimario
                         onClick={proximoPasso}
-                        
+                        disabled={!podeProximo}
                         tipo="cheio"
                         >
                             proximo    

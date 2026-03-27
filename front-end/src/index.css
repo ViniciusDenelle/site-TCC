@@ -8,7 +8,7 @@
     --color-base-secundaria: var(--color-slate-200);
     --color-base-terciaria: var(--color-slate-100);
     --color-base-quaternaria: var(--color-slate-300);
-    --color-contraste-principal: var(--color-zinc-400);
+    --color-contraste-primaria: var(--color-zinc-400);
     --color-contraste-secundaria: var(--color-zinc-500);
     --color-contraste-secundaria: var(--color-zinc-600);
 
@@ -20,7 +20,7 @@
     /* destaques */
     --color-destaque-p-claro: var(--color-yellow-400);
     --color-destaque-p-medio: var(--color-amber-500);
-    --color-destaque-p-escuro: var(--color-orange-600);
+    --color-destaque-p-escuro: var(--color-amber-600);
 
     --color-destaque-s-claro: var(--color-indigo-500);
     --color-destaque-s-medio: var(--color-blue-600);

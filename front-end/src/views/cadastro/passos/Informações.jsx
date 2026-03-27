@@ -16,9 +16,9 @@ const Informações = ({mudarDados, info}) => {
     function alterarPeso(peso)
     {
         if(tipoPeso !== 'kilos'){
-            mudarDados('peso', parseInt(peso / 2.2))
+            mudarDados('peso', Math.round(peso / 2.20462))
         } else {
-            mudarDados('peso', parseInt(peso / 0.45))
+            mudarDados('peso', Math.round(peso / 0.453591830542594))
         }
     }
 

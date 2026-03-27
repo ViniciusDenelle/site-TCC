@@ -22,7 +22,6 @@ const BotaoPrimario = ({
             hover:bg-base-primaria hover:ring-destaque-p-medio `
           }
         `
-
   return (
     <motion.button 
     whileHover={disabled ? "" :{scale: 1.05, y: -2}}
