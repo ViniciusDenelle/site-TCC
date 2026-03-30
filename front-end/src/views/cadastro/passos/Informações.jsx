@@ -3,6 +3,7 @@ import BotaoSimples from "../../../componentes/BotaoSimples"
 import InputSimples from "../../../componentes/InputSimples"
 import RadioCustomizado from "../../../componentes/radioCustomizado"
 import { motion } from 'motion/react'
+import SliderCustomizado from '../../../componentes/SliderCustomizado'
 
 const Informações = ({mudarDados, info}) => {
     const {
@@ -12,6 +13,9 @@ const Informações = ({mudarDados, info}) => {
         tipoAltura,
         dataDeNascimento
     } = info
+
+    const minPeso = tipoPeso === 'kilos' ? 20 : 40
+    const maxPeso = tipoPeso === 'kilos' ? 400 : 800
 
     function alterarPeso(peso)
     {
@@ -80,51 +84,103 @@ const Informações = ({mudarDados, info}) => {
                     </div>
                     <div className="flex flex-col gap-1">
                         <label htmlFor="">
-                            seu peso
+                            seu peso em {tipoPeso}
                         </label>
-                        <div className="flex w-full">
-                            <InputSimples
-                            type="number"
-                            name="peso"
-                            placeholder={`seu peso ${tipoPeso}`}
-                            dataBinding={ev => mudarDados('peso', ev.target.value)}
-                            value={peso}
-                            maximo={tipoPeso === 'kilos' ? '500' : '1000'}
-                            classeAdcional="w-full rounded-r-none border-r-0"
-                            />
+                        <div className="flex w-full gap-2">
 
-                            <BotaoSimples
-                            classeAdcional="rounded-l-none w-1/5"
-                            tipo="cheio"
-                            onClick={() => {
-                                mudarDados('tipoPeso', tipoPeso === 'kilos' ? 'libras' : 'kilos')
-                                alterarPeso(peso)
-                            }}>
-                                {tipoPeso}    
-                            </BotaoSimples>
+                            {/* slider peso */}
+                            <div className="relative w-2/3 h-full">
+                                <SliderCustomizado
+                                mudarValor={value => mudarDados('peso', value)}
+                                valor={peso}
+                                min={minPeso}
+                                max={maxPeso}
+                                />
+
+                                <div className="absolute -bottom-3 let-0 
+                                flex justify-between w-full">
+                                    <span> {minPeso}  </span>
+                                    <span> {maxPeso / 2}  </span>
+                                    <span> {maxPeso}  </span>
+                                </div>
+                            </div>
+
+                            {/* input peso e btn mudar tipo peso */}
+                            <div className="flex gap-1 w-1/3">
+                            
+                                <InputSimples 
+                                classeAdcional="w-full"
+                                type="number"
+                                value={peso}
+                                dataBinding={ev => mudarDados('peso', ev.target.value)}
+                                />
+
+
+                                <BotaoSimples
+                                classeAdcional="w-full"
+                                tipo="cheio"
+                                onClick={() => {
+                                    mudarDados('tipoPeso', tipoPeso === 'kilos' ? 'libras' : 'kilos')
+                                    alterarPeso(peso)
+                                }}>
+                                    {tipoPeso}    
+                                </BotaoSimples>
+
+                            </div>
                         </div>
                     </div>
                     <div className="flex flex-col gap-1">
                         <label htmlFor="">
                             sua altura
                         </label>
-                        <div className="flex w-full">
-                            <InputSimples
-                            type="text"
-                            name="altura"
-                            placeholder={`sua altura ${tipoAltura}`}
-                            dataBinding={ev => mudarDados('altura', ev.target.value)}
-                            value={altura}
-                            classeAdcional="w-full rounded-r-none border-r-0"/>
+                        <div className="flex w-full gap-2">
+                            {tipoAltura === 'cm' ? (
+                                <div className="relative w-3/4 h-full">
+                                    <SliderCustomizado
+                                    mudarValor={value => mudarDados('altura', value)}
+                                    valor={altura}
+                                    min={100}
+                                    max={250}
+                                    />
 
-                            <BotaoSimples
-                            classeAdcional="rounded-l-none w-1/5"
-                            tipo="cheio"
-                            onClick={ev => mudarDados(
-                                'tipoAltura', tipoAltura === 'cm' ? 'pês' : 'cm'
-                                )}>
-                                {tipoAltura}    
-                            </BotaoSimples>
+                                    <div className="absolute -bottom-3 let-0 
+                                    flex justify-between w-full">
+                                        <span> 100  </span>
+                                        <span> 175  </span>
+                                        <span> 250 </span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <InputSimples
+                                classeAdcional="w-full"
+                                placeholder="pes"
+                                value={altura}
+                                dataBinding={ev => mudarDados('altura', ev.target.value)}
+                                />
+                            )}
+                            
+                            <div className={`flex gap-1 ${tipoAltura === 'cm' ? `w-1/3` : `w-1/4`}`}>
+
+                                {tipoAltura === 'cm' ? (
+                                    <InputSimples 
+                                    classeAdcional="w-full"
+                                    type="number"
+                                    value={altura}
+                                    dataBinding={ev => mudarDados('altura', ev.target.value)}
+                                />
+                                ) : ''}
+                                
+
+                                <BotaoSimples
+                                classeAdcional="w-full"
+                                tipo="cheio"
+                                onClick={ev => mudarDados(
+                                    'tipoAltura', tipoAltura === 'cm' ? 'pês' : 'cm'
+                                    )}>
+                                    {tipoAltura}    
+                                </BotaoSimples>
+                                
+                            </div>
                             
                         </div>
                     </div>

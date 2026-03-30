@@ -42,14 +42,14 @@ const NivelAtividade = ({mudarDados}) => {
         escolha seu nivel de atividade fisica
       </div>
 
-      <div className="grid grid-cols-2 grid-rows-3 w-auto mx-auto gap-5 my-5">
+      <div className="grid grid-cols-2 grid-rows-3 gap-5 w-auto mx-auto my-5">
         {radios.map((radio, index) => (
 
           <div className={`flex justify-center items-center 
           ${index === radios.length -1 ? `col-span-2` : ``}`}>
 
             <RadioCustomizado
-              classeAdcional="w-50 h-20 px-2"
+              classeAdcional="w-45 h-20 px-2"
               name="nivelAtividadeFisica"
               valor={radio.valor}
               dataBinding={ev => mudarDados('nivelAtividade', ev.target.value)}>
