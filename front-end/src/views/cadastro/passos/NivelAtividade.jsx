@@ -49,13 +49,13 @@ const NivelAtividade = ({mudarDados}) => {
           ${index === radios.length -1 ? `col-span-2` : ``}`}>
 
             <RadioCustomizado
-              classeAdcional="w-45 h-20 px-2"
+              classeAdcional="w-45 h-25 p-1"
               name="nivelAtividadeFisica"
               valor={radio.valor}
               dataBinding={ev => mudarDados('nivelAtividade', ev.target.value)}>
               <p className="flex flex-col">
                 {radio.nome}
-                <span className="text-xs">
+                <span className="text-sm">
                   {radio.descrição}
                 </span>
               </p>

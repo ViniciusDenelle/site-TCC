@@ -33,7 +33,7 @@ function LayoutDefault()
 
     return (
         <>
-            <header className="absolute top-0 left-0 w-full z-10">
+            <header className="absolute top-0 left-0 w-full z-100">
                 <div className="container mx-auto px-2">
 
                     <nav className={`relative flex justify-between
@@ -87,7 +87,7 @@ function LayoutDefault()
                                 transition={{ duration: 0.2 }}
                                 className="absolute top-full -left-0.5 w-[100.8%] py-5 
                                 bg-base-terciaria/40 backdrop-blur-md rounded-b-xl border-b-2 
-                                border-base-terciaria border-x-2 -z-10 lg:hidden">
+                                border-base-terciaria border-x-2 lg:hidden">
                                     
                                     <div className="flex gap-2 items-center justify-center">
 

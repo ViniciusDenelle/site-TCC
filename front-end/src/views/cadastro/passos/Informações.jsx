@@ -26,17 +26,17 @@ const Informações = ({mudarDados, info}) => {
         }
     }
 
-    useEffect(() => {
-        if (altura == '') return
+    // useEffect(() => {
+    //     if (altura == '') return
 
-        if(tipoAltura === 'cm'){
-            let [pes, polegadas] = String(altura).split(".")
-            let alturaFinal = `${Math.round((pes * 30.48) + (polegadas * 2.54))}`
-            mudarDados('altura', alturaFinal)
-        } else {
-            mudarDados('altura', Math.round(10 * (altura * 0.0328084)) / 10)
-        }
-    }, [tipoAltura])
+    //     if(tipoAltura === 'cm'){
+    //         let [pes, polegadas] = String(altura).split(".")
+    //         let alturaFinal = `${Math.round((pes * 30.48) + (polegadas * 2.54))}`
+    //         mudarDados('altura', alturaFinal)
+    //     } else {
+    //         mudarDados('altura', Math.round(10 * (altura * 0.0328084)) / 10)
+    //     }
+    // }, [tipoAltura])
 
     return (
         <>
@@ -139,14 +139,14 @@ const Informações = ({mudarDados, info}) => {
                                     <SliderCustomizado
                                     mudarValor={value => mudarDados('altura', value)}
                                     valor={altura}
-                                    min={100}
+                                    min={80}
                                     max={250}
                                     />
 
                                     <div className="absolute -bottom-3 let-0 
                                     flex justify-between w-full">
-                                        <span> 100  </span>
-                                        <span> 175  </span>
+                                        <span> 80  </span>
+                                        <span> 160  </span>
                                         <span> 250 </span>
                                     </div>
                                 </div>

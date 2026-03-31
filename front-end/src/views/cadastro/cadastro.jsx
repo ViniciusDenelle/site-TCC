@@ -6,25 +6,31 @@ import BotaoSimples from '../../componentes/BotaoSimples'
 import { ArrowLeft, PenLine } from 'lucide-react'
 import BotaoPrimario from '../../componentes/BotaoPrimario'
 import { AnimatePresence } from 'motion/react'
+import Objetivo from './passos/Objetivo'
 
 const Cadastro = () => {
     // dados do cadastro
     const [dados, setDados] = useState({
         genero: '',
-        peso: '',
+        peso: '20',
         tipoPeso: 'kilos',
-        altura: '',
+        altura: '80',
         tipoAltura: 'cm',
         dataDeNascimento: '',
-        nivelAtividade: ''
+        nivelAtividade: '',
+        Objetivo: ''
     })
     
     const validacoes = {
         1: () => (
-            dados.genero !== '' 
-            && dados.peso > 0       
-            && dados.altura !== ''
-            && dados.dataDeNascimento !== ''
+            // dados.genero !== '' 
+            // && dados.peso > 0       
+            // && dados.altura !== ''
+            // && dados.dataDeNascimento !== ''
+            true
+        ),
+        2: () => (
+            dados.nivelAtividade !== ''
         )
     }
 
@@ -66,6 +72,12 @@ const Cadastro = () => {
             case 2:
                 return (
                     <NivelAtividade 
+                    mudarDados={mudarDados}
+                    />
+                )
+            case 3:
+                return (
+                    <Objetivo 
                     mudarDados={mudarDados}
                     />
                 )
