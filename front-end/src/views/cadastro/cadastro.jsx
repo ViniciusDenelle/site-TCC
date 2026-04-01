@@ -119,7 +119,7 @@ const Cadastro = () => {
                     </h1>
                 </div>
 
-                <div className="p-10 rounded-b-lg
+                <div className="p-10 rounded-xl
                  bg-base-terciaria/40 backdrop-blur-md ring-1 ring-base-quaternaria 
                  w-9/10 md:w-120 md:px-10 shadow-md shadow-base-quaternaria/50">
                     

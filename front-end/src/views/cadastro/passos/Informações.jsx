@@ -11,7 +11,8 @@ const Informações = ({mudarDados, info}) => {
         tipoPeso,
         altura,
         tipoAltura,
-        dataDeNascimento
+        dataDeNascimento,
+        genero
     } = info
 
     const minPeso = tipoPeso === 'kilos' ? 20 : 40
@@ -56,13 +57,15 @@ const Informações = ({mudarDados, info}) => {
                             <RadioCustomizado 
                             name="genero" 
                             valor="feminino" 
-                            dataBinding={ev => mudarDados('genero', ev.target.value)}>
+                            dataBinding={ev => mudarDados('genero', ev.target.value)}
+                            checked={genero === 'feminino'}>
                                 feminino
                             </RadioCustomizado>
                             <RadioCustomizado 
                             name="genero" 
                             valor="masculino" 
-                            dataBinding={ev => mudarDados('genero', ev.target.value)}>
+                            dataBinding={ev => mudarDados('genero', ev.target.value)}
+                            checked={genero === 'masculino'}>
                                 masculino
                             </RadioCustomizado>
                         </div>
@@ -113,7 +116,8 @@ const Informações = ({mudarDados, info}) => {
                                 type="number"
                                 value={peso}
                                 dataBinding={ev => mudarDados('peso', ev.target.value)}
-                                />
+                                maximo={500}
+                                minimo={20}/>
 
 
                                 <BotaoSimples

@@ -1,7 +1,14 @@
 import React from 'react'
 import {motion} from 'motion/react'
 
-const RadioCustomizado = ({name, valor, dataBinding, children, classeAdcional}) => {
+const RadioCustomizado = ({
+    name,
+    valor,
+    dataBinding,
+    children,
+    classeAdcional,
+    checked
+}) => {
     const classeBase = `
         flex gap-2 justify-center items-center
         border-2 border-base-quaternaria bg-base-terciaria hover:bg-base-secundaria
@@ -19,6 +26,7 @@ const RadioCustomizado = ({name, valor, dataBinding, children, classeAdcional}) 
                 value={valor}
                 className="peer hidden"
                 onChange={dataBinding}
+                checked={checked ?? ''}
             />
 
             <motion.div 
