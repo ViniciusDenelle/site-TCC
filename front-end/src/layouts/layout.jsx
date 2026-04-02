@@ -57,13 +57,13 @@ function LayoutDefault()
                                 login
                             </LinkSimples>
 
-                            <BotaoSimples 
+                            <BotaoPrimario 
                             tipo="cheio"
                             classeAdcional="flex items-center 
                             justify-center px-2 bg-">
                                 mobile
                                 <ArrowDownToLine/>
-                            </BotaoSimples>
+                            </BotaoPrimario>
 
                             <BotaoSimples onClick={alterarTema}>
                                 <Lightbulb/>    

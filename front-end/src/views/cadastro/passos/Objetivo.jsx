@@ -6,7 +6,8 @@ const Objetivo = ({
     dados,
     mudarDados,
 }) => {
-    const radios = [
+
+    const radiosObjetivo = [
     {
       nome: 'perda de peso',
       valor: '1',
@@ -25,32 +26,57 @@ const Objetivo = ({
     },
   ]
 
+  const radiosExperiencia = [
+    
+  ]
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="flex flex-col w-full ">
+      className="flex flex-col w-full gap-2 my-2">
 
-      <div className="flex justify-around items-center">
-        escolha seu objetivo e experiência
-      </div>
+      <h2 className="mx-auto text-lg ">
+        escolha seu objetivo
+      </h2>
 
-        <div className="grid grid-cols-2 grid-rows-2 gap-1">
-            {radios.map(radio => (
-            
-                    <RadioCustomizado
-                    classeAdcional="w-45 h-20 p-1"
-                    name="nivelAtividadeFisica"
-                    valor={radio.valor}
-                    dataBinding={ev => mudarDados('objetivo', ev.target.value)}>
-                    <p className="flex flex-col">
-                        {radio.nome}
-                    </p>
-                </RadioCustomizado>
-                
-            
+        <div className="grid grid-cols-2 grid-rows-2 gap-y-2 w-85 mx-auto">
+            {radiosObjetivo.map(radio => (
+
+                    <div className="flex justify-center items-center w-full h-full">
+                      <RadioCustomizado
+                      classeAdcional="w-40 h-10"
+                      name="nivelAtividadeFisica"
+                      valor={radio.valor}
+                      dataBinding={ev => mudarDados('objetivo', ev.target.value)}>
+                        <p className="flex flex-col">
+                            {radio.nome}
+                        </p>
+                    </RadioCustomizado>
+                    </div>
+            ))}
+        </div>
+
+        <h2 className="mx-auto text-lg ">
+          escolha sua experiencia de treino
+        </h2>
+
+        <div className="grid grid-cols-2 grid-rows-2 gap-y-2 w-85 mx-auto">
+            {radiosExperiencia.map(radio => (
+
+                    <div className="flex justify-center items-center w-full h-full">
+                      <RadioCustomizado
+                      classeAdcional="w-40 h-10 p-1"
+                      name="nivelAtividadeFisica"
+                      valor={radio.valor}
+                      dataBinding={ev => mudarDados('objetivo', ev.target.value)}>
+                        <p className="flex flex-col">
+                            {radio.nome}
+                        </p>
+                    </RadioCustomizado>
+                    </div>
             ))}
         </div>
 

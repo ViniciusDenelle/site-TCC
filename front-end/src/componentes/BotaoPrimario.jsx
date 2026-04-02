@@ -6,7 +6,8 @@ const BotaoPrimario = ({
   tipo,
   classeAdcional,
   onClick,
-  disabled
+  disabled,
+  type
 }) => {
 
     const classeBase = `
@@ -17,9 +18,9 @@ const BotaoPrimario = ({
            `bg-destaque-p-escuro text-base-secundaria hover:bg-destaque-p-medio
             hover:shadow-sm shadow-destaque-p-medio/30` 
            : 
-           `text-destaque-p-escuro bg-base-secundaria ring-2
+           `text-destaque-p-escuro bg-base-terciaria ring-2
             ring-destaque-p-medio hover:text-destaque-p-medio
-            hover:bg-base-primaria hover:ring-destaque-p-medio `
+            hover:bg-base-secundaria hover:ring-destaque-p-medio `
           }
         `
   return (
@@ -29,7 +30,8 @@ const BotaoPrimario = ({
     transition={{type: "spring", stiffness: 100}}
     className={`${classeBase} ${classeTipo} ${classeAdcional ?? ''}`}
     onClick={onClick ?? ''}
-    disabled={disabled ?? ''}>
+    disabled={disabled ?? ''}
+    type={type ?? ''}>
         {children}
     </motion.button>
   )

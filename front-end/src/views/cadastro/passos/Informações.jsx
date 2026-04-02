@@ -10,8 +10,6 @@ const Informações = ({mudarDados, info}) => {
         peso, 
         tipoPeso,
         altura,
-        tipoAltura,
-        dataDeNascimento,
         genero
     } = info
 
@@ -27,18 +25,6 @@ const Informações = ({mudarDados, info}) => {
         }
     }
 
-    // useEffect(() => {
-    //     if (altura == '') return
-
-    //     if(tipoAltura === 'cm'){
-    //         let [pes, polegadas] = String(altura).split(".")
-    //         let alturaFinal = `${Math.round((pes * 30.48) + (polegadas * 2.54))}`
-    //         mudarDados('altura', alturaFinal)
-    //     } else {
-    //         mudarDados('altura', Math.round(10 * (altura * 0.0328084)) / 10)
-    //     }
-    // }, [tipoAltura])
-
     return (
         <>
             <motion.div
@@ -47,12 +33,15 @@ const Informações = ({mudarDados, info}) => {
             exit={{opacity: 0,}}
             transition={{duration: 0.4, ease: "easeOut"}}
             className="grid grid-cols-1 grid-rows-4 
-             grid-flow-col w-full mx-auto h-full gap-y-2">
-
+            grid-flow-col w-full mx-auto h-full gap-y-2"
+            >
+                    {/* genero */}
                     <div className="flex flex-col gap-1">
-                        <h1 className="text-t-principal">
+
+                        <h2 className="text-t-principal">
                             escolha seu genero:
-                        </h1>
+                        </h2>
+
                         <div className="flex gap-3">
                             <RadioCustomizado 
                             name="genero" 
@@ -69,14 +58,15 @@ const Informações = ({mudarDados, info}) => {
                                 masculino
                             </RadioCustomizado>
                         </div>
-                    </div>
-                    
-                    
 
+                    </div>
+
+                    {/* idade */}
                     <div className="flex flex-col gap-1">
-                        <h1 className="text-t-principal">
+
+                        <h2 className="text-t-principal">
                             escolha sua data de nascimento:
-                        </h1>
+                        </h2>
                         
                         <InputSimples
                         type="date"
@@ -85,12 +75,15 @@ const Informações = ({mudarDados, info}) => {
                         />
                         
                     </div>
-                    <div className="flex flex-col gap-1">
-                        <label htmlFor="">
-                            seu peso em {tipoPeso}
-                        </label>
-                        <div className="flex w-full gap-2">
 
+                    {/* peso */}
+                    <div className="flex flex-col gap-1">
+
+                        <h2>
+                            seu peso em {tipoPeso}:
+                        </h2>
+
+                        <div className="flex w-full gap-2">
                             {/* slider peso */}
                             <div className="relative w-2/3 h-full">
                                 <SliderCustomizado
@@ -107,7 +100,6 @@ const Informações = ({mudarDados, info}) => {
                                     <span> {maxPeso}  </span>
                                 </div>
                             </div>
-
                             {/* input peso e btn mudar tipo peso */}
                             <div className="flex gap-1 w-1/3">
                             
@@ -129,17 +121,22 @@ const Informações = ({mudarDados, info}) => {
                                 }}>
                                     {tipoPeso}    
                                 </BotaoSimples>
-
                             </div>
                         </div>
+
                     </div>
+
+                    {/* altura */}
                     <div className="flex flex-col gap-1">
-                        <label htmlFor="">
-                            sua altura
-                        </label>
+
+                        <h2>
+                            sua altura em centimetros:
+                        </h2>
+
                         <div className="flex w-full gap-2">
-                            {tipoAltura === 'cm' ? (
-                                <div className="relative w-3/4 h-full">
+                                
+                                {/* slider altura */}
+                                <div className="relative w-2/3 h-full">
                                     <SliderCustomizado
                                     mudarValor={value => mudarDados('altura', value)}
                                     valor={altura}
@@ -154,37 +151,19 @@ const Informações = ({mudarDados, info}) => {
                                         <span> 250 </span>
                                     </div>
                                 </div>
-                            ) : (
-                                <InputSimples
-                                classeAdcional="w-full"
-                                placeholder="pes"
-                                value={altura}
-                                dataBinding={ev => mudarDados('altura', ev.target.value)}
-                                />
-                            )}
-                            
-                            <div className={`flex gap-1 ${tipoAltura === 'cm' ? `w-1/3` : `w-1/4`}`}>
-
-                                {tipoAltura === 'cm' ? (
+                                {/* input altura */}
+                                <div className="flex gap-1 items-center w-1/3">
                                     <InputSimples 
                                     classeAdcional="w-full"
                                     type="number"
                                     value={altura}
                                     dataBinding={ev => mudarDados('altura', ev.target.value)}
-                                />
-                                ) : ''}
-                                
+                                    />
 
-                                <BotaoSimples
-                                classeAdcional="w-full"
-                                tipo="cheio"
-                                onClick={ev => mudarDados(
-                                    'tipoAltura', tipoAltura === 'cm' ? 'pês' : 'cm'
-                                    )}>
-                                    {tipoAltura}    
-                                </BotaoSimples>
-                                
-                            </div>
+                                    <span>
+                                        cm
+                                    </span>
+                                </div>
                             
                         </div>
                     </div>

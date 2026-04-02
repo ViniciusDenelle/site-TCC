@@ -15,7 +15,6 @@ const Cadastro = () => {
         peso: '20',
         tipoPeso: 'kilos',
         altura: '80',
-        tipoAltura: 'cm',
         dataDeNascimento: '',
         nivelAtividade: '',
         Objetivo: ''
@@ -33,12 +32,10 @@ const Cadastro = () => {
             dados.nivelAtividade !== ''
         )
     }
-
-    const passoPilula = [
-        '1', '2', '3', '4', '5'
-    ]
     
     const [passo, setPasso] = useState(1)
+
+    // validar passo
     const podeProximo = validacoes[passo]?.() ?? false
 
     function proximoPasso()
@@ -85,12 +82,14 @@ const Cadastro = () => {
                 break;
         }
     }
-    let progresso = passo * 20
+
+    // pilulas progresso
+    const passoPilula = [1, 2, 3, 4, 5]
   return (
     <main className='pt-10 h-screen w-full bg-base-primaria'>
         
         <div className="absolute top-0 left-0 w-full h-full 
-        bg-radial-[at_90%_90%] from-destaque-p-medio/20 
+        bg-linear-to-t from-destaque-p-escuro/25 
         to-base-primaria to-75%"/>
 
         <div className="container mx-auto h-full w-full">
@@ -101,21 +100,20 @@ const Cadastro = () => {
                 <div className="flex gap-2">
 
                     {passoPilula.map(pilula => (
-                        <div 
-                        key={pilula}
-                        className={`relative rounded-full w-6 h-3 ring-1 ring-contraste-primaria overflow-hidden
+
+                        <div className={`relative rounded-full w-6 h-3 ring-1 ring-contraste-primaria overflow-hidden
                         after:absolute after:left-0 after:top-0 after:h-3 bg-base-secundaria 
                         after:bg-destaque-p-escuro after:w-0 after:transition-all after:duration-500
-                        ${passo >= pilula ? `after:w-full` : ``}`}>
+                        ${passo >= pilula ? `after:w-full` : ``}`}
+                        />
                             
-                        </div>
                     ))}
 
                 </div>
 
                 <div className="flex items-center justify-center w-full p-2 z-10">
                     <h1 className="text-xl font-semibold text-t-primaria">
-                        crie sua conta {dados.peso}
+                        crie sua conta
                     </h1>
                 </div>
 
@@ -137,9 +135,11 @@ const Cadastro = () => {
 
                     <div className="flex w-full h-full flex-col gap-2">
                         
+                        {/* passos */}
                         <AnimatePresence mode='wait'>
                             {renderizarPasso()}
                         </AnimatePresence>
+
 
                         <BotaoPrimario
                         onClick={proximoPasso}
@@ -148,7 +148,17 @@ const Cadastro = () => {
                         >
                             proximo    
                         </BotaoPrimario>
+
+                        <div className='flex gap-1 justify-center'>
+                            já possui uma conta?
+                            <LinkSimples
+                            to="/login"
+                            classeAdcional="text-destaque-s-escuro">
+                                login
+                            </LinkSimples>
+                        </div>
                     </div>
+
                 </div>
 
             </div>

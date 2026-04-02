@@ -26,7 +26,7 @@ const RadioCustomizado = ({
                 value={valor}
                 className="peer hidden"
                 onChange={dataBinding}
-                checked={checked ?? ''}
+                checked={checked}
             />
 
             <motion.div 
