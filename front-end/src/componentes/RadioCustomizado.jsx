@@ -7,13 +7,14 @@ const RadioCustomizado = ({
     dataBinding,
     children,
     classeAdcional,
-    checked
+    checked,
+    semBolinha,
 }) => {
     const classeBase = `
-        flex gap-2 justify-center items-center
+        flex gap-1 justify-center items-center
         border-2 border-base-quaternaria bg-base-terciaria hover:bg-base-secundaria
-        rounded-lg bg-linear-to-b shadow-destaque-p-medio/50 w-35 h-12 transition-colors duration-200
-        peer-checked:border-destaque-p-escuro/50 peer-checked:shadow-md
+        rounded-lg bg-linear-to-b shadow-destaque-s-escuro/50 w-35 h-12 transition-colors duration-200
+        peer-checked:border-destaque-s-escuro/50 peer-checked:shadow-md peer-checked:bg-base-secundaria
     `
 
     return (
@@ -33,15 +34,17 @@ const RadioCustomizado = ({
             whileHover={{scale: 1.02}}
             whileTap={{scale: 0.95}}
             className={`${classeBase} ${classeAdcional ?? ``}`}>
+                
+                {semBolinha ? '' : (
+                    <span className="flex justify-center items-center p-1 
+                    rounded-full ring ring-base-quartenaria group-has-checked:ring-destaque-s-escuro">
 
-                <span className="flex justify-center items-center p-1 
-                rounded-full ring ring-base-quartenaria group-has-checked:ring-destaque-p-medio">
+                        <div className="span size-2.5 rounded-full bg-transparent group-has-checked:bg-destaque-s-escuro
+                        transition-colors duration-200">
 
-                    <div className="span size-2.5 rounded-full bg-transparent group-has-checked:bg-destaque-p-medio
-                    transition-colors duration-200">
-
-                    </div>
-                </span>
+                        </div>
+                    </span>
+                )}
                 {children}
             </motion.div>
             </label>

@@ -2,32 +2,32 @@ import React from 'react'
 import RadioCustomizado from "../../../componentes/radioCustomizado"
 import { motion } from 'motion/react'
 
-const NivelAtividade = ({mudarDados}) => {
+const NivelAtividade = ({
+  mudarDados,
+  info
+}) => {
+  const {nivelAtividade} = info
+
   const radios = [
     {
       nome: 'sedentario',
-      valor: '1',
+      valor: '1.2',
       descrição: 'você não pratica nenhum tipo de atividade fisica'
     },
     {
-      nome: 'pouco ativo',
-      valor: '1.2',
+      nome: 'leve',
+      valor: '1.375',
       descrição: 'pratica exercicio 1-3 vezes por semana'
     },
     {
       nome: 'moderado',
-      valor: '1.35',
+      valor: '1.55',
       descrição: 'pratica exercicio moderado 2-4 vezes por semana'
     },
     {
-      nome: 'ativo',
-      valor: '1.5',
+      nome: 'intenso',
+      valor: '1.725',
       descrição: 'pratica exercicio pesado 3-7 vezes por semana'
-    },
-    {
-      nome: 'atleta',
-      valor: '1.75',
-      descrição: 'pratica exercicio pesado todos os dias'
     },
   ]
 
@@ -38,21 +38,25 @@ const NivelAtividade = ({mudarDados}) => {
       exit={{ opacity: 0, }}
       transition={{ duration: 0.4, ease: "easeOut" }}
       className="flex flex-col w-full ">
+
       <div className="flex justify-around items-center">
-        escolha seu nivel de atividade fisica
+        <h2 className="text-lg text-t-secundaria">
+          escolha seu nivel de atividade fisica
+        </h2>
       </div>
 
-      <div className="grid grid-cols-2 grid-rows-3 gap-5 w-auto mx-auto my-5">
-        {radios.map((radio, index) => (
+      <div className="grid grid-cols-2 grid-rows-2 gap-2 w-full mx-auto my-5">
+        {radios.map(radio => (
 
-          <div className={`flex justify-center items-center 
-          ${index === radios.length -1 ? `col-span-2` : ``}`}>
+          <div className="not-last:flex justify-center items-center">
 
             <RadioCustomizado
-              classeAdcional="w-45 h-25 p-1"
+              classeAdcional="w-full h-25 p-1"
               name="nivelAtividadeFisica"
               valor={radio.valor}
-              dataBinding={ev => mudarDados('nivelAtividade', ev.target.value)}>
+              dataBinding={ev => mudarDados('nivelAtividade', ev.target.value)}
+              checked={nivelAtividade === radio.valor}
+              >
               <p className="flex flex-col">
                 {radio.nome}
                 <span className="text-sm">

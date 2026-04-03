@@ -10,7 +10,8 @@ const Informações = ({mudarDados, info}) => {
         peso, 
         tipoPeso,
         altura,
-        genero
+        genero,
+        dataNascimento
     } = info
 
     const minPeso = tipoPeso === 'kilos' ? 20 : 40
@@ -71,6 +72,7 @@ const Informações = ({mudarDados, info}) => {
                         <InputSimples
                         type="date"
                         classeAdcional="h-10"
+                        value={dataNascimento}
                         dataBinding={ev => mudarDados('dataDeNascimento', ev.target.value)}
                         />
                         
