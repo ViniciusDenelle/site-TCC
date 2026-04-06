@@ -8,7 +8,24 @@ const SliderCustomizado = ({
     min,
     max,
     step,
+    recomendadoMax,
+    recomendadoMin,
+    classeAdcionalThumb,
+    classeAdcionalTrack,
+    classeAdcionalRange,
 }) => {
+
+   
+    function porcentagem(val)
+    {
+      return ((val - min) / (max - min)) * 100
+    }
+
+    recomendadoMax = recomendadoMax > max ? max : recomendadoMax
+    recomendadoMin = recomendadoMin < min ? min : recomendadoMin
+
+    const esquerda = porcentagem(recomendadoMin)
+    const largura = porcentagem(recomendadoMax) - esquerda
 
     const classeThumb = `
         block h-5 w-5 rounded-full bg-destaque-s-escuro 
@@ -32,11 +49,21 @@ const SliderCustomizado = ({
         step={step ?? 1}
         className="relative flex items-center w-full h-full"
       >
-        <Slider.Track className={classeTrack}>
-          <Slider.Range className={classeRange} />
+        <Slider.Track className={`${classeTrack} ${classeAdcionalTrack ?? ``}`}>
+
+          {recomendadoMax ? (
+            <div className="absolute h-full bg-green-500/50 rounded-full"
+              style={{
+                left: `${esquerda}%`,
+                width: `${largura}%`
+              }}
+            />
+          ) : ''}
+
+          <Slider.Range className={`${classeRange} ${classeAdcionalRange ?? ``}`} />
         </Slider.Track>
 
-        <Slider.Thumb className={classeThumb} />
+        <Slider.Thumb className={`${classeThumb} ${classeAdcionalThumb ?? ``}`} />
 
       </Slider.Root>
   )

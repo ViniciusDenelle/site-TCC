@@ -109,7 +109,7 @@ const Informações = ({mudarDados, info}) => {
                                 classeAdcional="w-full"
                                 type="number"
                                 value={peso}
-                                dataBinding={ev => mudarDados('peso', ev.target.value)}
+                                dataBinding={ev => mudarDados('peso', parseInt(ev.target.value))}
                                 maximo={500}
                                 minimo={20}/>
 
@@ -159,7 +159,7 @@ const Informações = ({mudarDados, info}) => {
                                     classeAdcional="w-full"
                                     type="number"
                                     value={altura}
-                                    dataBinding={ev => mudarDados('altura', ev.target.value)}
+                                    dataBinding={ev => mudarDados('altura', parseInt(ev.target.value))}
                                     />
 
                                     <span>

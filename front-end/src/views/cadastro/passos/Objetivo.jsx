@@ -9,7 +9,9 @@ const Objetivo = ({
 
   const {
     objetivo,
-    experiencia
+    experiencia,
+    peso,
+    altura
   } = info
 
   // array dos inputs para objetivo, gerar eles por meio de um array é mior
@@ -48,16 +50,36 @@ const Objetivo = ({
     },
   ]
 
+  const imc = 100 / ((170 * 170) / 10000)
+  let aviso = ''
+  if(imc < 18.5){
+    aviso = 'perder_peso'
+  } else if (imc > 25){
+    aviso = 'ganhar_peso'
+  } else {
+    aviso = 'nenhum'
+  }
+
+
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="flex flex-col w-full gap-2 my-2">
+      className="flex flex-col w-full gap-3 my-2">
 
-      <h2 className="mx-auto text-lg text-t-primaria">
+      {aviso === objetivo ? (
+          <span className="absolute -top-1.5 left-1/2 
+          -translate-x-1/2 text-sm text-red-500">
+            não recomendado
+          </span>
+        ) : ''}
+
+      <h2 className="relative mx-auto text-lg text-t-primaria">
         escolha seu objetivo
+        
       </h2>
 
       {/* objetivo */}

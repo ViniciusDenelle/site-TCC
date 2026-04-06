@@ -29,8 +29,7 @@ const BotaoPrimario = ({
     whileTap={disabled ? "" :{scale: 0.95, y: 2}}
     transition={{type: "spring", stiffness: 100}}
     className={`${classeBase} ${classeTipo} ${classeAdcional ?? ''}`}
-    onClick={onClick ?? ''}
-    disabled={disabled ?? ''}
+    onClick={onClick}
     type={type ?? ''}>
         {children}
     </motion.button>

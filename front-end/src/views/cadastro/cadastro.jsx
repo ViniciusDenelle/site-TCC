@@ -3,57 +3,52 @@ import LinkSimples from '../../componentes/LinkSimples'
 import Informações from './passos/informações'
 import NivelAtividade from './passos/NivelAtividade'
 import BotaoSimples from '../../componentes/BotaoSimples'
-import { ArrowLeft, PenLine } from 'lucide-react'
+import { ArrowLeft, Mail, PenLine } from 'lucide-react'
 import BotaoPrimario from '../../componentes/BotaoPrimario'
 import { AnimatePresence } from 'motion/react'
 import Objetivo from './passos/Objetivo'
 import Metas from './passos/Metas'
+import ExibirInfo from './passos/ExibirInfo'
+import Credenciais from './passos/Credenciais'
+import useCadastro from '../../logicas/cadastro/useCadastro'
 
 const Cadastro = () => {
     // dados do cadastro
-    const [dados, setDados] = useState({
-        genero: '',
-        peso: '20',
-        tipoPeso: 'kilos',
-        pesoFinal: '',
-        altura: '80',
-        dataDeNascimento: '',
-        idade: '',
-        nivelAtividade: '',
-        objetivo: '',
-        experiencia: '',
-        TMB: '',
-        GET: '',
-        calDiaria: '',
-        tempoEstimado: '',
-        veloPerda: '',
-    })
+    const {
+        passo,
+        setPasso,
+        erro,
+        podeProximo,
+        nome,
+        email,
+        senha,
+        genero,
+        peso,
+        tipoPeso,
+        pesoFinal,
+        altura,
+        dataDeNascimento,
+        idade,
+        nivelAtividade,
+        objetivo,
+        experiencia,
+        TMB,
+        GET,
+        calDiaria,
+        mesesEstimado,
+        semanasEstimadas,
+        previsaoMeta,
+        veloPerda,
+    } = useCadastro()
     
-    const validacoes = {
-        1: () => (
-            // dados.genero !== '' 
-            // && dados.peso > 0       
-            // && dados.altura !== ''
-            // && dados.dataDeNascimento !== ''
-            true
-        ),
-        2: () => (
-            dados.nivelAtividade !== ''
-        ),
-        3: () => (
-            dados.objetivo !== '' &&
-            dados.experiencia !== ''
-        )
-    }
-    
-    const [passo, setPasso] = useState(1)
-
-    // validar passo
-    const podeProximo = validacoes[passo]?.() ?? false
 
     function proximoPasso()
     {
-        if (!podeProximo) return
+        if (!podeProximo) {
+            setErro(true)
+            return
+        }
+        setErro(false)
         setPasso(prev => prev+1)
     }
 
@@ -62,113 +57,17 @@ const Cadastro = () => {
         setPasso(prev => prev-1)
     }
 
-    // data binding
-    function mudarDados(campo, valor)
-    {
-        setDados(prev => ({
-            ...prev, [campo]: valor
-        }))
-    }
-
-    function calcularIdade(dataDeNascimento) {
-        const hoje = new Date()
-        const nascimento = new Date(dataDeNascimento)
-
-        let idade = hoje.getFullYear() - nascimento.getFullYear()
-
-        const mesAtual = hoje.getMonth()
-        const mesNascimento = nascimento.getMonth()
-
-        const diaAtual = hoje.getDate()
-        const diaNascimento = nascimento.getDate()
-
-        // verifica se ainda não fez aniversário esse ano
-        if ( 
-            mesAtual < mesNascimento || 
-            (mesAtual === mesNascimento && diaAtual < diaNascimento)
-        ) {
-            idade-- 
-        }
-        return idade
-    }
-
-    useEffect(() => {
-        let novaIdade = calcularIdade(dados.dataDeNascimento)
-        mudarDados('idade', novaIdade ? novaIdade : 0)
-    }, [dados.dataDeNascimento])
-
-    useEffect(() => {
-
-        if (!dados.idade || !dados.genero || !dados.altura || !dados.peso ) return
-        
-        function calcularTMB() {
-            let pesoKG = dados.tipoPeso === 'kilos' ? dados.peso : dados.peso / 2.20462
-
-            if (dados.genero === 'feminino') {
-                let tmb = 447.593
-                    + (9.247 * pesoKG)
-                    + (3.098 * dados.altura)
-                    - (4.330 * dados.idade)
-                return tmb
-            } else {
-                let tmb = 88.362
-                    + (13.397 * pesoKG)
-                    + (4.799 * dados.altura)
-                    - (5.677 * dados.idade)
-                return tmb
-            }
-        }
-
-        const novaTMB = Math.round(calcularTMB())
-        mudarDados('TMB', novaTMB)
-    }, [dados.idade, dados.genero, dados.altura, dados.peso])
-
-    useEffect(() => {
-        if (!dados.nivelAtividade) return 
-
-        const novoGet = Math.round(dados.TMB * dados.nivelAtividade)
-        
-        mudarDados('GET', novoGet)
-
-    }, [dados.nivelAtividade])
-
-    function renderizarPasso()
-    {
-        switch (passo) {
-            case 1:
-                return (
-                <Informações 
-                mudarDados={mudarDados}
-                info={dados}/>
-                )
-            case 2:
-                return (
-                    <NivelAtividade 
-                    mudarDados={mudarDados}
-                    info={dados}
-                    />
-                )
-            case 3:
-                return (
-                    <Objetivo 
-                    mudarDados={mudarDados}
-                    info={dados}
-                    />
-                )
-                case 4:
-                return (
-                    <Metas 
-                    mudarDados={mudarDados}
-                    info={dados}
-                    />
-                )
-            default:
-                break;
-        }
+    const passos = {
+        1: <Informações mudarDados={mudarDados} info={dados}/>,
+        2: <NivelAtividade mudarDados={mudarDados} info={dados}/>,
+        3: <Objetivo  mudarDados={mudarDados} info={dados}/>,
+        4: <Metas  mudarDados={mudarDados} info={dados}/>,
+        5: <ExibirInfo  info={dados}/>,
+        6: <Credenciais mudarDados={mudarDados} info={dados} />,
     }
 
     // pilulas progresso
-    const passoPilula = [1, 2, 3, 4, 5]
+    const passoPilula = [1, 2, 3, 4, 5, 6]
   return (
     <main className='pt-20 relative min-h-screen w-full bg-base-primaria'>
         
@@ -190,7 +89,7 @@ const Cadastro = () => {
                         className={`relative rounded-full w-6 h-3 ring-1 ring-contraste-primaria overflow-hidden
                         after:absolute after:left-0 after:top-0 after:h-3 bg-base-secundaria 
                         after:bg-destaque-p-escuro after:w-0 after:transition-all after:duration-500
-                        ${passo >= pilula ? `after:w-full` : ``}`}
+                        ${passo >= pilula && `after:w-full`}`}
                         />
                             
                     ))}
@@ -199,7 +98,7 @@ const Cadastro = () => {
 
                 <div className="flex items-center justify-center w-full p-1 z-10">
                     <h1 className="text-xl font-semibold text-t-primaria">
-                        crie sua conta
+                        crie sua conta {veloPerda}
                     </h1>
                 </div>
 
@@ -208,32 +107,50 @@ const Cadastro = () => {
                  w-9/10 md:w-120 md:px-10 shadow-md shadow-base-quaternaria/50">
                     
 
-                    {passo > 1 ? (
+                    {passo > 1 && (
                         <BotaoSimples 
                         classeAdcional="absolute top-2 left-2 ring-transparent 
                         hover:ring-transparent"
                         onClick={voltarPasso}>
                             <ArrowLeft/>    
                         </BotaoSimples>
-                    ) : ""}
+                    )}
 
                     
 
                     <div className="flex w-full h-full flex-col gap-2 mt-5">
                         
                         {/* passos */}
-                        <AnimatePresence mode='wait'>
-                            {renderizarPasso()}
-                        </AnimatePresence>
+                        <div className="h-102 relative flex flex-col items-center">
+                            {erro && (
+                                <span className="absolute -top-5
+                                text-sm font-semibold text-red-500 mx-auto">
+                                    você tem informações faltando
+                                </span>
+                            )}
+                            <AnimatePresence mode='wait'>
+                                {passos[passo]}
+                            </AnimatePresence>
 
+                        </div>
 
-                        <BotaoPrimario
-                        onClick={proximoPasso}
-                        disabled={!podeProximo}
-                        tipo="cheio"
-                        >
-                            proximo    
-                        </BotaoPrimario>
+                        {passo === 6 ? (
+                            <BotaoPrimario
+                            
+                            tipo="cheio"
+                            classeAdcional="gap-1"
+                            >
+                                finalizar <Mail/>   
+                            </BotaoPrimario>
+                        ) : (
+                            <BotaoPrimario
+                            onClick={proximoPasso}
+                            disabled={!podeProximo}
+                            tipo="cheio"
+                            >
+                                proximo 
+                            </BotaoPrimario>
+                        )}
 
                         <div className='flex gap-1 justify-center'>
                             já possui uma conta?
