@@ -1,27 +1,30 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 const useCadastro = () => {
-    const [dados, setDados] = useState({
-        nome: '',
-        email: '',
-        senha: '',
-        genero: '',
-        peso: 20,
-        tipoPeso: 'kilos',
-        pesoFinal: '',
-        altura: 80,
-        dataDeNascimento: '',
-        idade: '',
-        nivelAtividade: '',
-        objetivo: '',
-        experiencia: '',
-        TMB: '',
-        GET: '',
-        calDiaria: '',
-        mesesEstimado: '',
-        semanasEstimadas: '',
-        previsaoMeta: '',
-        veloPerda: '',
+    const [dados, setDados] = useState(() => {
+        const salvo = localStorage.getItem('dados_cadastro')
+        return salvo 
+        ? JSON.parse(salvo) 
+        : {
+            nome: '',
+            email: '',
+            senha: '',
+            genero: '',
+            peso: 20,
+            tipoPeso: 'kilos',
+            pesoFinal: '',
+            altura: 80,
+            dataDeNascimento: '',
+            idade: '',
+            nivelAtividade: '',
+            objetivo: '',
+            experiencia: '',
+            TMB: '',
+            GET: '',
+            calDiaria: '',
+            tempo: {},
+            veloPerda: '',
+        }
     })
 
     const [passo, setPasso] = useState(1)
@@ -88,7 +91,7 @@ const useCadastro = () => {
     }, [dados.dataDeNascimento])
 
     const TMB = useMemo(() => {
-        if (!dados.idade || !dados.genero || !dados.altura || !dados.peso ) return
+        if (!idade || !dados.genero || !dados.altura || !dados.peso ) return 0
 
         let pesoKG = 
             dados.tipoPeso === 'kilos' 
@@ -122,9 +125,17 @@ const useCadastro = () => {
     const GET = useMemo(() => {
 
          if (!dados.nivelAtividade) return 
-        return Math.round(dados.TMB * dados.nivelAtividade)
+        return Math.round(TMB * dados.nivelAtividade)
 
     }, [dados.nivelAtividade])
+
+     useEffect(() => {
+        const timeout =  setTimeout(() => {
+            localStorage.setItem('dados_cadastro', JSON.stringify({...dados , GET, TMB, idade}))
+        }, 500)
+
+        return () => clearTimeout(timeout)
+    }, [dados])
 
   return {
         passo,
@@ -132,26 +143,11 @@ const useCadastro = () => {
         erro,
         setErro,
         podeProximo,
-        nome,
-        email,
-        senha,
-        genero,
-        peso,
-        tipoPeso,
-        pesoFinal,
-        altura,
-        dataDeNascimento,
         idade,
-        nivelAtividade,
-        objetivo,
-        experiencia,
         TMB,
         GET,
-        calDiaria,
-        mesesEstimado,
-        semanasEstimadas,
-        previsaoMeta,
-        veloPerda,
+       dados,
+       mudarDados
   }
 }
 

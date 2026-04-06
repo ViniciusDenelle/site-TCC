@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { motion } from 'motion/react'
 import { 
     Activity, 
@@ -16,10 +16,11 @@ import {
     Weight, 
     WeightTilde 
 } from 'lucide-react'
+import CadastroContext from '../../../contextos/CadastroContexto'
 
-const ExibirInfo = ({
-    info
-}) => {
+const ExibirInfo = () => {
+    const {dados} = useContext(CadastroContext)
+
     const {
         genero,
         peso,
@@ -32,11 +33,9 @@ const ExibirInfo = ({
         experiencia,
         GET,
         calDiaria,
-        mesesEstimados,
-        semanasEstimadas,
+        tempo,
         veloPerda,
-        previsaoMeta
-    } = info
+    } = dados
 
     let atividadeNome = ''
 
@@ -214,7 +213,7 @@ const ExibirInfo = ({
                             <div className="flex flex-col justify-baseline">
                                 tempo estimado: 
                                 <p className='text-t-primaria'>
-                                    {mesesEstimados} meses e  {semanasEstimadas}semanas
+                                    {tempo.meses} meses e  {tempo.semanas}semanas
                                 </p>
                                 
                                 <p className='text-t-primaria'>
@@ -230,7 +229,7 @@ const ExibirInfo = ({
                                 previsão de termino: 
                             </p>
                             <p className='text-t-primaria ml-7'>
-                                {previsaoMeta}
+                                {tempo.previsao}
                             </p>
                         </h2>
                     </div>

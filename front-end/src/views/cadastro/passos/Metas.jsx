@@ -1,113 +1,57 @@
-import { useEffect, useState } from 'react'
-import { motion } from 'motion/react'
+import { useContext, useEffect, useMemo, useState } from 'react'
+import { motion, number } from 'motion/react'
 import { CalendarClock, Flame } from 'lucide-react'
 import InputSimples from '../../../componentes/InputSimples'
 import SliderCustomizado from '../../../componentes/SliderCustomizado'
 import RadioCustomizado from '../../../componentes/radioCustomizado'
+import CadastroContext from '../../../contextos/CadastroContexto'
+import useMetas from '../../../logicas/cadastro/useMetas'
 
-const Metas = ({
-    info,
-    mudarDados,
-}) => {
+const Metas = () => {
 
     const {
-        genero,
+        dados,
+        mudarDados,
+    } = useContext(CadastroContext)
+
+    const {
+        calorias,
+        tempoEstimado,
+        minMaxPeso
+    } = useMetas(dados, mudarDados)
+
+    const {
         peso,
-        altura,
-        idade,
-        TMB,
-        GET,
-        calDiaria,
-        mesesEstimados,
-        semanasEstimadas,
         veloPerda,
         pesoFinal,
         objetivo,
-        previsaoMeta
-    } = info
-
-    const [diferencaKcal, setDiferencaKcal] = useState(0)
-
-    useEffect(() => {
-        if(!veloPerda) return
-        let calD
-
-        const diferencaKcal = (7000 / 7 * veloPerda)
-
-        if(objetivo === 'perder_peso'){
-            calD = GET - diferencaKcal 
-        } else if(objetivo === 'ganhar_peso'){
-            calD = diferencaKcal +  GET
-        } else  {
-            calD = GET
-        }
-        
-        setDiferencaKcal(diferencaKcal)
-        mudarDados('calDiaria', calD)
-
-    }, [veloPerda])
-
-    useEffect(() => {
-        if(!pesoFinal || !veloPerda) return
-
-        let difPeso = objetivo === 'perder_peso'
-        ? peso - pesoFinal
-        : pesoFinal - peso
-
-        let semanasTotais = difPeso / veloPerda
-
-        let meses = Math.floor(semanasTotais / 4)
-        let semanasRestantes = Math.round(semanasTotais % 4)
-
-        const hoje = new Date()
-        const dias = Math.round(semanasTotais * 7)
-
-        const dataFinal = new Date(hoje)
-        dataFinal.setDate(hoje.getDate() + dias)
-
-        mudarDados('previsaoMeta', dataFinal.toLocaleDateString("pt-BR"))
-        mudarDados('mesesEstimados', meses)
-        mudarDados('semanasEstimadas', semanasRestantes)
-
-    }, [pesoFinal, veloPerda])
-
-    const minPeso = objetivo === 'perder_peso' 
-    ? Math.round( peso - (peso * 0.5))
-    : peso
-    const maxPeso = objetivo === 'perder_peso' 
-    ? peso 
-    : peso + (peso * 0.7)
-
-    const minRecPeso = objetivo === 'perder_peso' 
-    ? Math.round(18.5 * ((altura * altura) / 10000)) 
-    : peso
-
-    const maxRecPeso = objetivo === 'perder_peso' 
-    ? peso 
-    : Math.round(28.9 * ((altura * altura) / 10000))
+    } = dados
 
     const velocidadePerda = [
         {
             nome: 'lento',
-            valor: objetivo === 'perder_peso' ? 0.005 : 0.0025,
+            base: objetivo === 'perder_peso' ? 0.005 : 0.0025,
             cor: 'bg-emerald-400'
         },
         {
             nome: 'moderado',
-            valor:objetivo === 'perder_peso' ?0.00675 :0.0035,
+            base: objetivo === 'perder_peso' ? 0.00675 : 0.0035,
             cor: 'bg-indigo-500'
         },
         {
             nome: 'rápido',
-            valor:objetivo === 'perder_peso' ?0.0085 :0.0045,
+            base: objetivo === 'perder_peso' ? 0.0085 : 0.0045,
             cor: 'bg-amber-400'
         },
         {
             nome: 'intenso',
-            valor:objetivo === 'perder_peso' ?0.01 :0.0050,
+            base: objetivo === 'perder_peso' ? 0.01 : 0.0050,
             cor: 'bg-rose-500'
         },
-    ]
+
+    ].map(velo => (
+        {...velo, valor: parseFloat((peso * velo.base ).toFixed(2))}
+    ))
 
     return (
         <motion.div
@@ -135,18 +79,18 @@ const Metas = ({
                             tempo estimado
                         </h2>
                         <p className='flex flex-col text-base h-12'>
-                            
+
                             <span>
-                                {mesesEstimados} meses e
+                                {tempoEstimado.meses} meses e
                             </span>
-                            
+
                             <span>
-                                {semanasEstimadas} semanas
+                                {tempoEstimado.semanas} semanas
                             </span>
-                            
+
                         </p>
                         <span>
-                            previsão: {previsaoMeta}
+                            previsão: {tempoEstimado.previsao}
                         </span>
                     </div>
 
@@ -163,14 +107,14 @@ const Metas = ({
                             calorias diarias
                         </h2>
                         <p className='text-base'>
-                            {calDiaria} kcal
+                            {calorias.calorias} kcal
                         </p>
                         {objetivo !== 'manter_peso' ? (
                             <span className='flex gap-1'>
                                 <p>
                                     {objetivo === 'perder_peso' ? 'defict' : 'superavit'}
                                 </p>
-                                de {diferencaKcal} kcal
+                                de {calorias.diff} kcal
                             </span>
                         ) : ''}
                     </div>
@@ -181,17 +125,17 @@ const Metas = ({
 
             <div className="flex flex-col gap-4 w-full mb-5">
 
-                <div className="flex justify-between items-center w-full">
-                    <h2 className='relative text-lg text-t-secundaria'>
+                <div className="relative flex justify-between items-center w-full">
+                    <h2 className='text-lg text-t-secundaria'>
                         meta de peso:
-                        {pesoFinal < maxRecPeso && pesoFinal > minRecPeso 
+                        {pesoFinal < minMaxPeso.maxRec && pesoFinal > minMaxPeso.minRec
                             ? (
                                 <span className="absolute -bottom-4 left-0 text-sm text-emerald-500">
                                     recomendado
                                 </span>
                             ) : (
                                 <span className="absolute -bottom-4 left-0 text-sm text-red-500">
-                                   não recomendado
+                                    não recomendado
                                 </span>
                             )}
                     </h2>
@@ -207,34 +151,34 @@ const Metas = ({
 
                 <div className="relative w-full">
 
-                    <SliderCustomizado 
+                    <SliderCustomizado
                         valor={pesoFinal}
-                        min={minPeso}
-                        max={maxPeso}
+                        min={minMaxPeso.min}
+                        max={minMaxPeso.max}
                         mudarValor={value => mudarDados('pesoFinal', value)}
-                        recomendadoMin={minRecPeso}
-                        recomendadoMax={maxRecPeso}
+                        recomendadoMin={minMaxPeso.minRec}
+                        recomendadoMax={minMaxPeso.maxRec}
                         classeAdcionalThumb={
-                            pesoFinal < maxRecPeso 
-                            && pesoFinal > minRecPeso 
-                            ? `bg-emerald-500 hover:bg-emerald-600` : ``
+                            pesoFinal < minMaxPeso.maxRec
+                                && pesoFinal > minMaxPeso.minRec
+                                ? `bg-emerald-500 hover:bg-emerald-600` : ``
                         }
                         classeAdcionalRange={
-                            pesoFinal < maxRecPeso 
-                            && pesoFinal > minRecPeso 
-                            ? `bg-emerald-700/50` : ``}
+                            pesoFinal < minMaxPeso.maxRec
+                                && pesoFinal > minMaxPeso.minRec
+                                ? `bg-emerald-700/50` : ``}
                     />
 
                     <div className="absolute -bottom-8 left-0 
                     flex justify-between w-full">
-                        <span> {minPeso}  </span>
+                        <span> {minMaxPeso.min}  </span>
 
                         <span> {
-                            Math.round((maxPeso + minPeso) /2)
-                            }  </span>
+                            Math.round((minMaxPeso.max + minMaxPeso.min) / 2)
+                        }  </span>
 
-                        <span> {maxPeso}  </span>
-                        
+                        <span> {minMaxPeso.max}  </span>
+
                     </div>
                 </div>
 
@@ -250,16 +194,15 @@ const Metas = ({
             gap-2 w-full">
 
                     {velocidadePerda.map(radio => {
-                        radio.valor = (peso * radio.valor ).toFixed(1)
-
-                        return(
+                        
+                        return (
                             <RadioCustomizado
                                 name="velocidadePerda"
                                 valor={radio.valor}
                                 dataBinding={ev => mudarDados('veloPerda', ev.target.value)}
                                 classeAdcional="w-full flex-col items-start h-15 px-2"
                                 semBolinha={true}
-                                checked={veloPerda === radio.valor}
+                                checked={(veloPerda == radio.valor)}
                             >
                                 <h3 className='flex items-center gap-1'>
                                     <span
@@ -279,21 +222,6 @@ const Metas = ({
 
                 </div>
             </div>
-
-            {/* <div className="flex flex-col p-2 rounded-lg ring-2 
-        ring-base-quaternaria bg-base-terciaria divide-y
-        divide-base-quaternaria">
-
-                <div className="flex justify-between pb-2">
-                    <h3>peso atual: {peso}</h3>
-                    <h3>calorias diarias atuais: {GET}</h3>
-                </div>
-                <div className="flex justify-between pt-2">
-                    <h3>peso final: {pesoFinal}</h3>
-                    <h3>calorias diarias finais: {calDiaria}</h3>
-                </div>
-
-            </div> */}
 
         </motion.div>
     )

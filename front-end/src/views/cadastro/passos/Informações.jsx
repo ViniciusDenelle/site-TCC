@@ -1,18 +1,24 @@
-import {useEffect} from 'react'
+import {useContext, useEffect} from 'react'
 import BotaoSimples from "../../../componentes/BotaoSimples"
 import InputSimples from "../../../componentes/InputSimples"
 import RadioCustomizado from "../../../componentes/radioCustomizado"
 import { motion } from 'motion/react'
 import SliderCustomizado from '../../../componentes/SliderCustomizado'
+import CadastroContext from '../../../contextos/CadastroContexto'
 
-const Informações = ({mudarDados, info}) => {
+const Informações = () => {
     const {
-        peso, 
+        dados,
+        mudarDados
+    } = useContext(CadastroContext)
+
+    const {
+        peso,
         tipoPeso,
-        altura,
         genero,
+        altura,
         dataNascimento
-    } = info
+    } = dados
 
     const minPeso = tipoPeso === 'kilos' ? 20 : 40
     const maxPeso = tipoPeso === 'kilos' ? 400 : 800

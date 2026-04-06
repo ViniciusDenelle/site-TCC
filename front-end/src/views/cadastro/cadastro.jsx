@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import LinkSimples from '../../componentes/LinkSimples'
 import Informações from './passos/informações'
 import NivelAtividade from './passos/NivelAtividade'
@@ -11,6 +11,7 @@ import Metas from './passos/Metas'
 import ExibirInfo from './passos/ExibirInfo'
 import Credenciais from './passos/Credenciais'
 import useCadastro from '../../logicas/cadastro/useCadastro'
+import CadastroContext from '../../contextos/CadastroContexto'
 
 const Cadastro = () => {
     // dados do cadastro
@@ -18,28 +19,10 @@ const Cadastro = () => {
         passo,
         setPasso,
         erro,
+        setErro,
         podeProximo,
-        nome,
-        email,
-        senha,
-        genero,
-        peso,
-        tipoPeso,
-        pesoFinal,
-        altura,
-        dataDeNascimento,
-        idade,
-        nivelAtividade,
-        objetivo,
-        experiencia,
-        TMB,
-        GET,
-        calDiaria,
-        mesesEstimado,
-        semanasEstimadas,
-        previsaoMeta,
-        veloPerda,
-    } = useCadastro()
+        dados
+    } = useContext(CadastroContext)
     
 
     function proximoPasso()
@@ -58,18 +41,18 @@ const Cadastro = () => {
     }
 
     const passos = {
-        1: <Informações mudarDados={mudarDados} info={dados}/>,
-        2: <NivelAtividade mudarDados={mudarDados} info={dados}/>,
-        3: <Objetivo  mudarDados={mudarDados} info={dados}/>,
-        4: <Metas  mudarDados={mudarDados} info={dados}/>,
-        5: <ExibirInfo  info={dados}/>,
-        6: <Credenciais mudarDados={mudarDados} info={dados} />,
+        1: <Informações/>,
+        2: <NivelAtividade/>,
+        3: <Objetivo />,
+        4: <Metas />,
+        5: <ExibirInfo />,
+        6: <Credenciais />,
     }
 
     // pilulas progresso
     const passoPilula = [1, 2, 3, 4, 5, 6]
   return (
-    <main className='pt-20 relative min-h-screen w-full bg-base-primaria'>
+    <main className='pt-20 relative h-screen w-full bg-base-primaria'>
         
         <div className="absolute top-0 left-0 w-full h-full 
         bg-linear-to-t from-destaque-p-escuro/25 
@@ -78,7 +61,7 @@ const Cadastro = () => {
         <div className="container mx-auto h-full w-full">
 
             <div className="w-full h-full flex flex-col 
-            items-center">
+            items-center justify-center">
 
                 <div className="flex gap-2">
 
@@ -98,7 +81,7 @@ const Cadastro = () => {
 
                 <div className="flex items-center justify-center w-full p-1 z-10">
                     <h1 className="text-xl font-semibold text-t-primaria">
-                        crie sua conta {veloPerda}
+                        crie sua conta
                     </h1>
                 </div>
 
@@ -129,7 +112,7 @@ const Cadastro = () => {
                                 </span>
                             )}
                             <AnimatePresence mode='wait'>
-                                {passos[passo]}
+                                {passo == 4 && dados.objetivo === 'manter_peso' ? passos[passo + 1] : passos[passo] }
                             </AnimatePresence>
 
                         </div>

@@ -5,17 +5,17 @@ import BotaoPrimario from '../../../componentes/BotaoPrimario'
 import LinkSimples from '../../../componentes/LinkSimples'
 import { Eye, EyeClosed } from 'lucide-react'
 import GoogleIcone from '../../../assets/icones/googleIcone.svg'
+import { useContext } from 'react'
+import CadastroContext from '../../../contextos/CadastroContexto'
 
-const Credenciais = ({
-    mudarDados, 
-    info
-}) => {
+const Credenciais = () => {
+    const {dados, mudarDados} = useContext(CadastroContext)
 
     const {
         nome,
         email,
         senha
-    } = info
+    } = dados
 
     const [senhaVisivel, setSenhaVisivel] = useState(false)
 
@@ -34,7 +34,7 @@ const Credenciais = ({
         >
 
             <h2 className="mx-auto text-lg text-t-primaria font-semibold">
-                suas credenciais {nome} {email} {senha}
+                suas credenciais
             </h2>
 
             <p className="text-sm mx-auto text-center">

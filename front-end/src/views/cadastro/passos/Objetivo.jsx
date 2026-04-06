@@ -1,18 +1,18 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { motion } from 'motion/react'
 import RadioCustomizado from '../../../componentes/radioCustomizado'
+import CadastroContext from '../../../contextos/CadastroContexto'
 
-const Objetivo = ({
-  info,
-  mudarDados,
-}) => {
+const Objetivo = () => {
+
+  const {dados, mudarDados} = useContext(CadastroContext)
 
   const {
     objetivo,
     experiencia,
     peso,
     altura
-  } = info
+  } = dados
 
   // array dos inputs para objetivo, gerar eles por meio de um array é mior
   const radiosObjetivo = [
@@ -50,7 +50,7 @@ const Objetivo = ({
     },
   ]
 
-  const imc = 100 / ((170 * 170) / 10000)
+  const imc = peso / ((altura * altura) / 10000)
   let aviso = ''
   if(imc < 18.5){
     aviso = 'perder_peso'
@@ -59,8 +59,6 @@ const Objetivo = ({
   } else {
     aviso = 'nenhum'
   }
-
-
 
   return (
     <motion.div

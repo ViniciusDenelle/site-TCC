@@ -1,12 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import RadioCustomizado from "../../../componentes/radioCustomizado"
 import { motion } from 'motion/react'
+import CadastroContext from '../../../contextos/CadastroContexto'
 
-const NivelAtividade = ({
-  mudarDados,
-  info
-}) => {
-  const {nivelAtividade} = info
+const NivelAtividade = () => {
+  const {dados, mudarDados} = useContext(CadastroContext)
+  const {nivelAtividade} = dados
 
   const radios = [
     {
