@@ -27,7 +27,7 @@ export const TemaProvider = ({ children }: { children: ReactNode }) => {
     )
 }
 
-export const useTema = () => {
+const useTema = () => {
   const contexto = useContext(TemaContexto);
 
   if (!contexto) {
@@ -36,3 +36,5 @@ export const useTema = () => {
 
   return contexto;
 };
+
+export default useTema

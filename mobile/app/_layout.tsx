@@ -17,7 +17,8 @@ export default function RootLayout() {
 
   return (
     <TemaProvider>
-      <Stack/>
+      <Stack
+      />
     </TemaProvider>
   );
 }
