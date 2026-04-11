@@ -18,7 +18,9 @@ export default function RootLayout() {
   return (
     <TemaProvider>
       <Stack
-      />
+      screenOptions={{
+        headerShown: false
+      }}/>
     </TemaProvider>
   );
 }

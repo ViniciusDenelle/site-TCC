@@ -9,6 +9,7 @@ import LinkSimples from "./componentes/LinkSimples";
 import InputSimples from "./componentes/InputSimples";
 import { useState } from "react";
 import InputRadio from "./componentes/InputRadio";
+import InputRange from "./componentes/InputRange";
 
 export default function Index() {
   const { temaAtual, setTema, tema } = useTema();
@@ -20,13 +21,21 @@ export default function Index() {
 
   const [valor, setValor] = useState('')
   const [genero, setGenero] = useState('')
+  const [peso, setPeso] = useState(20)
 
   return (
     <View style={vars(temaAtual)}
       className="h-full w-full flex justify-center
     bg-base-primaria font-poppins items-center">
 
-    <View className="w-5/6 p-4 flex flex-col gap-2 bg-base-secundaria rounded">
+    <View className="w-[90%] p-4 flex flex-col 
+    gap-2 bg-base-secundaria rounded-xl">
+
+      <Text className="text-lg text-t-primaria 
+      font-poppins-semibold text-center mx-auto my-2">
+        componentes
+      </Text>
+
       <BotaoPrimario tipo='cheio'
         onPress={mudarTema}
       >
@@ -34,7 +43,7 @@ export default function Index() {
       </BotaoPrimario>
 
       <BotaoSecundario tipo='cheio'>
-        {valor}
+        {peso}
       </BotaoSecundario>
 
       <LinkSimples to='./cadastro'>
@@ -69,6 +78,15 @@ export default function Index() {
           feminino
         </InputRadio>
       </View>
+
+      <InputRange
+        valor={peso}
+        onChange={value => setPeso(value)}
+        min={20}
+        max={200}
+        recomendadoMax={100}
+        recomendadoMin={20}
+      />
 
     </View>
 
