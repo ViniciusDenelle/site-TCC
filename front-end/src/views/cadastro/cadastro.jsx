@@ -3,7 +3,7 @@ import LinkSimples from '../../componentes/LinkSimples'
 import Informações from './passos/informações'
 import NivelAtividade from './passos/NivelAtividade'
 import BotaoSimples from '../../componentes/BotaoSimples'
-import { ArrowLeft, Mail, PenLine } from 'lucide-react'
+import { ArrowLeft, DiamondPlus, Mail, PenLine } from 'lucide-react'
 import BotaoPrimario from '../../componentes/BotaoPrimario'
 import { AnimatePresence } from 'motion/react'
 import Objetivo from './passos/Objetivo'
@@ -12,6 +12,9 @@ import ExibirInfo from './passos/ExibirInfo'
 import Credenciais from './passos/Credenciais'
 import useCadastro from '../../logicas/cadastro/useCadastro'
 import CadastroContext from '../../contextos/CadastroContexto'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import api from '../../api'
+import { data } from 'react-router-dom'
 
 const Cadastro = () => {
     // dados do cadastro
@@ -21,9 +24,22 @@ const Cadastro = () => {
         erro,
         setErro,
         podeProximo,
-        dados
+        dados,
+        cadastrarMutation,
     } = useContext(CadastroContext)
-    
+
+    function cadastro()
+    {
+        cadastrarMutation.mutate(dados,{
+            onSuccess: dados => {
+                console.log(dados)
+            },
+            onError: dados => {
+                console.log(dados)
+            },
+        })
+
+    }
 
     function proximoPasso()
     {
@@ -31,6 +47,7 @@ const Cadastro = () => {
             setErro(true)
             return
         }
+
         setErro(false)
         setPasso(prev => prev+1)
     }
@@ -121,7 +138,8 @@ const Cadastro = () => {
                             <BotaoPrimario
                             
                             tipo="cheio"
-                            classeAdcional="gap-1"
+                                classeAdcional="gap-1"
+                                onClick={cadastro}
                             >
                                 finalizar <Mail/>   
                             </BotaoPrimario>

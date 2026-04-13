@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UsuarioRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -19,5 +20,10 @@ class AuthController extends Controller
         $user = User::create($validado);
 
         return response()->json($user);
+    }
+
+    public function cadastro(UsuarioRequest $request)
+    {
+        return response($request->validated());
     }
 }
