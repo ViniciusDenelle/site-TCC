@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('velocidade', 3, 2);
             $table->date('começo');
             $table->date('termino');
-            $table->integer('duração');
+            $table->integer('duracao');
             $table->timestamps();
         });
     }

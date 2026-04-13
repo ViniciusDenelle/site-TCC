@@ -11,8 +11,8 @@ class ObjetivoUsuario extends Model
         'tipo',
         'peso_ideal',
         'velocidade',
-        'começo',
+        'comeco',
         'termino',
-        'duração'
+        'duracao'
     ];
 }

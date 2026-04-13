@@ -54,7 +54,7 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function profile(): HasOne
+    public function perfil(): HasOne
     {
         return $this->hasOne(PerfilUsuario::class);
     }

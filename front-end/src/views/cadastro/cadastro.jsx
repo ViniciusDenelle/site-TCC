@@ -34,8 +34,8 @@ const Cadastro = () => {
             onSuccess: dados => {
                 console.log(dados)
             },
-            onError: dados => {
-                console.log(dados)
+            onError: (error) => {
+                console.log(error.response?.data?.errors);
             },
         })
 

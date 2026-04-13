@@ -44,6 +44,7 @@ class UsuarioRequest extends FormRequest
             'idade' => 'required|integer',
             'dataDeNascimento' => 'required|date',
             'peso' => 'required|integer|min:20|max:500',
+            'pesoFinal' => 'required|integer|min:20|max:500',
             'tipoPeso' => 'required|string',
             'altura' => 'required|integer',
             'nivelAtividade' => 'required|string',
@@ -53,8 +54,8 @@ class UsuarioRequest extends FormRequest
             'GET' => 'required|integer|min:200',
             'calDiaria' => 'required|integer',
             'duracao' => 'required|integer',
-            'termino' => 'required|string',
-            'veloPerda' => 'required|numeric',
+            'termino' => 'required',
+            'veloPerda' => 'required|string',
         ];
     }
 
