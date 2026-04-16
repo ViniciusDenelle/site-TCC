@@ -13,4 +13,6 @@ Route::controller(AuthController::class)->group(function() {
     ->name('login');
     Route::post('/cadastro', 'cadastro')
     ->name('cadastro');
+    Route::post('/cadastroEmail', 'cadastroEmail')
+    ->name('cadastroEmail');
 });

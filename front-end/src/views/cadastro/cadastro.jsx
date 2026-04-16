@@ -10,6 +10,7 @@ import Objetivo from './passos/Objetivo'
 import Metas from './passos/Metas'
 import ExibirInfo from './passos/ExibirInfo'
 import Credenciais from './passos/Credenciais'
+import ConfirmarEmail from'./passos/ConfirmarEmail'
 import useCadastro from '../../logicas/cadastro/useCadastro'
 import CadastroContext from '../../contextos/CadastroContexto'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -27,6 +28,19 @@ const Cadastro = () => {
         dados,
         cadastrarMutation,
     } = useContext(CadastroContext)
+
+    const [emailEnviado, setEmailEnviado] = useState(false)
+
+    async function mandarEmail()
+    {
+        const res = await api.post('/cadastroEmail',{ email: dados.email})
+        
+        if (res.data.menssagem === 'sucesso'){
+            setEmailEnviado(true)
+            proximoPasso()
+        }
+
+    }
 
     function cadastro()
     {
@@ -64,6 +78,7 @@ const Cadastro = () => {
         4: <Metas />,
         5: <ExibirInfo />,
         6: <Credenciais />,
+        7: <ConfirmarEmail/>
     }
 
     // pilulas progresso
@@ -134,14 +149,22 @@ const Cadastro = () => {
 
                         </div>
 
-                        {passo === 6 ? (
+                        {passo >= 6 ? (
                             <BotaoPrimario
-                            
-                            tipo="cheio"
+                                tipo="cheio"
                                 classeAdcional="gap-1"
-                                onClick={cadastro}
+                                onClick={emailEnviado ? cadastro : mandarEmail}
                             >
-                                finalizar <Mail/>   
+                                {emailEnviado ? (
+                                    <>
+                                        <p>confirmar</p>    
+                                    </>
+                                ) : (
+                                    <>
+                                        <p>mandar email</p>
+                                        <Mail/>    
+                                    </>
+                                )}  
                             </BotaoPrimario>
                         ) : (
                             <BotaoPrimario

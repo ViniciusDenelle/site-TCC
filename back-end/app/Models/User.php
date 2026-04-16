@@ -9,6 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\PerfilUsuario;
+use App\Models\ObjetivosUsuario;
+use App\Models\MetricasUsuario;
+use App\Models\Role;
+use App\Models\Inscrições;
+
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -71,7 +78,7 @@ class User extends Authenticatable
 
     public function objetivos(): HasMany
     {
-        return $this->hasMany(ObjetivoUsuario::class);
+        return $this->hasMany(ObjetivosUsuario::class);
     }
 
     

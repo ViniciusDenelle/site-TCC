@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('objetivo_usuarios', function (Blueprint $table) {
+        Schema::create('objetivos_usuarios', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('tipo');
             $table->integer('peso_ideal');
             $table->decimal('velocidade', 3, 2);
-            $table->date('começo');
+            $table->date('comeco');
             $table->date('termino');
             $table->integer('duracao');
             $table->timestamps();

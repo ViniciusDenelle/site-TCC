@@ -26,6 +26,7 @@ const useCadastro = () => {
                 calDiaria: '',
                 tempo: {},
                 veloPerda: '',
+                codigoConfirmacao: ''
             }
     })
 
@@ -54,6 +55,11 @@ const useCadastro = () => {
         ),
         5: () => (
             true
+        ),
+        6: () => (
+            dados.nome !== '' &&
+            dados.email !== '' &&
+            dados.senha !== '' 
         )
     }
 
