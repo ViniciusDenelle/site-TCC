@@ -26,13 +26,13 @@ const useCadastro = () => {
                 calDiaria: '',
                 tempo: {},
                 veloPerda: '',
-                codigoConfirmacao: ''
+                codigoConfirmacao: '',
             }
     })
 
-    const [passo, setPasso] = useState(1)
+    const [passo, setPasso] = useState(dados.passo ?? 1)
     const [erro, setErro] = useState(false)
-
+    const [errosCampo, setErrosCampo] = useState([])
     // validar passo
 
     const validacoes = {
@@ -59,7 +59,7 @@ const useCadastro = () => {
         6: () => (
             dados.nome !== '' &&
             dados.email !== '' &&
-            dados.senha !== '' 
+            dados.senha !== ''
         )
     }
 
@@ -72,6 +72,12 @@ const useCadastro = () => {
             setDados(prev => ({
                 ...prev, [campo]: valor
             }))
+
+            setErrosCampo(prev => {
+                const novo = {...prev}
+                delete novo[campo]
+                return novo
+            })
         }, [])
 
     const idade = useMemo(() => {
@@ -111,7 +117,7 @@ const useCadastro = () => {
                 447.593
                 + (9.247 * pesoKG)
                 + (3.098 * dados.altura)
-                - (4.330 * dados.idade)
+                - (4.330 * idade)
             )
         }
 
@@ -119,7 +125,7 @@ const useCadastro = () => {
             88.362
             + (13.397 * pesoKG)
             + (4.799 * dados.altura)
-            - (5.677 * dados.idade)
+            - (5.677 * idade)
         )
 
     }, [
@@ -135,36 +141,99 @@ const useCadastro = () => {
         if (!dados.nivelAtividade) return
         return Math.round(TMB * dados.nivelAtividade)
 
-    }, [dados.nivelAtividade])
+    }, [dados.nivelAtividade, TMB])
 
     useEffect(() => {
         const timeout = setTimeout(() => {
-            localStorage.setItem('dados_cadastro', JSON.stringify({ ...dados, GET, TMB, idade }))
+            const { codigoConfirmacao, ...dadosLimpos } = dados
+            localStorage.setItem('dados_cadastro', JSON.stringify({
+                ...dadosLimpos, GET, TMB, idade, passo
+            }))
         }, 500)
 
         return () => clearTimeout(timeout)
-    }, [dados])
+    }, [dados, TMB, GET, idade, passo])
+
+    const campoParaPasso = {
+        genero: 1,
+        peso: 1,
+        altura: 1,
+        dataDeNascimento: 1,
+        // TMB: 1,
+        // GET: 1,
+
+        nivelAtividade: 2,
+
+        objetivo: 3,
+        experiencia: 3,
+
+        veloPerda: 4,
+        pesoFinal: 4,
+
+        nome: 6,
+        email: 6,
+        senha: 6
+    }
 
     const cadastrarMutation = useMutation({
-        mutationFn: async dados => {
+        mutationFn: async dados => {  
             const res = await api.post('/cadastro', dados)
+            return res.data
+        },
+        onSuccess: dados => {
+            console.log(dados)
+        },
+        onError: error => {
+            const erros =  error.response?.data?.errors
+            if (!erros) return
+            
+            setErrosCampo(erros)
+            const primeiro = Object.keys(erros)[0]
+            
+            const passoErrado = campoParaPasso[primeiro]
+            if (passoErrado) {
+                setPasso(passoErrado)
+            }
+
+        }
+    })
+
+    function cadastroHandler()
+    {
+        cadastrarMutation.mutate({
+            ...dados,
+            GET,
+            TMB,
+            idade
+        })
+    }
+
+    const emailMutation = useMutation({
+        mutationFn: async info => {
+            const res = await api.post('/cadastroEmail', info)
             return res.data
         }
     })
 
+    useEffect(() => {
+        emailMutation.reset()
+    }, [dados.email])
 
     return {
         passo,
         setPasso,
         erro,
         setErro,
+        errosCampo,
         podeProximo,
         idade,
         TMB,
         GET,
         dados,
         mudarDados,
-        cadastrarMutation
+        cadastrarMutation,
+        cadastroHandler,
+        emailMutation,
     }
 }
 

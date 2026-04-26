@@ -14,12 +14,13 @@ use App\Models\ObjetivosUsuario;
 use App\Models\MetricasUsuario;
 use App\Models\Role;
 use App\Models\Inscrições;
+use Laravel\Sanctum\HasApiTokens;
 
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, HasApiTokens, Notifiable;
 
     /**
      * The attributes that are mass assignable.

@@ -9,7 +9,8 @@ import CadastroContext from '../../../contextos/CadastroContexto'
 const Informações = () => {
     const {
         dados,
-        mudarDados
+        mudarDados,
+        errosCampo,
     } = useContext(CadastroContext)
 
     const {
@@ -39,9 +40,14 @@ const Informações = () => {
             animate={{opacity: 1}}
             exit={{opacity: 0,}}
             transition={{duration: 0.4, ease: "easeOut"}}
-            className="grid grid-cols-1 grid-rows-4 
+            className="relative grid grid-cols-1 grid-rows-4 
             grid-flow-col w-full mx-auto h-full gap-y-2"
             >
+                <h2 className="absolute -top-7 text-center
+                text-lg text-t-primaria w-full">
+                    informações basicas
+                </h2>
+
                     {/* genero */}
                     <div className="flex flex-col gap-1">
 
@@ -49,22 +55,30 @@ const Informações = () => {
                             escolha seu genero:
                         </h2>
 
-                        <div className="flex gap-3">
+                        <div className="grid grid-cols-2 gap-1">
                             <RadioCustomizado 
                             name="genero" 
                             valor="feminino" 
                             dataBinding={ev => mudarDados('genero', ev.target.value)}
-                            checked={genero === 'feminino'}>
+                            checked={genero === 'feminino'}
+                            classeAdcional='w-full'>
                                 feminino
                             </RadioCustomizado>
                             <RadioCustomizado 
                             name="genero" 
                             valor="masculino" 
                             dataBinding={ev => mudarDados('genero', ev.target.value)}
-                            checked={genero === 'masculino'}>
+                            checked={genero === 'masculino'}
+                            classeAdcional='w-full'>
                                 masculino
                             </RadioCustomizado>
                         </div>
+
+                        {errosCampo['genero'] && (
+                            <span className="text-red-500 text-sm">
+                                {errosCampo['genero']}
+                            </span>
+                        )}
 
                     </div>
 
@@ -81,6 +95,12 @@ const Informações = () => {
                         value={dataNascimento}
                         dataBinding={ev => mudarDados('dataDeNascimento', ev.target.value)}
                         />
+
+                        {errosCampo['idade'] && (
+                            <span className="text-red-500 text-sm">
+                                {errosCampo['idade']}
+                            </span>
+                        )}
                         
                     </div>
 
@@ -132,6 +152,12 @@ const Informações = () => {
                             </div>
                         </div>
 
+                        {errosCampo['peso'] && (
+                            <span className="text-red-500 text-sm">
+                                {errosCampo['peso']}
+                            </span>
+                        )}
+
                     </div>
 
                     {/* altura */}
@@ -174,6 +200,13 @@ const Informações = () => {
                                 </div>
                             
                         </div>
+
+                        {errosCampo['altura'] && (
+                            <span className="text-red-500 text-sm">
+                                {errosCampo['altura']}
+                            </span>
+                        )}
+
                     </div>
             </motion.div>
         </>

@@ -46,7 +46,7 @@ class UsuarioRequest extends FormRequest
             'peso' => 'required|integer|min:20|max:500',
             'pesoFinal' => 'required|integer|min:20|max:500',
             'tipoPeso' => 'required|string',
-            'altura' => 'required|integer',
+            'altura' => 'required|integer|min:80',
             'nivelAtividade' => 'required|string',
             'objetivo' => 'required|string',
             'experiencia' => 'required|string',
@@ -56,6 +56,7 @@ class UsuarioRequest extends FormRequest
             'duracao' => 'required|integer',
             'termino' => 'required',
             'veloPerda' => 'required|string',
+            'codigoConfirmacao' => 'required|integer'
         ];
     }
 

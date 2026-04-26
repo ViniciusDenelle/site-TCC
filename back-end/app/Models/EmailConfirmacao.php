@@ -9,6 +9,7 @@ class EmailConfirmacao extends Model
     protected $fillable = [
         'codigo',
         'email',
+        'tipo',
         'expiracao'
     ];
 }

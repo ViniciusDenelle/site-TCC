@@ -1,16 +1,14 @@
 import { useEffect, useMemo } from "react"
 
-const useMetas = (dados, mudarDados) => {
+const useMetas = (dados, mudarDados, GET) => {
     const {
         veloPerda, 
-        GET, 
         objetivo, 
         pesoFinal, 
         peso, 
         altura
     } = dados
-
-
+    
     const calorias = useMemo(() => {
         if(!veloPerda || !GET) return {calorias: 0, diff: 0}
 

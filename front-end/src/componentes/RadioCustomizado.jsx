@@ -11,7 +11,7 @@ const RadioCustomizado = ({
     semBolinha,
 }) => {
     const classeBase = `
-        flex gap-1 justify-center items-center
+        flex gap-2 justify-center items-center
         border-2 border-base-quaternaria bg-base-terciaria hover:bg-base-secundaria
         rounded-lg bg-linear-to-b shadow-destaque-s-escuro/50 w-35 h-12 transition-colors duration-200
         peer-checked:border-destaque-s-escuro/50 peer-checked:shadow-md peer-checked:bg-base-secundaria

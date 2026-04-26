@@ -12,13 +12,15 @@ const Metas = () => {
     const {
         dados,
         mudarDados,
+        GET,
+        errosCampo,
     } = useContext(CadastroContext)
 
     const {
         calorias,
         tempoEstimado,
         minMaxPeso
-    } = useMetas(dados, mudarDados)
+    } = useMetas(dados, mudarDados, GET)
 
     const {
         peso,
@@ -45,7 +47,7 @@ const Metas = () => {
         },
         {
             nome: 'intenso',
-            base: objetivo === 'perder_peso' ? 0.01 : 0.0050,
+            base: objetivo === 'perder_peso' ? 0.012 : 0.0065,
             cor: 'bg-rose-500'
         },
 
@@ -66,19 +68,18 @@ const Metas = () => {
                 defina suas metas
             </h2>
 
-            <div className="flex gap-2 w-full">
+            <div className="flex flex-col sm:flex-row gap-2 w-full">
 
-                <div className="flex items-center gap-1 p-2 h-25 rounded lg 
-            bg-base-terciaria w-full
-            ring-2 ring-base-terciaria">
+                <div className="flex items-center gap-1 p-2 h-20 sm:h-25 rounded lg 
+                bg-base-terciaria w-full ring-2 ring-base-terciaria">
 
                     <CalendarClock />
 
-                    <div className="flex flex-col justify-baseline text-sm">
+                    <div className="flex flex-col text-sm">
                         <h2 className='text-t-secundaria'>
                             tempo estimado
                         </h2>
-                        <p className='flex flex-col text-base h-12'>
+                        <p className='flex sm:flex-col text-base'>
 
                             <span>
                                 {tempoEstimado.meses} meses e
@@ -96,7 +97,7 @@ const Metas = () => {
 
                 </div>
 
-                <div className="flex items-center gap-1 px-2 h-25 rounded lg 
+                <div className="flex items-center gap-1 px-2 h-20 sm:h-25 rounded lg 
             bg-base-terciaria w-full
             ring-2 ring-base-terciaria">
 
@@ -128,16 +129,23 @@ const Metas = () => {
                 <div className="relative flex justify-between items-center w-full">
                     <h2 className='text-lg text-t-secundaria'>
                         meta de peso:
-                        {pesoFinal < minMaxPeso.maxRec && pesoFinal > minMaxPeso.minRec
-                            ? (
-                                <span className="absolute -bottom-4 left-0 text-sm text-emerald-500">
-                                    recomendado
-                                </span>
-                            ) : (
-                                <span className="absolute -bottom-4 left-0 text-sm text-red-500">
-                                    não recomendado
+                        <div className="absolute -bottom-3 left-0 flex items-center text-xs gap-1">
+                            {pesoFinal < minMaxPeso.maxRec && pesoFinal > minMaxPeso.minRec
+                                ? (
+                                    <span className="text-emerald-500">
+                                        recomendado
+                                    </span>
+                                ) : (
+                                    <span className="text-red-500">
+                                        não recomendado
+                                    </span>
+                                )}
+                            {errosCampo['pesoFinal'] && (
+                                <span className="text-red-500">
+                                    {errosCampo['pesoFinal']}
                                 </span>
                             )}
+                        </div>
                     </h2>
 
                     <InputSimples
@@ -145,7 +153,7 @@ const Metas = () => {
                         type='number'
                         name="pesoFinal"
                         value={pesoFinal}
-                        dataBinding={ev => mudarDados('pesoFInal', ev.target.value)}
+                        dataBinding={ev => mudarDados('pesoFinal', ev.target.value)}
                     />
                 </div>
 
@@ -197,6 +205,7 @@ const Metas = () => {
                         
                         return (
                             <RadioCustomizado
+                                key={radio.nome}
                                 name="velocidadePerda"
                                 valor={radio.valor}
                                 dataBinding={ev => mudarDados('veloPerda', ev.target.value)}

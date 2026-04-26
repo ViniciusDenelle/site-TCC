@@ -89,21 +89,24 @@ function LayoutDefault()
                                 bg-base-terciaria/40 backdrop-blur-md rounded-b-xl border-b-2 
                                 border-base-terciaria border-x-2 lg:hidden">
                                     
-                                    <div className="flex gap-2 items-center justify-center">
+                                    <div className="grid grid-rows-2 grid-cols-2 
+                                    sm:grid-rows-1 sm:grid-cols-4 gap-2 px-2">
 
-                                        <LinkQuadrado to="cadastro">
+                                        <LinkQuadrado to="cadastro"
+                                        classeAdcional='w-full'>
                                             <UserRoundPlus />
                                             cadastro
                                         </LinkQuadrado>
 
-                                        <LinkQuadrado to="/login">
+                                        <LinkQuadrado to="/login"
+                                        classeAdcional='w-full'>
                                             <UserLock />
                                             login
                                         </LinkQuadrado>
                                             
                                         <BotaoPrimario 
                                         tipo="cheio"
-                                        classeAdcional="flex w-30 h-10 items-center 
+                                        classeAdcional="flex w-full h-10 items-center 
                                         justify-center gap-2 bg-">
                                             <ArrowDownToLine/>
                                              mobile

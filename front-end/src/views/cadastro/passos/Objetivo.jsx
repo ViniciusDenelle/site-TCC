@@ -81,15 +81,16 @@ const Objetivo = () => {
       </h2>
 
       {/* objetivo */}
-      <div className="grid grid-cols-2 grid-rows-2 gap-y-2 w-85 mx-auto">
+      <div className="grid grid-cols-1 grid-rows-3 gap-y-2 w-full mx-auto">
         {radiosObjetivo.map((radio, index) => (
 
           // o primeiro input vai usar duas colunas do grid
-          <div className={`flex justify-center items-center w-full h-full
-          ${index === 0 ? `col-span-2` : `col-span-1`}`}>
+          <div key={index}
+          className={`w-full h-full
+          `}>
 
             <RadioCustomizado
-              classeAdcional="w-40 h-15"
+              classeAdcional="w-full justify-start pl-2"
               name="objetivo"
               valor={radio.valor}
               dataBinding={ev => mudarDados('objetivo', ev.target.value)}
@@ -111,21 +112,21 @@ const Objetivo = () => {
       </h2>
 
       {/* experiencia */}
-      <div className="grid grid-cols-2 grid-rows-2 gap-y-2 w-85 mx-auto">
+      <div className="grid grid-cols-1 grid-rows-4 gap-y-2 w-full mx-auto">
 
         {radiosExperiencia.map(radio => (
 
-          <div className="flex justify-center items-center w-full h-full">
+          <div key={radio.nome} className=" w-full h-full">
 
             <RadioCustomizado
-              classeAdcional="w-40 h-20 p-1"
+              classeAdcional="w-full pl-2 justify-start"
               name="experiencia"
               valor={radio.nome}
               dataBinding={ev => mudarDados('experiencia', ev.target.value)}
               checked={experiencia === radio.nome}
             >
 
-              <span className="flex flex-col">
+              <span className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
                 <h2 className='text-t-secundaria'>
                   {radio.nome}
                 </h2>

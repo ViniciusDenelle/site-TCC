@@ -12,7 +12,7 @@ const BotaoPrimario = ({
 
     const classeBase = `
         rounded-lg p-1 flex justify-center items-center transition-colors
-        duration-300 ${disabled ? `` : `cursor-pointer`}`
+        duration-300 ${disabled ? `opacity-70` : `cursor-pointer`}`
     const classeTipo = `
         ${tipo === 'cheio' ?
            `bg-destaque-p-escuro text-base-secundaria hover:bg-destaque-p-medio

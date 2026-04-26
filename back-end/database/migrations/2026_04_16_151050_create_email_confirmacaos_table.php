@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('codigo');
             $table->string('email');
+            $table->string('tipo');
             $table->timestamp('expiracao');
             $table->timestamps();
         });

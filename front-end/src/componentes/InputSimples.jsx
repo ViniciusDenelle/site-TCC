@@ -9,13 +9,15 @@ const InputSimples = ({
   minimo,
   dataBinding,
   placeholder,
-  classeAdcional
+  classeAdcional,
+  disabled,
 }) => {
   const classeBase = `rounded-xl bg-base-terciaria p-1 border-2 
     border-base-quaternaria cursor-pointer hover:bg-base-secundaria
     hover:border-contraste-principal/50 transition-colors duration-200
     focus:outline-none focus:border-destaque-s-medio invalid:border-red-500
-    invalid:focus:border-red-500 invalid:hover:border-red-500`
+    invalid:focus:border-red-500 invalid:hover:border-red-500 
+    disabled:border-none disabled:hover:bg-base-terciaria disabled:cursor-default`
 
   const invalidadores = type === 'number' ? {
     max : maximo,
@@ -33,6 +35,7 @@ const InputSimples = ({
     value={value} 
     onChange={dataBinding} 
     placeholder={placeholder}
+    disabled={disabled ?? false}
     {...invalidadores}
     className={`${classeBase} ${classeAdcional ?? ``}`}/>
   )
