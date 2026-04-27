@@ -1,6 +1,6 @@
 
 import { createContext, ReactNode, useContext, useState } from 'react';
-import temas from '../tema'
+import temas from '../app/tema'
 
 type Tema = keyof typeof temas;
 
