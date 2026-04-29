@@ -7,3 +7,5 @@ const _layout = () => {
     <Stack />
   )
 }
+
+export default _layout
