@@ -38,6 +38,7 @@ type UseCadastroReturn = {
   idade: number
   TMB: number
   GET: number
+  parseNumero: (valor:string) => number
 }
 
 type ErrosCampo = Partial<Record<keyof DadosCadastro, string>>
@@ -212,6 +213,13 @@ const useCadastro = (): UseCadastroReturn => {
         senha: 6
     }
 
+    // function parsenumero
+
+    const parseNumero = (valor: string) => {
+        const limpo = valor.replace(/[^0-9.,]/g, '').replace(',', '.')
+        return Number(limpo)
+    }
+
     // mutations
 
     return {
@@ -222,6 +230,7 @@ const useCadastro = (): UseCadastroReturn => {
         idade,
         TMB,
         GET,
+        parseNumero
         // cadastroHandler,
         // cadastrarMutation,
         // emailMutation

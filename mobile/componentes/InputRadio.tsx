@@ -47,11 +47,13 @@ const InputRadio = ({
             className={`${classeBase} ${className}`}
         >
             {!semBolinha && (
-                <View className="p-1 rounded-full border border-base-quaternaria">
+                <View className="w-5 h-5 rounded-full border border-base-quaternaria
+                 justify-center items-center">
                     <View
-                    className={`w-3 h-3 rounded-xl ${
+                    className={` w-3 h-3 rounded-lg ${
                         ativo ? "bg-destaque-s-escuro" : "bg-transparent"
                     }`}
+                    style={{borderRadius: 999}}
                     />
                 </View>
             )}

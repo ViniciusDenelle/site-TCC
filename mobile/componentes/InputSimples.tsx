@@ -37,20 +37,37 @@ const InputSimples = ({
     ${focado ? "border-destaque-s-medio" : "border-base-quaternaria"}
     ${!valido ? "border-red-500" : ""}`
     
-    function dataBind(text: string)
-    {   
-        if (tipo === "number") {
-        const num = Number(text)
-            if (maximo && num > maximo) return setValido(false)
-            if (minimo && num < minimo) return setValido(false)
-        } else {
-            if (maximo && text.length > maximo) return setValido(false)
-            if (minimo && text.length < minimo) return setValido(false)
-        }
+    function dataBind(text: string) {
+  if (tipo === "number") {
+    const num = Number(text)
 
-        setValido(true)
-        onChange(text)
+    if (isNaN(num)) {
+      setValido(false)
+      
     }
+
+    if (maximo != null && num > maximo) {
+      setValido(false)
+      
+    }
+
+    if (minimo != null && num < minimo) {
+      setValido(false)
+    }
+
+  } else {
+    if (maximo != null && text.length > maximo) {
+      setValido(false)
+    }
+
+    if (minimo != null && text.length < minimo) {
+      setValido(false)
+    }
+  }
+
+  setValido(true)
+  onChange(text)
+}
   return (
     <Animated.View
         style={animado}

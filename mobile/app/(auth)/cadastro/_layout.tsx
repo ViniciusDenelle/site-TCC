@@ -9,9 +9,10 @@ const _layout = () => {
 
   return (
     <CadastroProvider>
-        <CadastroLayout>
-            <Slot />
-        </CadastroLayout>
+      <Stack
+        screenOptions={{
+          headerShown: false
+        }} />
     </CadastroProvider>
   )
 }
