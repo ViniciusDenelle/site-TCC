@@ -13,7 +13,7 @@ const Texto = ({
     className,
 } : props) => {
     const variantes = {
-        'titulo' : 'text-xl text-t-primaria font-poppins-bold',
+        'titulo' : 'text-lg text-t-primaria font-poppins',
         'texto' : 'text-base text-t-secundaria font-poppins',
         'legenda' : 'text-sm text-t-terciaria font-poppins',
     }

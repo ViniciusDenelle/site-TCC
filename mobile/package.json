@@ -33,8 +33,13 @@
     "expo-status-bar": "~3.0.9",
     "expo-symbols": "~1.0.8",
     "expo-system-ui": "~6.0.9",
+<<<<<<< HEAD
     "expo-web-browser": "~15.0.11",
     "firebase": "^12.13.0",
+=======
+    "expo-web-browser": "~15.0.10",
+    "lucide-react-native": "^1.14.0",
+>>>>>>> f0153c2e4b426c0e360b32227e733642e01454b7
     "nativewind": "^4.2.3",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "react": "19.1.0",

@@ -7,6 +7,7 @@ import InputSimples from '@/componentes/InputSimples'
 import InputRange from '@/componentes/InputRange'
 import BotaoSecundario from '@/componentes/BotaoSecundario'
 import Texto from '@/componentes/Texto'
+import { router } from 'expo-router'
 
 const index = () => {
   const {
@@ -35,7 +36,7 @@ const index = () => {
   }
 
   function proximoPasso() {
-
+    router.push('/cadastro/passo2')
   }
 
   return (
@@ -49,7 +50,7 @@ const index = () => {
               valor='feminino'
               onChange={valor => mudarDados('genero', valor)}
               selecionado={genero}
-              className='w-full'
+              className='w-full pl-2'
             >
               feminino
             </InputRadio>
@@ -61,7 +62,7 @@ const index = () => {
               valor='masculino'
               onChange={valor => mudarDados('genero', valor)}
               selecionado={genero}
-              className='w-full'
+              className='w-full pl-2'
             >
               masculino
             </InputRadio>

@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+    --font-poppins: 'Poppins';
+    /* backgroud etc. */
+    --color-base-primaria: var(--color-slate-300);
+    --color-base-secundaria: var(--color-slate-200);
+    --color-base-terciaria: var(--color-slate-100);
+    --color-base-quaternaria: var(--color-slate-300);
+    --color-contraste-primaria: var(--color-zinc-400);
+    --color-contraste-secundaria: var(--color-zinc-500);
+    --color-contraste-secundaria: var(--color-zinc-600);
+
+    /* textos */
+    --color-t-primaria: var(--color-slate-900);
+    --color-t-secundaria: var(--color-slate-800);
+    --color-t-terciaria: var(--color-slate-700);
+
+    /* destaques */
+    --color-destaque-p-claro: var(--color-yellow-400);
+    --color-destaque-p-medio: var(--color-amber-500);
+    --color-destaque-p-escuro: var(--color-amber-600);
+
+    --color-destaque-s-claro: var(--color-indigo-500);
+    --color-destaque-s-medio: var(--color-blue-600);
+    --color-destaque-s-escuro: var(--color-blue-800);
+
+};
+
+[data-theme="dark"]{
+    --color-base-primaria: var(--color-gray-950);
+    --color-base-secundaria: var(--color-gray-800);
+    --color-base-terciaria: var(--color-gray-700);
+    --color-base-quaternaria: var(--color-gray-600);
+    --color-contraste-principal: var(--color-zinc-400);
+    --color-contraste-secundaria: var(--color-zinc-300);
+    --color-contraste-secundaria: var(--color-zinc-200);
+
+    /* textos */
+    --color-t-primaria: var(--color-slate-100);
+    --color-t-secundaria: var(--color-slate-200);
+    --color-t-terciaria: var(--color-slate-300);
+
+    /* destaques */
+    --color-destaque-p-claro: var(--color-amber-500);
+    --color-destaque-p-medio: var(--color-yellow-400);
+    --color-destaque-p-escuro: var(--color-yellow-300);
+
+    --color-destaque-s-claro: var(--color-indigo-800);
+    --color-destaque-s-medio: var(--color-blue-600);
+    --color-destaque-s-escuro: var(--color-blue-500);
+};
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));

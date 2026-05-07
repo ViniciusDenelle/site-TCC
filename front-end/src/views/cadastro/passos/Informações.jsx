@@ -59,17 +59,17 @@ const Informações = () => {
                             <RadioCustomizado 
                             name="genero" 
                             valor="feminino" 
-                            dataBinding={ev => mudarDados('genero', ev.target.value)}
+                            onChange={ev => mudarDados('genero', ev.target.value)}
                             checked={genero === 'feminino'}
-                            classeAdcional='w-full'>
+                            classeAdicional='w-full'>
                                 feminino
                             </RadioCustomizado>
                             <RadioCustomizado 
                             name="genero" 
                             valor="masculino" 
-                            dataBinding={ev => mudarDados('genero', ev.target.value)}
+                            onChange={ev => mudarDados('genero', ev.target.value)}
                             checked={genero === 'masculino'}
-                            classeAdcional='w-full'>
+                            classeAdicional='w-full'>
                                 masculino
                             </RadioCustomizado>
                         </div>
@@ -91,9 +91,9 @@ const Informações = () => {
                         
                         <InputSimples
                         type="date"
-                        classeAdcional="h-10"
+                        classeAdicional="h-10"
                         value={dataNascimento}
-                        dataBinding={ev => mudarDados('dataDeNascimento', ev.target.value)}
+                        onChange={ev => mudarDados('dataDeNascimento', ev.target.value)}
                         />
 
                         {errosCampo['idade'] && (
@@ -135,7 +135,7 @@ const Informações = () => {
                                 classeAdcional="w-full"
                                 type="number"
                                 value={peso}
-                                dataBinding={ev => mudarDados('peso', parseInt(ev.target.value))}
+                                onChange={ev => mudarDados('peso', parseInt(ev.target.value))}
                                 maximo={500}
                                 minimo={20}/>
 
@@ -188,13 +188,13 @@ const Informações = () => {
                                 {/* input altura */}
                                 <div className="flex gap-1 items-center w-1/3">
                                     <InputSimples 
-                                    classeAdcional="w-full"
+                                    classeAdicional="w-full"
                                     type="number"
                                     value={altura}
-                                    dataBinding={ev => mudarDados('altura', parseInt(ev.target.value))}
+                                    onChange={ev => mudarDados('altura', parseInt(ev.target.value))}
                                     />
 
-                                    <span>
+                                    <span className=''>
                                         cm
                                     </span>
                                 </div>
