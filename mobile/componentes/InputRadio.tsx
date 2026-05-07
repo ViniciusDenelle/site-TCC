@@ -28,7 +28,7 @@ const InputRadio = ({
     const ativo = selecionado === valor
 
     const classeBase = `
-        flex-row gap-2 items-center justify-center
+        flex-row gap-2 items-center justify-start
         border-2 rounded-lg w-36 h-12
         ${ativo ? "border-destaque-s-escuro bg-base-secundaria" 
         : "border-base-quaternaria bg-base-terciaria"}
