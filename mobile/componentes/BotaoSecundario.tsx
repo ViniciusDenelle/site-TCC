@@ -12,7 +12,7 @@ const BotaoSecundario = ({
     children: ReactNode, 
     className?: string, 
     onPress?: () => void,
-    tipo?: string,
+    tipo?: 'cheio' | '',
     disabled?: boolean
  }) => {
 

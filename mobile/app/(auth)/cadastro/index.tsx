@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import useCadastroContext from '@/contextos/CadastroContexto'
 import CadastroLayout from '@/componentes/layouts/CadastroLayout'
 import InputRadio from '@/componentes/InputRadio'
@@ -8,12 +8,14 @@ import InputRange from '@/componentes/InputRange'
 import BotaoSecundario from '@/componentes/BotaoSecundario'
 import Texto from '@/componentes/Texto'
 import { router } from 'expo-router'
+import InputDate from '@/componentes/inputDate'
 
 const index = () => {
   const {
     dados,
     mudarDados,
-    parseNumero
+    parseNumero,
+    podeSeguir
   } = useCadastroContext()
 
   const {
@@ -23,6 +25,8 @@ const index = () => {
     tipoPeso,
     altura
   } = dados
+
+  const [mostrarData, setMostrarData] = useState(false)
 
   const minPeso = tipoPeso === 'kilos' ? 20 : 40
   const maxPeso = tipoPeso === 'kilos' ? 400 : 800
@@ -36,12 +40,14 @@ const index = () => {
   }
 
   function proximoPasso() {
-    router.push('/cadastro/passo2')
+    if(podeSeguir(1)) router.push('/cadastro/passo2')
+   
   }
 
   return (
     <CadastroLayout
       proximo={proximoPasso}
+      podeProximo={podeSeguir(1)}
     >
       <View className='flex flex-col gap-2'>
         <View className='flex flex-row gap-1'>
@@ -76,11 +82,18 @@ const index = () => {
             escolha sua data de nascimento:
           </Texto>
 
-          <InputSimples
-            tipo="text"
-            className="h-10"
-            valor={dataDeNascimento}
-            onChange={(valor: string) => mudarDados('nome', valor)}
+          <BotaoSecundario
+            tipo='cheio'
+            onPress={() => setMostrarData(prev => !prev)}
+          >
+            exibir calendario
+          </BotaoSecundario>
+
+          <InputDate
+            valor={new Date(dataDeNascimento)}
+            onChange={(_, valor) => mudarDados('dataDeNascimento', valor?.toISOString() ?? '')}
+            mostrar={mostrarData}
+            setMostrar={setMostrarData}
           />
 
           {/* {errosCampo['idade'] && (

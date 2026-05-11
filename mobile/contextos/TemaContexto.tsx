@@ -8,6 +8,7 @@ type TipoTemaContext = {
     tema: Tema,
     temaAtual: typeof temas[Tema],
     setTema: (tema: Tema) => void;
+    formatarCor: (color: string, opacidade: number) => string
 }
 
 const TemaContexto = createContext<TipoTemaContext | null>(null)
@@ -15,12 +16,18 @@ const TemaContexto = createContext<TipoTemaContext | null>(null)
 export const TemaProvider = ({ children }: { children: ReactNode }) => {
     const [tema, setTema] = useState<Tema>("light");
 
+    const formatarCor = (color: string, opacidade: number) => {
+        const formatted = color.replace(/\s+/g, ', ')
+        return `rgba(${formatted}, ${opacidade})`
+    }
+
     return (
         <TemaContexto.Provider
         value={{
             tema: tema,
             temaAtual: temas[tema],
-            setTema: setTema
+            setTema: setTema,
+            formatarCor
         }}>
             {children}
         </TemaContexto.Provider>

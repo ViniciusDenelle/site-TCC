@@ -14,10 +14,13 @@
     "@expo-google-fonts/poppins": "^0.4.1",
     "@expo/vector-icons": "^15.0.3",
     "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-native-community/datetimepicker": "8.4.4",
     "@react-native-community/slider": "5.0.1",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
+    "@tanstack/react-query": "^5.100.10",
+    "axios": "^1.16.0",
     "babel-preset-expo": "~54.0.10",
     "expo": "~54.0.33",
     "expo-auth-session": "~7.0.11",
@@ -33,13 +36,9 @@
     "expo-status-bar": "~3.0.9",
     "expo-symbols": "~1.0.8",
     "expo-system-ui": "~6.0.9",
-<<<<<<< HEAD
-    "expo-web-browser": "~15.0.11",
-    "firebase": "^12.13.0",
-=======
     "expo-web-browser": "~15.0.10",
+    "firebase": "^12.13.0",
     "lucide-react-native": "^1.14.0",
->>>>>>> f0153c2e4b426c0e360b32227e733642e01454b7
     "nativewind": "^4.2.3",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "react": "19.1.0",

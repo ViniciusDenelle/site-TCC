@@ -8,6 +8,10 @@ import InputSimples from '@/componentes/InputSimples'
 import InputRange from '@/componentes/InputRange'
 import InputRadio from '@/componentes/InputRadio'
 import CadastroLayout from '@/componentes/layouts/CadastroLayout'
+import Texto from '@/componentes/Texto'
+import useTema from '@/contextos/TemaContexto'
+import useCadastroContext from '@/contextos/CadastroContexto'
+import { router } from 'expo-router'
 
 const Metas = () => {
 
@@ -16,14 +20,15 @@ const Metas = () => {
         mudarDados,
         GET,
         errosCampo,
-        parseNumero
-    } = useCadastro()
+        parseNumero,
+        podeSeguir
+    } = useCadastroContext()
 
     const {
         calorias,
         tempoEstimado,
         minMaxPeso
-    } = useMetas({dados, GET})
+    } = useMetas({dados, GET, mudarDados})
 
     const {
         peso,
@@ -31,6 +36,11 @@ const Metas = () => {
         veloPerda,
         objetivo,
     } = dados
+
+    const {
+        temaAtual,
+        formatarCor
+    } = useTema()
 
     const velocidadePerda = [
         {
@@ -58,61 +68,68 @@ const Metas = () => {
         valor: parseFloat((peso * velo.base).toFixed(2))
     }))
 
+    const corIcone = formatarCor(temaAtual['--color-t-secundaria'], 1)
+
     function proximo()
     {
-
+        router.push('/cadastro/passo5')
     }
 
     return (
         <CadastroLayout
             proximo={proximo}
+            podeProximo={podeSeguir(4)}
         >
             <View className="flex flex-col w-full gap-2">
 
-                <Text className="mx-auto text-lg text-gray-700 font-semibold">
-                    defina suas metas {GET}
-                </Text>
+                <View className='mx-auto'>
+                    <Texto variante='titulo'>
+                        defina suas metas
+                    </Texto>
+                </View>
 
                 {/* cards topo */}
                 <View className="flex flex-col gap-2 w-full">
 
-                    <View className="flex flex-row items-center gap-2 p-3 h-20 rounded-lg bg-gray-100 w-full">
+                    <View className="flex flex-row items-center gap-2 p-3 
+                    h-20 rounded-lg bg-base-terciaria w-full">
 
-                        <CalendarClock color="#000" size={20} />
+                        <CalendarClock color={corIcone} size={20} />
 
                         <View className="flex flex-col">
-                            <Text className="text-gray-600 text-sm">
+                            <Texto >
                                 tempo estimado
-                            </Text>
+                            </Texto>
 
-                            <Text className="text-base">
+                            <Texto>
                                 {tempoEstimado.meses} meses e {tempoEstimado.semanas} semanas
-                            </Text>
+                            </Texto>
 
-                            <Text>
+                            <Texto>
                                 previsão: {tempoEstimado.previsao}
-                            </Text>
+                            </Texto>
                         </View>
 
                     </View>
 
-                    <View className="flex flex-row items-center gap-2 p-3 h-20 rounded-lg bg-gray-100 w-full">
+                    <View className="flex flex-row items-center gap-2 p-3 
+                    h-20 rounded-lg bg-base-terciaria w-full">
 
-                        <Flame color="#000" size={20} />
+                        <Flame color={corIcone} size={20} />
 
                         <View className="flex flex-col">
-                            <Text className="text-gray-600 text-sm">
+                            <Texto >
                                 calorias diarias
-                            </Text>
+                            </Texto>
 
-                            <Text className="text-base">
+                            <Texto>
                                 {calorias.calorias} kcal
-                            </Text>
+                            </Texto>
 
                             {objetivo !== 'manter_peso' ? (
-                                <Text>
+                                <Texto>
                                     {objetivo === 'perder_peso' ? 'defict' : 'superavit'} de {calorias.diff} kcal
-                                </Text>
+                                </Texto>
                             ) : null}
                         </View>
 
@@ -123,38 +140,40 @@ const Metas = () => {
                 {/* peso meta */}
                 <View className="flex flex-col gap-4 w-full mb-5">
 
-                    <View className="relative flex flex-row justify-around items-center w-full">
+                    <View className="relative flex flex-row justify-between items-center w-full">
 
-                        <Text className="text-lg text-gray-600">
+                        <Texto className="text-lg text-gray-600">
                             meta de peso:
-                        </Text>
+                        </Texto>
 
                         <View className="absolute -bottom-4 left-0 flex flex-row gap-1">
 
                             {pesoFinal < minMaxPeso.maxRec && pesoFinal > minMaxPeso.minRec ? (
-                                <Text className="text-green-500 text-xs">
+                                <Texto className="text-green-500 text-xs">
                                     recomendado
-                                </Text>
+                                </Texto>
                             ) : (
-                                <Text className="text-red-500 text-xs">
+                                <Texto className="text-red-500 text-xs">
                                     não recomendado
-                                </Text>
+                                </Texto>
                             )}
 
                             {errosCampo['pesoFinal'] && (
-                                <Text className="text-red-500 text-xs">
+                                <Texto className="text-red-500 text-xs">
                                     {errosCampo['pesoFinal']}
-                                </Text>
+                                </Texto>
                             )}
 
                         </View>
-
-                        <InputSimples
-                            className="w-20"
-                            tipo="number"
-                            valor={String(pesoFinal)}
-                            onChange={valor => mudarDados('pesoFinal', parseNumero(valor))}
-                        />
+                        
+                        <View className='w-20'>
+                            <InputSimples
+                                className="w-20"
+                                tipo="number"
+                                valor={String(pesoFinal)}
+                                onChange={valor => mudarDados('pesoFinal', parseNumero(valor))}
+                            />
+                        </View>
                     </View>
 
 
@@ -168,11 +187,11 @@ const Metas = () => {
                     />
 
                     <View className="flex flex-row justify-between w-full">
-                        <Text>{minMaxPeso.min}</Text>
-                        <Text>
+                        <Texto>{minMaxPeso.min}</Texto>
+                        <Texto>
                             {Math.round((minMaxPeso.max + minMaxPeso.min) / 2)}
-                        </Text>
-                        <Text>{minMaxPeso.max}</Text>
+                        </Texto>
+                        <Texto>{minMaxPeso.max}</Texto>
                     </View>
 
                 </View>
@@ -180,9 +199,9 @@ const Metas = () => {
                 {/* velocidade */}
                 <View className="flex flex-col gap-4">
 
-                    <Text className="text-lg text-gray-600">
+                    <Texto className="text-lg text-gray-600">
                         velocidade de {objetivo === 'perder_peso' ? 'perda' : 'ganho'}
-                    </Text>
+                    </Texto>
 
                     <View className="grid grid-cols-2 gap-2 w-full">
 
@@ -200,12 +219,12 @@ const Metas = () => {
 
                                     <View className="flex flex-row items-center gap-1">
                                         <View className={`w-3 h-3 rounded-full ${radio.cor}`} />
-                                        <Text>{radio.valor}kg/sem</Text>
+                                        <Texto>{radio.valor}kg/sem</Texto>
                                     </View>
 
-                                    <Text className="text-sm">
+                                    <Texto className="text-sm">
                                         {radio.nome}
-                                    </Text>
+                                    </Texto>
 
                                 </InputRadio>
                             )

@@ -12,7 +12,12 @@ import InputRadio from '@/componentes/InputRadio'
 import useTema from '@/contextos/TemaContexto'
 
 const index = () => {
-  const { dados, mudarDados, parseNumero } = useCadastro()
+  const { 
+    dados, 
+    mudarDados, 
+    parseNumero ,
+    podeSeguir
+  } = useCadastroContext()
 
   const { nivelAtividade } = dados
 
@@ -48,6 +53,7 @@ const index = () => {
   return (
     <CadastroLayout
       proximo={proximo}
+      podeProximo={podeSeguir(2)}
     >
 
       

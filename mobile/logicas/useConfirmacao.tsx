@@ -1,0 +1,112 @@
+import { useEffect, useState } from 'react'
+import { Alert } from 'react-native'
+import useCadastro from './cadastro/useCadastro'
+
+type UseCadastroReturn = ReturnType<typeof useCadastro>
+type emailMutation = Pick<UseCadastroReturn, 'emailMutation'>
+
+type EmailMutation = {
+    mutate: (
+        dados: {
+            email?: string
+            tipo?: string
+        },
+        options?: {
+            onError?: (error: any) => void
+            onSuccess?: (data: any) => void
+        }
+    ) => void
+
+    isSuccess: boolean
+    isPending: boolean
+    isError: boolean
+}
+
+type Dados = {
+    email?: string
+    tipo?: 'cadastro' | 'login'
+}
+
+const useConfirmacao = (
+    emailMutation: EmailMutation,
+    dados: Dados = {}
+) => {
+
+    const {
+        email,
+        tipo
+    } = dados
+
+    const {
+        mutate: enviarEmail,
+        isSuccess,
+        isPending,
+        isError
+    } = emailMutation
+
+    const [erros, setErros] = useState<string[]>([])
+
+    function enviarEmailHandler() {
+
+        enviarEmail({
+                email,
+                tipo
+            },{
+                onError: (error) => {
+
+                    const erros =
+                        error?.response?.data?.errors
+
+                    if (erros) {
+                        setErros(erros)
+                    }
+                },
+
+                onSuccess: data => {
+                    console.log(data)
+
+                    setErros([])
+
+                    Alert.alert(
+                        'Sucesso',
+                        'Email enviado com sucesso'
+                    )
+                }
+            })
+    }
+
+    const [contagem, setContagem] = useState(0)
+
+    useEffect(() => {
+
+        if (isSuccess) {
+            setContagem(30)
+        }
+
+    }, [isSuccess])
+
+    useEffect(() => {
+
+        if (contagem <= 0) return
+
+        const interval = setInterval(() => {
+
+            setContagem(prev => prev - 1)
+
+        }, 1000)
+
+        return () => clearInterval(interval)
+
+    }, [contagem])
+
+    return {
+        enviarEmailHandler,
+        isSuccess,
+        isLoading: isPending,
+        isError,
+        contagem,
+        erros
+    }
+}
+
+export default useConfirmacao

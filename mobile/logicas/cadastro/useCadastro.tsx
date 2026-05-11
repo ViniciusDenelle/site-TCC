@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useMutation } from '@tanstack/react-query'
+import api from '@/api'
 // typagem
 
 type Passo = 1 | 2 | 3 | 4 | 5 | 6
@@ -17,7 +19,7 @@ type DadosCadastro = {
     nivelAtividade: number | null,
     objetivo: string
     experiencia: string
-    calDiaria: string
+    calDiaria: number
     tempo: {
         semanas: number,
         meses: number,
@@ -28,17 +30,33 @@ type DadosCadastro = {
 }
 
 type UseCadastroReturn = {
-  dados: DadosCadastro
-  mudarDados: <K extends keyof DadosCadastro>(
-    campo: K,
-    valor: DadosCadastro[K]
-  ) => void
-  errosCampo: ErrosCampo
-  podeSeguir: (passo: Passo) => boolean
-  idade: number
-  TMB: number
-  GET: number
-  parseNumero: (valor:string) => number
+    dados: DadosCadastro
+    mudarDados: <K extends keyof DadosCadastro>(
+        campo: K,
+        valor: DadosCadastro[K]
+    ) => void
+    errosCampo: ErrosCampo
+    podeSeguir: (passo: Passo) => boolean
+    idade: number
+    TMB: number
+    GET: number
+    parseNumero: (valor: string) => number
+    emailMutation: {
+        mutate: (
+            dados: {
+                email?: string
+                tipo?: string
+            },
+            options?: {
+                onError?: (error: any) => void
+                onSuccess?: (data: any) => void
+            }
+        ) => void
+
+        isSuccess: boolean
+        isPending: boolean
+        isError: boolean
+    }
 }
 
 type ErrosCampo = Partial<Record<keyof DadosCadastro, string>>
@@ -57,7 +75,7 @@ const useCadastro = (): UseCadastroReturn => {
         nivelAtividade: 0,
         objetivo: '',
         experiencia: '',
-        calDiaria: '',
+        calDiaria: 0,
         tempo: {
             semanas: 0,
             meses: 0,
@@ -74,7 +92,7 @@ const useCadastro = (): UseCadastroReturn => {
     useEffect(() => {
         async function carregar() {
             const salvo = await AsyncStorage.getItem('dados_cadastro')
-            if(salvo){
+            if (salvo) {
                 const parsed = JSON.parse(salvo) as Partial<DadosCadastro>
                 setDados(prev => ({
                     ...prev,
@@ -108,7 +126,7 @@ const useCadastro = (): UseCadastroReturn => {
                 delete novo[campo]
                 return novo
             })
-    }, [])
+        }, [])
 
     // dados computados idade TMB e GET
 
@@ -169,34 +187,34 @@ const useCadastro = (): UseCadastroReturn => {
 
     const validacoes: Record<Passo, () => boolean> = {
         1: () =>
-        dados.genero !== '' &&
-        dados.peso > 0 &&
-        dados.altura > 0 &&
-        dados.dataDeNascimento !== '',
+            dados.genero !== '' &&
+            dados.peso > 0 &&
+            dados.altura > 0 &&
+            dados.dataDeNascimento !== '',
 
         2: () => dados.nivelAtividade !== 0,
 
         3: () =>
-        dados.objetivo !== '' &&
-        dados.experiencia !== '',
+            dados.objetivo !== '' &&
+            dados.experiencia !== '',
 
         4: () =>
-        dados.veloPerda !== 0 &&
-        dados.pesoFinal !== 0,
+            dados.veloPerda !== 0 &&
+            dados.pesoFinal !== 0,
 
         5: () => true,
 
         6: () =>
-        dados.nome !== '' &&
-        dados.email !== '' &&
-        dados.senha !== ''
+            dados.nome !== '' &&
+            dados.email !== '' &&
+            dados.senha !== ''
     }
 
     // validações
 
     const podeSeguir = (passo: Passo): boolean => {
         return validacoes[passo]?.() ?? false
-    } 
+    }
 
     const campoParaPasso: Partial<Record<keyof DadosCadastro, Passo>> = {
         genero: 1,
@@ -222,6 +240,27 @@ const useCadastro = (): UseCadastroReturn => {
 
     // mutations
 
+    const emailMutation = useMutation({
+
+        mutationFn: async (
+            info: unknown
+        ) => {
+
+            const res =
+                await api.post(
+                    '/cadastroEmail',
+                    info
+                )
+
+            return res.data
+
+        }
+    })
+
+    useEffect(() => {
+        emailMutation.reset()
+    }, [dados.email])
+
     return {
         dados,
         mudarDados,
@@ -230,10 +269,10 @@ const useCadastro = (): UseCadastroReturn => {
         idade,
         TMB,
         GET,
-        parseNumero
+        parseNumero,
         // cadastroHandler,
         // cadastrarMutation,
-        // emailMutation
+        emailMutation,
     }
 }
 

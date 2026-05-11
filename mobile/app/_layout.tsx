@@ -3,6 +3,9 @@ import './globals.css'
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins'
 import { TemaProvider } from '../contextos/TemaContexto'
 import { View } from "react-native-reanimated/lib/typescript/Animated";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
 
 export default function RootLayout() {
    const [fontsLoaded] = useFonts({
@@ -17,10 +20,12 @@ export default function RootLayout() {
 
   return (
     <TemaProvider>
-      <Stack
-      screenOptions={{
-        headerShown: false
-      }}/>
+      <QueryClientProvider client={queryClient}>
+        <Stack
+        screenOptions={{
+          headerShown: false
+        }}/>
+      </QueryClientProvider>
     </TemaProvider>
   );
 }

@@ -2,6 +2,7 @@ import BotaoSecundario from '@/componentes/BotaoSecundario'
 import InputRadio from '@/componentes/InputRadio'
 import CadastroLayout from '@/componentes/layouts/CadastroLayout'
 import Texto from '@/componentes/Texto'
+import useCadastroContext from '@/contextos/CadastroContexto'
 import useCadastro from '@/logicas/cadastro/useCadastro'
 import { useRouter } from 'expo-router'
 import { ArrowLeft } from 'lucide-react-native'
@@ -11,7 +12,11 @@ import { Text, View } from 'react-native'
 
 const Objetivo = () => {
 
-    const { dados, mudarDados } = useCadastro()
+    const { 
+        dados, 
+        mudarDados,
+        podeSeguir
+    } = useCadastroContext()
 
     const {
         objetivo,
@@ -75,6 +80,7 @@ const Objetivo = () => {
     return (
         <CadastroLayout
             proximo={proximo}
+            podeProximo={podeSeguir(3)}
         >
             <View>
 

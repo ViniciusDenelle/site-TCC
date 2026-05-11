@@ -7,19 +7,28 @@ import BotaoPrimario from "../BotaoPrimario"
 import { BlurView } from 'expo-blur'
 import BotaoSecundario from "../BotaoSecundario"
 import { useRouter } from "expo-router"
-import { ArrowLeft } from "lucide-react-native"
+import { ArrowLeft, Lightbulb } from "lucide-react-native"
 
  
  type props = {
     children: ReactNode,
-    proximo: () => void | null
+    proximo?: () => void | null,
+    podeProximo?: boolean
  }
 
  const CadastroLayout = ({
     proximo,
+    podeProximo,
     children
  } : props) => {
-    const { temaAtual } = useTema()
+
+    const { 
+        temaAtual, 
+        formatarCor,
+        tema,
+        setTema
+    } = useTema()
+
     const coresGradiente = {
         destaque: temaAtual['--color-destaque-p-escuro'],
         base: temaAtual['--color-base-primaria'], 
@@ -27,35 +36,41 @@ import { ArrowLeft } from "lucide-react-native"
 
     const router = useRouter()
 
-    const formatColor = (color: string, opacidade: number) => {
-        const formatted = color.replace(/\s+/g, ', ')
-        return `rgba(${formatted}, ${opacidade})`
+    const corIcone = formatarCor(temaAtual['--color-t-secundaria'], 1)
+
+    function mudarTema() {
+        const novoTema = tema === 'light' ? 'dark' : 'light'
+        setTema(novoTema)
+    }
+
+    function handleProximo()
+    {
+        if (podeProximo) proximo?.()
     }
 
     return (
         <View style={vars(temaAtual)} className="h-full w-full bg-base-primaria">
 
-            <LinearGradient
-                colors={[
-                    formatColor(coresGradiente.base, 1),
-                    formatColor(coresGradiente.base, 1)
-                ]}
-                start={{x:0 , y: 1.5}}
-                end={{x: 0, y:0}}
-                style={{ flex: 1 }}
-            >
-                <View className="h-full w-full flex justify-center items-center">
+                <View className="relative h-full w-full flex justify-center items-center">
 
+                    <View className="absolute top-8 right-5 flex">
+                        <BotaoPrimario
+                            className="border-transparent"
+                            onPress={mudarTema}
+                        >
+                            <Lightbulb color={corIcone}/>
+                        </BotaoPrimario>
+                    </View>
                     
 
                         <View className="flex flex-col gap-2 h-auto p-5 
                         bg-base-secundaria rounded-lg  w-[90%]">
                             <View className='w-12'>
                                 <BotaoSecundario
-                                className='border-0'
+                                className='border-transparent'
                                 onPress={() => router.back()}
                                 >
-                                <ArrowLeft color={formatColor(temaAtual['--color-t-secundaria'], 1)} size={16} />
+                                <ArrowLeft color={corIcone} size={16} />
                                 </BotaoSecundario>
 
                             </View>
@@ -64,9 +79,10 @@ import { ArrowLeft } from "lucide-react-native"
                         
                             
                             <BotaoPrimario
-                                onPress={proximo ?? null}
+                                onPress={ handleProximo ?? null}
                                 tipo="cheio"
                                 className="mt-5"
+                                disabled={!podeProximo}
                             >
                                 proximo
                             </BotaoPrimario>
@@ -75,8 +91,6 @@ import { ArrowLeft } from "lucide-react-native"
                     
 
                 </View>
-            </LinearGradient>
-
             
         </View>
     )

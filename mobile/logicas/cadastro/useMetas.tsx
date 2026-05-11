@@ -1,12 +1,13 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import useCadastro from './useCadastro'
 
 type UseCadastroReturn = ReturnType<typeof useCadastro>
-type props = Pick<UseCadastroReturn, 'dados' | 'GET'>
+type props = Pick<UseCadastroReturn, 'dados' | 'GET' | 'mudarDados'>
 
 const useMetas = ({
     dados,
     GET,
+    mudarDados,
 }: props) => {
     const {
         veloPerda,
@@ -125,7 +126,7 @@ const useMetas = ({
 
                 max: Math.round(peso),
 
-                
+
                 minRec: Math.round(
                     18.5 *
                     ((altura * altura) / 10000)
@@ -157,6 +158,16 @@ const useMetas = ({
         altura,
         objetivo,
     ])
+
+    useEffect(() => {
+        if (!tempoEstimado) return
+        mudarDados('tempo', tempoEstimado)
+    }, [tempoEstimado])
+
+    useEffect(() => {
+        if (!calorias) return
+        mudarDados('calDiaria', calorias.calorias)
+    }, [calorias])
 
     return {
         calorias,

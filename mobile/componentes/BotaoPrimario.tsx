@@ -34,7 +34,7 @@ const BotaoPrimario = ({
     }
     `
     return (
-        <Animated.View style={animado}> 
+        <Animated.View style={!disabled ? animado : null}> 
             <Pressable
                 onPress={() => (
                     onPress?.()
