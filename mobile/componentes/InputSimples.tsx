@@ -1,6 +1,7 @@
 import { View, Text, Pressable, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
+import useTema from '@/contextos/TemaContexto'
 
 type props = {
     tipo?: "text" | "number",
@@ -10,6 +11,8 @@ type props = {
     maximo?: number,
     minimo?: number,
     className?: string,
+    visivel?: boolean
+    abilitado?: boolean
 }
 
 const InputSimples = ({
@@ -19,7 +22,9 @@ const InputSimples = ({
     placeholder,
     maximo,
     minimo,
-    className = ''
+    className = '',
+    visivel = true,
+    abilitado = true
 } : props) => {
 
     const escala = useSharedValue(1)
@@ -32,8 +37,9 @@ const InputSimples = ({
     const [focado, setFocado] = useState(false)
 
     const classeBase = ` 
-    rounded-xl p-2 border-2
-    bg-base-terciaria w-full text-t-secundaria
+    rounded-xl p-2 border-2 w-full
+    ${ abilitado ? 'bg-base-terciaria  text-t-secundaria' 
+    : 'bg-base-secundaria text-t-terciaria'}
     ${focado ? "border-destaque-s-medio" : "border-base-quaternaria"}
     ${!valido ? "border-red-500" : ""}`
     
@@ -68,6 +74,9 @@ const InputSimples = ({
   setValido(true)
   onChange(text)
 }
+
+  const { corIcone } = useTema()
+
   return (
     <Animated.View
         style={animado}
@@ -76,7 +85,10 @@ const InputSimples = ({
         <TextInput 
             value={valor}
             placeholder={placeholder}
+            placeholderTextColor={corIcone}
             keyboardType={tipo === 'number' ? 'numeric' : 'default'}
+            secureTextEntry={!visivel}
+            editable={abilitado}
             onChangeText={dataBind}
             onFocus={() => {
                 setFocado(true)

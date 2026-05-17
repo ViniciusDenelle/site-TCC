@@ -23,6 +23,7 @@ import {
     WeightTilde
 } from 'lucide-react-native'
 import useTema from '@/contextos/TemaContexto'
+import { router } from 'expo-router'
 
 const ExibirInfo = () => {
     const {
@@ -59,7 +60,7 @@ const ExibirInfo = () => {
 
     function proximo()
     {
-
+        router.push('/cadastro/passo6')
     }
 
     const corIcone = formatarCor(temaAtual['--color-t-secundaria'], 1)

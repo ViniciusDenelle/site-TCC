@@ -49,7 +49,7 @@ const BotaoSecundario = ({
                 <Text className={`
                 font-poppins
                 ${tipo === 'cheio' 
-                ? 'text-base-secundaria' 
+                ? 'text-stone-200' 
                 : 'text-destaque-s-escuro'} `}>
                     {children}
                 </Text>

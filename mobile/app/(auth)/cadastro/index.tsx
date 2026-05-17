@@ -79,7 +79,7 @@ const index = () => {
         <View className="flex flex-col gap-1">
 
           <Texto className="text-t-primaria">
-            escolha sua data de nascimento:
+            data de nascimento: {new Date(dataDeNascimento).toLocaleDateString('pt-BR')}
           </Texto>
 
           <BotaoSecundario

@@ -54,24 +54,26 @@ import { ArrowLeft, Lightbulb } from "lucide-react-native"
                 <View className="relative h-full w-full flex justify-center items-center">
 
                     <View className="absolute top-8 right-5 flex">
-                        <BotaoPrimario
-                            className="border-transparent"
-                            onPress={mudarTema}
-                        >
-                            <Lightbulb color={corIcone}/>
-                        </BotaoPrimario>
+                        
                     </View>
                     
 
                         <View className="flex flex-col gap-2 h-auto p-5 
                         bg-base-secundaria rounded-lg  w-[90%]">
-                            <View className='w-12'>
+                            <View className='w-full flex flex-row justify-between'>
                                 <BotaoSecundario
                                 className='border-transparent'
                                 onPress={() => router.back()}
                                 >
                                 <ArrowLeft color={corIcone} size={16} />
                                 </BotaoSecundario>
+
+                                <BotaoPrimario
+                                    className="border-transparent"
+                                    onPress={mudarTema}
+                                >
+                                    <Lightbulb color={corIcone}/>
+                                </BotaoPrimario>
 
                             </View>
 

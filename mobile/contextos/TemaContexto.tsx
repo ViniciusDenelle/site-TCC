@@ -1,5 +1,5 @@
 
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
 import temas from '../app/tema'
 
 type Tema = keyof typeof temas;
@@ -9,6 +9,7 @@ type TipoTemaContext = {
     temaAtual: typeof temas[Tema],
     setTema: (tema: Tema) => void;
     formatarCor: (color: string, opacidade: number) => string
+    corIcone: string
 }
 
 const TemaContexto = createContext<TipoTemaContext | null>(null)
@@ -21,13 +22,16 @@ export const TemaProvider = ({ children }: { children: ReactNode }) => {
         return `rgba(${formatted}, ${opacidade})`
     }
 
+    const corIcone = formatarCor(temas[tema]['--color-t-secundaria'], 1)
+
     return (
         <TemaContexto.Provider
         value={{
             tema: tema,
             temaAtual: temas[tema],
             setTema: setTema,
-            formatarCor
+            formatarCor,
+            corIcone
         }}>
             {children}
         </TemaContexto.Provider>

@@ -27,6 +27,8 @@ type Dados = {
     tipo?: 'cadastro' | 'login'
 }
 
+type Erros = Record<string, string[]>
+
 const useConfirmacao = (
     emailMutation: EmailMutation,
     dados: Dados = {}
@@ -44,7 +46,7 @@ const useConfirmacao = (
         isError
     } = emailMutation
 
-    const [erros, setErros] = useState<string[]>([])
+    const [erros, setErros] = useState<Erros>({})
 
     function enviarEmailHandler() {
 
@@ -53,7 +55,7 @@ const useConfirmacao = (
                 tipo
             },{
                 onError: (error) => {
-
+                    console.log(error)
                     const erros =
                         error?.response?.data?.errors
 
@@ -65,7 +67,7 @@ const useConfirmacao = (
                 onSuccess: data => {
                     console.log(data)
 
-                    setErros([])
+                    setErros({})
 
                     Alert.alert(
                         'Sucesso',

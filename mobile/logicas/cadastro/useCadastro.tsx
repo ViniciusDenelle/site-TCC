@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, UseMutationResult } from '@tanstack/react-query'
 import api from '@/api'
+import { AxiosError } from 'axios'
+import { router } from 'expo-router'
 // typagem
 
 type Passo = 1 | 2 | 3 | 4 | 5 | 6
@@ -57,9 +59,30 @@ type UseCadastroReturn = {
         isPending: boolean
         isError: boolean
     }
+    cadastrarMutation: UseMutationResult<
+        RespostaCadastro,
+        AxiosError<ErroApi>,
+        CadastroInfo
+    >,
+    cadastroHandler: () => void
 }
 
 type ErrosCampo = Partial<Record<keyof DadosCadastro, string>>
+
+type RespostaCadastro = {
+    message: string
+}
+
+type ErroApi = {
+    errors?: Partial<Record<keyof DadosCadastro, string[]>>
+}
+
+type CadastroInfo = DadosCadastro & {
+    idade: number
+    TMB: number
+    GET: number
+}
+
 
 const useCadastro = (): UseCadastroReturn => {
     const [dados, setDados] = useState<DadosCadastro>({
@@ -240,17 +263,73 @@ const useCadastro = (): UseCadastroReturn => {
 
     // mutations
 
+    const cadastrarMutation = useMutation<
+        RespostaCadastro,
+        AxiosError<ErroApi>,
+        CadastroInfo
+    >({
+        mutationFn: async (dadosCadastro) => {
+
+            const res = await api.post(
+                '/cadastro',
+                dadosCadastro
+            )
+
+            return res.data
+        },
+
+        onSuccess: (dados) => {
+            console.log(dados)
+
+            AsyncStorage.removeItem('dados_cadastro')
+        },
+
+        onError: (error) => {
+
+            const erros = error.response?.data?.errors
+
+            if (!erros) return
+
+            const errosFormatados: ErrosCampo = {}
+
+            Object.entries(erros).forEach(([campo, mensagens]) => {
+
+                errosFormatados[
+                    campo as keyof DadosCadastro
+                ] = mensagens[0]
+
+            })
+
+            setErrosCampo(errosFormatados)
+
+            const primeiroCampo = Object.keys(erros)[0]
+
+            const passoErrado =
+                campoParaPasso[
+                primeiroCampo as keyof DadosCadastro
+                ]
+
+    //         if (passoErrado) {
+    //             router.push(
+    //     `/cadastro/passo${passoErrado}` as const
+    // )
+    //         }
+        }
+    })
+
+    const cadastroHandler = () => {
+        cadastrarMutation.mutate({
+            ...dados,
+            idade,
+            GET,
+            TMB
+        })
+    }
+
     const emailMutation = useMutation({
 
-        mutationFn: async (
-            info: unknown
-        ) => {
-
-            const res =
-                await api.post(
-                    '/cadastroEmail',
-                    info
-                )
+        mutationFn: async (info: unknown) => {
+            const res = await api.post('/cadastroEmail', info)
 
             return res.data
 
@@ -270,8 +349,8 @@ const useCadastro = (): UseCadastroReturn => {
         TMB,
         GET,
         parseNumero,
-        // cadastroHandler,
-        // cadastrarMutation,
+        cadastroHandler,
+        cadastrarMutation,
         emailMutation,
     }
 }
