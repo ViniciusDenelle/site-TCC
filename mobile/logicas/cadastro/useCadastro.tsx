@@ -285,7 +285,7 @@ const useCadastro = (): UseCadastroReturn => {
         },
 
         onError: (error) => {
-
+             console.log(error)
             const erros = error.response?.data?.errors
 
             if (!erros) return

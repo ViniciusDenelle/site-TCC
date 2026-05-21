@@ -91,7 +91,7 @@ const index = () => {
 
           <InputDate
             valor={new Date(dataDeNascimento)}
-            onChange={(_, valor) => mudarDados('dataDeNascimento', valor?.toISOString() ?? '')}
+            onChange={(_, valor) => mudarDados('dataDeNascimento', valor?.toISOString().split('T')[0] ?? '')}
             mostrar={mostrarData}
             setMostrar={setMostrarData}
           />

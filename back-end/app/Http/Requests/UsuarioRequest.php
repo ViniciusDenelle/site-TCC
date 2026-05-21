@@ -47,7 +47,7 @@ class UsuarioRequest extends FormRequest
             'pesoFinal' => 'required|integer|min:20|max:500',
             'tipoPeso' => 'required|string',
             'altura' => 'required|integer|min:80',
-            'nivelAtividade' => 'required|string',
+            'nivelAtividade' => 'required|numeric',
             'objetivo' => 'required|string',
             'experiencia' => 'required|string',
             'TMB' => 'required|integer|min:200',
@@ -55,8 +55,8 @@ class UsuarioRequest extends FormRequest
             'calDiaria' => 'required|integer',
             'duracao' => 'required|integer',
             'termino' => 'required',
-            'veloPerda' => 'required|string',
-            'codigoConfirmacao' => 'required|integer'
+            'veloPerda' => 'required|numeric',
+            'codigoConfirmacao' => 'required|string'
         ];
     }
 

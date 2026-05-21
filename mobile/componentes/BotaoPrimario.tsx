@@ -15,13 +15,19 @@ const BotaoPrimario = ({
     tipo?: string,
     disabled?: boolean
  }) => {
+    console.log('rederizou botao')
 
     const escala = useSharedValue(1)
     const Y = useSharedValue(0)
 
-    const animado = useAnimatedStyle(() => ({
-        transform: [{ scale: escala.value }, {translateY: Y.value}]
-    }))
+   const animado = useAnimatedStyle(() => {
+  return {
+    transform: [
+      { scale: disabled ? 1 : escala.value },
+      { translateY: disabled ? 0 : Y.value }
+    ]
+  }
+})
 
     const classeBase = `
         rounded-lg p-2 flex justify-center items-center transition-colors
@@ -34,7 +40,7 @@ const BotaoPrimario = ({
     }
     `
     return (
-        <Animated.View style={!disabled ? animado : null}> 
+        <Animated.View style={animado}> 
             <Pressable
                 onPress={() => (
                     onPress?.()
