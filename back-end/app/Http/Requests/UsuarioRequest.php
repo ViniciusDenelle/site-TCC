@@ -86,6 +86,11 @@ class UsuarioRequest extends FormRequest
             'peso.min' => 'O peso deve ser no mínimo 20kg',
             'peso.max' => 'O peso deve ser no máximo 500kg',
 
+            'pesoFinal.required' => 'Informe seu peso final',
+            'pesoFinal.integer' => 'O peso final deve ser um número inteiro',
+            'pesoFinal.min' => 'O peso final deve ser no mínimo 20kg',
+            'pesoFinal.max' => 'O peso final deve ser no máximo 500kg',
+
             'tipoPeso.required' => 'Informe o tipo de peso (ex: kg)',
 
             'altura.required' => 'Informe sua altura',

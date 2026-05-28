@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Alert } from 'react-native'
 import useCadastro from './cadastro/useCadastro'
+import Toast from 'react-native-toast-message'
 
 type UseCadastroReturn = ReturnType<typeof useCadastro>
 type emailMutation = Pick<UseCadastroReturn, 'emailMutation'>
@@ -59,6 +60,11 @@ const useConfirmacao = (
                     const erros =
                         error?.response?.data?.errors
 
+                    Toast.show({
+                        type: 'error',
+                        text1: erros[0]
+                    })
+
                     if (erros) {
                         setErros(erros)
                     }
@@ -69,10 +75,10 @@ const useConfirmacao = (
 
                     setErros({})
 
-                    Alert.alert(
-                        'Sucesso',
-                        'Email enviado com sucesso'
-                    )
+                    Toast.show({
+                        type: 'success',
+                        text1: 'successo ao enviar email'
+                    })
                 }
             })
     }

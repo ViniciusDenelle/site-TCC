@@ -15,7 +15,7 @@ const BotaoPrimario = ({
     tipo?: string,
     disabled?: boolean
  }) => {
-    console.log('rederizou botao')
+
 
     const escala = useSharedValue(1)
     const Y = useSharedValue(0)
@@ -30,8 +30,7 @@ const BotaoPrimario = ({
 })
 
     const classeBase = `
-        rounded-lg p-2 flex justify-center items-center transition-colors
-        duration-300 ${disabled ? `` : `cursor-pointer`}`
+        rounded-lg p-2 flex justify-center items-center ${disabled ? `` : `cursor-pointer`}`
     const classeTipo = `
     ${
         tipo === 'cheio'
