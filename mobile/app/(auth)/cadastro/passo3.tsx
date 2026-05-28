@@ -12,10 +12,11 @@ import { Text, View } from 'react-native'
 
 const Objetivo = () => {
 
-    const { 
-        dados, 
+    const {
+        dados,
         mudarDados,
-        podeSeguir
+        podeSeguir,
+        errosCampo
     } = useCadastroContext()
 
     const {
@@ -72,10 +73,10 @@ const Objetivo = () => {
     }
 
     const router = useRouter()
-    
-      function proximo() {
+
+    function proximo() {
         router.push('/cadastro/passo4')
-      }
+    }
 
     return (
         <CadastroLayout
@@ -87,10 +88,10 @@ const Objetivo = () => {
                 {aviso === objetivo ? (
                     <View className="absolute -top-1.5 left-1/2 
             -translate-x-1/2 ">
-                    <Text className='text-sm text-red-500 font-poppins'>
-                        não recomendado
-                    </Text>
-                        
+                        <Text className='text-sm text-red-500 font-poppins'>
+                            não recomendado
+                        </Text>
+
                     </View>
                 ) : ''}
 
@@ -118,6 +119,11 @@ const Objetivo = () => {
                             </InputRadio>
                         )
                     })}
+                    {errosCampo['objetivo'] && (
+                        <Text className="text-red-500 text-sm">
+                            {errosCampo['objetivo']}
+                        </Text>
+                    )}
                 </View>
 
                 <Texto className="mx-auto text-lg text-t-primaria">
@@ -151,6 +157,12 @@ const Objetivo = () => {
                             </InputRadio>
                         )
                     })}
+
+                    {errosCampo['experiencia'] && (
+                        <Text className="text-red-500 text-sm">
+                            {errosCampo['experiencia']}
+                        </Text>
+                    )}
                 </View>
 
             </View>

@@ -8,7 +8,7 @@ import useTema from "@/contextos/TemaContexto"
 import useConfirmacao from "@/logicas/useConfirmacao"
 import { Eye, EyeOff, Mail } from "lucide-react-native"
 import { useState } from "react"
-import { Pressable, View } from "react-native"
+import { Pressable, Text, View } from "react-native"
 
 const confirmacao = () => {
 
@@ -18,7 +18,8 @@ const confirmacao = () => {
         mudarDados,
         podeSeguir,
         cadastroHandler,
-        cadastrarMutation
+        cadastrarMutation,
+        errosCampo
     } = useCadastroContext()
 
     const {
@@ -66,7 +67,7 @@ const confirmacao = () => {
             <View className="flex flex-col gap-3">
 
                 <Texto className="mx-auto text-lg">
-                    suas credenciais {isSuccess && 'deu certo'} {isError && 'deu errado'}
+                    suas credenciais
                 </Texto>
 
                 {/* botão google */}
@@ -97,11 +98,11 @@ const confirmacao = () => {
                         minimo={2}
                     />
 
-                    {/* {errosCampo['nome'] && (
-                        <Texto className="text-red-500">
-                            {errosCampo['nome']}
-                        </Texto>
-                    )} */}
+                    {errosCampo['nome'] && (
+                                <Text className="text-red-500 text-sm">
+                                  {errosCampo['nome']}
+                                </Text>
+                              )}
                 </View>
 
                 {/* email */}
@@ -119,9 +120,9 @@ const confirmacao = () => {
                         minimo={7}
                     />
 
-                    {erros['email'] && (
+                    {(erros['email'] || errosCampo['email']) && (
                         <Texto variante="legenda" className="text-red-500">
-                            {erros['email']}
+                            {erros['email']} {errosCampo['email']}
                         </Texto>
                     )}
                 </View>
@@ -158,11 +159,11 @@ const confirmacao = () => {
 
                     </View>
 
-                    {/* {errosCampo['senha'] && (
-                        <Texto className="text-red-500">
-                            {errosCampo['senha']}
-                        </Texto>
-                    )} */}
+                    {errosCampo['senha'] && (
+                                <Text className="text-red-500 text-sm">
+                                  {errosCampo['senha']}
+                                </Text>
+                              )}
 
                 </View>
 
@@ -181,7 +182,7 @@ const confirmacao = () => {
                             mudarDados('codigoConfirmacao', valor)
                         }
                         tipo="number"
-                        abilitado={isSuccess}
+                        abilitado={isSuccess || codigoConfirmacao !== ''}
                     />
 
                     <BotaoSecundario
@@ -200,9 +201,9 @@ const confirmacao = () => {
                             </Texto>
                         ) : (
                             <View className="flex flex-row items-center gap-2">
-                                <Texto className="text-stone-200">
+                                <Text className="text-stone-200 font-poppins">
                                     enviar codigo
-                                </Texto>
+                                </Text>
 
                                 <Mail 
                                     color={'rgb(226, 232, 240)'} 

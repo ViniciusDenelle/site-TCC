@@ -23,8 +23,7 @@ const BotaoSecundario = ({
     }))
 
     const classeBase = `
-        rounded-lg p-2 flex justify-center items-center transition-colors
-        duration-300 ${disabled ? `` : `cursor-pointer`}`
+        rounded-lg p-2 flex justify-center items-center ${disabled ? `` : `cursor-pointer`}`
     const classeTipo = `
     ${
         tipo === 'cheio'

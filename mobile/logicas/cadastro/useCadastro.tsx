@@ -3,7 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useMutation, UseMutationResult } from '@tanstack/react-query'
 import api from '@/api'
 import { AxiosError } from 'axios'
-import { router } from 'expo-router'
+import { Href, router } from 'expo-router'
+import Toast from 'react-native-toast-message'
 // typagem
 
 type Passo = 1 | 2 | 3 | 4 | 5 | 6
@@ -239,19 +240,19 @@ const useCadastro = (): UseCadastroReturn => {
         return validacoes[passo]?.() ?? false
     }
 
-    const campoParaPasso: Partial<Record<keyof DadosCadastro, Passo>> = {
-        genero: 1,
-        peso: 1,
-        altura: 1,
-        dataDeNascimento: 1,
-        nivelAtividade: 2,
-        objetivo: 3,
-        experiencia: 3,
-        veloPerda: 4,
-        pesoFinal: 4,
-        nome: 6,
-        email: 6,
-        senha: 6
+    const campoParaPasso: Partial<Record<keyof DadosCadastro, Href>> = {
+        genero: '/cadastro',
+        peso: '/cadastro',
+        altura: '/cadastro',
+        dataDeNascimento: '/cadastro',
+        nivelAtividade: '/cadastro/passo2',
+        objetivo: '/cadastro/passo3',
+        experiencia: '/cadastro/passo3',
+        veloPerda: '/cadastro/passo4',
+        pesoFinal: '/cadastro/passo4',
+        nome: '/cadastro/passo6',
+        email: '/cadastro/passo6',
+        senha: '/cadastro/passo6'
     }
 
     // function parsenumero
@@ -309,11 +310,13 @@ const useCadastro = (): UseCadastroReturn => {
                 primeiroCampo as keyof DadosCadastro
                 ]
 
-    //         if (passoErrado) {
-    //             router.push(
-    //     `/cadastro/passo${passoErrado}` as const
-    // )
-    //         }
+            if (passoErrado) {
+                Toast.show({
+                    type: 'error',
+                    text1: 'erro ao cadastrar'
+                })
+                router.replace(passoErrado)
+            }
         }
     })
 

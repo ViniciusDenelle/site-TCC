@@ -12,11 +12,12 @@ import InputRadio from '@/componentes/InputRadio'
 import useTema from '@/contextos/TemaContexto'
 
 const index = () => {
-  const { 
-    dados, 
-    mudarDados, 
-    parseNumero ,
-    podeSeguir
+  const {
+    dados,
+    mudarDados,
+    parseNumero,
+    podeSeguir,
+    errosCampo,
   } = useCadastroContext()
 
   const { nivelAtividade } = dados
@@ -56,17 +57,17 @@ const index = () => {
       podeProximo={podeSeguir(2)}
     >
 
-      
+
       <View className="flex flex-col w-full">
         <View className="justify-center items-center">
           <Texto variante='titulo'>
-            escolha seu nivel de atividade fisica{nivelAtividade}
+            escolha seu nivel de atividade fisica 
           </Texto>
         </View>
 
         <View className="mt-3 gap-2">
           {radios.map((radio) => {
-            
+
 
             return (
               <InputRadio
@@ -88,6 +89,12 @@ const index = () => {
             )
           })}
         </View>
+
+        {errosCampo['nivelAtividade'] && (
+          <Text className="text-red-500 text-sm">
+            {errosCampo['nivelAtividade']}
+          </Text>
+        )}
       </View>
     </CadastroLayout>
   )

@@ -9,13 +9,15 @@ import BotaoSecundario from '@/componentes/BotaoSecundario'
 import Texto from '@/componentes/Texto'
 import { router } from 'expo-router'
 import InputDate from '@/componentes/inputDate'
+import Toast from 'react-native-toast-message'
 
 const index = () => {
   const {
     dados,
     mudarDados,
     parseNumero,
-    podeSeguir
+    podeSeguir,
+    errosCampo,
   } = useCadastroContext()
 
   const {
@@ -40,6 +42,7 @@ const index = () => {
   }
 
   function proximoPasso() {
+    
     if(podeSeguir(1)) router.push('/cadastro/passo2')
    
   }
@@ -96,11 +99,11 @@ const index = () => {
             setMostrar={setMostrarData}
           />
 
-          {/* {errosCampo['idade'] && (
-            <span className="text-red-500 text-sm">
-              {errosCampo['idade']}
-            </span>
-          )} */}
+           {errosCampo['dataDeNascimento'] && (
+            <Text className="text-red-500 text-sm">
+              {errosCampo['dataDeNascimento']}
+            </Text>
+          )} 
 
         </View>
 
@@ -160,11 +163,11 @@ const index = () => {
 
 
 
-          {/* {errosCampo['peso'] && (
-            <span className="text-red-500 text-sm">
+          {errosCampo['peso'] && (
+            <Text className="text-red-500 text-sm">
               {errosCampo['peso']}
-            </span>
-          )} */}
+            </Text>
+          )}
 
         </View>
 
@@ -214,11 +217,11 @@ const index = () => {
 
           </View>
 
-          {/* {errosCampo['altura'] && (
-            <span className="text-red-500 text-sm">
+          {errosCampo['altura'] && (
+            <Text className="text-red-500 text-sm">
               {errosCampo['altura']}
-            </span>
-          )} */}
+            </Text>
+          )}
 
         </View>
 

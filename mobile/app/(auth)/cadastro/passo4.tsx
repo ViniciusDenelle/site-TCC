@@ -28,7 +28,7 @@ const Metas = () => {
         calorias,
         tempoEstimado,
         minMaxPeso
-    } = useMetas({dados, GET, mudarDados})
+    } = useMetas({ dados, GET, mudarDados })
 
     const {
         peso,
@@ -70,8 +70,7 @@ const Metas = () => {
 
     const corIcone = formatarCor(temaAtual['--color-t-secundaria'], 1)
 
-    function proximo()
-    {
+    function proximo() {
         router.push('/cadastro/passo5')
     }
 
@@ -159,13 +158,13 @@ const Metas = () => {
                             )}
 
                             {errosCampo['pesoFinal'] && (
-                                <Texto className="text-red-500 text-xs">
+                                <Text className="text-red-500 text-xs">
                                     {errosCampo['pesoFinal']}
-                                </Texto>
+                                </Text>
                             )}
 
                         </View>
-                        
+
                         <View className='w-20'>
                             <InputSimples
                                 className="w-20"
@@ -199,9 +198,16 @@ const Metas = () => {
                 {/* velocidade */}
                 <View className="flex flex-col gap-4">
 
-                    <Texto className="text-lg text-gray-600">
-                        velocidade de {objetivo === 'perder_peso' ? 'perda' : 'ganho'}
-                    </Texto>
+                    <View>
+                        <Texto className="text-lg text-gray-600">
+                            velocidade de {objetivo === 'perder_peso' ? 'perda' : 'ganho'}
+                        </Texto>
+                        {errosCampo['veloPerda'] && (
+                            <Text className="text-red-500 text-sm">
+                                {errosCampo['altura']}
+                            </Text>
+                        )}
+                    </View>
 
                     <View className="grid grid-cols-2 gap-2 w-full">
 
