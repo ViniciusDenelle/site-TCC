@@ -75,7 +75,12 @@ const Objetivo = () => {
     const router = useRouter()
 
     function proximo() {
-        router.push('/cadastro/passo4')
+        if (objetivo === 'manter_peso'){
+            router.push('/(auth)/cadastro/passo4.5')
+        } else {
+            router.push('/cadastro/passo4')
+        }
+        
     }
 
     return (

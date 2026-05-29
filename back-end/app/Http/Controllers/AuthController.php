@@ -136,7 +136,7 @@ class AuthController extends Controller
 
         $usuario->objetivos()->create([
             'tipo' => $dados['objetivo'],
-            'peso_ideal' => $dados['pesoFinal'],
+            'peso_ideal' => $dados['pesoIdeal'],
             'velocidade' => 0.55,
             'comeco' => now(),
             'termino' => now(),

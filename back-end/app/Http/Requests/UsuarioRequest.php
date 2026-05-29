@@ -44,7 +44,7 @@ class UsuarioRequest extends FormRequest
             'idade' => 'required|integer',
             'dataDeNascimento' => 'required|date',
             'peso' => 'required|integer|min:20|max:500',
-            'pesoFinal' => 'required|integer|min:20|max:500',
+            'pesoIdeal' => 'required|integer|min:20|max:500',
             'tipoPeso' => 'required|string',
             'altura' => 'required|integer|min:80',
             'nivelAtividade' => 'required|numeric',

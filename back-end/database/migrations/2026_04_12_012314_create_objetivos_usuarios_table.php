@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('tipo');
             $table->integer('peso_ideal');
+            $table->integer('peso_minimo')->nullable();
+            $table->integer('peso_maximo')->nullable();
             $table->decimal('velocidade', 3, 2);
             $table->date('comeco');
             $table->date('termino');
