@@ -1,24 +1,29 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import LinkSimples from '../../componentes/LinkSimples'
 import Informações from './passos/informações'
 import NivelAtividade from './passos/NivelAtividade'
 import BotaoSimples from '../../componentes/BotaoSimples'
-import { ArrowLeft, DiamondPlus, Mail, PenLine } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import BotaoPrimario from '../../componentes/BotaoPrimario'
 import { AnimatePresence } from 'motion/react'
 import Objetivo from './passos/Objetivo'
 import Metas from './passos/Metas'
 import ExibirInfo from './passos/ExibirInfo'
 import Credenciais from './passos/Credenciais'
-import ConfirmarEmail from './passos/ConfirmarEmail'
-import useCadastro from '../../logicas/cadastro/useCadastro'
 import CadastroContext from '../../contextos/CadastroContexto'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import api from '../../api'
-import { data } from 'react-router-dom'
+import { UseCadastroReturn } from '../../logicas/cadastro/useCadastro'
 
-const Cadastro = () => {
-    // dados do cadastro
+// Estendemos o retorno e usamos Omit para sobrescrever o emailMutation e adicionar o reset()
+export interface CadastroContextType extends Omit<UseCadastroReturn, 'emailMutation'> {
+    passo: number;
+    setPasso: React.Dispatch<React.SetStateAction<number>>;
+    erro: boolean;
+    setErro: React.Dispatch<React.SetStateAction<boolean>>;
+    podeProximo: boolean;
+    emailMutation: UseCadastroReturn['emailMutation'] & { reset: () => void };
+}
+
+const Cadastro: React.FC = () => {
     const {
         passo,
         setPasso,
@@ -26,37 +31,40 @@ const Cadastro = () => {
         setErro,
         podeProximo,
         dados,
-        cadastrarMutation,
         cadastroHandler,
         emailMutation
-    } = useContext(CadastroContext)
+    } = useContext(CadastroContext) as CadastroContextType
 
-    function proximoPasso() {
+    function proximoPasso(): void {
         if (!podeProximo) {
             setErro(true)
             return
         }
-
         setErro(false)
         setPasso(prev => prev + 1)
     }
 
-    function voltarPasso() {
+    function voltarPasso(): void {
         emailMutation.reset()
         setPasso(prev => prev - 1)
     }
 
-    const passos = {
-        1: <Informações />,
-        2: <NivelAtividade />,
-        3: <Objetivo />,
-        4: <Metas />,
-        5: <ExibirInfo />,
-        6: <Credenciais />,
+    const passos: Record<number, JSX.Element> = {
+        1: <Informações key="passo-1" />,
+        2: <NivelAtividade key="passo-2" />,
+        3: <Objetivo key="passo-3" />,
+        4: <Metas key="passo-4" />,
+        5: <ExibirInfo key="passo-5" />,
+        6: <Credenciais key="passo-6" />,
     }
 
-    // pilulas progresso
-    const passoPilula = [1, 2, 3, 4, 5, 6]
+    const passoPilula: number[] = [1, 2, 3, 4, 5, 6]
+
+    // Variável para definir o que vai ser renderizado de forma segura
+    const PassoRenderizado = passo === 4 && dados.objetivo === 'manter_peso'
+        ? passos[passo + 1]
+        : passos[passo]
+
     return (
         <main className='pt-20 relative min-h-screen w-full bg-base-primaria'>
 
@@ -66,23 +74,18 @@ const Cadastro = () => {
 
             <div className="container mx-auto h-full w-full">
 
-                <div className="w-full h-full flex flex-col 
-            items-center">
+                <div className="w-full h-full flex flex-col items-center">
 
                     <div className="flex gap-2">
-
                         {passoPilula.map(pilula => (
-
                             <div
                                 key={pilula}
                                 className={`relative rounded-full w-6 h-3 ring-1 ring-contraste-primaria overflow-hidden
                         after:absolute after:left-0 after:top-0 after:h-3 bg-base-secundaria 
                         after:bg-destaque-p-escuro after:w-0 after:transition-all after:duration-500
-                        ${passo >= pilula && `after:w-full`}`}
+                        ${passo >= pilula ? 'after:w-full' : ''}`}
                             />
-
                         ))}
-
                     </div>
 
                     <div className="flex items-center justify-center w-full p-1 z-10">
@@ -95,32 +98,26 @@ const Cadastro = () => {
                  bg-base-terciaria/40 backdrop-blur-md ring-1 ring-base-quaternaria 
                  w-9/10 md:w-120 md:px-10 shadow-md shadow-base-quaternaria/50">
 
-
                         {passo > 1 && (
                             <BotaoSimples
-                                classeAdcional="absolute top-2 left-2 ring-transparent 
-                        hover:ring-transparent"
+                                classeAdicional="absolute top-2 left-2 ring-transparent hover:ring-transparent"
                                 onClick={voltarPasso}>
                                 <ArrowLeft />
                             </BotaoSimples>
                         )}
 
-
-
                         <div className="flex w-full h-full flex-col gap-2 mt-5">
 
-                            {/* passos */}
                             <div className="min-h-102 relative flex flex-col items-center justify-center">
                                 {erro && (
-                                    <span className="absolute -top-5
-                                text-sm font-semibold text-red-500 mx-auto">
+                                    <span className="absolute -top-5 text-sm font-semibold text-red-500 mx-auto">
                                         você tem informações faltando
                                     </span>
                                 )}
-                                <AnimatePresence mode='wait'>
-                                    {passo == 4 && dados.objetivo === 'manter_peso' ? passos[passo + 1] : passos[passo]}
-                                </AnimatePresence>
 
+                                <AnimatePresence mode='wait'>
+                                    {PassoRenderizado ?? <React.Fragment key="fallback" />}
+                                </AnimatePresence>
                             </div>
 
                             {passo >= 6 ? (
@@ -129,7 +126,7 @@ const Cadastro = () => {
                                     onClick={cadastroHandler}
                                     disabled={!emailMutation.isSuccess}
                                 >
-                                    {emailMutation.isSuccess ? 'cofirmar' : 'envie o codigo'}
+                                    {emailMutation.isSuccess ? 'confirmar' : 'envie o codigo'}
                                 </BotaoPrimario>
                             ) : (
                                 <BotaoPrimario
@@ -145,7 +142,7 @@ const Cadastro = () => {
                                 já possui uma conta?
                                 <LinkSimples
                                     to="/login"
-                                    classeAdcional="text-destaque-s-escuro">
+                                    classeAdicional="text-destaque-s-escuro">
                                     login
                                 </LinkSimples>
                             </div>

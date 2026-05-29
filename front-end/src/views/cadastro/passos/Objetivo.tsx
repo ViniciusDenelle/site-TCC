@@ -1,20 +1,22 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
+import type { ChangeEvent } from 'react'
 import { motion } from 'motion/react'
-import RadioCustomizado from '../../../componentes/radioCustomizado'
+
+import RadioCustomizado from '../../../componentes/RadioCustomizado'
 import CadastroContext from '../../../contextos/CadastroContexto'
+import type { UseCadastroReturn } from '../../../tipos'
 
 const Objetivo = () => {
+  const contexto = useContext(CadastroContext) as UseCadastroReturn | null
 
-  const {dados, mudarDados} = useContext(CadastroContext)
+  if (!contexto) {
+    throw new Error('CadastroContext precisa de um Provider')
+  }
 
-  const {
-    objetivo,
-    experiencia,
-    peso,
-    altura
-  } = dados
+  const { dados, mudarDados } = contexto
+  const { objetivo, experiencia, peso, altura } = dados
 
-  // array dos inputs para objetivo, gerar eles por meio de um array é mior
+  // Array dos inputs para objetivo
   const radiosObjetivo = [
     {
       nome: 'manter peso',
@@ -30,7 +32,7 @@ const Objetivo = () => {
     },
   ]
 
-  // array dos inputs para experiencia, gerar eles por meio de um array é mior
+  // Array dos inputs para experiencia
   const radiosExperiencia = [
     {
       nome: 'iniciante',
@@ -50,59 +52,51 @@ const Objetivo = () => {
     },
   ]
 
-  const imc = peso / ((altura * altura) / 10000)
-  let aviso = ''
-  if(imc < 18.5){
+  // Garante o cálculo matemático seguro convertendo para Number
+  const imc = Number(peso) / ((Number(altura) * Number(altura)) / 10000)
+  
+  let aviso = 'nenhum'
+  if (imc < 18.5) {
     aviso = 'perder_peso'
-  } else if (imc > 25){
+  } else if (imc > 25) {
     aviso = 'ganhar_peso'
-  } else {
-    aviso = 'nenhum'
   }
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, }}
+      exit={{ opacity: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="flex flex-col w-full gap-3 my-2">
-
-      {aviso === objetivo ? (
-          <span className="absolute -top-1.5 left-1/2 
-          -translate-x-1/2 text-sm text-red-500">
-            não recomendado
-          </span>
-        ) : ''}
+      className="relative flex flex-col w-full gap-3 my-2"
+    >
+      {aviso === objetivo && (
+        <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 text-sm text-red-500">
+          não recomendado
+        </span>
+      )}
 
       <h2 className="relative mx-auto text-lg text-t-primaria">
         escolha seu objetivo
-        
       </h2>
 
-      {/* objetivo */}
+      {/* Seção: Objetivo */}
       <div className="grid grid-cols-1 grid-rows-3 gap-y-2 w-full mx-auto">
-        {radiosObjetivo.map((radio, index) => (
-
-          // o primeiro input vai usar duas colunas do grid
-          <div key={index}
-          className={`w-full h-full
-          `}>
-
+        {radiosObjetivo.map((radio) => (
+          <div key={radio.valor} className="w-full h-full">
             <RadioCustomizado
-              classeAdcional="w-full justify-start pl-2"
+              classeAdicional="w-full justify-start pl-2"
               name="objetivo"
               valor={radio.valor}
-              dataBinding={ev => mudarDados('objetivo', ev.target.value)}
+              onChange={(ev: ChangeEvent<HTMLInputElement>) => 
+                mudarDados('objetivo', ev.target.value)
+              }
               checked={objetivo === radio.valor}
             >
-
               <h2 className="text-t-secundaria">
                 {radio.nome}
               </h2>
-
             </RadioCustomizado>
-
           </div>
         ))}
       </div>
@@ -111,21 +105,19 @@ const Objetivo = () => {
         escolha sua experiencia de treino
       </h2>
 
-      {/* experiencia */}
+      {/* Seção: Experiência */}
       <div className="grid grid-cols-1 grid-rows-4 gap-y-2 w-full mx-auto">
-
-        {radiosExperiencia.map(radio => (
-
-          <div key={radio.nome} className=" w-full h-full">
-
+        {radiosExperiencia.map((radio) => (
+          <div key={radio.nome} className="w-full h-full">
             <RadioCustomizado
-              classeAdcional="w-full pl-2 justify-start"
+              classeAdicional="w-full pl-2 justify-start"
               name="experiencia"
               valor={radio.nome}
-              dataBinding={ev => mudarDados('experiencia', ev.target.value)}
+              onChange={(ev: ChangeEvent<HTMLInputElement>) => 
+                mudarDados('experiencia', ev.target.value)
+              }
               checked={experiencia === radio.nome}
             >
-
               <span className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
                 <h2 className='text-t-secundaria'>
                   {radio.nome}
@@ -134,12 +126,10 @@ const Objetivo = () => {
                   {radio.descricao}
                 </p>
               </span>
-
             </RadioCustomizado>
           </div>
         ))}
       </div>
-
     </motion.div>
   )
 }

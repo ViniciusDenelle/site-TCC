@@ -135,7 +135,7 @@ function LayoutDefault() {
 
             <BotaoSimples
               onClick={abrirMenu}
-              classeAdcional="
+              classeAdicional="
                 ring-transparent
                 hover:ring-transparent
                 lg:hidden

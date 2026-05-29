@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import type { ChangeEvent } from 'react'
 
 interface InputSimplesProps {
-  type?: 'text' | 'number' | 'email' | 'password'
+  type?: 'text' | 'number' | 'email' | 'password' | 'date'
   name?: string
   value?: string | number
   maximo?: number
