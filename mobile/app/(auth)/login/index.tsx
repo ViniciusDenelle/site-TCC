@@ -1,76 +1,160 @@
 import { View, Text, Image } from "react-native";
 import { vars } from "nativewind";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { router } from "expo-router";
 
 import useTema from "../../../contextos/TemaContexto";
 import InputSimples from "../../../componentes/InputSimples";
 import BotaoPrimario from "../../../componentes/BotaoPrimario";
 import LinkSimples from "../../../componentes/LinkSimples";
-import * as WebBrowser from 'expo-web-browser'
-import * as Google from 'expo-auth-session/providers/google'
-WebBrowser.maybeCompleteAuthSession()
+import * as AuthSession from 'expo-auth-session'
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+import { useMutation } from "@tanstack/react-query";
+import api from "@/api";
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default function Login() {
-   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: '475207158467-0jte55h3ilb2rlloiev634kdsj8oano6.apps.googleusercontent.com'
-})
+
     const { temaAtual } = useTema();
 
-    const [email, setEmail] = useState('');
-    const [senha, setSenha] = useState('');
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
 
-    function entrar() {
-        console.log({
-            email,
-            senha
+    // LOGIN GOOGLE
+    const redirectUri = AuthSession.makeRedirectUri();
+
+console.log(redirectUri);
+
+const [request, response, promptAsync] =
+    Google.useAuthRequest({
+        clientId:
+            '336196057614-6sevla699fpvhcvcj45pjmh8avh48247.apps.googleusercontent.com',
+    });
+
+    // CAPTURA RESPOSTA LOGIN GOOGLE
+    useEffect(() => {
+
+        if (response?.type === "success") {
+
+            const { authentication } = response;
+
+            fetch(
+                "https://www.googleapis.com/userinfo/v2/me",
+                {
+                    headers: {
+                        Authorization:
+                            `Bearer ${authentication?.accessToken}`,
+                    },
+                }
+            )
+                .then((res) => res.json())
+                .then((user) => {
+
+                    console.log("USUÁRIO GOOGLE:");
+                    console.log(user);
+
+                    /*
+                        user.name
+                        user.email
+                        user.picture
+                    */
+
+                    router.push("/");
+                });
+        }
+
+    }, [response]);
+
+     const loginMutation = useMutation({
+            mutationFn: async ({ email, senha } : {email: string, senha: string}) => {
+                const res = await api.post('/login', {
+                    email,
+                    senha,
+                })
+                return res.data
+            },
+            onSuccess: data => {
+                console.log(data)
+            },
+            onError: error => {
+                console.log(error)
+            }
         })
-
-        router.push('/')
-    }
+    
+        function cadastro() {
+            loginMutation.mutate({
+                email,
+                senha,
+            })
+        }
 
     return (
+
         <View
             style={vars(temaAtual)}
-            className="flex-1 bg-base-primaria justify-center items-center px-4"
+            className="flex-1 bg-base-primaria 
+            justify-center items-center px-4"
         >
 
             <View
-                className="w-full max-w-[420px] 
-                bg-base-secundaria rounded-3xl 
-                p-6 gap-4"
+                className="
+                w-full max-w-[420px]
+                bg-base-secundaria
+                rounded-3xl
+                p-6
+                gap-4
+            "
             >
 
+                {/* LOGO */}
                 <View className="items-center gap-2 mb-2">
 
                     <View
-                        className="w-20 h-20 rounded-full 
-                        bg-base-terciaria items-center justify-center"
+                        className="
+                        w-20 h-20 rounded-full
+                        bg-base-terciaria
+                        items-center justify-center
+                    "
                     >
+
                         <Text
-                            className="text-2xl 
-                            font-poppins-bold text-t-primaria"
+                            className="
+                            text-2xl
+                            font-poppins-bold
+                            text-t-primaria
+                        "
                         >
                             FF
                         </Text>
+
                     </View>
 
                     <Text
-                        className="text-3xl text-t-primaria 
-                        font-poppins-bold"
+                        className="
+                        text-3xl
+                        text-t-primaria
+                        font-poppins-bold
+                    "
                     >
                         Fit Forge
                     </Text>
 
                     <Text
-                        className="text-sm text-t-secundaria 
-                        font-poppins text-center"
+                        className="
+                        text-sm
+                        text-t-secundaria
+                        font-poppins
+                        text-center
+                    "
                     >
                         Transforme seu corpo. Evolua sua mente.
                     </Text>
 
                 </View>
 
+                {/* INPUTS */}
                 <View className="gap-3">
 
                     <InputSimples
@@ -90,28 +174,90 @@ export default function Login() {
 
                 </View>
 
+                {/* BOTÃO LOGIN NORMAL */}
                 <BotaoPrimario
                     tipo="cheio"
-                    onPress={entrar}
+                    onPress={cadastro}
                 >
                     Entrar
                 </BotaoPrimario>
 
+                {/* DIVISOR */}
+                <View
+                    className="
+                    flex-row items-center gap-2
+                "
+                >
+
+                    <View className="flex-1 h-[1px] bg-zinc-400" />
+
+                    <Text
+                        className="
+                        text-t-secundaria
+                        font-poppins
+                    "
+                    >
+                        ou
+                    </Text>
+
+                    <View className="flex-1 h-[1px] bg-zinc-400" />
+
+                </View>
+
+                {/* LOGIN GOOGLE */}
                 <BotaoPrimario
-                    tipo="cheio"
+                    tipo="vazio"
                     onPress={() => promptAsync()}
                 >
-                    Entrar com Google
+
+                    <View
+                        className="
+                        flex-row
+                        items-center
+                        justify-center
+                        gap-3
+                    "
+                    >
+
+                        <Image
+                            source={{
+                                uri:
+                                    "https://cdn-icons-png.flaticon.com/512/2991/2991148.png",
+                            }}
+                            style={{
+                                width: 22,
+                                height: 22,
+                            }}
+                        />
+
+                        <Text
+                            className="
+                            text-t-primaria
+                            font-poppins-bold
+                        "
+                        >
+                            Entrar com Google
+                        </Text>
+
+                    </View>
+
                 </BotaoPrimario>
 
+                {/* CADASTRO */}
                 <View
-                    className="flex flex-row 
-                    justify-center items-center gap-1"
+                    className="
+                    flex-row
+                    justify-center
+                    items-center
+                    gap-1
+                "
                 >
 
                     <Text
-                        className="text-t-secundaria 
-                        font-poppins"
+                        className="
+                        text-t-secundaria
+                        font-poppins
+                    "
                     >
                         Não possui conta?
                     </Text>
@@ -127,3 +273,4 @@ export default function Login() {
         </View>
     );
 }
+
