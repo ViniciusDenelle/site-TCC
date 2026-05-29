@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
+import type { UseMutationResult } from '@tanstack/react-query' // Importado para tipar a mutation
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { AxiosError } from 'axios'
 import api from '../../api.js'
@@ -29,7 +30,7 @@ type DadosCadastro = {
         meses: number
         previsao: string
     }
-    veloPerda: string
+    veloPerda: number
     codigoConfirmacao: string
     passo?: number
 }
@@ -50,9 +51,38 @@ type CadastroInfo = DadosCadastro & {
     GET: number
 }
 
+// CORRIGIDO: Agora espelha exatamente o return do hook
+export type UseCadastroReturn = {
+    passo: Passo
+    setPasso: React.Dispatch<React.SetStateAction<Passo>>
+    erro: boolean
+    setErro: React.Dispatch<React.SetStateAction<boolean>>
+    errosCampo: ErrosCampo
+    podeProximo: boolean
+    idade: number
+    TMB: number
+    GET: number
+    dados: DadosCadastro
+    mudarDados: <K extends keyof DadosCadastro>(
+        campo: K,
+        valor: DadosCadastro[K]
+    ) => void
+    cadastrarMutation: UseMutationResult<
+        RespostaCadastro,
+        AxiosError<ErroApi>,
+        CadastroInfo
+    >
+    cadastroHandler: () => void
+    emailMutation: UseMutationResult<
+        any,
+        AxiosError,
+        { email?: string; tipo?: string }
+    >
+}
+
 /* ================= HOOK ================= */
 
-const useCadastro = () => {
+const useCadastro = (): UseCadastroReturn => {
 
     const [dados, setDados] = useState<DadosCadastro>(() => {
         const salvo = localStorage.getItem('dados_cadastro')
@@ -105,7 +135,7 @@ const useCadastro = () => {
             dados.experiencia !== '',
 
         4: () =>
-            dados.veloPerda !== '' &&
+            dados.veloPerda !== 0 &&
             dados.pesoFinal !== 0,
 
         5: () => true,
@@ -255,8 +285,6 @@ const useCadastro = () => {
         altura: 1,
         dataDeNascimento: 1,
         nivelAtividade: 2,
-        objetivo: 3,
-        experiencia: 3,
         veloPerda: 4,
         pesoFinal: 4,
         nome: 6,

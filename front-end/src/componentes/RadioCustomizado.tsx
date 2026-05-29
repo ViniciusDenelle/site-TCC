@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 
 interface RadioCustomizadoProps {
   name: string
-  valor: string
+  valor: string | number
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void
   children: ReactNode
   classeAdicional?: string

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { createContext } from 'react'
-import useCadastro from '../logicas/cadastro/useCadastro.js'
+import { createContext, useContext } from 'react'
+import useCadastro, { UseCadastroReturn } from '../logicas/cadastro/useCadastro.js'
 
 interface CadastroContextType {
   [key: string]: unknown
@@ -25,4 +25,7 @@ export const CadastroProvider = ({
   )
 }
 
-export default CadastroContext
+export default function useCadastroContexto() {
+  const dados = useContext(CadastroContext) as UseCadastroReturn | null
+  return dados
+}
