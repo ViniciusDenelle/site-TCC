@@ -6,6 +6,7 @@ import { View } from "react-native-reanimated/lib/typescript/Animated";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Toast from 'react-native-toast-message'
 import { toastConfig } from "@/componentes/ToastConfig";
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 const queryClient = new QueryClient()
 
@@ -23,11 +24,13 @@ export default function RootLayout() {
   return (
     <TemaProvider>
       <QueryClientProvider client={queryClient}>
-        <Stack
-        screenOptions={{
-          headerShown: false
-        }}/>
-        <Toast config={toastConfig}/>
+        <GestureHandlerRootView>
+          <Stack
+          screenOptions={{
+            headerShown: false
+          }}/>
+          <Toast config={toastConfig}/>
+        </GestureHandlerRootView>
       </QueryClientProvider>
     </TemaProvider>
   );
