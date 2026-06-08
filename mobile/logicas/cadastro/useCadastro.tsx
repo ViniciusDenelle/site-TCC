@@ -9,7 +9,7 @@ import Toast from 'react-native-toast-message'
 
 type Passo = 1 | 2 | 3 | 4 | 5 | 6
 
-type DadosCadastro = {
+export type DadosCadastro = {
     nome: string
     email: string
     senha: string

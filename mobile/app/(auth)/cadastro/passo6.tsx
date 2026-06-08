@@ -45,7 +45,7 @@ const confirmacao = () => {
     {
         cadastroHandler()
         if(cadastrarMutation.isSuccess){
-            console.log('pode proximo')
+            
         }
     }
 
