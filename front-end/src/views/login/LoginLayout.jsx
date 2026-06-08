@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import InputSimples from '../../componentes/InputSimples'
-import BotaoSimples from '../../componentes/BotaoSimples'
+import BotaoSimples from '../../componentes/BotaoSecundario'
 import BotaoPrimario from '../../componentes/BotaoPrimario'
 import GoogleIcone from '../../assets/icones/googleIcone.svg'
 import LinkSimples from '../../componentes/LinkSimples'

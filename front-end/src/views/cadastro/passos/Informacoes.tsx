@@ -5,21 +5,20 @@ import type { ChangeEvent } from 'react'
 import { motion } from 'motion/react'
 
 // Garantindo que as importações conversem bem com o TS
-import BotaoSimples from '../../../componentes/BotaoSimples'
+import BotaoSimples from '../../../componentes/BotaoSecundario'
 import InputSimples from '../../../componentes/InputSimples'
 import RadioCustomizado from '../../../componentes/RadioCustomizado'
-import SliderCustomizado from '../../../componentes/SliderCustomizado'
+import SliderCustomizado from '../../../componentes/InputRange'
 import CadastroContext from '../../../contextos/CadastroContexto'
-import type { UseCadastroReturn } from '../../../logicas/cadastro/useCadastro'
+import useCadastroContexto from '../../../contextos/CadastroContexto'
 
 const Informacoes = () => {
-  const contexto = useContext(CadastroContext) as UseCadastroReturn | null
+  const {
+    dados,
+    mudarDados,
+    errosCampo
+  } = useCadastroContexto()
 
-  if (!contexto) {
-    throw new Error('CadastroContext precisa de um Provider')
-  }
-
-  const { dados, mudarDados, errosCampo } = contexto
   const { peso, tipoPeso, genero, altura, dataDeNascimento } = dados
 
   const minPeso = tipoPeso === 'kilos' ? 20 : 40
@@ -85,9 +84,9 @@ const Informacoes = () => {
       <div className="flex flex-col gap-1">
         <h2 className="text-t-principal">escolha sua data de nascimento:</h2>
         <InputSimples
-          type="date"
+          tipo="date"
           classeAdicional="h-10"
-          value={dataDeNascimento}
+          valor={dataDeNascimento}
           onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
             mudarDados('dataDeNascimento', ev.target.value)
           }
@@ -100,7 +99,7 @@ const Informacoes = () => {
         <div className="flex w-full gap-2">
           <div className="relative w-2/3 h-full">
             <SliderCustomizado
-              mudarValor={(value: number) => mudarDados('peso', value)}
+              onChange={(value: number) => mudarDados('peso', value)}
               valor={peso}
               min={minPeso}
               max={maxPeso}
@@ -115,8 +114,8 @@ const Informacoes = () => {
           <div className="flex gap-1 w-1/3">
             <InputSimples
               classeAdicional="w-full"
-              type="number"
-              value={String(peso)}
+              tipo="number"
+              valor={String(peso)}
               onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
                 mudarDados('peso', Number(ev.target.value))
               }
@@ -147,7 +146,7 @@ const Informacoes = () => {
         <div className="flex w-full gap-2">
           <div className="relative w-2/3 h-full">
             <SliderCustomizado
-              mudarValor={(value: number) => mudarDados('altura', value)}
+              onChange={(value: number) => mudarDados('altura', value)}
               valor={altura}
               min={80}
               max={250}
@@ -162,8 +161,8 @@ const Informacoes = () => {
           <div className="flex gap-1 items-center w-1/3">
             <InputSimples
               classeAdicional="w-full"
-              type="number"
-              value={String(altura)}
+              tipo="number"
+              valor={String(altura)}
               onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
                 mudarDados('altura', Number(ev.target.value))
               }

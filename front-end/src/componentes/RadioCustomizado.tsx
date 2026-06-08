@@ -55,7 +55,7 @@ const RadioCustomizado = ({
           <span
             className="
               flex justify-center items-center p-1
-              rounded-full ring ring-base-quaternaria
+              rounded-full ring-2 ring-base-quaternaria
               group-has-checked:ring-destaque-s-escuro
             "
           >

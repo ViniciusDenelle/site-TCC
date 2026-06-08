@@ -1,8 +1,8 @@
 import * as Slider from '@radix-ui/react-slider'
 
-interface SliderCustomizadoProps {
+interface InputRangeProps {
   valor: number
-  mudarValor: (valor: number) => void
+  onChange: (valor: number) => void
   min?: number
   max?: number
   step?: number
@@ -13,9 +13,9 @@ interface SliderCustomizadoProps {
   classeAdicionalRange?: string
 }
 
-const SliderCustomizado = ({
+const InputRange = ({
   valor,
-  mudarValor,
+  onChange,
   min = 1,
   max = 10,
   step = 1,
@@ -24,7 +24,7 @@ const SliderCustomizado = ({
   classeAdicionalThumb,
   classeAdicionalTrack,
   classeAdicionalRange,
-}: SliderCustomizadoProps) => {
+}: InputRangeProps) => {
 
   function porcentagem(val: number): number {
     return ((val - min) / (max - min)) * 100
@@ -71,7 +71,7 @@ const SliderCustomizado = ({
   value={[valor]}
   onValueChange={(value) => {
     if (value[0] !== undefined) {
-      mudarValor(value[0])
+      onChange(value[0])
     }
   }}
   min={min}
@@ -125,4 +125,4 @@ const SliderCustomizado = ({
   )
 }
 
-export default SliderCustomizado
+export default InputRange

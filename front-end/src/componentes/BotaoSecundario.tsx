@@ -1,20 +1,20 @@
 import type { ReactNode } from 'react'
 import { motion } from 'framer-motion'
 
-interface BotaoSimplesProps {
+interface BotaoSecundarioProps {
   children:ReactNode
   tipo?: 'cheio' | 'vazio'
   classeAdicional?: string
   onClick?: () => void
   disabled?: boolean
 }
-const BotaoSimples = ({
+const BotaoSecundario = ({
   children,
   tipo,
   classeAdicional,
   onClick,
   disabled
-}:BotaoSimplesProps) => {
+}:BotaoSecundarioProps) => {
 
     const classeBase = `
         rounded-lg p-1 flex justify-center items-center transition-colors
@@ -42,4 +42,4 @@ const BotaoSimples = ({
   )
 }
 
-export default BotaoSimples
+export default BotaoSecundario

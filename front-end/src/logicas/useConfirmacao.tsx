@@ -1,5 +1,8 @@
+import { UseMutationResult } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { ErrosCampoCadastro } from './cadastro/useCadastro'
 
 type DadosProps = {
     email?: string
@@ -9,34 +12,25 @@ type DadosProps = {
 type ErrorResponse = {
     response?: {
         data?: {
-            errors?: string[]
+            errors?: ErrosCampoCadastro
         }
     }
 }
 
-type EmailMutationProps = {
-    mutate: (
-        data: {
-            email: string
+type EmailMutationProps =  UseMutationResult<any, AxiosError, {
+            email?: string
             tipo?: string
-        },
-        options?: {
-            onError?: (error: ErrorResponse) => void
-            onSuccess?: (data: unknown) => void
         }
-    ) => void
+    >
 
-    isSuccess: boolean
-    isLoading: boolean
-    isError: boolean
-}
+
 
 const useConfirmacao = (
     emailMutation: EmailMutationProps,
     dados: DadosProps = {}
 ) => {
 
-    const [erros, setErros] = useState<string[]>([])
+    const [erros, setErros] = useState<ErrosCampoCadastro>({})
     const [contagem, setContagem] = useState<number>(0)
 
     const enviarEmailHandler = (): void => {
@@ -46,7 +40,7 @@ const useConfirmacao = (
         emailMutation.mutate(
             {
                 email: dados.email,
-                tipo: dados. tipo,
+                tipo: dados.tipo,
             },
             {
                 onError: (error: ErrorResponse) => {
@@ -56,10 +50,12 @@ const useConfirmacao = (
                     if (erros) {
                         setErros(erros)
                     }
+
+                    toast.error('houve um problema ao enviar o email')
                 },
 
                 onSuccess: () => {
-                    setErros([])
+                    setErros({})
                     toast.success('email enviado com sucesso')
                     setContagem(30)
                 }
@@ -86,7 +82,7 @@ const useConfirmacao = (
     return {
         enviarEmailHandler,
         isSuccess: emailMutation.isSuccess,
-        isLoading: emailMutation.isLoading,
+        isPending: emailMutation.isPending,
         isError: emailMutation.isError,
         contagem,
         erros

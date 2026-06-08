@@ -4,23 +4,28 @@ import { CalendarClock, Flame } from 'lucide-react'
 import type { ChangeEvent } from 'react'
 
 import InputSimples from '../../../componentes/InputSimples'
-import SliderCustomizado from '../../../componentes/SliderCustomizado'
 import RadioCustomizado from '../../../componentes/RadioCustomizado'
 
 import CadastroContext from '../../../contextos/CadastroContexto'
 import useMetas from '../../../logicas/cadastro/useMetas'
 import type { UseCadastroReturn } from '../../../logicas/cadastro/useCadastro'
+import useCadastroContexto from '../../../contextos/CadastroContexto'
+import InputRange from '../../../componentes/InputRange'
 
 const Metas = () => {
-  const contexto = useContext(CadastroContext) as UseCadastroReturn | null
+  const {
+    dados,
+    mudarDados,
+    GET,
+    errosCampo
+  } = useCadastroContexto()
 
-  if (!contexto) {
-    throw new Error('CadastroContext precisa de um Provider')
-  }
-
-  const { dados, mudarDados, GET, errosCampo } = contexto
-  const { calorias, tempoEstimado, minMaxPeso } = useMetas(dados, mudarDados, GET)
-  const { peso, veloPerda, pesoFinal, objetivo } = dados
+  const { 
+    calorias, 
+    tempoEstimado,
+     minMaxPeso 
+  } = useMetas(dados, mudarDados, GET)
+  const { peso, veloPerda, pesoIdeal, objetivo } = dados
 
   const velocidadePerda = [
     {
@@ -48,8 +53,8 @@ const Metas = () => {
     valor: parseFloat((Number(peso) * velo.base).toFixed(2))
   }))
 
-  const isRecomendado = Number(pesoFinal) < minMaxPeso.maxRec && Number(pesoFinal) > minMaxPeso.minRec
-  const erroPesoFinal = errosCampo.pesoFinal ? errosCampo.pesoFinal[0] : null
+  const isRecomendado = Number(pesoIdeal) <= minMaxPeso.maxRec && Number(pesoIdeal) >= minMaxPeso.minRec
+  const erroPesoFinal = errosCampo.pesoIdeal ? errosCampo.pesoIdeal[0] : null
 
   return (
     <motion.div
@@ -110,20 +115,24 @@ const Metas = () => {
 
           <InputSimples
             classeAdicional="w-20"
-            type="number"
-            value={pesoFinal}
+            tipo="number"
+            valor={pesoIdeal}
             onChange={(ev: ChangeEvent<HTMLInputElement>) => 
-              mudarDados('pesoFinal', Number(ev.target.value))
+              mudarDados('pesoIdeal', Number(ev.target.value))
             }
           />
         </div>
 
         <div className="relative w-full">
-          <SliderCustomizado
-            valor={Number(pesoFinal)}
+          <InputRange
+            valor={Number(pesoIdeal)}
             min={minMaxPeso.min}
             max={minMaxPeso.max}
-            mudarValor={(value: number) => mudarDados('pesoFinal', value)}
+            recomendadoMin={minMaxPeso.minRec}
+            recomendadoMax={minMaxPeso.maxRec}
+            classeAdicionalThumb={isRecomendado && `bg-green-500 hover:bg-green-400`}
+            classeAdicionalRange={isRecomendado && `bg-green-600`} 
+            onChange={(value: number) => mudarDados('pesoIdeal', value)}
           />
 
           <div className="absolute -bottom-8 left-0 flex justify-between w-full">
@@ -151,6 +160,7 @@ const Metas = () => {
               }
               classeAdicional="w-full flex-col items-start h-15 px-2"
               checked={veloPerda === radio.valor}
+              semBolinha
             >
               <h3 className="flex items-center gap-1">
                 <span className={`block size-3 rounded-full ${radio.cor}`} />

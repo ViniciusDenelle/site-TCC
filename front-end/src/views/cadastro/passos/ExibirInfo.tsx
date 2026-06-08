@@ -1,116 +1,363 @@
-import type {
-  UseMutationResult
-} from '@tanstack/react-query'
 
-import type {
-  AxiosError
-} from 'axios'
+import {
+  Activity,
+  Cake,
+  CalendarClock,
+  Clock,
+  Flame,
+  Footprints,
+  GraduationCap,
+  HeartPulse,
+  LucideIcon,
+  Ruler,
+  Target,
+  Utensils,
+  VenusAndMars,
+  Weight,
+  WeightTilde
+} from 'lucide-react'
 
-export type DadosCadastro = {
-  nome: string
-  email: string
-  senha: string
-  genero: string
-  peso: number
-  tipoPeso: 'kilos' | 'libras'
-  pesoFinal: number
-  altura: number
-  dataDeNascimento: string
-  nivelAtividade: number | null
-  objetivo: string
-  experiencia: string
-  calDiaria: number
-  tempo: {
-    semanas: number
-    meses: number
-    previsao: string
-  }
-  veloPerda: number
-  codigoConfirmacao: string
-}
+import useCadastroContexto from '../../../contextos/CadastroContexto'
+import { motion } from 'framer-motion'
+import Card from '../../../componentes/Card'
+import InfoItem from '../../../componentes/InfoItem'
+import InfoItemVertical from '../../../componentes/InfoItemVertical'
 
-export type ErrosCampo =
-  Partial<
-    Record<
-      keyof DadosCadastro,
-      string
-    >
-  >
+const BlocoDadosPessoais = ({
+  dados
+}) => {
 
-export type RespostaCadastro = {
-  message: string
-}
+  const {
+    genero,
+    idade,
+    peso,
+    altura,
+    tipoPeso
+  } = dados
 
-export type ErroApi = {
-  errors?: Partial<
-    Record<
-      keyof DadosCadastro,
-      string[]
-    >
-  >
-}
-
-export type CadastroInfo =
-  DadosCadastro & {
-    idade: number
-    TMB: number
-    GET: number
-  }
-
-export type EmailMutation = {
-  mutate: (
-    dados: {
-      email?: string
-      tipo?: string
+  const itemsDadosPessoais1 = [
+    {
+      icone: VenusAndMars,
+      label: 'genero',
+      valor: genero
     },
-    options?: {
-      onError?: (
-        error: AxiosError<ErroApi>
-      ) => void
+    {
+      icone: Cake,
+      label: 'idade',
+      valor: idade
+    },
+  ]
 
-      onSuccess?: (
-        data: RespostaCadastro
-      ) => void
+  const itemsDadosPessoais2 = [
+    {
+      icone: Weight,
+      label: 'peso',
+      valor: `${peso} ${tipoPeso}`
+    },
+    {
+      icone: Ruler,
+      label: 'altura',
+      valor: `${altura} cm`
     }
-  ) => void
+  ]
 
-  isSuccess: boolean
-  isPending: boolean
-  isError: boolean
+  return (
+    <Card className='px-4 py-2 flex-col'>
+      <div className="flex justify-between py-1">
+
+        {itemsDadosPessoais1.map(item => (
+          <InfoItem
+            key={item.label}
+            icone={item.icone}
+            label={item.label}
+            valor={item.valor}
+          />
+        ))}
+
+      </div>
+      <div className="flex justify-between py-1 
+        border-t border-base-quaternaria">
+
+        {itemsDadosPessoais2.map(item => (
+          <InfoItem
+            key={item.label}
+            icone={item.icone}
+            label={item.label}
+            valor={item.valor}
+          />
+        ))}
+
+      </div>
+    </Card>
+  )
 }
 
-export type UseCadastroReturn = {
-  dados: DadosCadastro
+const BlocoObjetivo = ({
+  dados
+}) => {
 
-  mudarDados: <
-    K extends keyof DadosCadastro
-  >(
-    campo: K,
-    valor: DadosCadastro[K]
-  ) => void
+  const {
+    nivelAtividade,
+    objetivo,
+    experiencia,
+    GET,
+    calDiaria,
+    veloPerda
+  } = dados
 
-  errosCampo: ErrosCampo
+  const niveis: Record<string, string> = {
+    '1.2': 'sedentario',
+    '1.375': 'leve',
+    '1.55': 'moderado',
+    '1.75': 'intenso'
+  }
 
-  podeSeguir: (
-    passo: string
-  ) => boolean
+  const atividadeNome =
+    niveis[String(nivelAtividade)] || ''
 
-  idade: number
-  TMB: number
-  GET: number
+  const esquerda = [
+    {
+      icone: Activity,
+      label: 'atividade',
+      valor: atividadeNome
+    },
+    {
+      icone: Target,
+      label: 'objetivo',
+      valor: objetivo.replace('_', ' ')
+    },
+    {
+      icone: GraduationCap,
+      label: 'experiência',
+      valor: experiencia
+    }
+  ]
 
-  parseNumero: (
-    valor: string
-  ) => number
+  const direita = [
+    {
+      icone: Flame,
+      label: 'gasto calórico total',
+      valor: `${GET} kcal`
+    },
+    {
+      icone: Footprints,
+      label: 'calorias diárias',
+      valor: `${calDiaria} kcal`
+    },
+    {
+      icone: HeartPulse,
+      label: `velocidade de ${objetivo === 'perder_peso'
+          ? 'perda'
+          : 'ganho'
+        }`,
+      valor: `${veloPerda} kg/semana`
+    }
+  ]
 
-  emailMutation: EmailMutation
+  return (
+    <Card>
+      <div className="flex-1 px-4 py-2 space-y-3">
+        {esquerda.map(item => (
+          <InfoItemVertical
+            key={item.label}
+            {...item}
+          />
+        ))}
+      </div>
 
-  cadastrarMutation:
-    UseMutationResult<
-      RespostaCadastro,
-      AxiosError<ErroApi>,
-      CadastroInfo
+      <div
+        className="
+    flex-1 px-4 py-2 space-y-3
+    border-l border-base-quaternaria
+  "
+      >
+        {direita.map(item => (
+          <InfoItemVertical
+            key={item.label}
+            {...item}
+          />
+        ))}
+      </div>
+    </Card>
+  )
+}
+
+const BlocoMeta = ({
+  dados
+}) => {
+
+  const {
+    objetivo,
+    peso,
+    pesoIdeal,
+    tempo
+  } = dados
+
+  const diferenca =
+    objetivo === 'perder_peso'
+      ? peso - pesoIdeal
+      : pesoIdeal - peso
+
+  return (
+    <Card className="flex-col px-4 py-2">
+
+      <div className="flex justify-between pb-2">
+
+        <InfoItem
+          icone={WeightTilde}
+          label="peso final"
+          valor={`${pesoIdeal} kg`}
+        />
+
+        <InfoItem
+          icone={
+            objetivo === 'perder_peso'
+              ? Footprints
+              : Utensils
+          }
+          label={
+            objetivo === 'perder_peso'
+              ? 'peso a perder'
+              : 'peso a ganhar'
+          }
+          valor={`${diferenca} kg`}
+        />
+
+      </div>
+
+      <div
+        className="
+          flex items-start gap-2 py-2
+          border-t border-base-quaternaria
+        "
+      >
+        <Clock />
+
+        <div>
+          <p>tempo estimado:</p>
+
+          <p className="text-t-primaria">
+            {tempo.meses} meses e {tempo.semanas} semanas
+          </p>
+        </div>
+      </div>
+
+      <div
+        className="
+          flex items-start gap-2 pt-2
+          border-t border-base-quaternaria
+        "
+      >
+        <CalendarClock />
+
+        <div>
+          <p>previsão de término:</p>
+
+          <p className="text-t-primaria">
+            {tempo.previsao}
+          </p>
+        </div>
+      </div>
+
+    </Card>
+  )
+}
+
+
+const BlocoManutencao = ({
+  dados
+}) => {
+
+  const {
+    atividadeNome,
+    objetivo,
+    experiencia,
+    GET
+  } = dados
+
+  const itens = [
+    {
+      icone: Activity,
+      label: 'atividade',
+      valor: atividadeNome
+    },
+    {
+      icone: Target,
+      label: 'objetivo',
+      valor: objetivo.replace('_', ' ')
+    },
+    {
+      icone: GraduationCap,
+      label: 'experiência',
+      valor: experiencia
+    },
+    {
+      icone: Flame,
+      label: 'gasto calórico total',
+      valor: `${GET} kcal`
+    }
+  ]
+
+  return (
+    <Card className="flex-col px-4 py-2">
+
+      {itens.map((item, index) => (
+        <InfoItem
+          key={item.label}
+          {...item}
+          className={
+            index > 0
+              ? 'border-t border-base-quaternaria py-1'
+              : ''
+          }
+        />
+      ))}
+
+    </Card>
+  )
+}
+
+const ExibirInfo = () => {
+
+  const {
+    dados,
+    GET,
+    idade
+  } = useCadastroContexto()
+
+  return (
+
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+      className="flex flex-col gap-3 w-full"
     >
 
-  cadastroHandler: () => void
+      <h1 className="mx-auto text-lg font-semibold text-t-primaria">
+        suas informações
+      </h1>
+
+      {/* bloco 1 */}
+      <BlocoDadosPessoais dados={{ ...dados, idade }} />
+
+
+      {dados.objetivo !== 'manter_peso' ? (
+        <>
+          {/* bloco 2 */}
+          <BlocoObjetivo dados={{ ...dados, GET }} />
+
+          {/* bloco 3 */}
+          <BlocoMeta dados={dados} />
+
+        </>
+      ) : (
+        // bloco manter
+        <BlocoManutencao dados={{ ...dados, GET }} />
+      )}
+    </motion.div>
+  )
 }
+
+export default ExibirInfo

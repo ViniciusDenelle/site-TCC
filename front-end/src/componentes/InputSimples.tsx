@@ -2,9 +2,9 @@ import { motion } from 'framer-motion'
 import type { ChangeEvent } from 'react'
 
 interface InputSimplesProps {
-  type?: 'text' | 'number' | 'email' | 'password' | 'date'
+  tipo?: 'text' | 'number' | 'email' | 'password' | 'date'
   name?: string
-  value?: string | number
+  valor?: string | number
   maximo?: number
   minimo?: number
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void
@@ -14,9 +14,9 @@ interface InputSimplesProps {
 }
 
 const InputSimples = ({
-  type = 'text',
+  tipo = 'text',
   name,
-  value,
+  valor,
   maximo,
   minimo,
   onChange,
@@ -37,7 +37,7 @@ const InputSimples = ({
   `
 
   const invalidadores =
-    type === 'number'
+    tipo === 'number'
       ? {
           max: maximo,
           min: minimo
@@ -50,9 +50,9 @@ const InputSimples = ({
   return (
     <motion.input
       whileFocus={{ scale: 1.02 }}
-      type={type}
+      type={tipo}
       name={name}
-      value={value}
+      value={valor}
       onChange={onChange}
       placeholder={placeholder}
       disabled={disabled}
