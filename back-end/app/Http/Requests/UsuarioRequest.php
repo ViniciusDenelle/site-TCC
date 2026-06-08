@@ -36,6 +36,8 @@ class UsuarioRequest extends FormRequest
      */
     public function rules(): array
     {
+        $objetivo = $this->input('objetivo');
+
         return [
             'nome' => 'required|string|max:50',
             'email' => 'required|email|unique:users,email',
@@ -44,6 +46,14 @@ class UsuarioRequest extends FormRequest
             'idade' => 'required|integer',
             'dataDeNascimento' => 'required|date',
             'peso' => 'required|integer|min:20|max:500',
+            'pesoMinimo' => [
+                $objetivo === 'manter_peso' ? 'required' : 'nullable',
+                'numeric'
+            ],
+            'pesoMaximo' => [
+                $objetivo === 'manter_peso' ? 'required' : 'nullable',
+                'numeric'
+            ],
             'pesoIdeal' => 'required|integer|min:20|max:500',
             'tipoPeso' => 'required|string',
             'altura' => 'required|integer|min:80',
@@ -52,10 +62,10 @@ class UsuarioRequest extends FormRequest
             'experiencia' => 'required|string',
             'TMB' => 'required|integer|min:200',
             'GET' => 'required|integer|min:200',
-            'calDiaria' => 'required|integer',
-            'duracao' => 'required|integer',
-            'termino' => 'required',
-            'veloPerda' => 'required|numeric',
+            'calDiaria' => 'integer',
+            'duracao' => 'integer',
+            'termino' => 'nullable',
+            'veloPerda' => 'numeric',
             'codigoConfirmacao' => 'required|string'
         ];
     }
@@ -86,10 +96,10 @@ class UsuarioRequest extends FormRequest
             'peso.min' => 'O peso deve ser no mínimo 20kg',
             'peso.max' => 'O peso deve ser no máximo 500kg',
 
-            'pesoFinal.required' => 'Informe seu peso final',
-            'pesoFinal.integer' => 'O peso final deve ser um número inteiro',
-            'pesoFinal.min' => 'O peso final deve ser no mínimo 20kg',
-            'pesoFinal.max' => 'O peso final deve ser no máximo 500kg',
+            'pesoIdeal.required' => 'Informe seu peso final',
+            'pesoIdeal.integer' => 'O peso final deve ser um número inteiro',
+            'pesoIdeal.min' => 'O peso final deve ser no mínimo 20kg',
+            'pesoIdeal.max' => 'O peso final deve ser no máximo 500kg',
 
             'tipoPeso.required' => 'Informe o tipo de peso (ex: kg)',
 

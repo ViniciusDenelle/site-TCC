@@ -3,7 +3,7 @@ import { useEffect, useMemo } from "react"
 interface DadosMetas {
   veloPerda: number
   objetivo: string
-  pesoFinal: number
+  pesoIdeal: number
   peso: number
   altura: number
 }
@@ -18,7 +18,7 @@ const useMetas = (
   const {
     veloPerda,
     objetivo,
-    pesoFinal,
+    pesoIdeal,
     peso,
     altura
   } = dados
@@ -45,13 +45,13 @@ const useMetas = (
   }, [veloPerda, GET, objetivo])
 
   const tempoEstimado = useMemo(() => {
-    if (!pesoFinal || !veloPerda)
+    if (!pesoIdeal || !veloPerda)
       return { meses: 0, semanas: 0, previsao: '' }
 
     let difPeso =
       objetivo === 'perder_peso'
-        ? peso - pesoFinal
-        : pesoFinal - peso
+        ? peso - pesoIdeal
+        : pesoIdeal - peso
 
     let semanasTotais = difPeso / veloPerda
 
@@ -69,22 +69,29 @@ const useMetas = (
       semanas,
       previsao: dataFinal.toLocaleDateString("pt-BR")
     }
-  }, [pesoFinal, veloPerda])
+  }, [pesoIdeal, veloPerda])
 
   const minMaxPeso = useMemo(() => {
     if (objetivo === 'perder_peso') {
       return {
         min: Math.round(peso - (peso * 0.5)),
-        max: peso,
+        max: peso - 1,
         minRec: Math.round(18.5 * ((altura * altura) / 10000)),
-        maxRec: peso
+        maxRec: peso - 1
+      }
+    } else if (objetivo === 'ganhar_peso') {
+      return {
+        min: peso + 1,
+        max: Math.round(peso + (peso * 0.7)),
+        minRec: peso + 1,
+        maxRec: Math.round(28.9 * ((altura * altura) / 10000))
       }
     } else {
       return {
-        min: peso,
-        max: Math.round(peso + (peso * 0.7)),
-        minRec: peso,
-        maxRec: Math.round(28.9 * ((altura * altura) / 10000))
+        min: Math.round(peso - (peso * 0.3)),
+        max: Math.round(peso + (peso * 0.4)),
+        minRec: Math.round(18.5 * ((altura * altura) / 10000)),
+        maxRec: Math.round(24.9 * ((altura * altura) / 10000))
       }
     }
   }, [peso, altura, objetivo])
@@ -98,6 +105,13 @@ const useMetas = (
     if (!calorias) return
     mudarDados('calDiaria', calorias.calorias)
   }, [calorias])
+
+  useEffect(() => {
+    if (objetivo !== 'manter_peso') return 
+    mudarDados('pesoMinimo', minMaxPeso.minRec)
+    mudarDados('pesoMaximo', minMaxPeso.maxRec)
+
+  }, [objetivo, minMaxPeso])
 
   return {
     calorias,

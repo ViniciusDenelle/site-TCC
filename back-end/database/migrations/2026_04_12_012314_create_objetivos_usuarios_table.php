@@ -18,10 +18,10 @@ return new class extends Migration
             $table->integer('peso_ideal');
             $table->integer('peso_minimo')->nullable();
             $table->integer('peso_maximo')->nullable();
-            $table->decimal('velocidade', 3, 2);
+            $table->decimal('velocidade', 3, 2)->nullable();
             $table->date('comeco');
-            $table->date('termino');
-            $table->integer('duracao');
+            $table->date('termino')->nullable();
+            $table->integer('duracao')->nullable();
             $table->timestamps();
         });
     }

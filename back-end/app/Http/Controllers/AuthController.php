@@ -12,6 +12,7 @@ use App\Models\ObjetivoUsuario;
 use App\Models\MetricasUsuario;
 use App\Models\EmailConfirmacao;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
@@ -61,7 +62,7 @@ class AuthController extends Controller
         if(!$user || !Hash::check($dados['senha'], $user->password))
             return response()->json([
                 'mensagem' => 'validação deu erro'
-            ]);
+            ], 401);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -71,7 +72,7 @@ class AuthController extends Controller
     public function recuperarSenha(Request $request)
     {
         $dados = $request->validate([
-            'email' => 'required|email',
+            'email' => 'required|exists:users,email',
             'senhaNova' => 'required',
             'codigo' => 'required' 
         ], [
@@ -90,6 +91,12 @@ class AuthController extends Controller
         ]);
 
         $user = User::where('email', $dados['email'])->first();
+
+        if (!$user) {
+            return response()->json([
+                'mensagem' => 'usuário não encontrado'
+            ], 404);
+        }
 
         $user->update([
             'password' => $dados['senhaNova']
@@ -114,41 +121,46 @@ class AuthController extends Controller
                'mensagem' => 'codigo esta errado ou expirou' ,
                'request' => $request->codigoConfirmacao,
                'dados' => $dados['codigoConfirmacao']
+            ], 401);
+
+        $usuario = DB::transaction(function () use ($dados, $email) {
+            $usuario = User::create([
+                'name' => $dados['nome'],
+                'email' => $dados['email'],
+                'password' => $dados['senha'],
+                'role_id' => 1
             ]);
+    
+            $usuario->perfil()->create([
+                'genero' => $dados['genero'],
+                'peso' => $dados['peso'],
+                'tipo_do_peso' => $dados['tipoPeso'],
+                'altura' => $dados['altura'],
+                'idade' => $dados['idade'],
+                'data_de_nascimento' => $dados['dataDeNascimento'],
+                'nivel_de_atividade' => $dados['nivelAtividade'],
+                'experiencia' => $dados['experiencia'],
+            ]);
+    
+            $usuario->objetivos()->create([
+                'tipo' => $dados['objetivo'],
+                'peso_ideal' => $dados['pesoIdeal'],
+                'peso_minimo' => $dados['pesoMinimo'],
+                'peso_maximo' => $dados['pesoMaximo'],
+                'velocidade' => $dados['veloPerda'],
+                'comeco' => now(),
+                'termino' => $dados['termino'],
+                'duracao' => $dados['duracao']
+            ]);
+    
+            $usuario->metricas()->create([
+                'peso' => $dados['peso'],
+                'calorias_diarias' => $dados['calDiaria'],
+                'GET' => $dados['GET'],
+                'TMB' => $dados['TMB']
+            ]);
+        });
 
-        $usuario = User::create([
-            'name' => $dados['nome'],
-            'email' => $dados['email'],
-            'password' => $dados['senha'],
-            'role_id' => 1
-        ]);
-
-        $usuario->perfil()->create([
-            'genero' => $dados['genero'],
-            'peso' => $dados['peso'],
-            'tipo_do_peso' => $dados['tipoPeso'],
-            'altura' => $dados['altura'],
-            'idade' => $dados['idade'],
-            'data_de_nascimento' => $dados['dataDeNascimento'],
-            'nivel_de_atividade' => $dados['nivelAtividade'],
-            'experiencia' => $dados['experiencia'],
-        ]);
-
-        $usuario->objetivos()->create([
-            'tipo' => $dados['objetivo'],
-            'peso_ideal' => $dados['pesoIdeal'],
-            'velocidade' => 0.55,
-            'comeco' => now(),
-            'termino' => now(),
-            'duracao' => $dados['duracao']
-        ]);
-
-        $usuario->metricas()->create([
-            'peso' => $dados['peso'],
-            'calorias_diarias' => $dados['calDiaria'],
-            'GET' => $dados['GET'],
-            'TMB' => $dados['TMB']
-        ]);
 
         $email->delete();
 

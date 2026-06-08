@@ -5,15 +5,14 @@ import { motion } from 'motion/react'
 import RadioCustomizado from "../../../componentes/RadioCustomizado"
 import CadastroContext from '../../../contextos/CadastroContexto'
 import type { UseCadastroReturn } from '../../../logicas/cadastro/useCadastro'
+import useCadastroContexto from '../../../contextos/CadastroContexto'
 
 const NivelAtividade = () => {
-  const contexto = useContext(CadastroContext) as UseCadastroReturn | null
+  const {
+    dados,
+    mudarDados,
+  } = useCadastroContexto()
 
-  if (!contexto) {
-    throw new Error('CadastroContext precisa de um Provider')
-  }
-
-  const { dados, mudarDados } = contexto
   const { nivelAtividade } = dados
 
   const radios = [
@@ -52,7 +51,6 @@ const NivelAtividade = () => {
           escolha seu nivel de atividade fisica
         </h2>
       </div>
-
       <div className="grid grid-cols-1 grid-rows-4 gap-2 w-full mx-auto mt-2">
         {radios.map(radio => (
           <div key={radio.nome} className="w-full">
@@ -63,7 +61,7 @@ const NivelAtividade = () => {
               onChange={(ev: ChangeEvent<HTMLInputElement>) => 
                 mudarDados('nivelAtividade', Number(ev.target.value))
               }
-              checked={nivelAtividade === radio.valor}
+              checked={Number(nivelAtividade) === Number(radio.valor)}
             >
               <p className="flex flex-col">
                 {radio.nome}

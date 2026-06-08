@@ -3,6 +3,7 @@ import type { UseMutationResult } from '@tanstack/react-query' // Importado para
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { AxiosError } from 'axios'
 import api from '../../api.js'
+import Objetivo from '../../views/cadastro/passos/Objetivo.js'
 
 /* ================= TYPES ================= */
 
@@ -15,11 +16,13 @@ type DadosCadastro = {
     genero: string
     peso: number
     tipoPeso: 'kilos' | 'libras'
-    pesoFinal: number
+    pesoIdeal: number
+    pesoMinimo?: number | null
+    pesoMaximo?: number | null
     altura: number
     dataDeNascimento: string
     idade: number | string
-    nivelAtividade: number | null
+    nivelAtividade: number
     objetivo: string
     experiencia: string
     TMB: number | string
@@ -35,7 +38,7 @@ type DadosCadastro = {
     passo?: number
 }
 
-type ErrosCampo = Partial<Record<keyof DadosCadastro, string[]>>
+export type ErrosCampoCadastro = Partial<Record<keyof DadosCadastro, string[]>>
 
 type RespostaCadastro = {
     message: string
@@ -51,13 +54,12 @@ type CadastroInfo = DadosCadastro & {
     GET: number
 }
 
-// CORRIGIDO: Agora espelha exatamente o return do hook
 export type UseCadastroReturn = {
     passo: Passo
-    setPasso: React.Dispatch<React.SetStateAction<Passo>>
+    setPasso: React.Dispatch<React.SetStateAction<number>>
     erro: boolean
     setErro: React.Dispatch<React.SetStateAction<boolean>>
-    errosCampo: ErrosCampo
+    errosCampo: ErrosCampoCadastro
     podeProximo: boolean
     idade: number
     TMB: number
@@ -73,10 +75,10 @@ export type UseCadastroReturn = {
         CadastroInfo
     >
     cadastroHandler: () => void
-    emailMutation: UseMutationResult<
-        any,
-        AxiosError,
-        { email?: string; tipo?: string }
+    emailMutation: UseMutationResult<any, AxiosError, {
+            email?: string
+            tipo?: string
+        }
     >
 }
 
@@ -95,12 +97,14 @@ const useCadastro = (): UseCadastroReturn => {
                 senha: '',
                 genero: '',
                 peso: 20,
+                pesoMinimo: null,
+                pesoMaximo: null,
                 tipoPeso: 'kilos',
-                pesoFinal: 0,
+                pesoIdeal: 0,
                 altura: 80,
                 dataDeNascimento: '',
                 idade: '',
-                nivelAtividade: null,
+                nivelAtividade: 0,
                 objetivo: '',
                 experiencia: '',
                 TMB: '',
@@ -118,7 +122,7 @@ const useCadastro = (): UseCadastroReturn => {
 
     const [passo, setPasso] = useState<Passo>(1)
     const [erro, setErro] = useState(false)
-    const [errosCampo, setErrosCampo] = useState<ErrosCampo>({})
+    const [errosCampo, setErrosCampo] = useState<ErrosCampoCadastro>({})
 
     const validacoes: Record<Passo, () => boolean> = {
         1: () =>
@@ -134,9 +138,14 @@ const useCadastro = (): UseCadastroReturn => {
             dados.objetivo !== '' &&
             dados.experiencia !== '',
 
-        4: () =>
-            dados.veloPerda !== 0 &&
-            dados.pesoFinal !== 0,
+        4: () => {
+            if(dados.objetivo !== 'manter_peso'){
+                if (dados.pesoIdeal !== 0 && dados.veloPerda !== 0 ) return true
+            } else {
+                if (dados.pesoIdeal !== 0 ) return true
+            }
+        }
+            ,
 
         5: () => true,
 
@@ -228,6 +237,22 @@ const useCadastro = (): UseCadastroReturn => {
         return Math.round(TMB * Number(dados.nivelAtividade))
     }, [dados.nivelAtividade, TMB])
 
+    // persistencia dos dados no localStorage
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            const {codigoConfirmacao, ...dadosLimpos} = dados
+            localStorage.setItem('dados_cadastro', JSON.stringify(dadosLimpos))
+            
+        }, 500);
+
+        return () => clearTimeout(timeout)
+    }, [dados])
+
+    useEffect(() => {
+        mudarDados('veloPerda', 0)
+        mudarDados('pesoIdeal', dados.peso)
+    }, [dados.objetivo])
+
     /* ================= MUTATIONS ================= */
 
     const cadastrarMutation = useMutation<
@@ -236,11 +261,13 @@ const useCadastro = (): UseCadastroReturn => {
         CadastroInfo
     >({
         mutationFn: async (dados) => {
+            console.log(dados)
             const res = await api.post('/cadastro', dados)
             return res.data
         },
 
         onError: (error) => {
+            console.log(error)
             const erros = error.response?.data?.errors
             if (!erros) return
 
@@ -286,7 +313,7 @@ const useCadastro = (): UseCadastroReturn => {
         dataDeNascimento: 1,
         nivelAtividade: 2,
         veloPerda: 4,
-        pesoFinal: 4,
+        pesoIdeal: 4,
         nome: 6,
         email: 6,
         senha: 6

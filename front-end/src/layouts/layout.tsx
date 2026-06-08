@@ -15,7 +15,7 @@ import {
   motion
 } from 'framer-motion'
 
-import BotaoSimples from '../componentes/BotaoSimples.js'
+import BotaoSimples from '../componentes/BotaoSecundario.js'
 import LinkQuadrado from '../componentes/LinkQuadrado.js'
 import LinkSimples from '../componentes/LinkSimples.js'
 import TemaContexto from '../contextos/TemaContexto.js'

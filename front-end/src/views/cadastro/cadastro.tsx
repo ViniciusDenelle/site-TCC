@@ -1,27 +1,19 @@
-import React, { useContext } from 'react'
+import React, { ReactNode, useContext } from 'react'
 import LinkSimples from '../../componentes/LinkSimples'
-import Informações from './passos/informações'
 import NivelAtividade from './passos/NivelAtividade'
-import BotaoSimples from '../../componentes/BotaoSimples'
+import BotaoSecundario from '../../componentes/BotaoSecundario'
 import { ArrowLeft } from 'lucide-react'
 import BotaoPrimario from '../../componentes/BotaoPrimario'
 import { AnimatePresence } from 'motion/react'
 import Objetivo from './passos/Objetivo'
 import Metas from './passos/Metas'
-import ExibirInfo from './passos/ExibirInfo'
-import Credenciais from './passos/Credenciais'
 import CadastroContext from '../../contextos/CadastroContexto'
 import { UseCadastroReturn } from '../../logicas/cadastro/useCadastro'
-
-// Estendemos o retorno e usamos Omit para sobrescrever o emailMutation e adicionar o reset()
-export interface CadastroContextType extends Omit<UseCadastroReturn, 'emailMutation'> {
-    passo: number;
-    setPasso: React.Dispatch<React.SetStateAction<number>>;
-    erro: boolean;
-    setErro: React.Dispatch<React.SetStateAction<boolean>>;
-    podeProximo: boolean;
-    emailMutation: UseCadastroReturn['emailMutation'] & { reset: () => void };
-}
+import useCadastroContexto from '../../contextos/CadastroContexto'
+import Informacoes from './passos/Informacoes'
+import Credenciais from './passos/Crendenciais'
+import ExibirInfo from './passos/ExibirInfo'
+import MetasManterPeso from './passos/MetasManterPeso'
 
 const Cadastro: React.FC = () => {
     const {
@@ -33,7 +25,7 @@ const Cadastro: React.FC = () => {
         dados,
         cadastroHandler,
         emailMutation
-    } = useContext(CadastroContext) as CadastroContextType
+    } = useCadastroContexto()
 
     function proximoPasso(): void {
         if (!podeProximo) {
@@ -49,11 +41,11 @@ const Cadastro: React.FC = () => {
         setPasso(prev => prev - 1)
     }
 
-    const passos: Record<number, JSX.Element> = {
-        1: <Informações key="passo-1" />,
+    const passos: Record<number, ReactNode> = {
+        1: <Informacoes key="passo-1" />,
         2: <NivelAtividade key="passo-2" />,
         3: <Objetivo key="passo-3" />,
-        4: <Metas key="passo-4" />,
+        4: dados.objetivo === 'manter_peso' ? <MetasManterPeso /> : <Metas key="passo-4" />,
         5: <ExibirInfo key="passo-5" />,
         6: <Credenciais key="passo-6" />,
     }
@@ -61,9 +53,7 @@ const Cadastro: React.FC = () => {
     const passoPilula: number[] = [1, 2, 3, 4, 5, 6]
 
     // Variável para definir o que vai ser renderizado de forma segura
-    const PassoRenderizado = passo === 4 && dados.objetivo === 'manter_peso'
-        ? passos[passo + 1]
-        : passos[passo]
+    
 
     return (
         <main className='pt-20 relative min-h-screen w-full bg-base-primaria'>
@@ -99,11 +89,11 @@ const Cadastro: React.FC = () => {
                  w-9/10 md:w-120 md:px-10 shadow-md shadow-base-quaternaria/50">
 
                         {passo > 1 && (
-                            <BotaoSimples
+                            <BotaoSecundario
                                 classeAdicional="absolute top-2 left-2 ring-transparent hover:ring-transparent"
                                 onClick={voltarPasso}>
                                 <ArrowLeft />
-                            </BotaoSimples>
+                            </BotaoSecundario>
                         )}
 
                         <div className="flex w-full h-full flex-col gap-2 mt-5">
@@ -116,7 +106,7 @@ const Cadastro: React.FC = () => {
                                 )}
 
                                 <AnimatePresence mode='wait'>
-                                    {PassoRenderizado ?? <React.Fragment key="fallback" />}
+                                    {passos[passo] ?? <React.Fragment key="fallback" />}
                                 </AnimatePresence>
                             </div>
 

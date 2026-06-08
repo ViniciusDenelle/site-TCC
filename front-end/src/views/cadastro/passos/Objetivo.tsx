@@ -4,17 +4,20 @@ import { motion } from 'motion/react'
 
 import RadioCustomizado from '../../../componentes/RadioCustomizado'
 import CadastroContext from '../../../contextos/CadastroContexto'
-import type { UseCadastroReturn } from '../../../tipos'
+import useCadastroContexto from '../../../contextos/CadastroContexto'
 
 const Objetivo = () => {
-  const contexto = useContext(CadastroContext) as UseCadastroReturn | null
+  const {
+    dados,
+    mudarDados
+  } = useCadastroContexto()
 
-  if (!contexto) {
-    throw new Error('CadastroContext precisa de um Provider')
-  }
-
-  const { dados, mudarDados } = contexto
-  const { objetivo, experiencia, peso, altura } = dados
+  const { 
+    objetivo, 
+    experiencia, 
+    peso, 
+    altura 
+  } = dados
 
   // Array dos inputs para objetivo
   const radiosObjetivo = [
