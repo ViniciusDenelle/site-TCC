@@ -261,8 +261,8 @@ const useCadastro = (): UseCadastroReturn => {
         CadastroInfo
     >({
         mutationFn: async (dados) => {
-            console.log(dados)
             const res = await api.post('/cadastro', dados)
+            localStorage.setItem('TOKEN', JSON.stringify(res.data))
             return res.data
         },
 

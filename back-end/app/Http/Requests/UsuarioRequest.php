@@ -25,7 +25,7 @@ class UsuarioRequest extends FormRequest
 
         $this->merge([
             'duracao' => $duracao,
-            'termino' => $tempo['previsao'] ?? null
+            'termino' => Carbon::$tempo['previsao'] ?? null
         ]);
     }
 

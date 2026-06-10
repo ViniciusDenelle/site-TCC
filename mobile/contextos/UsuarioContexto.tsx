@@ -1,22 +1,32 @@
-import useCadastro from "@/logicas/cadastro/useCadastro";
-import { createContext, ReactNode } from "react";
+import useFetchUsuario, { RetornoUsuario } from "@/logicas/querys/FetchUsuarioMutation";
+import { createContext, ReactNode, useContext } from "react";
 
-type usuarioContextoProps = {
-    
-}
 type UsuarioProviderProps = {
     children: ReactNode
 }
 
-const UsuarioContext = createContext<usuarioContextoProps | null>(null)
+const UsuarioContext = createContext<RetornoUsuario | null>(null)
 
-const UsuarioProvider = ({
+export const UsuarioProvider = ({
     children
 } : UsuarioProviderProps) => {
+    const usuario = useFetchUsuario()
 
     return (
-        <UsuarioContext.Provider value={}>
+        <UsuarioContext.Provider value={usuario}>
             {children}
         </UsuarioContext.Provider>
     )
 }
+
+const useUsuarioContext = () => {
+    const usuario = useContext(UsuarioContext)
+
+    if (!usuario) {
+    throw new Error("useTema deve ser usado dentro do TemaProvider");
+  }
+
+  return usuario;
+}
+
+export default useUsuarioContext

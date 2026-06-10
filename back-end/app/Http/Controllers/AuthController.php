@@ -164,7 +164,9 @@ class AuthController extends Controller
 
         $email->delete();
 
-        return response()->json( $usuario);
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json($token);
     }
 
 }
