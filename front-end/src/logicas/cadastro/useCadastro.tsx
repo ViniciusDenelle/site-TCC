@@ -263,6 +263,7 @@ const useCadastro = (): UseCadastroReturn => {
         mutationFn: async (dados) => {
             console.log(dados)
             const res = await api.post('/cadastro', dados)
+            localStorage.setItem('token', JSON.stringify(res.data))
             return res.data
         },
 
@@ -279,6 +280,9 @@ const useCadastro = (): UseCadastroReturn => {
                 const passoErrado = campoParaPasso[primeiro]
                 if (passoErrado) setPasso(passoErrado)
             }
+        },
+        onSuccess: (res) => {
+            console.log('sucesso')
         }
     })
 
