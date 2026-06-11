@@ -44,14 +44,6 @@ const Credenciais = () => {
 
   const [senhaVisivel, setSenhaVisivel] = useState(false)
 
-  async function proximo() {
-    await cadastroHandler()
-
-    if (cadastrarMutation.isSuccess) {
-      console.log('cadastro realizado')
-    }
-  }
-
   return (
       <motion.div
         initial={{ opacity: 0 }}

@@ -149,7 +149,7 @@ class AuthController extends Controller
                 'peso_maximo' => $dados['pesoMaximo'],
                 'velocidade' => $dados['veloPerda'],
                 'comeco' => now(),
-                'termino' => $dados['termino'],
+                'termino' => Carbon::createFromFormat('d/m/Y', $dados['termino'])->format('Y-m-d'),
                 'duracao' => $dados['duracao']
             ]);
     
