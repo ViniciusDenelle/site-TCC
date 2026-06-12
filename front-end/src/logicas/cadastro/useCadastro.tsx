@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { AxiosError } from 'axios'
 import api from '../../api.js'
 import Objetivo from '../../views/cadastro/passos/Objetivo.js'
+import { Route, useNavigate } from 'react-router-dom'
 
 /* ================= TYPES ================= */
 
@@ -123,6 +124,7 @@ const useCadastro = (): UseCadastroReturn => {
     const [passo, setPasso] = useState<Passo>(1)
     const [erro, setErro] = useState(false)
     const [errosCampo, setErrosCampo] = useState<ErrosCampoCadastro>({})
+    const navigate = useNavigate()
 
     const validacoes: Record<Passo, () => boolean> = {
         1: () =>
@@ -263,7 +265,7 @@ const useCadastro = (): UseCadastroReturn => {
         mutationFn: async (dados) => {
             console.log(dados)
             const res = await api.post('/cadastro', dados)
-            localStorage.setItem('token', JSON.stringify(res.data))
+            
             return res.data
         },
 
@@ -282,7 +284,9 @@ const useCadastro = (): UseCadastroReturn => {
             }
         },
         onSuccess: (res) => {
-            console.log('sucesso')
+            localStorage.setItem('token', JSON.stringify(res))
+            navigate('/dashboard')
+            
         }
     })
 

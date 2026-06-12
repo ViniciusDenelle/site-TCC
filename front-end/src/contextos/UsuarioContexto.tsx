@@ -31,3 +31,5 @@ const useUsuarioContexto = () => {
 
   return usuario;
 }
+
+export default useUsuarioContexto
