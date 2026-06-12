@@ -133,7 +133,7 @@ class AuthController extends Controller
     
             $usuario->perfil()->create([
                 'genero' => $dados['genero'],
-                'peso' => $dados['peso'],
+                'peso' => $dados['peso'], 
                 'tipo_do_peso' => $dados['tipoPeso'],
                 'altura' => $dados['altura'],
                 'idade' => $dados['idade'],
@@ -149,7 +149,7 @@ class AuthController extends Controller
                 'peso_maximo' => $dados['pesoMaximo'],
                 'velocidade' => $dados['veloPerda'],
                 'comeco' => now(),
-                'termino' => Carbon::createFromFormat('d/m/Y', $dados['termino'])->format('Y-m-d'),
+                'termino' => $dados['objetivo'] !== 'manter_peso' ? Carbon::createFromFormat('d/m/Y', $dados['termino'])->format('Y-m-d') : null,
                 'duracao' => $dados['duracao']
             ]);
     
@@ -159,12 +159,15 @@ class AuthController extends Controller
                 'GET' => $dados['GET'],
                 'TMB' => $dados['TMB']
             ]);
+
+            return $usuario;
         });
-
-
+ 
         $email->delete();
 
-        return response()->json( $usuario);
+        $token =  $usuario->createToken('auth_token')->plainTextToken;
+
+        return response()->json( $token);
     }
 
 }

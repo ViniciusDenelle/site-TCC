@@ -6,6 +6,8 @@ import CadastroLayout from './layouts/CadastroLayout'
 import LoginLayout from './views/login/LoginLayout'
 import Login from './views/login/Login'
 import RecuperarSenha from './views/login/RecuperarSenha'
+import Dashboard from './views/Dashboard/Dashboard'
+import DashboardLayout from './layouts/DashBoardLayout'
 let ddd = 'dfadfasd'
 const Rota = createBrowserRouter(
     
@@ -18,7 +20,10 @@ const Rota = createBrowserRouter(
             </Route> 
             <Route path="/cadastro" element={<CadastroLayout/>} >
                   <Route index element={<Cadastro/>} />
-            </Route> 
+            </Route>
+            <Route path='/dashboard' element={<DashboardLayout/>}>
+                <Route index element={<Dashboard/>}/>
+            </Route>
           </Route>
     )
 )
