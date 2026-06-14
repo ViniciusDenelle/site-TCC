@@ -12,19 +12,28 @@ let ddd = 'dfadfasd'
 const Rota = createBrowserRouter(
     
     createRoutesFromElements(
-        <Route path='/' element={<LayoutDefault />}>
-            <Route index element={<App />} /> 
-            <Route path="/login" element={<LoginLayout />} >
-                <Route index element={<Login />} />
-                <Route path='recuperar-senha' element={<RecuperarSenha />} />
-            </Route> 
-            <Route path="/cadastro" element={<CadastroLayout/>} >
-                  <Route index element={<Cadastro/>} />
+        <>
+            {/* home e Auth */}
+            <Route path='/' element={<LayoutDefault/>}>
+                <Route index element={<App />} />
+
+                <Route path="login" element={<LoginLayout />} >
+                    <Route index element={<Login />} />
+                    <Route path='recuperar-senha' element={<RecuperarSenha />} />
+                </Route>
+                    
+                <Route path="cadastro" element={<CadastroLayout/>} >
+                        <Route index element={<Cadastro/>} />
+                </Route>
             </Route>
+
+                {/* dashboard */}
+                
             <Route path='/dashboard' element={<DashboardLayout/>}>
                 <Route index element={<Dashboard/>}/>
             </Route>
-          </Route>
+        
+        </>
     )
 )
 

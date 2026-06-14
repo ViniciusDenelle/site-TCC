@@ -182,7 +182,7 @@ function LayoutDefault() {
                     </LinkQuadrado>
 
                     <LinkQuadrado
-                      to="/login"
+                      to="login"
                       classeAdicional="w-full"
                     >
                       <UserLock />

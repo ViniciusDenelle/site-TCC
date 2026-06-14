@@ -72,14 +72,14 @@ class User extends Authenticatable
         return $this->hasOne(Inscrições::class);
     }
 
-    public function metricas() : HasMany
+    public function metricas() : HasOne
     {
-        return $this->hasMany(MetricasUsuario::class);
+        return $this->hasOne(MetricasUsuario::class);
     }
 
-    public function objetivos(): HasMany
+    public function objetivos(): HasOne
     {
-        return $this->hasMany(ObjetivosUsuario::class);
+        return $this->hasOne(ObjetivosUsuario::class);
     }
 
     

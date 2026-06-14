@@ -1,6 +1,7 @@
 
-import {useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import api from "../../api"
+import { useEffect } from "react"
 
 export type RetornoUsuario = {
     nome: string
@@ -30,12 +31,30 @@ const useFetchUsuario = () => {
         isError,
         isPending
     } = useQuery<RetornoUsuario>({
+        queryKey: ['usuario'],
         queryFn: async () => {
             const res = await api.get('/usuario')
-            return res.data
+            return res.data.data
         },
-        queryKey: ['usuario']
+        initialData: () => {
+            const salvo = localStorage.getItem('usuario')
+
+            return salvo
+                ? JSON.parse(salvo)
+                : undefined
+        },
+        staleTime: 1000 * 60 * 5,
+        refetchOnWindowFocus: false,
     })
+
+    useEffect(() => {
+        if (dadosUsuario) {
+            localStorage.setItem(
+                'usuario',
+                JSON.stringify(dadosUsuario)
+            )
+        }
+    }, [dadosUsuario])
 
     return {
         dadosUsuario,
