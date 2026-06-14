@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { UseMutationResult } from '@tanstack/react-query' // Importado para tipar a mutation
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { AxiosError } from 'axios'
@@ -41,10 +41,6 @@ type DadosCadastro = {
 
 export type ErrosCampoCadastro = Partial<Record<keyof DadosCadastro, string[]>>
 
-type RespostaCadastro = {
-    message: string
-}
-
 type ErroApi = {
     errors?: Partial<Record<keyof DadosCadastro, string[]>>
 }
@@ -71,7 +67,7 @@ export type UseCadastroReturn = {
         valor: DadosCadastro[K]
     ) => void
     cadastrarMutation: UseMutationResult<
-        RespostaCadastro,
+        any,
         AxiosError<ErroApi>,
         CadastroInfo
     >
@@ -256,9 +252,10 @@ const useCadastro = (): UseCadastroReturn => {
     }, [dados.objetivo])
 
     /* ================= MUTATIONS ================= */
+    const queryClient = useQueryClient()
 
     const cadastrarMutation = useMutation<
-        RespostaCadastro,
+        any,
         AxiosError<ErroApi>,
         CadastroInfo
     >({
@@ -283,8 +280,11 @@ const useCadastro = (): UseCadastroReturn => {
                 if (passoErrado) setPasso(passoErrado)
             }
         },
-        onSuccess: (res) => {
-            localStorage.setItem('token', JSON.stringify(res))
+        onSuccess: ({token, usuario}) => {
+            queryClient.setQueryData(['usuario'], usuario)
+            localStorage.setItem('token', String(token))
+            localStorage.setItem('usuario', JSON.stringify(usuario))
+            localStorage.removeItem('dados_cadastro')
             navigate('/dashboard')
             
         }

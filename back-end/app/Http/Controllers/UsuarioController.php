@@ -10,7 +10,7 @@ class UsuarioController extends Controller
 {
     public function fetch(Request $request)
     {
-        $usuario = $request->user()->load(['perfil', 'objetivo', 'metricas']);
+        $usuario = $request->user()->load(['perfil', 'objetivos', 'metricas']);
 
         return new UsuarioResource($usuario);
     }

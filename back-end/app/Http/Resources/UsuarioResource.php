@@ -15,18 +15,18 @@ class UsuarioResource extends JsonResource
             
             'genero'             => $this->perfil?->genero,
             'peso'               => $this->perfil?->peso,
-            'tipoPeso'           => $this->perfil?->tipo_peso,
+            'tipoPeso'           => $this->perfil?->tipo_do_peso,
             'altura'             => $this->perfil?->altura,
-            'data_de_nascimento' => $this->perfil?->data_de_nascimento,
-            'nivel_atividade'    => $this->perfil?->nivel_atividade,
+            'dataDeNascimento' => $this->perfil?->data_de_nascimento,
+            'nivelDeAtividade'    => $this->perfil?->nivel_de_atividade,
             'experiencia'        => $this->perfil?->experiencia,
             'idade'              => $this->perfil?->idade,
             
-            'peso_ideal'         => $this->objetivo?->peso_ideal,
-            'objetivo'           => $this->objetivo?->objetivo,
-            'veloPerda'          => $this->objetivo?->velocidade,
+            'pesoIdeal'         => $this->objetivos?->peso_ideal,
+            'objetivo'           => $this->objetivos?->tipo,
+            'veloPerda'          => $this->objetivos?->velocidade,
             
-            'calDiaria'          => $this->metricas?->cal_diaria,
+            'caloriasDiarias'          => $this->metricas?->calorias_diarias,
             'TMB'                => $this->metricas?->TMB,
             'GET'                => $this->metricas?->GET,  
         ];

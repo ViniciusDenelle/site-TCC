@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EnviarCodigoRequest;
 use App\Http\Requests\UsuarioRequest;
+use App\Http\Resources\UsuarioResource;
 use Hash;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -13,6 +14,7 @@ use App\Models\MetricasUsuario;
 use App\Models\EmailConfirmacao;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
@@ -167,7 +169,10 @@ class AuthController extends Controller
 
         $token =  $usuario->createToken('auth_token')->plainTextToken;
 
-        return response()->json( $token);
+        return response()->json([
+            'token' => $token,
+            'usuario' => new UsuarioResource($usuario->load(['metricas', 'objetivos', 'perfil'])) ,
+        ]);
     }
 
 }
