@@ -50,6 +50,28 @@
     --color-destaque-s-claro: var(--color-indigo-800);
     --color-destaque-s-medio: var(--color-blue-600);
     --color-destaque-s-escuro: var(--color-blue-500);
+
+    /* --color-base-primaria: var(--color-zinc-950);
+    --color-base-secundaria: var(--color-zinc-800);
+    --color-base-terciaria: var(--color-zinc-700);
+    --color-base-quaternaria: var(--color-zinc-600);
+    --color-contraste-principal: var(--color-neutral-400);
+    --color-contraste-secundaria: var(--color-neutral-300);
+    --color-contraste-secundaria: var(--color-neutral-200);
+
+    
+    --color-t-primaria: var(--color-stone-100);
+    --color-t-secundaria: var(--color-stone-200);
+    --color-t-terciaria: var(--color-stone-300);
+
+    
+    --color-destaque-p-claro: var(--color-red-600);
+    --color-destaque-p-medio: var(--color-orange-500);
+    --color-destaque-p-escuro: var(--color-orange-400);
+
+    --color-destaque-s-claro: var(--color-rose-900);
+    --color-destaque-s-medio: var(--color-red-700);
+    --color-destaque-s-escuro: var(--color-red-600); */
 };
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
