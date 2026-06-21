@@ -7,6 +7,7 @@ use App\Http\Controllers\UsuarioController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/usuario', [UsuarioController::class, 'fetch']);
+    Route::get('/usuario', [UsuarioController::class, 'logout']);
 });
 
 Route::controller(AuthController::class)->group(function() {

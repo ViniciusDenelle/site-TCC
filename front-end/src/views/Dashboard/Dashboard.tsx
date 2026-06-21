@@ -18,9 +18,11 @@ const Botao = () => {
 const Dashboard = () => {
         const {
             dadosUsuario,
-            isPending
+            isPending,
+            isError
         } = useFetchUsuario()
     if (isPending) return (<p>espere...</p>)
+    if (isError) return (<p>deu erro neguin</p>)
         
     const {
         nome

@@ -4,6 +4,7 @@ import { useContext, useState } from "react"
 import { NavLink, Outlet } from "react-router-dom"
 import TemaContexto from "../contextos/TemaContexto"
 import BotaoSecundario from "../componentes/BotaoSecundario"
+import useFetchUsuario from "../logicas/querys/FetchUsuario"
 // import { UsuarioProvider } from "../contextos/UsuarioContexto"
 
 type LinkNavDashboardProps = {
@@ -57,6 +58,13 @@ const LinkNavDashboard = ({
 }
 
 const DashboardLayout = () => {
+    const {
+        isError,
+        isPending
+    } = useFetchUsuario()
+    const token = localStorage.getItem('token')
+    if(isPending) return (<p>pera ai</p>)
+    if(!token || isError) navigation.navigate('/login')
 
     const [tema ,alterarTema] = useContext(TemaContexto)
 
@@ -88,6 +96,8 @@ const DashboardLayout = () => {
         },
 
     ]
+
+
 
     return (
 

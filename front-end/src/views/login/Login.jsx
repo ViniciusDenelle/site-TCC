@@ -82,6 +82,7 @@ const Login = () => {
             <p className='mx-auto'>ou</p>
 
             <BotaoPrimario
+                tipo='vazio'
                 classeAdcional="gap-4">
                 <span className='flex relative'>
                     <img src={GoogleIcone} alt=""

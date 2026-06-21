@@ -251,7 +251,7 @@ const useCadastro = (): UseCadastroReturn => {
         mudarDados('pesoIdeal', dados.peso)
     }, [dados.objetivo])
 
-    /* ================= MUTATIONS ================= */
+    
     const queryClient = useQueryClient()
 
     const cadastrarMutation = useMutation<

@@ -23,7 +23,7 @@ const BotaoSecundario = ({
         ${tipo === 'cheio' ?
            `bg-destaque-s-escuro text-base-secundaria hover:bg-destaque-s-medio` 
            : 
-           `text-destaque-s-escuro bg-base-secundaria ring-1
+           `text-destaque-s-escuro bg-base-secundaria ring-2
             ring-destaque-s-escuro hover:text-destaque-s-medio
             hover:bg-base-primaria hover:ring-destaque-s-medio `
           }
