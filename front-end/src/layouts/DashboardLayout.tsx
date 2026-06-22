@@ -6,74 +6,10 @@ import TemaContexto from "../contextos/TemaContexto"
 import BotaoSecundario from "../componentes/BotaoSecundario"
 import useFetchUsuario from "../logicas/querys/FetchUsuario"
 import LinkSimples from "../componentes/LinkSimples"
+import CardHorizontal from "../componentes/CardHorizontal"
+import CardPaleta from "../componentes/CardPaleta"
+import LinkNavDashboard from "../componentes/LinkNavDashboard"
 // import { UsuarioProvider } from "../contextos/UsuarioContexto"
-
-type LinkNavDashboardProps = {
-    icone: LucideIcon,
-    legenda: string,
-    to: string
-}
-
-const LinkNavDashboard = ({
-    icone: Icone,
-    legenda,
-    to
-}: LinkNavDashboardProps) => {
-
-    return (
-        <NavLink
-            to={to}
-        >
-            {({ isActive }) => (
-                <div
-                    className={`group flex flex-col items-center justify-center
-                    shrink-0 rounded-full p-3
-                    ${isActive
-                            ? `bg-base-terciaria/30 backdrop-blur-md size-18`
-                            : `size-16`}`}
-                >
-                    <Icone
-                        size={25}
-                        className={`transition-all duration-300
-                            ${isActive
-                                ? `text-destaque-s-medio group-hover:text-destaque-s-escuro`
-                                : `text-t-terciaria group-hover:text-t-primaria`}`}
-                    />
-
-                    <span className={`text-xs transition-colors duration-300 font-semibold
-                            ${isActive
-                            ? `text-destaque-s-medio 
-                                group-hover:text-destaque-s-escuro`
-                            : `text-t-terciaria group-hover:text-t-secundaria`
-                        }`}>
-                        {legenda}
-                    </span>
-                    {/* {isActive && (
-                    )} */}
-
-                </div>
-
-            )}
-        </NavLink>
-    )
-}
-
-type CardHorizontalProps = {
-    children: ReactNode
-}
-
-const CardHorizontal = ({
-    children
-} : CardHorizontalProps) => {
-
-    return (
-        <div className="w-full p-2 border-2 border-base-terciaria rounded-2xl
-        bg-base-terciaria/30 backdrop-blur-md 
-        transition-colors duration-200 text-t-terciaria">
-            {children}
-        </div>
-    )
-}
 
 const DashboardLayout = () => {
     const {
@@ -160,8 +96,8 @@ const DashboardLayout = () => {
                         `}
                     >
                         <BotaoSecundario
-                        onClick={abrirMenu}
-                        classeAdicional="
+                            onClick={abrirMenu}
+                            classeAdicional="
                             ring-transparent
                             hover:ring-transparent
                             lg:hidden
@@ -170,30 +106,6 @@ const DashboardLayout = () => {
                             <TextAlignJustify />
                         </BotaoSecundario>
                         {/* titulo */}
-                        <NavLink
-                            to="/"
-                            className="
-                            text-xl font-bold
-                            flex text-t-primaria
-                            transition-colors duration-200
-                          "
-                        >
-
-
-                        </NavLink>
-
-                        <div
-                            className="
-                            hidden gap-2 items-center lg:flex
-                          "
-                        >
-
-
-                        </div>
-
-                        {/* mobile */}
-
-
 
                     </nav>
                     <AnimatePresence>
@@ -215,11 +127,11 @@ const DashboardLayout = () => {
                                 <CardHorizontal>
                                     <div className="flex gap-2 items-center">
                                         <div className="size-10 rounded-full overflow-hidden">
-                                            <UserCircle size={40} strokeWidth={1.5}/>
+                                            <UserCircle size={40} strokeWidth={1.5} />
                                         </div>
 
                                         <h1 className="text-lg">
-                                            seu nome 
+                                            seu nome
                                         </h1>
                                     </div>
                                 </CardHorizontal>
@@ -227,19 +139,19 @@ const DashboardLayout = () => {
                                 <div className="flex flex-col gap-4 w-full mt-5">
                                     <LinkSimples to="/">
                                         <div className="flex w-full gap-2 items-center">
-                                            <Cog size={30}/> configurações
+                                            <Cog size={30} /> configurações
 
                                         </div>
                                     </LinkSimples>
                                     <LinkSimples to="/">
                                         <div className="flex w-full gap-2 items-center">
-                                            <Newspaper size={30}/> novidades
+                                            <Newspaper size={30} /> novidades
 
                                         </div>
                                     </LinkSimples>
                                     <LinkSimples to="/">
                                         <div className="flex w-full gap-2 items-center">
-                                            <Info size={30}/> sobre
+                                            <Info size={30} /> sobre
 
                                         </div>
                                     </LinkSimples>
@@ -247,17 +159,17 @@ const DashboardLayout = () => {
 
                                 <div className="absolute bottom-5 flex justify-center
                                 items-center w-full gap-4">
-                                    
-                                    
+
+
 
                                     <BotaoSecundario
-                                    onClick={abrirPaleta}>
+                                        onClick={abrirPaleta}>
 
 
-                                        paleta <Palette/>
+                                        paleta <Palette />
                                     </BotaoSecundario>
                                     <BotaoSecundario tipo="cheio">
-                                        logout <LogOut/>
+                                        logout <LogOut />
                                     </BotaoSecundario>
 
                                 </div>
@@ -271,10 +183,10 @@ const DashboardLayout = () => {
                 </div>
 
             </header>
-            
+
             {menuAberto && (
                 <div className="fixed inset-0 bg-black/50 z-110"
-                onClick={() => setMenuAberto(false)}/>
+                    onClick={() => setMenuAberto(false)} />
             )}
 
 
@@ -287,27 +199,27 @@ const DashboardLayout = () => {
                     <div className="fixed top-1/2 left-1/2 -translate-1/2
                     z-2010">
                         <CardHorizontal>
-                            <div className="flex flex-col gap-2 text-slate-200">
+                            <div className="flex flex-col gap-2 text-slate-200 text-lg">
                                 <div className="ml-auto">
-                                    <X 
+                                    <X
                                         className="cursor-pointer"
                                         onClick={() => setPaletaAberta(false)}
                                     />
                                 </div>
                                 <LinkSimples to="/paletas" classeAdicional="flex">
-                                    escolha mais paletas <ArrowRight/>
+                                    escolha mais paletas <ArrowRight />
                                 </LinkSimples>
 
                                 <CardHorizontal>
                                     <div className="flex items-center justify-between">
-                                        <BotaoSecundario 
+                                        <BotaoSecundario
                                             onClick={() => alterarTema('light')}
                                             tipo={tema === 'light' ? 'cheio' : 'vazio'}
                                             disabled={tema === 'light'}
                                         >
                                             claro
                                         </BotaoSecundario>
-                                        <BotaoSecundario 
+                                        <BotaoSecundario
                                             onClick={() => alterarTema('dark')}
                                             tipo={tema === 'dark' ? 'cheio' : 'vazio'}
                                             disabled={tema === 'dark'}
@@ -317,16 +229,14 @@ const DashboardLayout = () => {
                                     </div>
                                 </CardHorizontal>
 
-                                <div className="size-20 rounded-md overflow-hidden 
-                                grid grid-cols-2 grid-row-2 border-2 
-                                border-base-terciaria">
-                                    <div className="col-span-2 bg-base-primaria"/>
-                                    <div className="bg-destaque-s-escuro"/>
-                                    <div className="bg-destaque-p-medio"/>
-                                </div>
+                                <CardPaleta
+                                    corBase='base-primaria'
+                                    corComplementar='destaque-s-escuro'
+                                    corPrimaria='destaque-p-medio'
+                                />
                             </div>
                         </CardHorizontal>
-                    </div>                            
+                    </div>
                 </>
             )}
 
@@ -337,7 +247,7 @@ const DashboardLayout = () => {
             py-1 px-5 w-[95%] backdrop-blur-md">
 
                 <div className="flex items-center justify-between
-                gap-5 shrink-0 overflow-y-visible h-12">
+                gap-5 shrink-0 overflow-y-visible h-15">
 
                     {nav.map(item => (
                         <LinkNavDashboard
@@ -346,12 +256,6 @@ const DashboardLayout = () => {
                             to={item.to}
                         />
                     ))}
-                    {/* <BotaoSecundario
-                        tipo="vazio"
-                        onClick={alterarTema}
-                    >
-                        <Lightbulb />
-                    </BotaoSecundario> */}
 
                 </div>
 
