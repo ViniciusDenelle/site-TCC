@@ -159,7 +159,7 @@ function LayoutDefault() {
                 <ArrowDownToLine />
               </BotaoPrimario>
 
-              <BotaoSimples onClick={alterarTema}>
+              <BotaoSimples onClick={() => alterarTema()}>
                 <Lightbulb />
               </BotaoSimples>
 
@@ -218,7 +218,7 @@ function LayoutDefault() {
                         </LinkQuadrado>
 
                         <BotaoSecundario
-                          onClick={() => logout}
+                          onClick={logout}
                           classeAdicional='ring-red-600 text-red-600
                           hover:ring-red-700 hover:text-red-700'
                           tipo='vazio'
@@ -260,7 +260,7 @@ function LayoutDefault() {
                     </BotaoPrimario>
 
                     <BotaoSimples
-                      onClick={alterarTema}
+                      onClick={() => alterarTema()}
                     >
                       <Lightbulb />
                     </BotaoSimples>

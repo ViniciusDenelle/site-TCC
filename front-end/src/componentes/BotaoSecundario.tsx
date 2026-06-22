@@ -18,14 +18,17 @@ const BotaoSecundario = ({
 
     const classeBase = `
         rounded-lg p-1 flex justify-center items-center transition-colors
-        duration-300 ${disabled ? `` : 'cursor-pointer'}`
+        duration-300 ${!disabled && 'cursor-pointer'}`
     const classeTipo = `
         ${tipo === 'cheio' ?
            `bg-destaque-s-escuro text-base-secundaria hover:bg-destaque-s-medio` 
            : 
-           `text-destaque-s-escuro bg-base-secundaria ring-2
-            ring-destaque-s-escuro hover:text-destaque-s-medio
-            hover:bg-base-primaria hover:ring-destaque-s-medio `
+           ` bg-base-secundaria ring-2
+            hover:text-destaque-s-medio text-destaque-s-escuro
+            ${disabled 
+              ? `ring-transparent` 
+              : `ring-destaque-s-escuro 
+              hover:bg-base-primaria hover:ring-destaque-s-medio`}`
           }
         `
 

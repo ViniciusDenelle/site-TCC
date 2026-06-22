@@ -16,10 +16,12 @@ const CadastroLayout = () => {
     isPending,
   } = useFetchUsuario()
   const token = localStorage.getItem('token')
-  if( isPending) return (<Placeholder/>)
-  if (dadosUsuario || isSuccess || token) {
-    navigation.navigate('/dashboard')
-  }
+  
+  if (token) {
+      if(isSuccess || dadosUsuario) {
+        navigation.navigate('/dashboard')
+      }
+    }
  
   return (
     <CadastroProvider>

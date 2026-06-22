@@ -28,10 +28,10 @@ const Rota = createBrowserRouter(
             </Route>
 
                 {/* dashboard */}
-                
             <Route path='/dashboard' element={<DashboardLayout/>}>
                 <Route index element={<Dashboard/>}/>
             </Route>
+                
         
         </>
     )
