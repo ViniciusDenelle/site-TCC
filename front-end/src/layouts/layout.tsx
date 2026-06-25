@@ -3,7 +3,9 @@ import { useContext, useState } from 'react'
 
 import {
   ArrowDownToLine,
+  LayoutDashboard,
   Lightbulb,
+  LogOut,
   TextAlignJustify,
   UserLock,
   UserRoundPlus,
@@ -20,6 +22,9 @@ import LinkQuadrado from '../componentes/LinkQuadrado.js'
 import LinkSimples from '../componentes/LinkSimples.js'
 import TemaContexto from '../contextos/TemaContexto.js'
 import BotaoPrimario from '../componentes/BotaoPrimario.js'
+import useFetchUsuario from '../logicas/querys/FetchUsuario.js'
+import BotaoSecundario from '../componentes/BotaoSecundario.js'
+import useLogout from '../logicas/querys/Logout.js'
 
 function LayoutDefault() {
 
@@ -58,6 +63,16 @@ function LayoutDefault() {
     lg:rounded-full lg:border-2
   `
 
+  // autorizado
+
+  const {
+    dadosUsuario,
+    isPending,
+    isError
+  } = useFetchUsuario()
+
+  const {logout} = useLogout()
+
   return (
     <>
 
@@ -78,7 +93,7 @@ function LayoutDefault() {
               }
             `}
           >
-
+            {/* titulo */}
             <NavLink
               to="/"
               className="
@@ -105,14 +120,33 @@ function LayoutDefault() {
                 hidden gap-2 items-center lg:flex
               "
             >
+              {dadosUsuario ? (
+                <>
+                  <LinkSimples to='/dashboard'>
+                    Dashboard
+                  </LinkSimples>
 
-              <LinkSimples to="cadastro">
-                cadastro
-              </LinkSimples>
+                  <BotaoPrimario
+                    onClick={logout}
+                    classeAdicional='bg-red-500 
+                    hover:bg-red-600 hover:text-t-primario'
+                    
+                  >
+                    <LogOut/>
+                    
+                  </BotaoPrimario>
+                </>
+              ) : (
+                <>
+                  <LinkSimples to="cadastro">
+                    cadastro
+                  </LinkSimples>
 
-              <LinkSimples to="login">
-                login
-              </LinkSimples>
+                  <LinkSimples to="login">
+                    login
+                  </LinkSimples>
+                </>
+              ) }
 
               <BotaoPrimario
                 tipo="cheio"
@@ -125,7 +159,7 @@ function LayoutDefault() {
                 <ArrowDownToLine />
               </BotaoPrimario>
 
-              <BotaoSimples onClick={alterarTema}>
+              <BotaoSimples onClick={() => alterarTema()}>
                 <Lightbulb />
               </BotaoSimples>
 
@@ -173,21 +207,45 @@ function LayoutDefault() {
                     "
                   >
 
-                    <LinkQuadrado
-                      to="cadastro"
-                      classeAdicional="w-full"
-                    >
-                      <UserRoundPlus />
-                      cadastro
-                    </LinkQuadrado>
+                    {dadosUsuario ? (
+                      <>
+                        <LinkQuadrado
+                          to='/dashboard'
+                          classeAdicional='w-full'
+                        >
+                          <LayoutDashboard/>
+                          dashboard
+                        </LinkQuadrado>
 
-                    <LinkQuadrado
-                      to="login"
-                      classeAdicional="w-full"
-                    >
-                      <UserLock />
-                      login
-                    </LinkQuadrado>
+                        <BotaoSecundario
+                          onClick={logout}
+                          classeAdicional='ring-red-600 text-red-600
+                          hover:ring-red-700 hover:text-red-700'
+                          tipo='vazio'
+                        >
+                          <LogOut/>
+                          logout
+                        </BotaoSecundario>
+                      </>
+                    ) : (
+                      <>
+                      <LinkQuadrado
+                        to="cadastro"
+                        classeAdicional="w-full"
+                      >
+                        <UserRoundPlus />
+                        cadastro
+                      </LinkQuadrado>
+
+                      <LinkQuadrado
+                        to="login"
+                        classeAdicional="w-full"
+                      >
+                        <UserLock />
+                        login
+                      </LinkQuadrado>
+                      </>
+                    )}
 
                     <BotaoPrimario
                       tipo="cheio"
@@ -202,7 +260,7 @@ function LayoutDefault() {
                     </BotaoPrimario>
 
                     <BotaoSimples
-                      onClick={alterarTema}
+                      onClick={() => alterarTema()}
                     >
                       <Lightbulb />
                     </BotaoSimples>

@@ -5,7 +5,7 @@ interface BotaoPrimarioProps {
   children: ReactNode
   tipo?: 'cheio' | 'vazio'
   classeAdicional?: string
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
+  onClick?: () => void
   disabled?: boolean
   type?: 'button' | 'submit' | 'reset'
 }

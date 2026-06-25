@@ -15,12 +15,12 @@ const LinkSimples = ({
 
   const classeBase = `
     hover:text-destaque-p-escuro
-    transition-colors duration-200
+    transition-colors duration-200 font-medium
     ${classeAdicional ?? ''}
   `
 
   const classeAtivo = `
-    text-destaque-s-medio
+    text-destaque-s-escuro
     ${classeBase}
   `
 
