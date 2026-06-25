@@ -9,12 +9,14 @@ import LinkSimples from "../componentes/LinkSimples"
 import CardHorizontal from "../componentes/CardHorizontal"
 import CardPaleta from "../componentes/CardPaleta"
 import LinkNavDashboard from "../componentes/LinkNavDashboard"
+import BotaoPrimario from "../componentes/BotaoPrimario"
 // import { UsuarioProvider } from "../contextos/UsuarioContexto"
 
 const DashboardLayout = () => {
     const {
         isError,
-        isPending
+        isPending,
+        dadosUsuario
     } = useFetchUsuario()
     const token = localStorage.getItem('token')
     if (isPending) return (<p>pera ai</p>)
@@ -50,22 +52,15 @@ const DashboardLayout = () => {
         },
 
     ]
-    // header
-    const navMenuAberto = `
-        rounded-t-xl border-t-2 border-x-2
-        lg:rounded-full lg:border-2
-    `
-
+   
     const animacaoMenu = {
 
         invisivel: {
             x: -280,
-
         },
 
         visivel: {
             x: 0,
-
         }
     }
 
@@ -124,15 +119,27 @@ const DashboardLayout = () => {
                                     text-t-terciaria border-base-terciaria
                                     pt-10 px-2 text-lg"
                             >
+
+                                <div onClick={abrirMenu}
+                                className="absolute top-1/2 left-full -translate-1/2 w-10 cursor-pointer">
+                                    <CardHorizontal className="relative rounded-full w-10 h-10">
+                                        <div className="absolute top-1/2 left-1/2 -translate-1/2 flex items-center">
+                                            <X/>
+                                        </div>
+                                    </CardHorizontal>
+                                </div>
                                 <CardHorizontal>
                                     <div className="flex gap-2 items-center">
-                                        <div className="size-10 rounded-full overflow-hidden">
-                                            <UserCircle size={40} strokeWidth={1.5} />
-                                        </div>
+                                        <LinkSimples to="/perfil" classeAdicional="flex gap-1 items-center">
+                                            <div className="size-10 rounded-full overflow-hidden">
+                                                <UserCircle size={40} strokeWidth={1.5} />
+                                            </div>
 
-                                        <h1 className="text-lg">
-                                            seu nome
-                                        </h1>
+                                            <h1 className="text-lg">
+                                                {dadosUsuario.nome}
+                                            </h1>
+                                        
+                                        </LinkSimples>
                                     </div>
                                 </CardHorizontal>
 
@@ -168,9 +175,9 @@ const DashboardLayout = () => {
 
                                         paleta <Palette />
                                     </BotaoSecundario>
-                                    <BotaoSecundario tipo="cheio">
+                                    <BotaoPrimario tipo="vazio">
                                         logout <LogOut />
-                                    </BotaoSecundario>
+                                    </BotaoPrimario>
 
                                 </div>
 
@@ -232,7 +239,7 @@ const DashboardLayout = () => {
                                 <CardPaleta
                                     corBase='base-primaria'
                                     corComplementar='destaque-s-escuro'
-                                    corPrimaria='destaque-p-medio'
+                                    corPrimaria='destaque-p-escuro'
                                 />
                             </div>
                         </CardHorizontal>
