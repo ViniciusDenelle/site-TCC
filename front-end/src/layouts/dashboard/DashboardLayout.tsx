@@ -2,14 +2,15 @@ import { AnimatePresence, motion } from "framer-motion"
 import { ArrowLeft, ArrowRight, ChartBarIncreasing, Cog, Flame, Home, Info, Lightbulb, LogOut, LucideIcon, Newspaper, Palette, TextAlignJustify, UserCircle, Weight, X, Zap } from "lucide-react"
 import { ReactNode, useContext, useState } from "react"
 import { NavLink, Outlet } from "react-router-dom"
-import TemaContexto from "../contextos/TemaContexto"
-import BotaoSecundario from "../componentes/BotaoSecundario"
-import useFetchUsuario from "../logicas/querys/FetchUsuario"
-import LinkSimples from "../componentes/LinkSimples"
-import CardHorizontal from "../componentes/CardHorizontal"
-import CardPaleta from "../componentes/CardPaleta"
-import LinkNavDashboard from "../componentes/LinkNavDashboard"
-import BotaoPrimario from "../componentes/BotaoPrimario"
+import TemaContexto from "../../contextos/TemaContexto"
+import BotaoSecundario from "../../componentes/BotaoSecundario"
+import useFetchUsuario from "../../logicas/querys/FetchUsuario"
+import LinkSimples from "../../componentes/LinkSimples"
+import CardHorizontal from "../../componentes/CardHorizontal"
+import CardPaleta from "../../componentes/CardPaleta"
+import LinkNavDashboard from "../../componentes/LinkNavDashboard"
+import BotaoPrimario from "../../componentes/BotaoPrimario"
+import useLogout from "../../logicas/querys/Logout"
 // import { UsuarioProvider } from "../contextos/UsuarioContexto"
 
 const DashboardLayout = () => {
@@ -28,12 +29,12 @@ const DashboardLayout = () => {
         {
             icone: Home,
             legenda: 'Home',
-            to: '/dashboard'
+            to: 'home'
         },
         {
             icone: Weight,
             legenda: 'treinos',
-            to: '/treinos'
+            to: 'treinos'
         },
         {
             icone: Flame,
@@ -75,6 +76,8 @@ const DashboardLayout = () => {
     const abrirPaleta = () => {
         setPaletaAberta(prev => !prev)
     }
+
+    const {logout} = useLogout()
 
 
     return (
@@ -175,7 +178,10 @@ const DashboardLayout = () => {
 
                                         paleta <Palette />
                                     </BotaoSecundario>
-                                    <BotaoPrimario tipo="vazio">
+                                    <BotaoPrimario 
+                                        tipo="vazio"
+                                        onClick={logout}
+                                    >
                                         logout <LogOut />
                                     </BotaoPrimario>
 

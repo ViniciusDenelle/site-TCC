@@ -4,7 +4,7 @@ import { Eye, EyeOff, Mail } from 'lucide-react'
 
 import BotaoPrimario from '../../../componentes/BotaoPrimario'
 import InputSimples from '../../../componentes/InputSimples'
-import useConfirmacao from '../../../logicas/useConfirmacao'
+import useConfirmacao from '../../../logicas/querys/useConfirmacao'
 import useCadastroContexto from '../../../contextos/CadastroContexto'
 import BotaoSecundario from '../../../componentes/BotaoSecundario'
 
