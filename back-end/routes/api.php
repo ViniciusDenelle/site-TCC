@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\ExercicioController;
 use App\Http\Controllers\FichaController;
+use App\Http\Controllers\TreinoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -21,6 +23,23 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::get('/', 'fetch');
                 Route::put('/{ficha}', 'update');
                 Route::delete('/{ficha}', 'delete');
+            });
+
+            //treino 
+            Route::prefix('treino')->controller(TreinoController::class)->group(function() {
+                Route::post('/{ficha}', 'create');
+                Route::get('/{treino}', 'show');
+                Route::get('/', 'fetch');
+                Route::put('/{treino}', 'update');
+                Route::delete('/{treino}', 'delete');
+            });
+
+            Route::prefix('exercicio')->controller(ExercicioController::class)->group(function() {
+                Route::post('', 'create');
+                Route::get('/{exercicio}', 'show');
+                Route::get('/', 'fetch');
+                Route::put('/{exercicio}', 'update');
+                Route::delete('/{exercicio}', 'delete');
             });
         });
     });

@@ -14,6 +14,7 @@ class ExercicioTreino extends Model
         'ordem',
         'repeticoes_minimas',
         'repeticoes_maximas',
+        'sets',
         'peso',
         'descanso'
     ];
