@@ -25,6 +25,7 @@ return new class extends Migration {
 
             $table->integer('repeticoes_minimas');
             $table->integer('repeticoes_maximas');
+            $table->integer('sets');
 
             $table->integer('peso')->nullable();
             $table->integer('descanso')->nullable();

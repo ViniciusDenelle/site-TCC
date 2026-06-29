@@ -264,6 +264,7 @@ const DashboardLayout = () => {
 
                     {nav.map(item => (
                         <LinkNavDashboard
+                            key={item.to}
                             icone={item.icone}
                             legenda={item.legenda}
                             to={item.to}
