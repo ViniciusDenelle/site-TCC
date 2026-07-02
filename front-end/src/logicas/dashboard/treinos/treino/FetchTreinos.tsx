@@ -24,6 +24,7 @@ export type ResExercicioTreinoProps = {
 export type ResTreinoProps = {
     id: number
     nome: string
+    nomeCriador: string
     descricao: string | null
 
     exercicios: ResExercicioTreinoProps[]

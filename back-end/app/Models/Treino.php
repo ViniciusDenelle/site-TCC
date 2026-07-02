@@ -14,6 +14,11 @@ class Treino extends Model
         'calorias_medias'
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function ficha()
     {
         return $this->belongsTo(FichaTreino::class);

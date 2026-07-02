@@ -23,7 +23,8 @@ class SerieExecutada extends Model
 
     public function sessao()
     {
-        return $this->belongsTo(SessaoTreino::class);
+        return $this->belongsTo(SessaoTreino::class,'sessao_treino_id',
+        'id');
     }
 
     public function exercicioTreino()

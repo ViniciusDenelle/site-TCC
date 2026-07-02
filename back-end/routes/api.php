@@ -3,6 +3,8 @@
 use App\Http\Controllers\ExercicioController;
 use App\Http\Controllers\FichaController;
 use App\Http\Controllers\TreinoController;
+use App\Http\Controllers\TreinoHistoricoController;
+use App\Http\Controllers\treinosExecucaoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -40,6 +42,18 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::get('/', 'fetch');
                 Route::put('/{exercicio}', 'update');
                 Route::delete('/{exercicio}', 'delete');
+            });
+
+            // execuções
+            Route::controller(treinosExecucaoController::class)->group(function() {
+                Route::post('executarTreino/{treino}', 'executarTreino');
+            });
+
+            // historico
+            Route::prefix('historico')->controller(TreinoHistoricoController::class)->group(function() {
+                Route::get('ficha/{ficha}', 'ficha');
+                Route::get('treino/{treino}', 'treino');
+                Route::get('exercicio/{exercicio}', 'exercicio');
             });
         });
     });

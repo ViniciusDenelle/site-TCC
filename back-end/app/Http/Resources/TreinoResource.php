@@ -12,6 +12,7 @@ class TreinoResource extends JsonResource
         return [
             'id' => $this->id,
             'nome' => $this->nome,
+            
             'descricao' => $this->descricao,
             'tempo_estimado' => [
                 'minutos' => floor($this->tempo_medio / 60),
