@@ -7,18 +7,21 @@ interface BotaoSecundarioProps {
   classeAdicional?: string
   onClick?: () => void
   disabled?: boolean
+  redondo?: boolean
 }
 const BotaoSecundario = ({
   children,
   tipo,
   classeAdicional,
   onClick,
-  disabled
+  disabled,
+  redondo, 
 }:BotaoSecundarioProps) => {
 
     const classeBase = `
-        rounded-lg p-1 flex justify-center items-center transition-colors
-        duration-300 ${!disabled && 'cursor-pointer'}`
+        p-1 flex justify-center items-center transition-colors
+        duration-300 ${!disabled && 'cursor-pointer'}
+        ${redondo ? `rounded-full px-3` : `rounded-lg`}`
     const classeTipo = `
         ${tipo === 'cheio' ?
            `bg-destaque-s-escuro text-base-secundaria hover:bg-destaque-s-medio` 

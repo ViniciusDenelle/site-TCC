@@ -1,5 +1,8 @@
 import React from 'react';
 import useFetchTreinos from '../../../logicas/dashboard/treinos/treino/FetchTreinos';
+import BotaoSecundario from '../../../componentes/BotaoSecundario';
+import CardHorizontal from '../../../componentes/CardHorizontal';
+import BotaoPrimario from '../../../componentes/BotaoPrimario';
 
 // Agora o componente pode receber a lista de treinos e treinadores diretamente via props da API
 const Treino = () => {
@@ -38,23 +41,8 @@ const Treino = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col gap-6 p-4 lg:p-8 overflow-y-auto">
+    <div className="w-full h-full flex flex-col gap-6 p-4 pt-10 lg:p-8 overflow-y-auto">
       
-      {/* NAVEGAÇÃO SUPERIOR */}
-      <nav className="flex justify-around sm:justify-start sm:gap-8 border-b border-base-quaternaria pb-2 shrink-0">
-        <button className="flex flex-col sm:flex-row items-center gap-2 text-sm font-semibold text-red-500 border-b-2 border-red-500 pb-2 px-2 cursor-pointer">
-          <span>🏋️</span>
-          <span>Treinos</span>
-        </button>
-        <button className="flex flex-col sm:flex-row items-center gap-2 text-sm font-medium text-t-secundaria/60 pb-2 px-2 hover:text-t-primaria transition-colors cursor-pointer">
-          <span>📚</span>
-          <span>Biblioteca</span>
-        </button>
-        <button className="flex flex-col sm:flex-row items-center gap-2 text-sm font-medium text-t-secundaria/60 pb-2 px-2 hover:text-t-primaria transition-colors cursor-pointer">
-          <span>💪</span>
-          <span>Exercícios</span>
-        </button>
-      </nav>
 
       {/* GRID DINÂMICO */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full">
@@ -68,20 +56,28 @@ const Treino = () => {
               <p className="text-xs text-t-secundaria/60 p-2">Nenhum treino criado ainda. Seja o primeiro!</p>
             ) : (
               treinos.map((treino) => (
-                <div 
-                  key={treino.id} 
-                  className="flex justify-between items-center p-5 bg-base-terciaria/40 backdrop-blur-md ring-1 ring-base-quaternaria rounded-xl hover:ring-base-quaternaria/80 transition-all"
-                >
-                  <div className="flex flex-col gap-1 pr-2 min-w-0">
-                    <h3 className="text-base font-semibold text-t-primaria truncate">{treino.nome}</h3>
-                    
-                    {/* Exibe quem criou o treino */}
-                    {/* <span className="text-[10px] text-t-secundaria/40 mt-0.5 truncate">Por: {treino.nomeCriador || 'Usuário Anônimo'}</span> */}
+                <CardHorizontal>
+                  <div className="flex justify-between p-2">
+                    <div className="flex flex-col gap-1 pr-2 min-w-0">
+                      <h3 className="text-base font-semibold text-t-primaria truncate">{treino.nome}</h3>
+                      
+                      {/* Exibe quem criou o treino */}
+                      {/* <span className="text-[10px] text-t-secundaria/40 mt-0.5 truncate">Por: {treino.nomeCriador || 'Usuário Anônimo'}</span> */}
+                    </div>
+                    <div className="flex gap-2">
+                      <BotaoPrimario tipo='vazio' redondo>
+                        usar
+                      </BotaoPrimario>
+                      <BotaoSecundario tipo='cheio' redondo>
+                        ver
+                      </BotaoSecundario>
+
+                    </div>
+
                   </div>
-                  <button className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-2.5 px-5 rounded-full transition-all active:scale-95 cursor-pointer flex-shrink-0">
-                    Usar
-                  </button>
-                </div>
+
+                </CardHorizontal>
+                
               ))
             )}
           </div>

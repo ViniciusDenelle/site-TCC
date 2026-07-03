@@ -229,6 +229,7 @@ const DashboardLayout = () => {
                                             onClick={() => alterarTema('light')}
                                             tipo={tema === 'light' ? 'cheio' : 'vazio'}
                                             disabled={tema === 'light'}
+                                            redondo
                                         >
                                             claro
                                         </BotaoSecundario>
@@ -236,6 +237,7 @@ const DashboardLayout = () => {
                                             onClick={() => alterarTema('dark')}
                                             tipo={tema === 'dark' ? 'cheio' : 'vazio'}
                                             disabled={tema === 'dark'}
+                                            redondo
                                         >
                                             escuro
                                         </BotaoSecundario>
