@@ -17,6 +17,11 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RoleSeeder::class,
+            CategoriaExercicioSeeder::class,
+            EquipamentoSeeder::class,
+            MusculoSeeder::class,
+            NivelExercicioSeeder::class,
+            TipoExercicioSeeder::class,
             ExercicioSeeder::class
         ]);
     }

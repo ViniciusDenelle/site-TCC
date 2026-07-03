@@ -3,11 +3,12 @@ import { motion } from 'motion/react'
 
 interface BotaoPrimarioProps {
   children: ReactNode
-  tipo?: 'cheio' | 'vazio'
+  tipo?: 'cheio' | 'vazio' 
   classeAdicional?: string
   onClick?: () => void
   disabled?: boolean
   type?: 'button' | 'submit' | 'reset'
+  redondo?: boolean
 }
 
 // O TRUQUE: Mudamos o tipo do componente para 'any'. 
@@ -20,12 +21,14 @@ const BotaoPrimario = ({
   classeAdicional = '',
   disabled = false,
   type = 'button',
+  redondo,
   onClick
 }: BotaoPrimarioProps) => {
 
   const classeBase = `
-    rounded-lg p-1 flex justify-center items-center transition-colors
+    p-1 flex justify-center items-center transition-colors
     duration-300 ${disabled ? 'opacity-70' : 'cursor-pointer'}
+    ${redondo ? `rounded-full px-3` : `rounded-lg`}
   `.trim()
 
   const classeTipo = tipo === 'cheio'

@@ -2,6 +2,7 @@ import React from 'react';
 import useFetchTreinos from '../../../logicas/dashboard/treinos/treino/FetchTreinos';
 import BotaoSecundario from '../../../componentes/BotaoSecundario';
 import CardHorizontal from '../../../componentes/CardHorizontal';
+import BotaoPrimario from '../../../componentes/BotaoPrimario';
 
 // Agora o componente pode receber a lista de treinos e treinadores diretamente via props da API
 const Treino = () => {
@@ -63,9 +64,15 @@ const Treino = () => {
                       {/* Exibe quem criou o treino */}
                       {/* <span className="text-[10px] text-t-secundaria/40 mt-0.5 truncate">Por: {treino.nomeCriador || 'Usuário Anônimo'}</span> */}
                     </div>
-                    <BotaoSecundario tipo='cheio'>
-                      usar
-                    </BotaoSecundario>
+                    <div className="flex gap-2">
+                      <BotaoPrimario tipo='vazio' redondo>
+                        usar
+                      </BotaoPrimario>
+                      <BotaoSecundario tipo='cheio' redondo>
+                        ver
+                      </BotaoSecundario>
+
+                    </div>
 
                   </div>
 
