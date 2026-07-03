@@ -257,9 +257,9 @@ const DashboardLayout = () => {
 
             <Outlet />
 
-            <nav className="absolute z-100 bottom-5 left-1/2 -translate-x-1/2 
-            border-base-secundaria border-2 rounded-full bg-base-secundaria/60 
-            py-1 px-5 w-[95%] backdrop-blur-md">
+            <nav className="fixed z-100 bottom-5 left-1/2 -translate-x-1/2 
+            border-base-terciaria border-3 rounded-full bg-base-secundaria/40 
+            py-1 px-5 w-[95%] backdrop-blur-md text-base">
 
                 <div className="flex items-center justify-between
                 gap-5 shrink-0 overflow-y-visible h-15">

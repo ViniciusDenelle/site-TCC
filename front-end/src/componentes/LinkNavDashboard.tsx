@@ -22,7 +22,7 @@ const LinkNavDashboard = ({
                     className={`group flex flex-col items-center justify-center
                     shrink-0 rounded-full
                     ${isActive
-                            ? `bg-base-terciaria/30 backdrop-blur-md size-20`
+                            ? `bg-base-terciaria/50 backdrop-blur-md size-20`
                             : `size-18`}`}
                 >
                     <Icone

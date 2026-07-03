@@ -29,9 +29,13 @@ class ExercicioController extends Controller
 
     public function fetch()
     {
-        $exercicios = Exercicio::latest()
-            ->limit(20)
-            ->get();
+        $exercicios = Exercicio::with([
+            'nivel', 
+            'categoria', 
+            'tipo', 
+            'musculos', 
+            'equipamentos'
+        ])->limit(20)->get();
 
         return ExercicioResource::collection($exercicios);
     }
