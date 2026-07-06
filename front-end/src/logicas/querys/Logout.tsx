@@ -10,7 +10,7 @@ const useLogout = () => {
         isPending,
         isError
     } = useMutation({
-        mutationFn: () => api.post('/usuario/logout'),
+        mutationFn: () => api.post('/logout'),
         onError: (error) => {
             console.log(error)
         },

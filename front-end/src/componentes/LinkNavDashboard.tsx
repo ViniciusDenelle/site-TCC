@@ -1,5 +1,7 @@
 import { LucideIcon } from "lucide-react"
 import { NavLink } from "react-router-dom"
+import Texto from "./Texto"
+import WrapperIcone from "./WrapperIcone"
 
 type LinkNavDashboardProps = {
     icone: LucideIcon,
@@ -20,27 +22,27 @@ const LinkNavDashboard = ({
             {({ isActive }) => (
                 <div
                     className={`group flex flex-col items-center justify-center
-                    shrink-0 rounded-full
-                    ${isActive
-                            ? `bg-base-terciaria/50 backdrop-blur-md size-20`
-                            : `size-18`}`}
+                    shrink-0 rounded-full size-10 ${isActive && `scale-110`}`}
                 >
-                    <Icone
-                        size={25}
-                        className={`transition-all duration-300
-                            ${isActive
-                                ? `text-destaque-s-medio group-hover:text-destaque-s-escuro`
-                                : `text-t-terciaria group-hover:text-t-primaria`}`}
-                    />
+                    <WrapperIcone>
+                        <Icone
+                            className={`transition-all duration-300 size-full
+                                ${isActive
+                                    ? `text-destaque-s-escuro group-hover:text-destaque-s-escuro`
+                                    : `text-t-terciaria group-hover:text-t-primaria`}`}
+                        />
+                    </WrapperIcone>
 
-                    <span className={`text-md transition-colors duration-300 font-semibold
+                    <Texto tipo="subtexto" 
+                    className={`transition-colors duration-300 font-semibold
                             ${isActive
-                            ? `text-destaque-s-medio 
+                            ? `text-destaque-s-escuro 
                                 group-hover:text-destaque-s-escuro`
-                            : `text-t-terciaria group-hover:text-t-secundaria`
+                            : `text-t-secundaria group-hover:text-t-primaria`
                         }`}>
                         {legenda}
-                    </span>
+                    </Texto>
+
                     {/* {isActive && (
                     )} */}
 

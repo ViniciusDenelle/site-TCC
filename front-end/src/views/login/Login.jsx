@@ -34,12 +34,12 @@ const Login = () => {
             localStorage.setItem('token', String(token))
             localStorage.setItem('usuario', JSON.stringify(usuario))
             localStorage.removeItem('dados_cadastro')
-            navigate('/dashboard')
+            navigation.navigate('/dashboard')
         },
         onError: error => {
             const erros = error.response?.data?.errors
-            toast.error('não foi possivel realizar o cadastro')
-            console.log(email, senha)
+            toast.error('não foi possivel realizar o login')
+            console.log(error)
             if(erros){
                 setErros(erros)
             }

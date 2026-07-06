@@ -2,7 +2,7 @@ import { useContext, useMemo, useState } from 'react';
 import TemaContexto from '../../../contextos/TemaContexto';
 import BotaoPrimario from '../../../componentes/BotaoPrimario'; 
 
-const Treino = () => {
+const Treinos = () => {
   const [abaAtiva, setAbaAtiva] = useState<'fichas' | 'biblioteca' | 'exercicios'>('fichas');
   const [pesquisa, setPesquisa] = useState('');
 
@@ -129,26 +129,8 @@ const Treino = () => {
   };
 
   return (
-    <div className="w-full min-h-full flex flex-col gap-6 p-6 lg:p-10 bg-base-primaria transition-colors duration-300">
-      
-      {/* HEADER */}
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-base-quaternaria pb-2 flex-shrink-0">
-        <nav className="flex justify-around sm:justify-start gap-3 sm:gap-4">
-          <BotaoPrimario tipo={abaAtiva === 'fichas' ? 'cheio' : 'vazio'} classeAdicional="text-xs px-3 py-1.5 font-semibold" onClick={() => setAbaAtiva('fichas')}>
-            <span>📋 Fichas</span>
-          </BotaoPrimario>
-          <BotaoPrimario tipo={abaAtiva === 'biblioteca' ? 'cheio' : 'vazio'} classeAdicional="text-xs px-3 py-1.5 font-semibold" onClick={() => setAbaAtiva('biblioteca')}>
-            <span>📚 Biblioteca</span>
-          </BotaoPrimario>
-          <BotaoPrimario tipo={abaAtiva === 'exercicios' ? 'cheio' : 'vazio'} classeAdicional="text-xs px-3 py-1.5 font-semibold" onClick={() => setAbaAtiva('exercicios')}>
-            <span>💪 Exercícios</span>
-          </BotaoPrimario>
-        </nav>
-
-        <button onClick={() => alterarTema()} className="self-end sm:self-auto flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-lg ring-1 ring-base-quaternaria bg-base-terciaria/20 text-t-primaria">
-          {tema === 'dark' ? (<><span>☀️</span> Modo Claro</>) : (<><span>🌙</span> Modo Escuro</>)}
-        </button>
-      </header>
+    <div className="w-full min-h-full flex flex-col gap-6 bg-base-primaria transition-colors duration-300">
+    
 
       {/* BARRA DE PESQUISA (Ocupando a largura total) */}
       {abaAtiva === 'fichas' && (
@@ -179,9 +161,9 @@ const Treino = () => {
                 <div 
                   key={ficha._id} 
                   style={{ backgroundImage: `url(${ficha.imagemFundo})` }}
-                  className="flex flex-col justify-between p-5 min-h-[360px] bg-cover bg-center rounded-2xl ring-1 ring-base-quaternaria hover:ring-base-quaternaria/80 transition-all duration-300 gap-4 relative overflow-hidden group w-full"
+                  className="flex flex-col justify-between p-5 min-h-90 bg-cover bg-center rounded-2xl ring-1 ring-base-quaternaria hover:ring-base-quaternaria/80 transition-all duration-300 gap-4 relative overflow-hidden group w-full"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/75 to-black/40 z-0 transition-opacity group-hover:opacity-95" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/75 to-black/40 z-0 transition-opacity group-hover:opacity-95" />
                   
                   <div className="flex flex-col gap-1 w-full relative z-10">
                     <div className="flex flex-col gap-1">
@@ -208,9 +190,10 @@ const Treino = () => {
                     <div className="text-[11px] text-white/70 font-semibold text-center">
                       ⏱️ {ficha.tempo} &nbsp;•&nbsp; 🗓️ {ficha.semanas}
                     </div>
-                    <BotaoPrimario tipo="cheio" classeAdicional="text-xs font-bold py-2.5 w-full rounded-xl">
-                      Visualizar Ficha
-                    </BotaoPrimario>
+                    <BotaoPrimario 
+                      tipo="cheio"
+                      texto='vizualizar Ficha' 
+                    />
                   </div>
 
                 </div>
@@ -229,22 +212,23 @@ const Treino = () => {
               {listaDeTreinadores.map((coach) => (
                 <div key={coach._id} className="flex items-center justify-between p-5 bg-base-terciaria/40 backdrop-blur-md ring-1 ring-base-quaternaria rounded-xl hover:ring-base-quaternaria/80 transition-all duration-300">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 ${coach.bgAvatar}`}>
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm shrink-0 ${coach.bgAvatar}`}>
                       {obterIniciais(coach.nome)}
                     </div>
                     <div className="flex flex-col min-w-0">
                       <h3 className="text-base font-semibold text-t-primaria flex items-center gap-1 truncate">
-                        {coach.nome} <span className="text-blue-400 text-xs flex-shrink-0">✓</span>
+                        {coach.nome} <span className="text-blue-400 text-xs shrink-0">✓</span>
                       </h3>
                       <p className="text-xs text-t-secundaria/60 truncate">{coach.cargo}</p>
                       <p className="text-xs font-semibold text-red-500 mt-0.5">{coach.tag}</p>
                     </div>
                   </div>
-                  <div className="flex flex-col items-end justify-between h-12 flex-shrink-0 pl-2">
+                  <div className="flex flex-col items-end justify-between h-12 shrink-0 pl-2">
                     <span className="text-xs font-bold text-amber-400">★ {coach.nota}</span>
-                    <BotaoPrimario tipo="vazio" classeAdicional="text-[10px] py-1 px-2.5 font-bold">
-                      Ver →
-                    </BotaoPrimario>
+                    <BotaoPrimario 
+                      tipo="vazio"
+                      texto='ver' 
+                    />
                   </div>
                 </div>
               ))}
@@ -257,4 +241,4 @@ const Treino = () => {
   );
 };
 
-export default Treino;
+export default Treinos;

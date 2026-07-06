@@ -12,7 +12,7 @@ use App\Http\Controllers\UsuarioController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/usuario', [UsuarioController::class, 'fetch']);
-    Route::get('/usuario', [UsuarioController::class, 'logout']);
+    Route::get('/logout', [UsuarioController::class, 'logout']);
 
     Route::prefix('dashboard')->group(function() {
         // treinos 

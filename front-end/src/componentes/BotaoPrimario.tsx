@@ -1,9 +1,13 @@
 import type { ReactNode } from 'react'
 import { motion } from 'motion/react'
+import { LucideIcon } from 'lucide-react'
+import Texto from './Texto'
+import WrapperIcone from './WrapperIcone'
 
 interface BotaoPrimarioProps {
-  children: ReactNode
-  tipo?: 'cheio' | 'vazio' 
+  texto?: string,
+  icone?: LucideIcon,
+  tipo?: 'cheio' | 'vazio'
   classeAdicional?: string
   onClick?: () => void
   disabled?: boolean
@@ -16,7 +20,8 @@ interface BotaoPrimarioProps {
 const MotionButton = motion.button as any
 
 const BotaoPrimario = ({
-  children,
+  texto,
+  icone: Icone,
   tipo = 'cheio',
   classeAdicional = '',
   disabled = false,
@@ -26,15 +31,15 @@ const BotaoPrimario = ({
 }: BotaoPrimarioProps) => {
 
   const classeBase = `
-    p-1 flex justify-center items-center transition-colors
+    p-1 flex justify-center items-center transition-colors gap-1
     duration-300 ${disabled ? 'opacity-70' : 'cursor-pointer'}
     ${redondo ? `rounded-full px-3` : `rounded-lg`}
   `.trim()
 
   const classeTipo = tipo === 'cheio'
-      ? `bg-destaque-p-escuro text-base-secundaria hover:bg-destaque-p-medio
+    ? `bg-destaque-p-escuro text-base-secundaria hover:bg-destaque-p-medio
          hover:shadow-sm shadow-destaque-p-medio/30`
-      : `text-destaque-p-escuro bg-base-terciaria ring-2
+    : `text-destaque-p-escuro bg-base-terciaria ring-2
          ring-destaque-p-medio hover:text-destaque-p-medio
          hover:bg-base-secundaria hover:ring-destaque-p-medio`
 
@@ -48,7 +53,16 @@ const BotaoPrimario = ({
       type={type}
       onClick={onClick}
     >
-      {children}
+      {Icone && (
+        <WrapperIcone tamanho="sm">
+          <Icone className="size-full" />
+        </WrapperIcone>
+      )}
+      {texto && (
+        <Texto className='font-semibold'>
+          {texto}
+        </Texto>
+      )}
     </MotionButton>
   )
 }

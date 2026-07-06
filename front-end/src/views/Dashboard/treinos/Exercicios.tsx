@@ -7,6 +7,7 @@ import useFetchExercicios, { ResExercicioProps } from '../../../logicas/dashboar
 import useShowExercicio from '../../../logicas/dashboard/treinos/exercicios/ShowExercicio';
 import { Dumbbell, Image, Plus } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import Texto from '../../../componentes/Texto';
 
 
 const ExercicioCard = ({exercicio} :{exercicio : ResExercicioProps}) => {
@@ -21,39 +22,37 @@ const ExercicioCard = ({exercicio} :{exercicio : ResExercicioProps}) => {
   
   return (
     <NavLink to={''}>
-      <CardHorizontal className='hover:bg-base-terciaria/60'>
+      <CardHorizontal className='hover:bg-base-terciaria/60 h-20'>
         <div className="flex justify-between items-center gap-2 text-base">
+          
           <div className="flex gap-1">
 
-            <div className="size-14 rounded-md overflow-hidden">
+            <div className="size-10 rounded-md overflow-hidden">
               <Dumbbell className='size-full' strokeWidth={1}/>
             </div>
 
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col min-w-0 gap-1 flex-1">
 
               <div className="flex flex-row gap-2 items-baseline">
 
-                <h1 className="font-semibold text-t-primaria">
+                <Texto tipo='paragrafo' className='font-semibold'>
                   {exercicio.nome}
-                </h1>
-
-                <div className={`
-                  rounded-full border-2 p-1 text-sm font-semibold opacity-80 ${corNivel}
-                `}>
-                  {exercicio.nivel.nome}
-                </div>
+                </Texto>
 
               </div>
               <div className="flex flex-row gap-1 text-xs items-center">
+                
+                <div className={`rounded-full border-2 px-1 opacity-80 ${corNivel}`}>
+                  <Texto tipo='subtexto'>
+                    {exercicio.nivel.nome}
+                  </Texto>
+                </div>
+
                 {exercicio.musculos.map(musculo => (
-                  musculo.tipo.nome === 'Primário' ? (
-                    <span className='font-semibold text-sm'>
+                  musculo.tipo.nome === 'Primário' && (
+                    <Texto tipo='subtexto'>
                       {musculo.nome}
-                    </span>
-                  ) : (
-                    <span>
-                      {musculo.nome}
-                    </span>
+                    </Texto>
                   )
                 ))}
               </div>
@@ -65,9 +64,10 @@ const ExercicioCard = ({exercicio} :{exercicio : ResExercicioProps}) => {
                 ver
             </BotaoPrimario> */}
 
-            <BotaoSecundario tipo='cheio' redondo>
-              <Plus/>
-            </BotaoSecundario>
+            <BotaoPrimario
+              tipo='cheio' 
+              icone={Plus}
+            />
           </div>
         </div>
       </CardHorizontal>
@@ -117,7 +117,7 @@ const Exercicios = () => {
   // };
 
   return (
-    <div className="w-full h-full flex flex-col gap-6 p-4 pt-10 lg:p-8 overflow-y-auto">
+    <div className="w-full h-full flex flex-col gap-6">
       
 
       {/* GRID DINÂMICO */}
@@ -125,7 +125,9 @@ const Exercicios = () => {
         
         {/* COLUNA ESQUERDA: TREINOS DINÂMICOS */}
         <section className="flex flex-col gap-3 lg:col-span-7 xl:col-span-8">
-          <h2 className="text-lg font-bold text-t-primaria px-1">Treinos da Comunidade</h2>
+          <Texto tipo='titulo' className='text-t-secundaria'>
+            Treinos da Comunidade
+          </Texto>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
 

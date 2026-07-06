@@ -1,8 +1,12 @@
 import type { ReactNode } from 'react'
 import { motion } from 'framer-motion'
+import { LucideIcon } from 'lucide-react'
+import WrapperIcone from './WrapperIcone'
+import Texto from './Texto'
 
 interface BotaoSecundarioProps {
-  children:ReactNode
+  texto?: string
+  icone?: LucideIcon,
   tipo?: 'cheio' | 'vazio'
   classeAdicional?: string
   onClick?: () => void
@@ -10,7 +14,8 @@ interface BotaoSecundarioProps {
   redondo?: boolean
 }
 const BotaoSecundario = ({
-  children,
+  texto,
+  icone : Icone,
   tipo,
   classeAdicional,
   onClick,
@@ -19,7 +24,7 @@ const BotaoSecundario = ({
 }:BotaoSecundarioProps) => {
 
     const classeBase = `
-        p-1 flex justify-center items-center transition-colors
+        p-1 flex justify-center items-center transition-colors gap-1
         duration-300 ${!disabled && 'cursor-pointer'}
         ${redondo ? `rounded-full px-3` : `rounded-lg`}`
     const classeTipo = `
@@ -43,7 +48,16 @@ const BotaoSecundario = ({
     className={`${classeBase} ${classeTipo} ${classeAdicional ?? ''}`}
     onClick={onClick}
     disabled={disabled }>
-        {children}
+      {Icone && (
+        <WrapperIcone tamanho='sm'>
+          <Icone className='size-full'/>
+        </WrapperIcone>
+      )}
+      {texto && (
+        <Texto className='font-semibold'>
+          {texto}
+        </Texto>
+      )}
     </motion.button>
   )
 }

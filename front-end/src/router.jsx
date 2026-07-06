@@ -9,8 +9,8 @@ import RecuperarSenha from './views/login/RecuperarSenha'
 import Dashboard from './views/Dashboard/Dashboard'
 import DashboardLayout from './layouts/dashboard/DashboardLayout'
 import TreinosLayout from './layouts/dashboard/TreinosLayout'
-import Treino from './views/Dashboard/treinos/Treino'
-import Exercicios from './views/Dashboard/treinos/exercicios'
+import Treinos from './views/Dashboard/treinos/Treinos'
+import Exercicios from './views/Dashboard/treinos/Exercicios'
 let ddd = 'dfadfasd'
 const Rota = createBrowserRouter(
     
@@ -35,9 +35,10 @@ const Rota = createBrowserRouter(
 
                 <Route index element={<Dashboard/>}/>
 
-                <Route path='treinos' element={<TreinosLayout/>}>
+                <Route path='treino' element={<TreinosLayout/>}>
                     {/* tem que colocar os bagulho de treino aqui */}
-                    <Route index element={<Treino/>} />
+                    
+                    <Route path='treinos' element={<Treinos/>} />
                     <Route path='exercicios' element={<Exercicios/>}/>
                 </Route>
             </Route>
