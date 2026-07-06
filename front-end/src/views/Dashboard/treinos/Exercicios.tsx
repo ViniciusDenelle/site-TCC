@@ -3,14 +3,90 @@ import useFetchTreinos from '../../../logicas/dashboard/treinos/treino/FetchTrei
 import BotaoSecundario from '../../../componentes/BotaoSecundario';
 import CardHorizontal from '../../../componentes/CardHorizontal';
 import BotaoPrimario from '../../../componentes/BotaoPrimario';
+import useFetchExercicios, { ResExercicioProps } from '../../../logicas/dashboard/treinos/exercicios/FetchExercicio';
+import useShowExercicio from '../../../logicas/dashboard/treinos/exercicios/ShowExercicio';
+import { Dumbbell, Image, Plus } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+import Texto from '../../../componentes/Texto';
 
+
+const ExercicioCard = ({exercicio} :{exercicio : ResExercicioProps}) => {
+  
+  const obterCorNivel = {
+    'Iniciante': 'border-green-600 text-green-600',
+    'Intermediário': 'border-yellow-600 text-yellow-600',
+    'Avançado': 'border-red-600 text-red-600'
+  }
+
+  const corNivel = obterCorNivel[exercicio.nivel.nome]
+  
+  return (
+    <NavLink to={''}>
+      <CardHorizontal className='hover:bg-base-terciaria/60 h-20'>
+        <div className="flex justify-between items-center gap-2 text-base">
+          
+          <div className="flex gap-1">
+
+            <div className="size-10 rounded-md overflow-hidden">
+              <Dumbbell className='size-full' strokeWidth={1}/>
+            </div>
+
+            <div className="flex flex-col min-w-0 gap-1 flex-1">
+
+              <div className="flex flex-row gap-2 items-baseline">
+
+                <Texto tipo='paragrafo' className='font-semibold'>
+                  {exercicio.nome}
+                </Texto>
+
+              </div>
+              <div className="flex flex-row gap-1 text-xs items-center">
+                
+                <div className={`rounded-full border-2 px-1 opacity-80 ${corNivel}`}>
+                  <Texto tipo='subtexto'>
+                    {exercicio.nivel.nome}
+                  </Texto>
+                </div>
+
+                {exercicio.musculos.map(musculo => (
+                  musculo.tipo.nome === 'Primário' && (
+                    <Texto tipo='subtexto'>
+                      {musculo.nome}
+                    </Texto>
+                  )
+                ))}
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex gap-2 items-center">
+            {/* <BotaoPrimario tipo='vazio' redondo classeAdicional='ring-transparent'>
+                ver
+            </BotaoPrimario> */}
+
+            <BotaoPrimario
+              tipo='cheio' 
+              icone={Plus}
+            />
+          </div>
+        </div>
+      </CardHorizontal>
+    </NavLink>
+  )
+}
 // Agora o componente pode receber a lista de treinos e treinadores diretamente via props da API
-const Treino = () => {
+const Exercicios = () => {
+
+  // const {
+  //   treinos,
+  //   isPending
+  // } = useFetchTreinos()
 
   const {
-    treinos,
+    exercicios,
     isPending
-  } = useFetchTreinos()
+  } = useFetchExercicios()
+  
 
   // Caso os dados ainda estejam carregando da API, exibe um feedback visual elegante (Skeleton)
   if (isPending) {
@@ -21,27 +97,27 @@ const Treino = () => {
     );
   }
 
-  // Mapeamento prático para garantir cores dinâmicas com base no nível que vem do banco de dados
-  const obterCorNivel = (nivel) => {
-    switch (nivel?.toLowerCase()) {
-      case 'iniciante': return 'text-green-400';
-      case 'avançado': return 'text-red-400';
-      default: return 'text-amber-400'; // Intermediário ou padrão
-    }
-  };
+  // // Mapeamento prático para garantir cores dinâmicas com base no nível que vem do banco de dados
+  // const obterCorNivel = (nivel) => {
+  //   switch (nivel?.toLowerCase()) {
+  //     case 'iniciante': return 'text-green-400';
+  //     case 'avançado': return 'text-red-400';
+  //     default: return 'text-amber-400'; // Intermediário ou padrão
+  //   }
+  // };
 
-  // Função para gerar iniciais dinâmicas caso o usuário não tenha foto de perfil
-  const obterIniciais = (nome) => {
-    if (!nome) return '??';
-    const partes = nome.split(' ');
-    if (partes.length > 1) {
-      return (partes[0][0] + partes[1][0]).toUpperCase();
-    }
-    return partes[0].substring(0, 2).toUpperCase();
-  };
+  // // Função para gerar iniciais dinâmicas caso o usuário não tenha foto de perfil
+  // const obterIniciais = (nome) => {
+  //   if (!nome) return '??';
+  //   const partes = nome.split(' ');
+  //   if (partes.length > 1) {
+  //     return (partes[0][0] + partes[1][0]).toUpperCase();
+  //   }
+  //   return partes[0].substring(0, 2).toUpperCase();
+  // };
 
   return (
-    <div className="w-full h-full flex flex-col gap-6 p-4 pt-10 lg:p-8 overflow-y-auto">
+    <div className="w-full h-full flex flex-col gap-6">
       
 
       {/* GRID DINÂMICO */}
@@ -49,34 +125,20 @@ const Treino = () => {
         
         {/* COLUNA ESQUERDA: TREINOS DINÂMICOS */}
         <section className="flex flex-col gap-3 lg:col-span-7 xl:col-span-8">
-          <h2 className="text-lg font-bold text-t-primaria px-1">Treinos da Comunidade</h2>
+          <Texto tipo='titulo' className='text-t-secundaria'>
+            Treinos da Comunidade
+          </Texto>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
-            {treinos.length === 0 ? (
+
+            {exercicios.length === 0 ? (
               <p className="text-xs text-t-secundaria/60 p-2">Nenhum treino criado ainda. Seja o primeiro!</p>
             ) : (
-              treinos.map((treino) => (
-                <CardHorizontal>
-                  <div className="flex justify-between p-2">
-                    <div className="flex flex-col gap-1 pr-2 min-w-0">
-                      <h3 className="text-base font-semibold text-t-primaria truncate">{treino.nome}</h3>
-                      
-                      {/* Exibe quem criou o treino */}
-                      {/* <span className="text-[10px] text-t-secundaria/40 mt-0.5 truncate">Por: {treino.nomeCriador || 'Usuário Anônimo'}</span> */}
-                    </div>
-                    <div className="flex gap-2">
-                      <BotaoPrimario tipo='vazio' redondo>
-                        usar
-                      </BotaoPrimario>
-                      <BotaoSecundario tipo='cheio' redondo>
-                        ver
-                      </BotaoSecundario>
-
-                    </div>
-
-                  </div>
-
-                </CardHorizontal>
+              exercicios.map((exercicio) => (
+                <ExercicioCard 
+                  key={exercicio.id}
+                  exercicio={exercicio} 
+                />
                 
               ))
             )}
@@ -136,4 +198,4 @@ const Treino = () => {
   );
 };
 
-export default Treino;
+export default Exercicios;

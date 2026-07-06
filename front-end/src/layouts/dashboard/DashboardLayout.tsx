@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { ArrowLeft, ArrowRight, ChartBarIncreasing, Cog, Flame, Home, Info, Lightbulb, LogOut, LucideIcon, Newspaper, Palette, TextAlignJustify, UserCircle, Weight, X, Zap } from "lucide-react"
-import { ReactNode, useContext, useState } from "react"
+import { ArrowLeft, ArrowRight, ChartBarIncreasing, Cog, CogIcon, Flame, Home, Info, InfoIcon, Lightbulb, LogOut, LogOutIcon, LucideIcon, Newspaper, NewspaperIcon, Palette, TextAlignJustify, UserCircle, Weight, X, Zap } from "lucide-react"
+import { ReactNode, useContext, useEffect, useState } from "react"
 import { NavLink, Outlet } from "react-router-dom"
 import TemaContexto from "../../contextos/TemaContexto"
 import BotaoSecundario from "../../componentes/BotaoSecundario"
@@ -11,6 +11,8 @@ import CardPaleta from "../../componentes/CardPaleta"
 import LinkNavDashboard from "../../componentes/LinkNavDashboard"
 import BotaoPrimario from "../../componentes/BotaoPrimario"
 import useLogout from "../../logicas/querys/Logout"
+import Texto from "../../componentes/Texto"
+import WrapperIcone from "../../componentes/WrapperIcone"
 // import { UsuarioProvider } from "../contextos/UsuarioContexto"
 
 const DashboardLayout = () => {
@@ -20,8 +22,7 @@ const DashboardLayout = () => {
         dadosUsuario
     } = useFetchUsuario()
     const token = localStorage.getItem('token')
-    if (isPending) return (<p>pera ai</p>)
-    if (!token || isError) navigation.navigate('/login')
+
 
     const [tema, alterarTema] = useContext(TemaContexto)
 
@@ -34,7 +35,7 @@ const DashboardLayout = () => {
         {
             icone: Weight,
             legenda: 'treinos',
-            to: 'treinos'
+            to: 'treino'
         },
         {
             icone: Flame,
@@ -53,7 +54,25 @@ const DashboardLayout = () => {
         },
 
     ]
-   
+
+    const linksMenuHamburguer = [
+        {
+            legenda: 'Configurações',
+            to: '/',
+            icone: CogIcon,
+        },
+        {
+            legenda: 'Sobre',
+            to: '/',
+            icone: InfoIcon,
+        },
+        {
+            legenda: 'Novidades',
+            to: '/',
+            icone: NewspaperIcon,
+        }
+    ]
+
     const animacaoMenu = {
 
         invisivel: {
@@ -77,13 +96,20 @@ const DashboardLayout = () => {
         setPaletaAberta(prev => !prev)
     }
 
-    const {logout} = useLogout()
+    const { logout } = useLogout()
 
+    useEffect(() => {
+        console.log('montou')
+    }, [])
+    if (isPending) return
+    if (isError) return
+    if (!token) navigation.navigate('/login')
 
+    
     return (
 
         <>
-            <header className="absolute top-0 left-0 w-full z-1000 text-t-terciaria">
+            <header className="fixed top-0 left-0 w-full z-1000 text-t-terciaria">
 
                 <div className="container mx-auto px-2">
 
@@ -95,14 +121,10 @@ const DashboardLayout = () => {
                     >
                         <BotaoSecundario
                             onClick={abrirMenu}
-                            classeAdicional="
-                            ring-transparent
-                            hover:ring-transparent
-                            lg:hidden
-                        "
-                        >
-                            <TextAlignJustify />
-                        </BotaoSecundario>
+                            classeAdicional="ring-transparent 
+                            hover:ring-transparentlg:hidden"
+                            icone={TextAlignJustify}
+                        />
                         {/* titulo */}
 
                     </nav>
@@ -124,47 +146,61 @@ const DashboardLayout = () => {
                             >
 
                                 <div onClick={abrirMenu}
-                                className="absolute top-1/2 left-full -translate-1/2 w-10 cursor-pointer">
+                                    className="absolute top-1/2 left-full -translate-1/2 w-10 cursor-pointer">
                                     <CardHorizontal className="relative rounded-full w-10 h-10">
                                         <div className="absolute top-1/2 left-1/2 -translate-1/2 flex items-center">
-                                            <X/>
+                                            <X />
                                         </div>
                                     </CardHorizontal>
                                 </div>
                                 <CardHorizontal>
                                     <div className="flex gap-2 items-center">
                                         <LinkSimples to="/perfil" classeAdicional="flex gap-1 items-center">
-                                            <div className="size-10 rounded-full overflow-hidden">
-                                                <UserCircle size={40} strokeWidth={1.5} />
-                                            </div>
 
-                                            <h1 className="text-lg">
+                                            <WrapperIcone tamanho="lg">
+                                                <UserCircle className="size-full" />
+                                            </WrapperIcone>
+
+
+                                            {/* <h1 className="text-lg">
                                                 {dadosUsuario.nome}
-                                            </h1>
-                                        
+                                            </h1> */}
+
                                         </LinkSimples>
                                     </div>
                                 </CardHorizontal>
 
                                 <div className="flex flex-col gap-4 w-full mt-5">
-                                    <LinkSimples to="/">
-                                        <div className="flex w-full gap-2 items-center">
-                                            <Cog size={30} /> configurações
-
+                                    {/* link do menu */}
+                                    <CardHorizontal className="hidden md:flex">
+                                        <div className="flex flex-col gap-4">
+                                            {nav.map(link => (
+                                                <LinkSimples to={link.to}>
+                                                    <div className="flex w-full gap-2 items-center">
+                                                        <WrapperIcone>
+                                                            <link.icone className="size-full" />
+                                                        </WrapperIcone>
+                                                        <Texto tipo="titulo" className="font-medium">
+                                                            {link.legenda}
+                                                        </Texto>
+                                                    </div>
+                                                </LinkSimples>
+                                            ))}
                                         </div>
-                                    </LinkSimples>
-                                    <LinkSimples to="/">
-                                        <div className="flex w-full gap-2 items-center">
-                                            <Newspaper size={30} /> novidades
+                                    </CardHorizontal>
+                                    {linksMenuHamburguer.map(link => (
+                                        <LinkSimples to={link.to}>
+                                            <div className="flex w-full gap-2 items-center">
+                                                <WrapperIcone>
+                                                    <link.icone className="size-full" />
+                                                </WrapperIcone>
+                                                <Texto tipo="titulo" className="font-medium">
+                                                    {link.legenda}
+                                                </Texto>
+                                            </div>
+                                        </LinkSimples>
+                                    ))}
 
-                                        </div>
-                                    </LinkSimples>
-                                    <LinkSimples to="/">
-                                        <div className="flex w-full gap-2 items-center">
-                                            <Info size={30} /> sobre
-
-                                        </div>
-                                    </LinkSimples>
                                 </div>
 
                                 <div className="absolute bottom-5 flex justify-center
@@ -173,17 +209,17 @@ const DashboardLayout = () => {
 
 
                                     <BotaoSecundario
-                                        onClick={abrirPaleta}>
+                                        onClick={abrirPaleta}
+                                        texto="paleta"
+                                        icone={Palette}
+                                    />
 
-
-                                        paleta <Palette />
-                                    </BotaoSecundario>
-                                    <BotaoPrimario 
+                                    <BotaoPrimario
                                         tipo="vazio"
                                         onClick={logout}
-                                    >
-                                        logout <LogOut />
-                                    </BotaoPrimario>
+                                        texto="logout"
+                                        icone={LogOutIcon}
+                                    />
 
                                 </div>
 
@@ -230,17 +266,15 @@ const DashboardLayout = () => {
                                             tipo={tema === 'light' ? 'cheio' : 'vazio'}
                                             disabled={tema === 'light'}
                                             redondo
-                                        >
-                                            claro
-                                        </BotaoSecundario>
+                                            texto="claro"
+                                        />
                                         <BotaoSecundario
                                             onClick={() => alterarTema('dark')}
                                             tipo={tema === 'dark' ? 'cheio' : 'vazio'}
                                             disabled={tema === 'dark'}
                                             redondo
-                                        >
-                                            escuro
-                                        </BotaoSecundario>
+                                            texto="escuro"
+                                       />
                                     </div>
                                 </CardHorizontal>
 
@@ -257,25 +291,29 @@ const DashboardLayout = () => {
 
             <Outlet />
 
-            <nav className="absolute z-100 bottom-5 left-1/2 -translate-x-1/2 
-            border-base-secundaria border-2 rounded-full bg-base-secundaria/60 
-            py-1 px-5 w-[95%] backdrop-blur-md">
+            <div className="fixed z-100 bottom-[1%] left-1/2 -translate-x-1/2 w-full md:hidden">
+                <div className="container mx-auto">
+                    <nav className="
+                    border-base-terciaria border-3 rounded-full bg-base-terciaria/60 
+                    py-1 px-5 w-full backdrop-blur-md text-base">
 
-                <div className="flex items-center justify-between
-                gap-5 shrink-0 overflow-y-visible h-15">
+                        <div className="flex items-center justify-between
+                        gap-5 shrink-0 overflow-y-visible h-15">
 
-                    {nav.map(item => (
-                        <LinkNavDashboard
-                            key={item.to}
-                            icone={item.icone}
-                            legenda={item.legenda}
-                            to={item.to}
-                        />
-                    ))}
+                            {nav.map(item => (
+                                <LinkNavDashboard
+                                    key={item.to}
+                                    icone={item.icone}
+                                    legenda={item.legenda}
+                                    to={item.to}
+                                />
+                            ))}
 
+                        </div>
+
+                    </nav>
                 </div>
-
-            </nav>
+            </div>
 
         </>
 

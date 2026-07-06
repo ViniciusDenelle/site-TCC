@@ -12,7 +12,7 @@ const LoginLayout = () => {
     
     if (token) {
       if(isSuccess || dadosUsuario) {
-        navigation.navigate('/dashboard')
+        // navigation.navigate('/dashboard')
       }
     }
 

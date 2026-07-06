@@ -1,6 +1,6 @@
 
 // import useUsuarioContexto from "../../contextos/UsuarioContexto"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import useFetchUsuario from "../../logicas/querys/FetchUsuario"
 
 const Botao = () => {
@@ -32,7 +32,7 @@ const Dashboard = () => {
             <div className="h-screen w-full flex items-center justify-center bg-base-primaria">
                     
                 <div className="p-4 border-2 border-base-terciaria rounded-lg bg-base-secundaria">
-                    {nome}
+                    
                     <Botao />
                 </div>
 

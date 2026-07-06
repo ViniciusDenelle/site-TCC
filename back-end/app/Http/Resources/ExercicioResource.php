@@ -7,12 +7,54 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ExercicioResource extends JsonResource
 {
-   public function toArray(Request $request): array
+    public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
+
             'nome' => $this->nome,
             'descricao' => $this->descricao,
+
+            'categoria' => [
+                'id' => $this->categoria->id,
+                'nome' => $this->categoria->nome,
+            ],
+
+            'nivel' => [
+                'id' => $this->nivel->id,
+                'nome' => $this->nivel->nome,
+            ],
+
+            'tipo' => [
+                'id' => $this->tipo->id,
+                'nome' => $this->tipo->nome,
+            ],
+
+            'musculos' => $this->musculos
+                ->map(function ($musculo) {
+                    return [
+                        'id' => $musculo->id,
+                        'nome' => $musculo->nome,
+
+                        'tipo' => [
+                            'id' => $musculo->pivot->tipo,
+                            'nome' => $musculo->pivot->tipo == 1
+                                ? 'Primário'
+                                : 'Secundário',
+                        ],
+                    ];
+                })
+                ->sortBy('tipo.id')
+                ->values(),
+
+            'equipamentos' => $this->equipamentos
+                ->map(function ($equipamento) {
+                    return [
+                        'id' => $equipamento->id,
+                        'nome' => $equipamento->nome,
+                    ];
+                })
+                ->values(),
         ];
     }
 }
