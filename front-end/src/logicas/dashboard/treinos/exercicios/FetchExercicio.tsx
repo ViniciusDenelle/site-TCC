@@ -29,7 +29,19 @@ export type ResExercicioProps = {
     equipamentos: Equipamento[]
 }
 
-const useFetchExercicios = () => {
+export type Filtros = {
+    musculos?: number[]
+    equipamentos?: number[]
+    tipos?: number[]
+    categorias?: number[]
+    niveis?: number[]
+}
+
+export type TipoFiltros = keyof Filtros
+
+type ReqFetchExercicios = Filtros & {nome?: string}
+
+const useFetchExercicios = (filtros:ReqFetchExercicios) => {
 
     const {
         data: exercicios,
@@ -42,10 +54,10 @@ const useFetchExercicios = () => {
         AxiosError,
         ResExercicioProps[]
     >({
-        queryKey: ['exercicios'],
+        queryKey: ['exercicios', filtros],
 
         queryFn: async () => {
-            const res = await api.get('/dashboard/treinos/exercicio')
+            const res = await api.get('/dashboard/treinos/exercicio', {params: filtros})
             return res.data.data
         }
     })

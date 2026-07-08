@@ -53,6 +53,7 @@ const TreinosLayout = () => {
               bg-base-secundaria rounded-lg p-2 text-t-terciaria/80">
                 {navegacaoSuperior.map(link => (
                   <NavegacaoSuperiorTreinos
+                    key={link.nome}
                     nome={link.nome}
                     to={link.to}
                   />

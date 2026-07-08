@@ -98,14 +98,10 @@ const DashboardLayout = () => {
 
     const { logout } = useLogout()
 
-    useEffect(() => {
-        console.log('montou')
-    }, [])
     if (isPending) return
     if (isError) return
     if (!token) navigation.navigate('/login')
 
-    
     return (
 
         <>
@@ -175,7 +171,7 @@ const DashboardLayout = () => {
                                     <CardHorizontal className="hidden md:flex">
                                         <div className="flex flex-col gap-4">
                                             {nav.map(link => (
-                                                <LinkSimples to={link.to}>
+                                                <LinkSimples key={link.legenda} to={link.to}>
                                                     <div className="flex w-full gap-2 items-center">
                                                         <WrapperIcone>
                                                             <link.icone className="size-full" />
@@ -189,7 +185,7 @@ const DashboardLayout = () => {
                                         </div>
                                     </CardHorizontal>
                                     {linksMenuHamburguer.map(link => (
-                                        <LinkSimples to={link.to}>
+                                        <LinkSimples key={link.legenda} to={link.to}>
                                             <div className="flex w-full gap-2 items-center">
                                                 <WrapperIcone>
                                                     <link.icone className="size-full" />

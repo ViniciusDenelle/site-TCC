@@ -91,9 +91,9 @@ const Cadastro: React.FC = () => {
                         {passo > 1 && (
                             <BotaoSecundario
                                 classeAdicional="absolute top-2 left-2 ring-transparent hover:ring-transparent"
-                                onClick={voltarPasso}>
-                                <ArrowLeft />
-                            </BotaoSecundario>
+                                onClick={voltarPasso}
+                                icone={ArrowLeft}    
+                            />
                         )}
 
                         <div className="flex w-full h-full flex-col gap-2 mt-5">
@@ -115,17 +115,15 @@ const Cadastro: React.FC = () => {
                                     tipo="cheio"
                                     onClick={cadastroHandler}
                                     disabled={!emailMutation.isSuccess}
-                                >
-                                    {emailMutation.isSuccess ? 'confirmar' : 'envie o codigo'}
-                                </BotaoPrimario>
+                                    texto={emailMutation.isSuccess ? 'confirmar' : 'envie o codigo'}
+                                />
                             ) : (
                                 <BotaoPrimario
                                     onClick={proximoPasso}
                                     disabled={!podeProximo}
                                     tipo="cheio"
-                                >
-                                    proximo
-                                </BotaoPrimario>
+                                    texto='proximo'
+                                />
                             )}
 
                             <div className='flex gap-1 justify-center'>

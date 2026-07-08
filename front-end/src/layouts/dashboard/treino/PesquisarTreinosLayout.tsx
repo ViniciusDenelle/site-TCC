@@ -14,6 +14,7 @@ const PesquisarTreinosLayout = () => {
                 bg-base-terciaria rounded-lg p-1'>
                     {navPesquisa.map(link => (
                         <NavegacaoSuperiorTreinos
+                            key={link}
                             nome={link}
                             to={link}
                         />
