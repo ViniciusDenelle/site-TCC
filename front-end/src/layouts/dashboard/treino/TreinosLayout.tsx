@@ -1,8 +1,8 @@
 import React from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
-import Texto from '../../componentes/Texto'
+import Texto from '../../../componentes/organizacao/Texto'
 
-const NavegacaoSuperiorTreinos = ({
+export const NavegacaoSuperiorTreinos = ({
   nome,
   to = '/'
 }) => {
@@ -10,10 +10,10 @@ const NavegacaoSuperiorTreinos = ({
   return (
     <NavLink to={to}>
       {({isActive}) => (
-        <div className={`border-b-2
+        <div className={`
           ${isActive 
-            ? `border-text-destaque-s-escuro text-destaque-s-escuro` 
-            : ` border-text-t-terciaria/80 text-t-terciaria/80`}
+            ? `border-text-destaque-s-escuro text-destaque-s-escuro border-b-2 font-semibold` 
+            : ` text-t-terciaria/80`}
         `}>
           <Texto tipo='subtexto' className='truncate'>
             {nome}
@@ -28,19 +28,19 @@ const TreinosLayout = () => {
 
   const navegacaoSuperior = [
     {
-      nome: 'fichas',
+      nome: 'Treinar',
       to: 'treinos',
     },
     {
-      nome: 'minha ficha',
+      nome: 'Meus Treinos',
       to: '/',
     },
     {
-      nome: 'exercicios',
-      to: 'exercicios',
+      nome: 'Pesquisar',
+      to: 'pesquisar',
     },
     {
-      nome: 'em casa',
+      nome: 'Criar',
       to: '/',
     },
   ]
@@ -53,6 +53,7 @@ const TreinosLayout = () => {
               bg-base-secundaria rounded-lg p-2 text-t-terciaria/80">
                 {navegacaoSuperior.map(link => (
                   <NavegacaoSuperiorTreinos
+                    key={link.nome}
                     nome={link.nome}
                     to={link.to}
                   />
@@ -65,8 +66,7 @@ const TreinosLayout = () => {
 
       <div className="bg-base-primaria">
         <div className="container mx-auto">
-          <div className="flex min-h-screen w-full justify-center 
-          items-center px-4 py-27">
+          <div className="flex min-h-screen w-full px-4 py-27">
 
             <Outlet />
           </div>

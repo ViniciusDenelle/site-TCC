@@ -3,16 +3,16 @@ import { ArrowLeft, ArrowRight, ChartBarIncreasing, Cog, CogIcon, Flame, Home, I
 import { ReactNode, useContext, useEffect, useState } from "react"
 import { NavLink, Outlet } from "react-router-dom"
 import TemaContexto from "../../contextos/TemaContexto"
-import BotaoSecundario from "../../componentes/BotaoSecundario"
+import BotaoSecundario from "../../componentes/botoes/BotaoSecundario"
 import useFetchUsuario from "../../logicas/querys/FetchUsuario"
-import LinkSimples from "../../componentes/LinkSimples"
+import LinkSimples from "../../componentes/links/LinkSimples"
 import CardHorizontal from "../../componentes/CardHorizontal"
 import CardPaleta from "../../componentes/CardPaleta"
-import LinkNavDashboard from "../../componentes/LinkNavDashboard"
-import BotaoPrimario from "../../componentes/BotaoPrimario"
+import LinkNavDashboard from "../../componentes/links/LinkNavDashboard"
+import BotaoPrimario from "../../componentes/botoes/BotaoPrimario"
 import useLogout from "../../logicas/querys/Logout"
-import Texto from "../../componentes/Texto"
-import WrapperIcone from "../../componentes/WrapperIcone"
+import Texto from "../../componentes/organizacao/Texto"
+import WrapperIcone from "../../componentes/organizacao/WrapperIcone"
 // import { UsuarioProvider } from "../contextos/UsuarioContexto"
 
 const DashboardLayout = () => {
@@ -98,14 +98,10 @@ const DashboardLayout = () => {
 
     const { logout } = useLogout()
 
-    useEffect(() => {
-        console.log('montou')
-    }, [])
     if (isPending) return
     if (isError) return
     if (!token) navigation.navigate('/login')
 
-    
     return (
 
         <>
@@ -175,7 +171,7 @@ const DashboardLayout = () => {
                                     <CardHorizontal className="hidden md:flex">
                                         <div className="flex flex-col gap-4">
                                             {nav.map(link => (
-                                                <LinkSimples to={link.to}>
+                                                <LinkSimples key={link.legenda} to={link.to}>
                                                     <div className="flex w-full gap-2 items-center">
                                                         <WrapperIcone>
                                                             <link.icone className="size-full" />
@@ -189,7 +185,7 @@ const DashboardLayout = () => {
                                         </div>
                                     </CardHorizontal>
                                     {linksMenuHamburguer.map(link => (
-                                        <LinkSimples to={link.to}>
+                                        <LinkSimples key={link.legenda} to={link.to}>
                                             <div className="flex w-full gap-2 items-center">
                                                 <WrapperIcone>
                                                     <link.icone className="size-full" />

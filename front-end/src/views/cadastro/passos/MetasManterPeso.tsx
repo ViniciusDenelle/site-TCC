@@ -3,16 +3,16 @@ import { motion } from 'motion/react'
 import { CalendarClock, Flame } from 'lucide-react'
 import type { ChangeEvent } from 'react'
 
-import InputSimples from '../../../componentes/InputSimples'
-import SliderCustomizado from '../../../componentes/InputRange'
-import RadioCustomizado from '../../../componentes/RadioCustomizado'
+import InputSimples from '../../../componentes/inputs/InputSimples'
+import SliderCustomizado from '../../../componentes/inputs/InputRange'
+import RadioCustomizado from '../../../componentes/inputs/RadioCustomizado'
 
 import CadastroContext from '../../../contextos/CadastroContexto'
 import useMetas from '../../../logicas/cadastro/useMetas'
 import type { UseCadastroReturn } from '../../../logicas/cadastro/useCadastro'
 import useCadastroContexto from '../../../contextos/CadastroContexto'
-import InputRangeMinMax from '../../../componentes/InputRangeMinMax'
-import InputRange from '../../../componentes/InputRange'
+import InputRangeMinMax from '../../../componentes/inputs/InputRangeMinMax'
+import InputRange from '../../../componentes/inputs/InputRange'
 
 const MetasManterPeso = () => {
     const {

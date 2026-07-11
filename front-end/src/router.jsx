@@ -8,9 +8,11 @@ import Login from './views/login/Login'
 import RecuperarSenha from './views/login/RecuperarSenha'
 import Dashboard from './views/Dashboard/Dashboard'
 import DashboardLayout from './layouts/dashboard/DashboardLayout'
-import TreinosLayout from './layouts/dashboard/TreinosLayout'
+import TreinosLayout from './layouts/dashboard/treino/TreinosLayout'
 import Treinos from './views/Dashboard/treinos/Treinos'
 import Exercicios from './views/Dashboard/treinos/Exercicios'
+import PesquisarTreinosLayout from './layouts/dashboard/treino/PesquisarTreinosLayout'
+import PesquisarExercicios from './views/Dashboard/treinos/pesquisar/PesquisarExercicios'
 let ddd = 'dfadfasd'
 const Rota = createBrowserRouter(
     
@@ -40,6 +42,10 @@ const Rota = createBrowserRouter(
                     
                     <Route path='treinos' element={<Treinos/>} />
                     <Route path='exercicios' element={<Exercicios/>}/>
+
+                    <Route path='pesquisar' element={<PesquisarTreinosLayout/>}>
+                        <Route path='exercicio' element={<PesquisarExercicios/>}/>
+                    </Route>
                 </Route>
             </Route>
                 

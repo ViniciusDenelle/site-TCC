@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ExercicioRequest;
 use App\Http\Resources\ExercicioResource;
 use App\Models\Exercicio;
+use ExercicioFilter;
+use Illuminate\Log\Logger;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class ExercicioController extends Controller
 {
@@ -27,15 +30,20 @@ class ExercicioController extends Controller
         return new ExercicioResource($exercicio);
     }
 
-    public function fetch()
+    public function fetch(Request $request)
     {
-        $exercicios = Exercicio::with([
+        $query = Exercicio::query()
+        ->with([
             'nivel', 
-            'categoria', 
+            'foco', 
             'tipo', 
             'musculos', 
             'equipamentos'
-        ])->limit(20)->get();
+        ]);
+
+        $query = \App\Filters\ExercicioFilter::apply($query, $request);
+
+        $exercicios = $query->paginate(5);
 
         return ExercicioResource::collection($exercicios);
     }

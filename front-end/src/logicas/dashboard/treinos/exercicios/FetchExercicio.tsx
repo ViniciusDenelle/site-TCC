@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { AxiosError, AxiosResponse } from 'axios'
 import api from '../../../../api'
+import { Paginacao } from '../../../tipagens/PaginacaoProps'
 
 export type Badge = {
     id: number
@@ -29,7 +30,22 @@ export type ResExercicioProps = {
     equipamentos: Equipamento[]
 }
 
-const useFetchExercicios = () => {
+export type Filtros = {
+    musculos?: number[]
+    equipamentos?: number[]
+    focos?: number[]
+    tipos?: number[]
+    niveis?: number[]
+}
+
+export type TipoFiltros = keyof Filtros
+
+type ReqFetchExercicios = Filtros & {nome?: string}
+
+const useFetchExercicios = (
+    filtros:ReqFetchExercicios,
+    pagina:number
+) => {
 
     const {
         data: exercicios,
@@ -40,13 +56,17 @@ const useFetchExercicios = () => {
     } = useQuery<
         AxiosResponse,
         AxiosError,
-        ResExercicioProps[]
+        Paginacao<ResExercicioProps>
     >({
-        queryKey: ['exercicios'],
+        queryKey: ['exercicios', filtros, pagina],
 
         queryFn: async () => {
-            const res = await api.get('/dashboard/treinos/exercicio')
-            return res.data.data
+            const res = await api.get('/dashboard/treinos/exercicio', 
+                {params: {
+                    ...filtros,
+                    page: pagina
+                }})
+            return res.data
         }
     })
 

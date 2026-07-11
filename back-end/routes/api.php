@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BadgeTreinoController;
 use App\Http\Controllers\ExercicioController;
 use App\Http\Controllers\FichaController;
 use App\Http\Controllers\TreinoController;
@@ -54,6 +55,14 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::get('ficha/{ficha}', 'ficha');
                 Route::get('treino/{treino}', 'treino');
                 Route::get('exercicio/{exercicio}', 'exercicio');
+            });
+
+            Route::prefix('badges')->controller(BadgeTreinoController::class)->group(function(){
+                Route::get('musculos', 'musculos');
+                Route::get('equipamentos', 'equipamentos');
+                Route::get('tipos', 'tipos');
+                Route::get('niveis', 'niveis');
+                Route::get('focos', 'focos');
             });
         });
     });

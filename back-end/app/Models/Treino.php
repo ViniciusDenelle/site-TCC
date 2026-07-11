@@ -14,6 +14,33 @@ class Treino extends Model
         'calorias_medias'
     ];
 
+    public function categoria()
+    {
+        return $this->belongsTo(
+            CategoriaExercicio::class,
+            'categoria_id',
+            'id'
+        );
+    }
+
+    public function nivel()
+    {
+        return $this->belongsTo(
+            NivelExercicio::class,
+            'nivel_id',
+            'id'
+        );
+    }
+
+    public function tipo()
+    {
+        return $this->belongsTo(
+            Foco::class,
+            'foco_id',
+            'id'
+        );
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

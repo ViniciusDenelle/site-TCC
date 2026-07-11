@@ -25,8 +25,8 @@ const RadioCustomizado = ({
     flex gap-2 justify-center items-center
     border-2 border-base-quaternaria
     bg-base-terciaria hover:bg-base-secundaria
-    rounded-lg bg-linear-to-b
-    shadow-destaque-s-escuro/50 h-12 w-35
+    rounded-lg bg-linear-to-b h-12 w-28
+    shadow-destaque-s-escuro/50
     transition-colors duration-200
     peer-checked:border-destaque-s-escuro/50
     peer-checked:shadow-md

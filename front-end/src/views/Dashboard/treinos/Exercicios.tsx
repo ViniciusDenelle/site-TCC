@@ -1,79 +1,17 @@
 import React from 'react';
 import useFetchTreinos from '../../../logicas/dashboard/treinos/treino/FetchTreinos';
-import BotaoSecundario from '../../../componentes/BotaoSecundario';
+import BotaoSecundario from '../../../componentes/botoes/BotaoSecundario';
 import CardHorizontal from '../../../componentes/CardHorizontal';
-import BotaoPrimario from '../../../componentes/BotaoPrimario';
+import BotaoPrimario from '../../../componentes/botoes/BotaoPrimario';
 import useFetchExercicios, { ResExercicioProps } from '../../../logicas/dashboard/treinos/exercicios/FetchExercicio';
 import useShowExercicio from '../../../logicas/dashboard/treinos/exercicios/ShowExercicio';
 import { Dumbbell, Image, Plus } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-import Texto from '../../../componentes/Texto';
+import Texto from '../../../componentes/organizacao/Texto';
+import ExercicioCard from '../../../componentes/ExercicioCard';
 
 
-const ExercicioCard = ({exercicio} :{exercicio : ResExercicioProps}) => {
-  
-  const obterCorNivel = {
-    'Iniciante': 'border-green-600 text-green-600',
-    'Intermediário': 'border-yellow-600 text-yellow-600',
-    'Avançado': 'border-red-600 text-red-600'
-  }
 
-  const corNivel = obterCorNivel[exercicio.nivel.nome]
-  
-  return (
-    <NavLink to={''}>
-      <CardHorizontal className='hover:bg-base-terciaria/60 h-20'>
-        <div className="flex justify-between items-center gap-2 text-base">
-          
-          <div className="flex gap-1">
-
-            <div className="size-10 rounded-md overflow-hidden">
-              <Dumbbell className='size-full' strokeWidth={1}/>
-            </div>
-
-            <div className="flex flex-col min-w-0 gap-1 flex-1">
-
-              <div className="flex flex-row gap-2 items-baseline">
-
-                <Texto tipo='paragrafo' className='font-semibold'>
-                  {exercicio.nome}
-                </Texto>
-
-              </div>
-              <div className="flex flex-row gap-1 text-xs items-center">
-                
-                <div className={`rounded-full border-2 px-1 opacity-80 ${corNivel}`}>
-                  <Texto tipo='subtexto'>
-                    {exercicio.nivel.nome}
-                  </Texto>
-                </div>
-
-                {exercicio.musculos.map(musculo => (
-                  musculo.tipo.nome === 'Primário' && (
-                    <Texto tipo='subtexto'>
-                      {musculo.nome}
-                    </Texto>
-                  )
-                ))}
-              </div>
-            </div>
-          </div>
-          
-          <div className="flex gap-2 items-center">
-            {/* <BotaoPrimario tipo='vazio' redondo classeAdicional='ring-transparent'>
-                ver
-            </BotaoPrimario> */}
-
-            <BotaoPrimario
-              tipo='cheio' 
-              icone={Plus}
-            />
-          </div>
-        </div>
-      </CardHorizontal>
-    </NavLink>
-  )
-}
 // Agora o componente pode receber a lista de treinos e treinadores diretamente via props da API
 const Exercicios = () => {
 
@@ -85,7 +23,10 @@ const Exercicios = () => {
   const {
     exercicios,
     isPending
-  } = useFetchExercicios()
+  } = useFetchExercicios({
+    filtros: {},
+    nome: ''
+  })
   
 
   // Caso os dados ainda estejam carregando da API, exibe um feedback visual elegante (Skeleton)

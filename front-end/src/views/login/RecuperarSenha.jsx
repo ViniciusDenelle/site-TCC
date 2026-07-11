@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import InputSimples from '../../componentes/InputSimples'
-import BotaoSimples from '../../componentes/BotaoSecundario'
-import BotaoPrimario from '../../componentes/BotaoPrimario'
+import InputSimples from '../../componentes/inputs/InputSimples'
+import BotaoSimples from '../../componentes/botoes/BotaoSecundario'
+import BotaoPrimario from '../../componentes/botoes/BotaoPrimario'
 import useConfirmacao from '../../logicas/querys/useConfirmacao'
 import { Mail } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query'
 import api from '../../api'
-import LinkSimples from '../../componentes/LinkSimples'
+import LinkSimples from '../../componentes/links/LinkSimples'
 import useCadastro from '../../logicas/cadastro/useCadastro'
 
 const RecuperarSenha = () => {

@@ -14,11 +14,11 @@ class Exercicio extends Model
         'tipo_id'
     ];
 
-    public function categoria()
+    public function tipo()
     {
         return $this->belongsTo(
-            CategoriaExercicio::class,
-            'categoria_id',
+            TipoExercicio::class,
+            'tipo_id',
             'id'
         );
     }
@@ -32,11 +32,11 @@ class Exercicio extends Model
         );
     }
 
-    public function tipo()
+    public function foco()
     {
         return $this->belongsTo(
-            TipoExercicio::class,
-            'tipo_id',
+            Foco::class,
+            'foco_id',
             'id'
         );
     }
