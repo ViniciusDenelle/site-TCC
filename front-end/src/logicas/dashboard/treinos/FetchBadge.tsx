@@ -3,7 +3,7 @@ import React from 'react'
 import api from '../../../api'
 import { Badge } from './exercicios/FetchExercicio'
 
-type BadgeProps = 'musculos' | 'equipamentos' | 'categorias' | 'niveis' | 'tipos'
+type BadgeProps = 'musculos' | 'equipamentos' | 'tipos' | 'niveis' | 'focos'
 
 const useFetchBadge = (tipo:BadgeProps) => {
 

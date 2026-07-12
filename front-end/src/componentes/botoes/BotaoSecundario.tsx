@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { LucideIcon } from 'lucide-react'
-import WrapperIcone from './WrapperIcone'
-import Texto from './Texto'
+import WrapperIcone from '../organizacao/WrapperIcone'
+import Texto from '../organizacao/Texto'
 
 interface BotaoSecundarioProps {
   texto?: string
@@ -34,7 +34,7 @@ const BotaoSecundario = ({
            ` bg-base-secundaria ring-2
             hover:text-destaque-s-medio text-destaque-s-escuro
             ${disabled 
-              ? `ring-transparent` 
+              ? `ring-transparent opacity-70` 
               : `ring-destaque-s-escuro 
               hover:bg-base-primaria hover:ring-destaque-s-medio`}`
           }

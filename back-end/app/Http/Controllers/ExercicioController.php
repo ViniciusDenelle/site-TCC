@@ -35,7 +35,7 @@ class ExercicioController extends Controller
         $query = Exercicio::query()
         ->with([
             'nivel', 
-            'categoria', 
+            'foco', 
             'tipo', 
             'musculos', 
             'equipamentos'
@@ -43,7 +43,7 @@ class ExercicioController extends Controller
 
         $query = \App\Filters\ExercicioFilter::apply($query, $request);
 
-        $exercicios = $query->paginate(20);
+        $exercicios = $query->paginate(5);
 
         return ExercicioResource::collection($exercicios);
     }

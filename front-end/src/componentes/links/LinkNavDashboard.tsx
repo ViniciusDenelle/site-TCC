@@ -1,7 +1,7 @@
 import { LucideIcon } from "lucide-react"
 import { NavLink } from "react-router-dom"
-import Texto from "./Texto"
-import WrapperIcone from "./WrapperIcone"
+import Texto from "../organizacao/Texto"
+import WrapperIcone from "../organizacao/WrapperIcone"
 
 type LinkNavDashboardProps = {
     icone: LucideIcon,

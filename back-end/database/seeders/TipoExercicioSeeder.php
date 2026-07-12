@@ -10,14 +10,8 @@ class TipoExercicioSeeder extends Seeder
     public function run(): void
     {
         foreach ([
-            'Hipertrofia',
-            'Força',
-            'Resistência',
-            'Cardio',
-            'Mobilidade',
-            'Funcional',
-            'Alongamento',
-            'Potência',
+            'Composto',
+            'Isolado',
         ] as $tipo) {
             TipoExercicio::firstOrCreate([
                 'nome' => $tipo

@@ -2,10 +2,11 @@ import { useContext } from 'react'
 import type { ChangeEvent } from 'react'
 import { motion } from 'motion/react'
 
-import RadioCustomizado from "../../../componentes/RadioCustomizado"
+import RadioCustomizado from "../../../componentes/inputs/RadioCustomizado"
 import CadastroContext from '../../../contextos/CadastroContexto'
 import type { UseCadastroReturn } from '../../../logicas/cadastro/useCadastro'
 import useCadastroContexto from '../../../contextos/CadastroContexto'
+import Texto from '../../../componentes/organizacao/Texto'
 
 const NivelAtividade = () => {
   const {
@@ -47,9 +48,11 @@ const NivelAtividade = () => {
       className="flex flex-col w-full"
     >
       <div className="flex justify-around items-center">
-        <h2 className="text-lg text-t-secundaria">
-          escolha seu nivel de atividade fisica
-        </h2>
+        
+        <Texto tipo='subtitulo' className='text-t-primaria'>
+          Escolha seu nivel de atividade fisica
+        </Texto>
+
       </div>
       <div className="grid grid-cols-1 grid-rows-4 gap-2 w-full mx-auto mt-2">
         {radios.map(radio => (

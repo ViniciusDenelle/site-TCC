@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\BadgeResource;
 use App\Models\CategoriaExercicio;
 use App\Models\Equipamento;
+use App\Models\Foco;
 use App\Models\Musculo;
 use App\Models\NivelExercicio;
 use App\Models\TipoExercicio;
@@ -26,11 +27,11 @@ class BadgeTreinoController extends Controller
         return BadgeResource::collection($equipamentos);
     }
 
-    public function categorias()
+    public function tipos()
     {
-        $categorias = CategoriaExercicio::limit(12)->get();
+        $tipos = TipoExercicio::limit(12)->get();
 
-        return BadgeResource::collection($categorias);
+        return BadgeResource::collection($tipos);
     }
 
     public function niveis()
@@ -40,10 +41,10 @@ class BadgeTreinoController extends Controller
         return BadgeResource::collection($niveis);
     }
 
-    public function tipos()
+    public function focos()
     {
-        $tipos = TipoExercicio::limit(12)->get();
+        $focos = Foco::limit(12)->get();
 
-        return BadgeResource::collection($tipos);
+        return BadgeResource::collection($focos);
     }
 }

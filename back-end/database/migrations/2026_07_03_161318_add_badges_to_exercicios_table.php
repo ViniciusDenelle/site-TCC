@@ -10,19 +10,19 @@ return new class extends Migration
     {
         Schema::table('exercicios', function (Blueprint $table) {
 
-            $table->foreignId('categoria_id')
+            $table->foreignId('tipo_id')
                 ->after('descricao')
-                ->constrained('categorias_exercicio')
+                ->constrained('tipos_exercicio')
                 ->restrictOnDelete();
 
             $table->foreignId('nivel_id')
-                ->after('categoria_id')
+                ->after('tipo_id')
                 ->constrained('niveis_exercicio')
                 ->restrictOnDelete();
 
-            $table->foreignId('tipo_id')
+            $table->foreignId('foco_id')
                 ->after('nivel_id')
-                ->constrained('tipos_exercicio')
+                ->constrained('focos')
                 ->restrictOnDelete();
         });
     }
@@ -31,14 +31,14 @@ return new class extends Migration
     {
         Schema::table('exercicios', function (Blueprint $table) {
 
-            $table->dropForeign(['categoria_id']);
-            $table->dropForeign(['nivel_id']);
             $table->dropForeign(['tipo_id']);
+            $table->dropForeign(['nivel_id']);
+            $table->dropForeign(['foco_id']);
 
             $table->dropColumn([
-                'categoria_id',
+                'tipo_id',
                 'nivel_id',
-                'tipo_id'
+                'foco_id'
             ]);
         });
     }

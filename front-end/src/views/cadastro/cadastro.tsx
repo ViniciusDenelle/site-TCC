@@ -1,9 +1,9 @@
 import React, { ReactNode, useContext } from 'react'
-import LinkSimples from '../../componentes/LinkSimples'
+import LinkSimples from '../../componentes/links/LinkSimples'
 import NivelAtividade from './passos/NivelAtividade'
-import BotaoSecundario from '../../componentes/BotaoSecundario'
+import BotaoSecundario from '../../componentes/botoes/BotaoSecundario'
 import { ArrowLeft } from 'lucide-react'
-import BotaoPrimario from '../../componentes/BotaoPrimario'
+import BotaoPrimario from '../../componentes/botoes/BotaoPrimario'
 import { AnimatePresence } from 'motion/react'
 import Objetivo from './passos/Objetivo'
 import Metas from './passos/Metas'
@@ -14,6 +14,7 @@ import Informacoes from './passos/Informacoes'
 import Credenciais from './passos/Crendenciais'
 import ExibirInfo from './passos/ExibirInfo'
 import MetasManterPeso from './passos/MetasManterPeso'
+import Texto from '../../componentes/organizacao/Texto'
 
 const Cadastro: React.FC = () => {
     const {
@@ -79,9 +80,9 @@ const Cadastro: React.FC = () => {
                     </div>
 
                     <div className="flex items-center justify-center w-full p-1 z-10">
-                        <h1 className="text-xl font-semibold text-t-primaria">
-                            crie sua conta
-                        </h1>
+                        <Texto tipo='subtitulo'>
+                            Crie sua conta
+                        </Texto>
                     </div>
 
                     <div className="p-5 rounded-xl
@@ -98,7 +99,7 @@ const Cadastro: React.FC = () => {
 
                         <div className="flex w-full h-full flex-col gap-2 mt-5">
 
-                            <div className="min-h-102 relative flex flex-col items-center justify-center">
+                            <div className=" relative flex flex-col items-center justify-center">
                                 {erro && (
                                     <span className="absolute -top-5 text-sm font-semibold text-red-500 mx-auto">
                                         você tem informações faltando

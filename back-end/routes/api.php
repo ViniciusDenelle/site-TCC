@@ -60,9 +60,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::prefix('badges')->controller(BadgeTreinoController::class)->group(function(){
                 Route::get('musculos', 'musculos');
                 Route::get('equipamentos', 'equipamentos');
-                Route::get('categorias', 'categorias');
-                Route::get('niveis', 'niveis');
                 Route::get('tipos', 'tipos');
+                Route::get('niveis', 'niveis');
+                Route::get('focos', 'focos');
             });
         });
     });

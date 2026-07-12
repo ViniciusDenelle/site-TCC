@@ -1,13 +1,13 @@
 import React from 'react';
 import useFetchTreinos from '../../../logicas/dashboard/treinos/treino/FetchTreinos';
-import BotaoSecundario from '../../../componentes/BotaoSecundario';
+import BotaoSecundario from '../../../componentes/botoes/BotaoSecundario';
 import CardHorizontal from '../../../componentes/CardHorizontal';
-import BotaoPrimario from '../../../componentes/BotaoPrimario';
+import BotaoPrimario from '../../../componentes/botoes/BotaoPrimario';
 import useFetchExercicios, { ResExercicioProps } from '../../../logicas/dashboard/treinos/exercicios/FetchExercicio';
 import useShowExercicio from '../../../logicas/dashboard/treinos/exercicios/ShowExercicio';
 import { Dumbbell, Image, Plus } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-import Texto from '../../../componentes/Texto';
+import Texto from '../../../componentes/organizacao/Texto';
 import ExercicioCard from '../../../componentes/ExercicioCard';
 
 

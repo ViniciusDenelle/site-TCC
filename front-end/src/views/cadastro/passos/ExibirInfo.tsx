@@ -19,9 +19,9 @@ import {
 
 import useCadastroContexto from '../../../contextos/CadastroContexto'
 import { motion } from 'framer-motion'
+import InfoItem from '../../../componentes/organizacao/InfoItem'
+import InfoItemVertical from '../../../componentes/organizacao/InfoItemVertical'
 import Card from '../../../componentes/Card'
-import InfoItem from '../../../componentes/InfoItem'
-import InfoItemVertical from '../../../componentes/InfoItemVertical'
 
 const BlocoDadosPessoais = ({
   dados

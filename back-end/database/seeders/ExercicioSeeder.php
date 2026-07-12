@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\CategoriaExercicio;
 use App\Models\Equipamento;
 use App\Models\Exercicio;
+use App\Models\Foco;
 use App\Models\Musculo;
 use App\Models\NivelExercicio;
 use App\Models\TipoExercicio;
@@ -14,21 +15,21 @@ class ExercicioSeeder extends Seeder
 {
     public function run(): void
     {
-        $composto = CategoriaExercicio::where('nome', 'Composto')->first()->id;
-        $isolado = CategoriaExercicio::where('nome', 'Isolado')->first()->id;
+        $composto = TipoExercicio::where('nome', 'Composto')->first()->id;
+        $isolado = TipoExercicio::where('nome', 'Isolado')->first()->id;
 
         $iniciante = NivelExercicio::where('nome', 'Iniciante')->first()->id;
         $intermediario = NivelExercicio::where('nome', 'Intermediário')->first()->id;
 
-        $hipertrofia = TipoExercicio::where('nome', 'Hipertrofia')->first()->id;
+        $hipertrofia = Foco::where('nome', 'Hipertrofia')->first()->id;
 
         $exercicios = [
             [
                 'nome' => 'Supino reto',
                 'descricao' => 'Exercício composto para peitoral, tríceps e deltoide anterior.',
-                'categoria_id' => $composto,
+                'tipo_id' => $composto,
                 'nivel_id' => $iniciante,
-                'tipo_id' => $hipertrofia,
+                'foco_id' => $hipertrofia,
 
                 'musculos' => [
                     ['Peitoral', 1],
@@ -45,9 +46,9 @@ class ExercicioSeeder extends Seeder
             [
                 'nome' => 'Agachamento livre',
                 'descricao' => 'Exercício composto para quadríceps, glúteos e posteriores.',
-                'categoria_id' => $composto,
+                'tipo_id' => $composto,
                 'nivel_id' => $intermediario,
-                'tipo_id' => $hipertrofia,
+                'foco_id' => $hipertrofia,
 
                 'musculos' => [
                     ['Quadríceps', 1],
@@ -63,9 +64,9 @@ class ExercicioSeeder extends Seeder
             [
                 'nome' => 'Levantamento terra',
                 'descricao' => 'Exercício composto para costas, glúteos e posteriores.',
-                'categoria_id' => $composto,
+                'tipo_id' => $composto,
                 'nivel_id' => $intermediario,
-                'tipo_id' => $hipertrofia,
+                'foco_id' => $hipertrofia,
 
                 'musculos' => [
                     ['Dorsais', 1],
@@ -83,9 +84,9 @@ class ExercicioSeeder extends Seeder
             [
                 'nome' => 'Desenvolvimento militar',
                 'descricao' => 'Exercício para ombros.',
-                'categoria_id' => $composto,
+                'tipo_id' => $composto,
                 'nivel_id' => $iniciante,
-                'tipo_id' => $hipertrofia,
+                'foco_id' => $hipertrofia,
 
                 'musculos' => [
                     ['Deltoide anterior', 1],
@@ -100,9 +101,9 @@ class ExercicioSeeder extends Seeder
             [
                 'nome' => 'Remada curvada',
                 'descricao' => 'Exercício para dorsais.',
-                'categoria_id' => $composto,
+                'tipo_id' => $composto,
                 'nivel_id' => $intermediario,
-                'tipo_id' => $hipertrofia,
+                'foco_id' => $hipertrofia,
 
                 'musculos' => [
                     ['Dorsais', 1],
@@ -118,9 +119,9 @@ class ExercicioSeeder extends Seeder
             [
                 'nome' => 'Puxada frontal',
                 'descricao' => 'Exercício para dorsais na polia.',
-                'categoria_id' => $composto,
+                'tipo_id' => $composto,
                 'nivel_id' => $iniciante,
-                'tipo_id' => $hipertrofia,
+                'foco_id' => $hipertrofia,
 
                 'musculos' => [
                     ['Dorsais', 1],
@@ -135,9 +136,9 @@ class ExercicioSeeder extends Seeder
             [
                 'nome' => 'Rosca direta',
                 'descricao' => 'Exercício isolado para bíceps.',
-                'categoria_id' => $isolado,
+                'tipo_id' => $isolado,
                 'nivel_id' => $iniciante,
-                'tipo_id' => $hipertrofia,
+                'foco_id' => $hipertrofia,
 
                 'musculos' => [
                     ['Bíceps', 1],
@@ -152,9 +153,9 @@ class ExercicioSeeder extends Seeder
             [
                 'nome' => 'Tríceps pulley',
                 'descricao' => 'Exercício isolado para tríceps.',
-                'categoria_id' => $isolado,
+                'tipo_id' => $isolado,
                 'nivel_id' => $iniciante,
-                'tipo_id' => $hipertrofia,
+                'foco_id' => $hipertrofia,
 
                 'musculos' => [
                     ['Tríceps', 1],
@@ -168,9 +169,9 @@ class ExercicioSeeder extends Seeder
             [
                 'nome' => 'Elevação lateral',
                 'descricao' => 'Exercício para deltoide lateral.',
-                'categoria_id' => $isolado,
+                'tipo_id' => $isolado,
                 'nivel_id' => $iniciante,
-                'tipo_id' => $hipertrofia,
+                'foco_id' => $hipertrofia,
 
                 'musculos' => [
                     ['Deltoide lateral', 1],
@@ -184,9 +185,9 @@ class ExercicioSeeder extends Seeder
             [
                 'nome' => 'Leg press',
                 'descricao' => 'Exercício para quadríceps.',
-                'categoria_id' => $composto,
+                'tipo_id' => $composto,
                 'nivel_id' => $iniciante,
-                'tipo_id' => $hipertrofia,
+                'foco_id' => $hipertrofia,
 
                 'musculos' => [
                     ['Quadríceps', 1],

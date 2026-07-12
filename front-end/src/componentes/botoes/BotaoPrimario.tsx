@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { motion } from 'motion/react'
 import { LucideIcon } from 'lucide-react'
-import Texto from './Texto'
-import WrapperIcone from './WrapperIcone'
+import Texto from '../organizacao/Texto'
+import WrapperIcone from '../organizacao/WrapperIcone'
 
 interface BotaoPrimarioProps {
   texto?: string,

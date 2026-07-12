@@ -1,9 +1,12 @@
 import { NavLink } from "react-router-dom"
-import { ResExercicioProps } from "../logicas/dashboard/treinos/exercicios/FetchExercicio"
+
 import CardHorizontal from "./CardHorizontal"
 import { Dumbbell, Plus } from "lucide-react"
-import Texto from "./Texto"
-import BotaoPrimario from "./BotaoPrimario"
+import { ResExercicioProps } from "../logicas/dashboard/treinos/exercicios/FetchExercicio"
+import Texto from "./organizacao/Texto"
+import BotaoPrimario from "./botoes/BotaoPrimario"
+
+
 
 const ExercicioCard = ({
     exercicio
@@ -49,7 +52,7 @@ const ExercicioCard = ({
 
                 {exercicio.musculos.map(musculo => (
                   musculo.tipo.nome === 'Primário' && (
-                    <Texto tipo='subtexto'>
+                    <Texto tipo='subtexto' key={musculo.id}>
                       {musculo.nome}
                     </Texto>
                   )

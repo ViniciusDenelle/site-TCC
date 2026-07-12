@@ -26,8 +26,8 @@ class ExercicioFilter
                     });
                 }
             })
-            ->when($request->categorias, function ($q, $categorias) {
-                $q->whereIn('categoria_id', $categorias);
+            ->when($request->focos, function ($q, $categorias) {
+                $q->whereIn('foco_id', $categorias);
             })
             ->when($request->niveis, function ($q, $niveis) {
                 $q->whereIn('nivel_id', $niveis);

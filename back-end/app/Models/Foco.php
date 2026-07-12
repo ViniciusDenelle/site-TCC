@@ -4,10 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CategoriaExercicio extends Model
+class Foco extends Model
 {
-    protected $table = 'categorias_exercicio';
-
     protected $fillable = [
         'nome'
     ];
@@ -16,7 +14,7 @@ class CategoriaExercicio extends Model
     {
         return $this->hasMany(
             Exercicio::class,
-            'categoria_id',
+            'foco_id',
             'id'
         );
     }

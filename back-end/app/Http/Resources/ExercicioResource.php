@@ -15,9 +15,9 @@ class ExercicioResource extends JsonResource
             'nome' => $this->nome,
             'descricao' => $this->descricao,
 
-            'categoria' => [
-                'id' => $this->categoria->id,
-                'nome' => $this->categoria->nome,
+            'foco' => [
+                'id' => $this->foco->id,
+                'nome' => $this->foco->nome,
             ],
 
             'nivel' => [

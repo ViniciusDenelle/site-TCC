@@ -1,6 +1,6 @@
 import { useContext, useMemo, useState } from 'react';
 import TemaContexto from '../../../contextos/TemaContexto';
-import BotaoPrimario from '../../../componentes/BotaoPrimario'; 
+import BotaoPrimario from '../../../componentes/botoes/BotaoPrimario'; 
 
 const Treinos = () => {
   const [abaAtiva, setAbaAtiva] = useState<'fichas' | 'biblioteca' | 'exercicios'>('fichas');
