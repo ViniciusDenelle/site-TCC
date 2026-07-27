@@ -1,18 +1,11 @@
 import { useMutation } from '@tanstack/react-query'
 import React from 'react'
 import api from '../../../../api'
-
-export type SeriesExecutadas = {
-    id: number,
-    serie: number,
-    peso: number,
-    repeticoes: number,
-    concluida: boolean
-}
+import { SerieExecutada } from './ExercutarTreinoProps'
 
 export type ReqExecutarTreinoProps = {
     duracao: number,
-    seriesExecutadas: SeriesExecutadas[]
+    seriesExecutadas: SerieExecutada[]
 }
 
 const useExecutarTreino = (id : number) => {

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import api from '../../../../api'
 import { AxiosError, AxiosResponse } from 'axios'
+import { Filtros } from '../useFiltrosTreinos'
 
 export type Exercicio = {
     id: number
@@ -30,7 +31,7 @@ export type ResTreinoProps = {
     exercicios: ResExercicioTreinoProps[]
 }
 
-const useFetchTreinos = () => {
+const useFetchTreinos = (filtros:Filtros, pagina:number) => {
     const {
         data: treinos,
         isPending,
@@ -42,11 +43,15 @@ const useFetchTreinos = () => {
         AxiosError,
         ResTreinoProps[]
     >({
-        queryKey: ['treinos'],
+        queryKey: ['treinos', filtros, pagina],
         queryFn: async () => {
-            const res = await api.get('/dashboard/treinos/treino')
+            const res = await api.get('/dashboard/treinos/treino', 
+            {params: {
+                ...filtros,
+                page: pagina
+            }})
 
-            return res.data.data
+            return res.data
         },
     })
 

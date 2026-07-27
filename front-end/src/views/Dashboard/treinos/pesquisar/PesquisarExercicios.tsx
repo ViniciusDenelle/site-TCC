@@ -1,54 +1,39 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Texto from '../../../../componentes/organizacao/Texto'
 import useFetchBadge from '../../../../logicas/dashboard/treinos/FetchBadge'
-import useFetchExercicios, { Badge, Filtros, TipoFiltros } from '../../../../logicas/dashboard/treinos/exercicios/FetchExercicio'
 import Paginacao from '../../../../componentes/outros/Paginacao'
 import useFiltrosTreinos from '../../../../logicas/dashboard/treinos/useFiltrosTreinos'
 import ExercicioCard from '../../../../componentes/ExercicioCard'
-import FiltrosPesquisa from '../../../../componentes/outros/FiltrosPesquisa'
-import FiltrosChips from '../../../../componentes/outros/FiltrosChips'
-import FiltroTreinoModal from '../../../../componentes/outros/FiltroTreinoModal'
+import FiltrosPesquisa from '../../../../componentes/filtros/FiltrosPesquisa'
+import FiltrosChips from '../../../../componentes/filtros/FiltrosChips'
+import FiltroTreinoModal from '../../../../componentes/filtros/FiltroTreinoModal'
 import useDebounce from '../../../../logicas/useDebounce'
+import useFetchBadgesCompartilhadas from '../../../../logicas/dashboard/treinos/FetchBadgesCompartilhadas'
+import InputCheckbox from '../../../../componentes/inputs/InputCheckbox'
+import useFetchExercicios from '../../../../logicas/dashboard/treinos/exercicios/FetchExercicio'
 
 const PesquisarExercicios = () => {
 
     const filtros = useFiltrosTreinos()
 
-    const { data: musculos } = useFetchBadge('musculos')
-    const { data: equipamentos } = useFetchBadge('equipamentos')
-    const { data: tipos } = useFetchBadge('tipos')
-    const { data: niveis } = useFetchBadge('niveis')
-    const { data: focos } = useFetchBadge('focos')
+    const { data: tipos } = useFetchBadge('tiposExercicio')
+
+    const { secoes } = useFetchBadgesCompartilhadas()
 
     const [pagina, setPagina] = useState<number>(1)
 
-    const secoes = [
-        {
-            titulo: 'Músculos',
-            tipo: 'musculos' as const,
-            dados: musculos,
-        },
-        {
-            titulo: 'Equipamentos',
-            tipo: 'equipamentos' as const,
-            dados: equipamentos,
-        },
-        {
-            titulo: 'Tipos',
-            tipo: 'tipos' as const,
-            dados: tipos,
-        },
-        {
-            titulo: 'Níveis',
-            tipo: 'niveis' as const,
-            dados: niveis,
-        },
-        {
-            titulo: 'Focos',
-            tipo: 'focos' as const,
-            dados: focos,
-        },
-    ]
+    const secoesCompletas = useMemo(() => {
+        if (!secoes) return []
+
+        return [
+            ...secoes,
+            {
+                titulo: 'Tipos',
+                tipo: 'tipos' as const,
+                dados: tipos,
+            },
+        ]
+    }, [secoes])
 
     const pesquisaDebounce = useDebounce(filtros.pesquisa, 500)
 
@@ -73,15 +58,44 @@ const PesquisarExercicios = () => {
                 />
 
                 <FiltrosChips
-                    secoes={secoes}
+                    secoes={secoesCompletas}
                     filtros={filtros.filtros}
-                    removerFiltro={filtros.removerFiltro}
+                    removerFiltro={filtros.removerBadgeFiltro}
                 />
 
                 <FiltroTreinoModal
-                    secoes={secoes}
                     {...filtros}
-                />
+                >
+                    {secoesCompletas.some(secao => secao.dados === undefined) ? (
+                        <Texto className='animate-pulse'>
+                            procurando filtros
+                        </Texto>
+                    ) : (
+                        secoesCompletas.map(secao => (
+                            <div key={secao.tipo}>
+                                <Texto>
+                                    {secao.titulo}:
+                                </Texto>
+
+                                <div className="grid grid-cols-2 gap-y-1">
+                                    {secao.dados.map(item => (
+                                        <InputCheckbox
+                                            key={item.id}
+                                            name={secao.tipo}
+                                            valor={item.id}
+                                            checked={filtros.filtrosTemp[secao.tipo]?.includes(item.id)}
+                                            onChange={() =>
+                                                filtros.adicionarBadgeFiltro(item.id, secao.tipo)
+                                            }
+                                        >
+                                            {item.nome}
+                                        </InputCheckbox>
+                                    ))}
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </FiltroTreinoModal>
 
 
                 {!isPending ? (

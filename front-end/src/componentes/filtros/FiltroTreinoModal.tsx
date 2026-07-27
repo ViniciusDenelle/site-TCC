@@ -1,24 +1,25 @@
 import { AnimatePresence } from 'framer-motion'
 import {motion} from 'framer-motion'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import WrapperIcone from '../organizacao/WrapperIcone'
 import { X } from 'lucide-react'
 import Texto from '../organizacao/Texto'
 import InputCheckbox from '../inputs/InputCheckbox'
 import BotaoPrimario from '../botoes/BotaoPrimario'
-import { SecaoFiltro, UseFiltrosProps } from '../../logicas/dashboard/treinos/useFiltrosTreinos'
 import CardHorizontal from '../CardHorizontal'
+import { UseFiltrosProps } from '../../logicas/dashboard/treinos/tipagens/FiltrosProps'
 
-type FiltroModalProps = UseFiltrosProps & {secoes: SecaoFiltro[]}
+type FiltroModalProps = UseFiltrosProps & {
+    children: ReactNode
+}
 
 const FiltroTreinoModal = ({
     menuFiltroAberto,
     setMenuFiltroAberto,
-    secoes,
     filtrosTemp,
-    adicionarFiltro,
     setFiltros,
-    setFiltrosTemp
+    setFiltrosTemp,
+    children
 } : FiltroModalProps) => {
     return (
         <AnimatePresence>
@@ -54,34 +55,7 @@ const FiltroTreinoModal = ({
                                     filtros
                                 </Texto>
                                 <div className="flex flex-col gap-2 h-80 overflow-y-scroll">
-                                    {secoes.some(secao => secao.dados === undefined) ? (
-                                        <Texto className='animate-pulse'>
-                                            procurando filtros
-                                        </Texto>
-                                    ) : (secoes.map(secao => (
-                                            <div key={secao.tipo}>
-                                                <Texto>
-                                                    {secao.titulo}:
-                                                </Texto>
-    
-                                                <div className="grid grid-cols-2 gap-y-1">
-                                                    {secao.dados.map(item => (
-                                                        <InputCheckbox
-                                                            key={item.id}
-                                                            name={secao.tipo}
-                                                            valor={item.id}
-                                                            checked={filtrosTemp[secao.tipo]?.includes(item.id)}
-                                                            onChange={() =>
-                                                                adicionarFiltro(item.id, secao.tipo)
-                                                            }
-                                                        >
-                                                            {item.nome}
-                                                        </InputCheckbox>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        ))
-                                    )}
+                                    {children}
                                 </div>
                                 <BotaoPrimario
                                     texto='aplicar filtros'
