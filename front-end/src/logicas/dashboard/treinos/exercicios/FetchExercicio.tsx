@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { AxiosError, AxiosResponse } from 'axios'
 import api from '../../../../api'
 import { Paginacao } from '../../../tipagens/PaginacaoProps'
+import { Filtros } from '../tipagens/FiltrosProps'
 
 export type Badge = {
     id: number
@@ -29,16 +30,6 @@ export type ResExercicioProps = {
     musculos: Musculo[]
     equipamentos: Equipamento[]
 }
-
-export type Filtros = {
-    musculos?: number[]
-    equipamentos?: number[]
-    focos?: number[]
-    tipos?: number[]
-    niveis?: number[]
-}
-
-export type TipoFiltros = keyof Filtros
 
 type ReqFetchExercicios = Filtros & {nome?: string}
 

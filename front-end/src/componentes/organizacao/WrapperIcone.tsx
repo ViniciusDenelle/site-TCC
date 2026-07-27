@@ -1,8 +1,10 @@
 import React, { Children, ReactNode } from 'react'
 
+export type WrapperIconeTamanhos = 'xl' | 'lg' | 'md' | 'sm' | 'xs'
+
 type WrapperIconeProps = {
     children: ReactNode
-    tamanho?: 'xl' | 'lg' | 'md' | 'sm' | 'xs'
+    tamanho?: WrapperIconeTamanhos
 }
 
 const WrapperIcone = ({

@@ -50,7 +50,7 @@ const InputSimples = ({
   return (
     <motion.input
       whileFocus={{ scale: 1.02 }}
-      type={tipo}
+      type='number'
       name={name}
       value={valor}
       onChange={onChange}

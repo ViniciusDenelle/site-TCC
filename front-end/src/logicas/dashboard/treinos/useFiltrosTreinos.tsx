@@ -1,30 +1,6 @@
 import React, { Dispatch, SetStateAction, useMemo, useState } from 'react'
-import { Badge, Filtros, TipoFiltros } from './exercicios/FetchExercicio'
-
-export type SecaoFiltro = {
-    titulo: string,
-    tipo: keyof Filtros,
-    dados: Badge[]
-}
-
-export interface UseFiltrosProps {
-    menuFiltroAberto?: boolean;
-    setMenuFiltroAberto?: Dispatch<SetStateAction<boolean>>;
-
-    pesquisa?: string;
-    setPesquisa?: Dispatch<SetStateAction<string>>;
-
-    filtros?: Filtros;
-    setFiltros?: Dispatch<SetStateAction<Filtros>>;
-
-    filtrosTemp?: Filtros;
-    setFiltrosTemp?: Dispatch<SetStateAction<Filtros>>;
-
-    adicionarFiltro?: (id: number, tipo: TipoFiltros) => void;
-    removerFiltro?: (id: number, tipo: TipoFiltros) => void;
-
-    quantidadeFiltros?: number;
-}
+import { Badge } from './exercicios/FetchExercicio'
+import { Filtros, TipoFiltros } from './tipagens/FiltrosProps'
 
 const useFiltrosTreinos = () => {
 
@@ -35,9 +11,10 @@ const useFiltrosTreinos = () => {
     const [filtros, setFiltros] = useState<Filtros>({})
     const [filtrosTemp, setFiltrosTemp] = useState<Filtros>({})
 
-    const adicionarFiltro = (filtroNovo: number, tipo: TipoFiltros) => {
+    const adicionarBadgeFiltro = (filtroNovo: number, tipo: TipoFiltros) => {
         setFiltrosTemp(prev => {
             const items = prev[tipo] ?? [];
+            console.log(items)
 
             return {
                 ...prev,
@@ -48,18 +25,18 @@ const useFiltrosTreinos = () => {
         });
     }
 
-    const removerFiltro = (filtroRemovido: number, tipo: TipoFiltros) => {
+    const removerBadgeFiltro = (filtroRemovido: number, tipo: TipoFiltros) => {
         setFiltros(prev => {
             return {
                 ...prev,
-                [tipo]: prev[tipo]?.filter(item => item !== filtroRemovido)
+                [tipo]: prev.badges[tipo]?.filter(item => item !== filtroRemovido)
             }
 
         })
         setFiltrosTemp(prev => {
             return {
                 ...prev,
-                [tipo]: prev[tipo]?.filter(item => item !== filtroRemovido)
+                [tipo]: prev.badges[tipo]?.filter(item => item !== filtroRemovido)
             }
 
         })
@@ -78,8 +55,8 @@ const useFiltrosTreinos = () => {
         setMenuFiltroAberto,
         pesquisa,
         setPesquisa,
-        adicionarFiltro,
-        removerFiltro,
+        adicionarBadgeFiltro,
+        removerBadgeFiltro,
         filtros,
         setFiltros,
         filtrosTemp,

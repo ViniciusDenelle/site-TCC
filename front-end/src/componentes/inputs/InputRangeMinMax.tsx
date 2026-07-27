@@ -51,7 +51,7 @@ const InputRangeMinMax = ({
       : 0
 
   const classeThumb = `
-    block h-5 w-5 rounded-full
+    block size-4 rounded-full
     bg-destaque-s-escuro shadow
     cursor-pointer hover:bg-destaque-s-medio
   `
