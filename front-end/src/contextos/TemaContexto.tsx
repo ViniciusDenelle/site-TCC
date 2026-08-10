@@ -3,9 +3,12 @@ import { createContext, useState } from 'react'
 
 type Tema = string
 
+type temas = 'dark' | 'light'
+
 type TemaContextType = [
   Tema,
-  () => void
+  (tema?: temas) => void,
+
 ]
 
 interface TemaContextoProviderProps {
@@ -25,12 +28,11 @@ export function TemaContextoProvider({
 
   document.documentElement.dataset.theme = tema
 
-  function alterarTema() {
+  function alterarTema(novoTema) {
 
-    const temaFinal =
-      tema === 'dark'
+    const temaFinal = novoTema ? novoTema : (tema === 'dark'
         ? ''
-        : 'dark'
+        : 'dark')
 
     document.documentElement.dataset.theme =
       temaFinal

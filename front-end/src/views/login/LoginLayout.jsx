@@ -1,17 +1,20 @@
-import React, { useState } from 'react'
-import InputSimples from '../../componentes/InputSimples'
-import BotaoSimples from '../../componentes/BotaoSecundario'
-import BotaoPrimario from '../../componentes/BotaoPrimario'
-import GoogleIcone from '../../assets/icones/googleIcone.svg'
-import LinkSimples from '../../componentes/LinkSimples'
-import useCadastro from '../../logicas/cadastro/useCadastro'
-import useConfirmacao from '../../logicas/useConfirmacao'
-import { Mail } from 'lucide-react'
-import { useMutation } from '@tanstack/react-query'
-import api from '../../api'
+
 import { Outlet } from 'react-router-dom'
+import useFetchUsuario from '../../logicas/querys/FetchUsuario'
 
 const LoginLayout = () => {
+  const {
+      dadosUsuario,
+      isSuccess,
+      isPending,
+    } = useFetchUsuario()
+    const token = localStorage.getItem('token')
+    
+    if (token) {
+      if(isSuccess || dadosUsuario) {
+        // navigation.navigate('/dashboard')
+      }
+    }
 
   return (
     <main className='h-screen w-full bg-base-primaria'>

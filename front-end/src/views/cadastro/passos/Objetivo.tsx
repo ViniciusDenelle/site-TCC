@@ -2,9 +2,10 @@ import { useContext } from 'react'
 import type { ChangeEvent } from 'react'
 import { motion } from 'motion/react'
 
-import RadioCustomizado from '../../../componentes/RadioCustomizado'
+import RadioCustomizado from '../../../componentes/inputs/RadioCustomizado'
 import CadastroContext from '../../../contextos/CadastroContexto'
 import useCadastroContexto from '../../../contextos/CadastroContexto'
+import Texto from '../../../componentes/organizacao/Texto'
 
 const Objetivo = () => {
   const {
@@ -79,9 +80,9 @@ const Objetivo = () => {
         </span>
       )}
 
-      <h2 className="relative mx-auto text-lg text-t-primaria">
-        escolha seu objetivo
-      </h2>
+      <Texto tipo='subtitulo' className='mx-auto text-t-primaria'>
+         Escolha seu Objetivo
+      </Texto>
 
       {/* Seção: Objetivo */}
       <div className="grid grid-cols-1 grid-rows-3 gap-y-2 w-full mx-auto">
@@ -104,9 +105,9 @@ const Objetivo = () => {
         ))}
       </div>
 
-      <h2 className="mx-auto text-lg text-t-primaria">
-        escolha sua experiencia de treino
-      </h2>
+      <Texto tipo='subtitulo' className='mx-auto text-t-primaria'>
+         Escolha sua experiencia de treino
+      </Texto>
 
       {/* Seção: Experiência */}
       <div className="grid grid-cols-1 grid-rows-4 gap-y-2 w-full mx-auto">

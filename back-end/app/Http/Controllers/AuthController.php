@@ -68,7 +68,10 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([$user, $token]);
+        return response()->json([
+            'usuario' => new UsuarioResource($user->load(['metricas', 'objetivos', 'perfil'])),
+            'token' => $token
+        ]);
     }
 
     public function recuperarSenha(Request $request)
@@ -106,7 +109,12 @@ class AuthController extends Controller
 
         $email->delete();
 
-        return response()->json($user);
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'usuario' => new UsuarioResource($user->load(['metricas', 'objetivos', 'perfil'])),
+            'token' => $token
+        ]);
     }
 
     public function cadastro(UsuarioRequest $request)

@@ -3,7 +3,10 @@ import { useContext, useState } from 'react'
 
 import {
   ArrowDownToLine,
+  Flame,
+  LayoutDashboard,
   Lightbulb,
+  LogOut,
   TextAlignJustify,
   UserLock,
   UserRoundPlus,
@@ -15,11 +18,15 @@ import {
   motion
 } from 'framer-motion'
 
-import BotaoSimples from '../componentes/BotaoSecundario.js'
-import LinkQuadrado from '../componentes/LinkQuadrado.js'
-import LinkSimples from '../componentes/LinkSimples.js'
+import BotaoSimples from '../componentes/botoes/BotaoSecundario.js'
+import LinkQuadrado from '../componentes/links/LinkQuadrado.js'
+import LinkSimples from '../componentes/links/LinkSimples.js'
 import TemaContexto from '../contextos/TemaContexto.js'
-import BotaoPrimario from '../componentes/BotaoPrimario.js'
+import BotaoPrimario from '../componentes/botoes/BotaoPrimario.js'
+import useFetchUsuario from '../logicas/querys/FetchUsuario.js'
+import BotaoSecundario from '../componentes/botoes/BotaoSecundario.js'
+import useLogout from '../logicas/querys/Logout.js'
+import Texto from '../componentes/organizacao/Texto.js'
 
 function LayoutDefault() {
 
@@ -58,6 +65,16 @@ function LayoutDefault() {
     lg:rounded-full lg:border-2
   `
 
+  // autorizado
+
+  const {
+    dadosUsuario,
+    isPending,
+    isError
+  } = useFetchUsuario()
+
+  const {logout} = useLogout()
+
   return (
     <>
 
@@ -78,17 +95,17 @@ function LayoutDefault() {
               }
             `}
           >
-
+            {/* titulo */}
             <NavLink
               to="/"
               className="
                 text-xl font-bold
-                flex text-t-primaria
+                flex items-center text-t-primaria
                 transition-colors duration-200
               "
             >
 
-              <Zap
+              <Flame
                 className="
                   text-destaque-p-medio
                   hover:text-destaque-p-escuro
@@ -96,7 +113,9 @@ function LayoutDefault() {
                 strokeWidth={3}
               />
 
-              ThunderTracker
+              <Texto tipo='titulo'>
+                Fit Forge
+              </Texto>
 
             </NavLink>
 
@@ -105,29 +124,44 @@ function LayoutDefault() {
                 hidden gap-2 items-center lg:flex
               "
             >
+              {dadosUsuario ? (
+                <>
+                  <LinkSimples to='/dashboard'>
+                    Dashboard
+                  </LinkSimples>
 
-              <LinkSimples to="cadastro">
-                cadastro
-              </LinkSimples>
+                  <BotaoPrimario
+                    onClick={logout}
+                    classeAdicional='bg-red-500 
+                    hover:bg-red-600 hover:text-t-primario'
+                    icone={LogOut}
+                  />
+                </>
+              ) : (
+                <>
+                  <LinkSimples to="cadastro">
+                    cadastro
+                  </LinkSimples>
 
-              <LinkSimples to="login">
-                login
-              </LinkSimples>
+                  <LinkSimples to="login">
+                    login
+                  </LinkSimples>
+                </>
+              ) }
 
               <BotaoPrimario
                 tipo="cheio"
                 classeAdicional="
                   flex items-center
-                  justify-center px-2
-                "
-              >
-                mobile
-                <ArrowDownToLine />
-              </BotaoPrimario>
+                  justify-center px-2"
+                  texto='mobile'
+                  icone={ArrowDownToLine }
+              />
 
-              <BotaoSimples onClick={alterarTema}>
-                <Lightbulb />
-              </BotaoSimples>
+              <BotaoSimples 
+                onClick={() => alterarTema()}
+                icone={Lightbulb}
+              />
 
             </div>
 
@@ -140,9 +174,8 @@ function LayoutDefault() {
                 hover:ring-transparent
                 lg:hidden
               "
-            >
-              <TextAlignJustify />
-            </BotaoSimples>
+              icone={TextAlignJustify}
+            />
 
             <AnimatePresence>
 
@@ -173,21 +206,43 @@ function LayoutDefault() {
                     "
                   >
 
-                    <LinkQuadrado
-                      to="cadastro"
-                      classeAdicional="w-full"
-                    >
-                      <UserRoundPlus />
-                      cadastro
-                    </LinkQuadrado>
+                    {dadosUsuario ? (
+                      <>
+                        <LinkQuadrado
+                          to='/dashboard'
+                          classeAdicional='w-full'
+                        >
+                          <LayoutDashboard/>
+                          dashboard
+                        </LinkQuadrado>
 
-                    <LinkQuadrado
-                      to="login"
-                      classeAdicional="w-full"
-                    >
-                      <UserLock />
-                      login
-                    </LinkQuadrado>
+                        <BotaoSecundario
+                          onClick={logout}
+                          classeAdicional='ring-red-600 text-red-600
+                          hover:ring-red-700 hover:text-red-700'
+                          tipo='vazio'
+                          icone={LogOut}
+                        />
+                      </>
+                    ) : (
+                      <>
+                      <LinkQuadrado
+                        to="cadastro"
+                        classeAdicional="w-full"
+                      >
+                        <UserRoundPlus />
+                        cadastro
+                      </LinkQuadrado>
+
+                      <LinkQuadrado
+                        to="login"
+                        classeAdicional="w-full"
+                      >
+                        <UserLock />
+                        login
+                      </LinkQuadrado>
+                      </>
+                    )}
 
                     <BotaoPrimario
                       tipo="cheio"
@@ -196,16 +251,13 @@ function LayoutDefault() {
                         items-center justify-center
                         gap-2
                       "
-                    >
-                      <ArrowDownToLine />
-                      mobile
-                    </BotaoPrimario>
+                      icone={ArrowDownToLine}
+                    />
 
                     <BotaoSimples
-                      onClick={alterarTema}
-                    >
-                      <Lightbulb />
-                    </BotaoSimples>
+                      onClick={() => alterarTema()}
+                      icone={Lightbulb}
+                    />
 
                   </div>
 

@@ -5,12 +5,13 @@ import type { ChangeEvent } from 'react'
 import { motion } from 'motion/react'
 
 // Garantindo que as importações conversem bem com o TS
-import BotaoSimples from '../../../componentes/BotaoSecundario'
-import InputSimples from '../../../componentes/InputSimples'
-import RadioCustomizado from '../../../componentes/RadioCustomizado'
-import SliderCustomizado from '../../../componentes/InputRange'
+import BotaoSimples from '../../../componentes/botoes/BotaoSecundario'
+import InputSimples from '../../../componentes/inputs/InputSimples'
+import RadioCustomizado from '../../../componentes/inputs/RadioCustomizado'
+import SliderCustomizado from '../../../componentes/inputs/InputRange'
 import CadastroContext from '../../../contextos/CadastroContexto'
 import useCadastroContexto from '../../../contextos/CadastroContexto'
+import Texto from '../../../componentes/organizacao/Texto'
 
 const Informacoes = () => {
   const {
@@ -43,13 +44,18 @@ const Informacoes = () => {
       }}
       className="relative grid grid-cols-1 grid-rows-4 grid-flow-col w-full mx-auto h-full gap-y-2"
     >
-      <h2 className="absolute -top-7 text-center text-lg text-t-primaria w-full">
-        informações básicas
+      <h2 className="absolute -top-7 text-center">
+        <Texto tipo='subtitulo' className='text-t-primaria'>
+          informações básicas
+        </Texto>
       </h2>
 
       {/* genero */}
       <div className="flex flex-col gap-1">
-        <h2 className="text-t-principal">escolha seu genero:</h2>
+        <Texto>
+          Escolha seu genero:
+        </Texto>
+
         <div className="grid grid-cols-2 gap-1">
           <RadioCustomizado
             name="genero"
@@ -82,7 +88,9 @@ const Informacoes = () => {
 
       {/* nascimento */}
       <div className="flex flex-col gap-1">
-        <h2 className="text-t-principal">escolha sua data de nascimento:</h2>
+        <Texto>
+          Escolha sua data de nascimento:
+        </Texto>
         <InputSimples
           tipo="date"
           classeAdicional="h-10"
@@ -95,7 +103,9 @@ const Informacoes = () => {
 
       {/* peso */}
       <div className="flex flex-col gap-1">
-        <h2>seu peso em {tipoPeso}:</h2>
+        <Texto>
+          seu peso em {tipoPeso}:
+        </Texto>
         <div className="flex w-full gap-2">
           <div className="relative w-2/3 h-full">
             <SliderCustomizado
@@ -130,9 +140,8 @@ const Informacoes = () => {
                 mudarDados('tipoPeso', tipoPeso === 'kilos' ? 'libras' : 'kilos')
                 alterarPeso(peso)
               }}
-            >
-              {tipoPeso}
-            </BotaoSimples>
+              texto={tipoPeso}
+            />
           </div>
         </div>
         {errosCampo.peso && (
@@ -142,7 +151,9 @@ const Informacoes = () => {
 
       {/* altura */}
       <div className="flex flex-col gap-1">
-        <h2>sua altura em centímetros:</h2>
+        <Texto>
+          sua altura em centímetros:
+        </Texto>
         <div className="flex w-full gap-2">
           <div className="relative w-2/3 h-full">
             <SliderCustomizado

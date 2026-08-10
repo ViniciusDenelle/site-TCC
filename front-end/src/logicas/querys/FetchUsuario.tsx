@@ -34,16 +34,17 @@ const useFetchUsuario = () => {
         queryKey: ['usuario'],
         queryFn: async () => {
             const res = await api.get('/usuario')
-            return res.data.data
+            return res.data
         },
         initialData: () => {
             const salvo = localStorage.getItem('usuario')
-
+            
             return salvo
                 ? JSON.parse(salvo)
                 : undefined
         },
-        staleTime: 1000 * 60 * 5,
+        staleTime: 1000 * 5,
+        retry: false,
         refetchOnWindowFocus: false,
     })
 

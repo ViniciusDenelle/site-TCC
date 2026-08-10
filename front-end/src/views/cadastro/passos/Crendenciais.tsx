@@ -2,11 +2,11 @@ import { useContext, useState } from 'react'
 import { motion } from 'motion/react'
 import { Eye, EyeOff, Mail } from 'lucide-react'
 
-import BotaoPrimario from '../../../componentes/BotaoPrimario'
-import InputSimples from '../../../componentes/InputSimples'
-import useConfirmacao from '../../../logicas/useConfirmacao'
+import BotaoPrimario from '../../../componentes/botoes/BotaoPrimario'
+import InputSimples from '../../../componentes/inputs/InputSimples'
+import useConfirmacao from '../../../logicas/querys/useConfirmacao'
 import useCadastroContexto from '../../../contextos/CadastroContexto'
-import BotaoSecundario from '../../../componentes/BotaoSecundario'
+import BotaoSecundario from '../../../componentes/botoes/BotaoSecundario'
 
 const Credenciais = () => {
   const contexto = useCadastroContexto()
@@ -57,11 +57,9 @@ const Credenciais = () => {
         </h2>
 
         {/* Google */}
-        <BotaoPrimario>
-          <div className="flex items-center gap-2">
-            <span>google</span>
-          </div>
-        </BotaoPrimario>
+        <BotaoPrimario
+          texto='google'
+        />
 
         <p className="mx-auto">ou</p>
 
@@ -173,20 +171,14 @@ const Credenciais = () => {
             tipo="cheio"
             disabled={contagem > 0}
             onClick={enviarEmailHandler}
-          >
-            {isPending ? (
-              <span>carregando...</span>
-            ) : contagem > 0 ? (
-              <span>
-                reenviar em {contagem}s
-              </span>
-            ) : (
-              <span className="flex items-center gap-2">
-                enviar código
-                <Mail size={18} />
-              </span>
-            )}
-          </BotaoSecundario>
+            texto={
+              isPending 
+              ? `carregando...` 
+              : contagem > 0 
+              ? ` reenviar em ${contagem}` 
+              : `enviar codigo`
+            }
+          />
         </div>
       </motion.div>
   )

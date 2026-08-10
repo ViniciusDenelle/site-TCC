@@ -14,4 +14,22 @@ class UsuarioController extends Controller
 
         return new UsuarioResource($usuario);
     }
+
+    public function logout(Request $request) 
+    {
+        $usuario = $request->user();
+
+        if(!$usuario)
+        {
+            return response([
+                'mensaegm' =>  'usuario não encontrado'
+            ], 401);
+        }
+
+        $usuario->currentAccessToken()->delete();
+
+        return response([
+            'mensagem' => 'logout realizado com sucesso'
+        ]);
+    }
 }
