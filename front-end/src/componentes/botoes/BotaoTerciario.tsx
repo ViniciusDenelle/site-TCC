@@ -1,6 +1,6 @@
 import { LucideIcon } from "lucide-react";
 import { motion } from "motion/react";
-import Texto from "../organizacao/Texto";
+import Texto, { tipoTextoProps } from "../organizacao/Texto";
 import WrapperIcone, { WrapperIconeTamanhos } from "../organizacao/WrapperIcone";
 
 interface BotaoTerciarioProps {
@@ -11,6 +11,8 @@ interface BotaoTerciarioProps {
   disabled?: boolean;
   type?: "button" | "submit" | "reset";
   tamanhoIcone?: WrapperIconeTamanhos
+  tipoFonte?: tipoTextoProps
+  textoClassName?: string
 }
 
 const MotionButton = motion.button as any;
@@ -22,7 +24,9 @@ const BotaoTerciario = ({
   disabled = false,
   type = "button",
   onClick,
-  tamanhoIcone = 'sm'
+  tamanhoIcone = 'sm',
+  tipoFonte = 'paragrafo',
+  textoClassName = '',
 }: BotaoTerciarioProps) => {
   return (
     <MotionButton
@@ -41,7 +45,7 @@ const BotaoTerciario = ({
       )}
 
       {texto && (
-        <Texto>
+        <Texto tipo={tipoFonte} className={textoClassName ?? ''}>
           {texto}
         </Texto>
       )}
