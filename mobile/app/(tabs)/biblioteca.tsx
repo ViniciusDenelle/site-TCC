@@ -1,117 +1,182 @@
+import { useMemo, useState } from 'react'
+
 import {
-    ScrollView,
+    FlatList,
+    SafeAreaView,
     StyleSheet,
     Text,
-    TouchableOpacity,
+    TextInput,
     View,
 } from 'react-native'
 
-import { StatusBar } from 'expo-status-bar'
-import { Ionicons } from '@expo/vector-icons'
+import CardRotina, {
+    Rotina,
+} from '@/componentes/biblioteca/CardRotina'
 
-import CardRotina from '../../componentes/biblioteca/CardRotina'
+const rotinas: Rotina[] = [
+    {
+        id: '1',
+        nome: 'Treino A',
+        tipo: 'Peito e Tríceps',
+        duracao: '45 min',
+        exercicios: 8,
+        cor: '#ff5b5b',
+    },
+    {
+        id: '2',
+        nome: 'Treino B',
+        tipo: 'Costas e Bíceps',
+        duracao: '50 min',
+        exercicios: 9,
+        cor: '#4cd964',
+    },
+    {
+        id: '3',
+        nome: 'Treino C',
+        tipo: 'Pernas',
+        duracao: '60 min',
+        exercicios: 10,
+        cor: '#ffbd59',
+    },
+    {
+        id: '4',
+        nome: 'Treino D',
+        tipo: 'Ombros e Abdômen',
+        duracao: '40 min',
+        exercicios: 7,
+        cor: '#5ac8fa',
+    },
+]
 
-export default function BibliotecaScreen() {
+export default function Biblioteca() {
 
-    const rotinas = [
-        {
-            id: '1',
-            nome: 'Full Body A',
-            tipo: 'Iniciante',
-            duracao: '45 min',
-            exercicios: 3,
-            cor: '#ff5b5b',
-        },
-        // ...
-    ]
+    const [busca, setBusca] = useState('')
+
+    const rotinasFiltradas = useMemo(() => {
+
+        return rotinas.filter(rotina =>
+            rotina.nome
+                .toLowerCase()
+                .includes(busca.toLowerCase())
+        )
+
+    }, [busca])
 
     return (
-        <View style={styles.container}>
-
-            <StatusBar style="light" />
+        <SafeAreaView style={styles.container}>
 
             <View style={styles.header}>
 
                 <Text style={styles.title}>
-                    Minha Biblioteca
+                    Biblioteca
                 </Text>
 
-                <TouchableOpacity style={styles.add}>
-                    <Ionicons
-                        name="add"
-                        size={24}
-                        color="#fff"
-                    />
-                </TouchableOpacity>
+                <Text style={styles.subtitle}>
+                    Suas rotinas de treino
+                </Text>
 
             </View>
 
-            <ScrollView
-                contentContainerStyle={styles.content}
+            <View style={styles.searchContainer}>
+
+                <TextInput
+                    value={busca}
+                    onChangeText={setBusca}
+                    placeholder="Buscar rotina..."
+                    placeholderTextColor="#636366"
+                    style={styles.search}
+                />
+
+            </View>
+
+            <FlatList
+                data={rotinasFiltradas}
+                keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
-            >
+                contentContainerStyle={styles.list}
+                renderItem={({ item }) => (
 
-                <Text style={styles.subtitle}>
-                    Suas rotinas e fichas salvas
-                </Text>
-
-                {rotinas.map(rotina => (
                     <CardRotina
-                        key={rotina.id}
-                        rotina={rotina}
+                        rotina={item}
+                        onPress={(rotina) => {
+                            console.log(
+                                'Rotina selecionada:',
+                                rotina.nome
+                            )
+                        }}
                     />
-                ))}
 
-            </ScrollView>
+                )}
+                ListEmptyComponent={
+                    <View style={styles.empty}>
 
-        </View>
+                        <Text style={styles.emptyText}>
+                            Nenhuma rotina encontrada.
+                        </Text>
+
+                    </View>
+                }
+            />
+
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
+
     container: {
         flex: 1,
-        backgroundColor: '#0e0f11',
+        backgroundColor: '#000000',
     },
 
     header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-
         paddingHorizontal: 16,
-        paddingVertical: 15,
-
-        borderBottomWidth: 1,
-        borderBottomColor: '#1c1c1e',
+        paddingTop: 20,
+        paddingBottom: 16,
     },
 
     title: {
-        fontSize: 22,
-        fontWeight: 'bold',
         color: '#ffffff',
-    },
-
-    add: {
-        width: 40,
-        height: 40,
-
-        borderRadius: 20,
-
-        backgroundColor: '#1c1c1e',
-
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-
-    content: {
-        padding: 16,
+        fontSize: 24,
+        fontWeight: 'bold',
     },
 
     subtitle: {
         color: '#8e8e93',
         fontSize: 14,
-
-        marginBottom: 20,
+        marginTop: 4,
     },
+
+    searchContainer: {
+        paddingHorizontal: 16,
+        marginBottom: 8,
+    },
+
+    search: {
+        height: 40,
+        backgroundColor: '#1c1c1e',
+        borderRadius: 10,
+
+        paddingHorizontal: 14,
+
+        color: '#ffffff',
+        fontSize: 15,
+    },
+
+    list: {
+        paddingHorizontal: 16,
+        paddingTop: 8,
+        paddingBottom: 30,
+    },
+
+    empty: {
+        alignItems: 'center',
+        paddingTop: 40,
+    },
+
+    emptyText: {
+        color: '#8e8e93',
+        fontSize: 14,
+    },
+
 })

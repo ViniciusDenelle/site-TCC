@@ -1,141 +1,218 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import {
     FlatList,
+    SafeAreaView,
     StyleSheet,
     Text,
     View,
 } from 'react-native'
 
-import { StatusBar } from 'expo-status-bar'
+import BarraBuscaExercicio from '../../componentes/exercicios/BarraBuscaExercicio'
+import CardExercicio, {
+    Exercicio,
+} from '../../componentes/exercicios/CardExercicio'
+import FiltroExercicio from '../../componentes/exercicios/FiltroExercicio'
 
-import BarraBuscaExercicio
-    from '../../componentes/exercicios/BarraBuscaExercicio'
+const exercicios: Exercicio[] = [
+    {
+        id: '1',
+        nome: 'Supino reto',
+        grupo: 'Peito',
+        icone: 'weight-lifter',
+    },
+    {
+        id: '2',
+        nome: 'Supino inclinado',
+        grupo: 'Peito',
+        icone: 'weight-lifter',
+    },
+    {
+        id: '3',
+        nome: 'Agachamento livre',
+        grupo: 'Pernas',
+        icone: 'human',
+    },
+    {
+        id: '4',
+        nome: 'Leg Press',
+        grupo: 'Pernas',
+        icone: 'human',
+    },
+    {
+        id: '5',
+        nome: 'Rosca direta',
+        grupo: 'Bíceps',
+        icone: 'arm-flex',
+    },
+    {
+        id: '6',
+        nome: 'Tríceps pulley',
+        grupo: 'Tríceps',
+        icone: 'arm-flex',
+    },
+    {
+        id: '7',
+        nome: 'Puxada frontal',
+        grupo: 'Costas',
+        icone: 'weight-lifter',
+    },
+    {
+        id: '8',
+        nome: 'Elevação lateral',
+        grupo: 'Ombros',
+        icone: 'arm-flex',
+    },
+]
 
-import FiltroExercicio
-    from '../../componentes/exercicios/FiltroExercicio'
-
-import CardExercicio
-    from '../../componentes/exercicios/CardExercicio'
-
-export default function ExerciciosScreen() {
+export default function Exercicios() {
 
     const [busca, setBusca] = useState('')
     const [categoria, setCategoria] = useState('Todos')
 
-    // Depois isso virá da API
-    const exercicios = [
-        {
-            id: '1',
-            nome: 'Supino Reto com Barra',
-            grupo: 'Peito',
-            icone: 'dumbbell',
-        },
-        // ...
+    const categorias = [
+        'Todos',
+        'Peito',
+        'Costas',
+        'Pernas',
+        'Bíceps',
+        'Tríceps',
+        'Ombros',
     ]
 
-    const filtrados = exercicios.filter(ex => {
+    const exerciciosFiltrados = useMemo(() => {
 
-        const buscaOk =
-            ex.nome
-                .toLowerCase()
-                .includes(busca.toLowerCase())
+        return exercicios.filter(exercicio => {
 
-        const categoriaOk =
-            categoria === 'Todos' ||
-            ex.grupo === categoria
+            const correspondeCategoria =
+                categoria === 'Todos' ||
+                exercicio.grupo === categoria
 
-        return buscaOk && categoriaOk
-    })
+            const correspondeBusca =
+                exercicio.nome
+                    .toLowerCase()
+                    .includes(busca.toLowerCase())
+
+            return correspondeCategoria && correspondeBusca
+        })
+
+    }, [busca, categoria])
 
     return (
-        <View style={styles.container}>
-
-            <StatusBar style="light" />
+        <SafeAreaView style={styles.container}>
 
             <View style={styles.header}>
+
                 <Text style={styles.title}>
                     Exercícios
                 </Text>
+
+                <Text style={styles.subtitle}>
+                    Escolha um exercício para adicionar ao treino
+                </Text>
+
             </View>
 
-            <View style={styles.search}>
+            <View style={styles.searchContainer}>
+
                 <BarraBuscaExercicio
                     valor={busca}
                     onChange={setBusca}
                 />
+
             </View>
 
-            <FiltroExercicio
-                categorias={[
-                    'Todos',
-                    'Peito',
-                    'Costas',
-                    'Pernas',
-                    'Braços',
-                    'Ombros',
-                ]}
-                selecionada={categoria}
-                onChange={setCategoria}
-            />
+            <View style={styles.filterContainer}>
 
-            <Text style={styles.sectionTitle}>
-                Todos os Exercícios
-            </Text>
+                <FiltroExercicio
+                    categorias={categorias}
+                    selecionada={categoria}
+                    onChange={setCategoria}
+                />
+
+            </View>
 
             <FlatList
-                data={filtrados}
+                data={exerciciosFiltrados}
                 keyExtractor={item => item.id}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.list}
                 renderItem={({ item }) => (
+
                     <CardExercicio
                         exercicio={item}
+                        onPress={(exercicio) => {
+                            console.log(
+                                'Exercício selecionado:',
+                                exercicio.nome
+                            )
+                        }}
                     />
+
                 )}
-                contentContainerStyle={styles.list}
-                showsVerticalScrollIndicator={false}
+                ListEmptyComponent={
+                    <View style={styles.empty}>
+
+                        <Text style={styles.emptyText}>
+                            Nenhum exercício encontrado.
+                        </Text>
+
+                    </View>
+                }
             />
 
-        </View>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
+
     container: {
         flex: 1,
-        backgroundColor: '#0e0f11',
+        backgroundColor: '#000000',
     },
 
     header: {
         paddingHorizontal: 16,
-        paddingVertical: 15,
-
-        borderBottomWidth: 1,
-        borderBottomColor: '#1c1c1e',
+        paddingTop: 20,
+        paddingBottom: 16,
     },
 
     title: {
-        fontSize: 22,
-        fontWeight: 'bold',
         color: '#ffffff',
+        fontSize: 24,
+        fontWeight: 'bold',
     },
 
-    search: {
-        padding: 16,
-        paddingBottom: 12,
+    subtitle: {
+        color: '#8e8e93',
+        fontSize: 14,
+        marginTop: 4,
     },
 
-    sectionTitle: {
-        color: '#ffffff',
-        fontSize: 16,
-        fontWeight: 'bold',
+    searchContainer: {
+        paddingHorizontal: 16,
+    },
 
-        marginHorizontal: 16,
-        marginTop: 20,
-        marginBottom: 12,
+    filterContainer: {
+        marginTop: 14,
+        paddingLeft: 16,
     },
 
     list: {
         paddingHorizontal: 16,
+        paddingTop: 16,
         paddingBottom: 30,
     },
+
+    empty: {
+        alignItems: 'center',
+        paddingTop: 40,
+    },
+
+    emptyText: {
+        color: '#8e8e93',
+        fontSize: 14,
+    },
+
 })
