@@ -1,7 +1,9 @@
 import React, { Children, ReactNode } from 'react'
 
+export type tipoTextoProps = 'titulo' | 'subtitulo' | 'paragrafo' | 'subtexto'
+
 type TextoProps = {
-    tipo?: 'titulo' | 'subtitulo' | 'paragrafo' | 'subtexto'
+    tipo?: tipoTextoProps
     className? : string,
     children: ReactNode
 }

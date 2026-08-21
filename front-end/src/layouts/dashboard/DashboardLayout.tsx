@@ -20,6 +20,7 @@ import DashbaordPaletaModal from "../../componentes/dashboard/DashboardPaletaMod
 import DashboardMenuInferior from "../../componentes/dashboard/DashboardMenuInferior"
 import { menu, nav } from "../../componentes/dashboard/DashboardlinksNav"
 import ModalPlayer from "../../componentes/dashboard/player/ModalPlayer"
+import MenuPlayer from "../../componentes/dashboard/player/MenuPlayer"
 // import { UsuarioProvider } from "../contextos/UsuarioContexto"
 
 const DashboardLayout = () => {
@@ -89,6 +90,8 @@ const DashboardLayout = () => {
                 )}
 
                 <Outlet />
+
+                <MenuPlayer />
 
                 <DashboardMenuInferior 
                     setModalPlayer={setModalPlayer}
