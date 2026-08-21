@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { ResExercicioTreinoProps } from '../treino/FetchTreinos';
+import { ResExercicioTreinoProps } from '../treino/FetchTreino';
 import {
   SerieExecutada,
   UseExecucaoExercicio,
-} from './ExercutarTreinoProps';
+} from './ExecutarTreinoProps';
 
 import useTimer from '@/hooks/useTimer';
 

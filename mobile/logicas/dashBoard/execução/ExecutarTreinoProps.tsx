@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
-import { ResExercicioTreinoProps, ResTreinoProps } from "../treino/FetchTreinos";
-import { UseTimerReturn } from "../../../hooks/useTImer";
+import { ResExercicioTreinoProps, ResTreinoProps } from "../treino/FetchTreino";
+import { UseTimerReturn } from "../../../hooks/useTimer";
 export interface ExecutarTreinoType {
 
     treinoQuery: any

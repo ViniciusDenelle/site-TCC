@@ -19,4 +19,4 @@ export type Paginacao<T> = {
     meta: MetaProps
 
     links: LinkProps
-}
+} 
