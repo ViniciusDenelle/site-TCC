@@ -1,4 +1,4 @@
-import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom'
+import { createBrowserRouter, createRoutesFromElements, Route, Navigate } from 'react-router-dom'
 import LayoutDefault from './layouts/layout'
 import App from './views/App'
 import Cadastro from './views/cadastro/cadastro'
@@ -16,39 +16,40 @@ import PesquisarExercicios from './views/Dashboard/treinos/pesquisar/PesquisarEx
 import PesquisarTreino from './views/Dashboard/treinos/pesquisar/PesquisarTreino'
 import CriarPrincipal from './views/Dashboard/treinos/criar/CriarPrincipal'
 import CriarExercicios from './views/Dashboard/treinos/criar/CriarExercicios'
+import DietListOnly from './views/Dashboard/dieta/DashboardDietas'
+
+
+
 
 const Rota = createBrowserRouter(
-    
     createRoutesFromElements(
         <>
-            {/* home e Auth */}
-            <Route path='/' element={<LayoutDefault/>}>
+            {/* Home e Auth */}
+            <Route path='/' element={<LayoutDefault />}>
                 <Route index element={<App />} />
 
-                <Route path="login" element={<LoginLayout />} >
+                <Route path="login" element={<LoginLayout />}>
                     <Route index element={<Login />} />
                     <Route path='recuperar-senha' element={<RecuperarSenha />} />
                 </Route>
                     
-                <Route path="cadastro" element={<CadastroLayout/>} >
-                        <Route index element={<Cadastro/>} />
+                <Route path="cadastro" element={<CadastroLayout />}>
+                    <Route index element={<Cadastro />} />
                 </Route>
             </Route>
 
-                {/* dashboard */}
-            <Route path='/dashboard' element={<DashboardLayout/>}>
+            {/* Dashboard */}
+            <Route path='/dashboard' element={<DashboardLayout />}>
+                <Route index element={<Dashboard />} />
 
-                <Route index element={<Dashboard/>}/>
+                {/* Rotas de Treino */}
+                <Route path='treino' element={<TreinosLayout />}>
+                    <Route path='treinos' element={<Treinos />} />
+                    <Route path='exercicios' element={<Exercicios />} />
 
-                <Route path='treino' element={<TreinosLayout/>}>
-                    {/* tem que colocar os bagulho de treino aqui */}
-                    
-                    <Route path='treinos' element={<Treinos/>} />
-                    <Route path='exercicios' element={<Exercicios/>}/>
-
-                    <Route path='pesquisar' element={<PesquisarTreinosLayout/>}>
-                        <Route path='exercicio' element={<PesquisarExercicios/>}/>
-                        <Route path='treino' element={<PesquisarTreino/>}/>
+                    <Route path='pesquisar' element={<PesquisarTreinosLayout />}>
+                        <Route path='exercicio' element={<PesquisarExercicios />} />
+                        <Route path='treino' element={<PesquisarTreino />} />
                     </Route>
                     {/* criação */}
                     <Route path='criarPrincipal' element={<CriarPrincipal/>} />
@@ -56,9 +57,17 @@ const Rota = createBrowserRouter(
 
                     
                 </Route>
+
+                {/* Nova Rota de Dieta */}
+                <Route path='dietas' element={<DietListOnly/>}/>
+                {/* <Route path='dieta' element={<GymForgeDietPage />}>
+                    
+                    <Route index element={<Navigate to="dietas-prontas" replace />} />
+                    <Route path='resumo' element={<div>Resumo da Dieta</div>} />
+                    <Route path='dietas-prontas' element={<GymForgeDietPage />} />
+                    <Route path='plano-do-dia' element={<div>Plano do Dia</div>} />
+                </Route> */}
             </Route>
-                
-        
         </>
     )
 )
