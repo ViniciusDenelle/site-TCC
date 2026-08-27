@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { ArrowLeft, ArrowRight, ChartBarIncreasing, CheckCircle, Cog, CogIcon, DotSquare, Flame, Home, Info, InfoIcon, Lightbulb, LogOut, LogOutIcon, LucideIcon, Newspaper, NewspaperIcon, Palette, Pause, PauseCircle, Redo, SkipBack, SkipForward, TextAlignJustify, UserCircle, Weight, X, Zap } from "lucide-react"
 import { ReactNode, useContext, useEffect, useState } from "react"
-import { NavLink, Outlet } from "react-router-dom"
+import { NavLink, Outlet, useNavigate, useNavigation } from "react-router-dom"
 import TemaContexto from "../../contextos/TemaContexto"
 import BotaoSecundario from "../../componentes/botoes/BotaoSecundario"
 import useFetchUsuario from "../../logicas/querys/FetchUsuario"
@@ -46,11 +46,13 @@ const DashboardLayout = () => {
         setPaletaAberta(prev => !prev)
     }
 
+    const navigation = useNavigate()
+
     const { logout } = useLogout()
 
     if (isPending) return
     if (isError) return
-    if (!token) navigation.navigate('/login')
+    if (!token) navigation('/login')
 
     const [modalPlayer, setModalPlayer] = useState<boolean>(false)
 

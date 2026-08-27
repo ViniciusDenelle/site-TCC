@@ -40,8 +40,8 @@ const TreinosLayout = () => {
       to: 'pesquisar',
     },
     {
-      nome: 'Criar',
-      to: '/',
+      nome: 'criar',
+      to: 'criarPrincipal',
     },
   ]
 
