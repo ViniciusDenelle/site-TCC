@@ -93,24 +93,18 @@ const Login = () => {
 
             <BotaoPrimario
                 tipo='vazio'
-                classeAdcional="gap-4">
-                <span className='flex relative'>
-                    <img src={GoogleIcone} alt=""
-                        className='h-6 absolute -left-7
-                      '
-                    />
-                    google
-
-                </span>
-            </BotaoPrimario>
+                classeAdcional="gap-4"
+                texto='google'
+            />
+                
+            
 
             <BotaoPrimario
                 tipo='cheio'
                 classeAdcional="mt-1"
                 onClick={cadastro}
-            >
-                login
-            </BotaoPrimario>
+                texto='login'
+            />
 
             <div className='flex flex-col items-center gap-1'>
 

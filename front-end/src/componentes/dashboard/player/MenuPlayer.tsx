@@ -22,7 +22,7 @@ const MenuPlayer = () => {
 
     return (
         <>
-            {true && (
+            {false && (
                 <>
                 
                     <div className="absolute inset-0 bg-black/50 z-10000"/>
@@ -39,10 +39,10 @@ const MenuPlayer = () => {
                                     </div>
                                     <div className="flex flex-col gap-1">
                                         <Texto tipo="titulo" className="font-thin text-t-primaria">
-                                            {exercicioData.exercicio.nome}
+                                            {exercicioData?.exercicio?.nome}
                                         </Texto>
                                         <Texto>
-                                            {treino.nome}
+                                            {treino?.nome}
                                         </Texto>
                                     </div>
                                 </div>

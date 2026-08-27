@@ -14,7 +14,9 @@ import Exercicios from './views/Dashboard/treinos/Exercicios'
 import PesquisarTreinosLayout from './layouts/dashboard/treino/PesquisarTreinosLayout'
 import PesquisarExercicios from './views/Dashboard/treinos/pesquisar/PesquisarExercicios'
 import PesquisarTreino from './views/Dashboard/treinos/pesquisar/PesquisarTreino'
-let ddd = 'dfadfasd'
+import CriarPrincipal from './views/Dashboard/treinos/criar/CriarPrincipal'
+import CriarExercicios from './views/Dashboard/treinos/criar/CriarExercicios'
+
 const Rota = createBrowserRouter(
     
     createRoutesFromElements(
@@ -48,6 +50,11 @@ const Rota = createBrowserRouter(
                         <Route path='exercicio' element={<PesquisarExercicios/>}/>
                         <Route path='treino' element={<PesquisarTreino/>}/>
                     </Route>
+                    {/* criação */}
+                    <Route path='criarPrincipal' element={<CriarPrincipal/>} />
+                    <Route path='criarExercicio' element={<CriarExercicios/>}/>
+
+                    
                 </Route>
             </Route>
                 
