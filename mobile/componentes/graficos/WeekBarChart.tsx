@@ -40,11 +40,14 @@ export default function WeekBarChart() {
         initialSpacing={12}
         yAxisThickness={0}
         xAxisThickness={0}
-       
         autoShiftLabels
         showReferenceLine1
         referenceLine1Position={0}
-        
+        referenceLine1Config={{
+          width: chartWidth,
+          color: '#8b8fa3',
+          thickness: 1,
+        }}
         xAxisLabelTextStyle={{ color: '#d1d5db', fontSize: 11 }}
         yAxisTextStyle={{ color: '#9ca3af', fontSize: 10 }}
         barBorderRadius={10}
@@ -59,6 +62,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a1d29', // mesmo fundo do NutritionCard
     borderRadius: 16,           // mesmo raio do NutritionCard
     padding: 24,                // mesmo padding do NutritionCard
+    overflow: 'hidden',
   },
   title: {
     color: '#8b8fa3',

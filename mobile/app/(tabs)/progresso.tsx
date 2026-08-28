@@ -2,6 +2,7 @@ import NutritionCard from '@/componentes/graficos/NutriCard';
 import { useState } from 'react';
 import { View, Text, Button, ScrollView, StyleSheet} from 'react-native';
 import WeekBarChart from '@/componentes/graficos/WeekBarChart';
+import StatsGrid from '@/componentes/graficos/StatsGrid';
 
 
 
@@ -15,6 +16,16 @@ export default function Progresso() {
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
+
+     
+<StatsGrid
+  ingeridoHoje={690}
+  metaDiaria={2400}
+  deficit={1710}
+  refeicoesFeitas={2}
+  refeicoesTotal={5}
+/>
+
       <WeekBarChart />
 
       <NutritionCard
