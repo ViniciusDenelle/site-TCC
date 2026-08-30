@@ -1,51 +1,42 @@
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError, AxiosResponse } from 'axios'
 import api from '../../../../api'
+import { ExercicioPayload } from './exercicoProps'
+import toast from 'react-hot-toast'
+import { useState } from 'react'
 
-export type ReqExercicioProps = {
-    nome: string
-    descricao?: string
-}
-
-const useCriarExercicio = ({
-    nome,
-    descricao
-}: ReqExercicioProps) => {
+const useCriarExercicio = () => {
 
     const {
         mutate,
         isSuccess,
         isError,
-        isPending
+        isPending,
+        error
     } = useMutation<
         AxiosResponse,
         AxiosError,
-        ReqExercicioProps
+        ExercicioPayload
     >({
-        mutationFn: (dados) =>
-            api.post('/dashboard/treinos/exercicio', dados),
-
-        onSuccess: (res) => {
-            console.log(res.data)
+        mutationFn: async (dados) =>{
+            const res = await api.post('/dashboard/treinos/exercicio', dados)
+            return res.data
         },
 
-        onError: (error) => {
-            console.log(error)
+        onSuccess: (res) => {
+            toast.success('exercicio criado com sucesso')
+        },
+        onError: () => {
+            toast.error('houve um erro ao criar o exercicio')
         }
     })
 
-    const criarExercicioHandler = () => {
-        mutate({
-            nome,
-            descricao
-        })
-    }
-
     return {
-        criarExercicioHandler,
+        mutate,
         isSuccess,
         isError,
-        isPending
+        isPending,
+        error
     }
 }
 

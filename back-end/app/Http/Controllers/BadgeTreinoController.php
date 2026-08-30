@@ -56,7 +56,7 @@ class BadgeTreinoController extends Controller
         return BadgeResource::collection($focos);
     }
 
-    public function compartilhadas()
+    public function exercicio()
     {
         return response()->json([
             'musculos' => BadgeResource::collection(

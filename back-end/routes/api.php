@@ -58,7 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
             });
 
             Route::prefix('badges')->controller(BadgeTreinoController::class)->group(function(){
-                Route::get('', 'compartilhadas');
+                Route::get('exercicio', 'exercicio');
                 Route::get('musculos', 'musculos');
                 Route::get('equipamentos', 'equipamentos');
                 Route::get('tiposExercicio', 'tiposExercicio');
