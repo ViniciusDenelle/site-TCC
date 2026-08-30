@@ -2,13 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import React, { useMemo } from 'react'
 import api from '../../../api'
 import { Badge } from './exercicios/FetchExercicio'
-
-type ResBadges = {
-    musculos: Badge[]
-    equipamentos: Badge[]
-    niveis: Badge[]
-    focos: Badge[]
-}
+import { ResBadges } from './exercicios/exercicoProps'
 
 const useFetchBadgesCompartilhadas = () => {
 
@@ -23,7 +17,7 @@ const useFetchBadgesCompartilhadas = () => {
     >({
         queryKey: ['badges'],
         queryFn: async () => {
-            const res = await api.get(`/dashboard/treinos/badges`)
+            const res = await api.get(`/dashboard/treinos/badges/exercicio`)
             return res.data
         }
     })
@@ -54,6 +48,12 @@ const useFetchBadgesCompartilhadas = () => {
                 titulo: 'Focos',
                 tipo: 'focos' as const,
                 dados: data.focos,
+                render: 'checkbox' as const
+            },
+            {
+                titulo: 'Tipos',
+                tipo: 'tipos' as const,
+                dados: data.tipos,
                 render: 'checkbox' as const
             },
         ]

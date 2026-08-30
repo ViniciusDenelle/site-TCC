@@ -66,7 +66,7 @@ const TreinosLayout = () => {
 
       <div className="bg-base-primaria">
         <div className="container mx-auto">
-          <div className="flex min-h-screen w-full px-4 py-27">
+          <div className="flex min-h-screen w-full px-4 pb-37 pt-27">
 
             <Outlet />
           </div>

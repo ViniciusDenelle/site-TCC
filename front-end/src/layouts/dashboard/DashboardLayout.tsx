@@ -92,7 +92,7 @@ const DashboardLayout = () => {
                 )}
 
                 <Outlet />
-
+                
                 <MenuPlayer />
 
                 <DashboardMenuInferior 
