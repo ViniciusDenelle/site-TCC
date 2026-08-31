@@ -12,7 +12,9 @@ import useFetchBadgesCompartilhadas from '../../../../logicas/dashboard/treinos/
 import InputCheckbox from '../../../../componentes/inputs/InputCheckbox'
 import useFetchExercicios from '../../../../logicas/dashboard/treinos/exercicios/FetchExercicio'
 
-const PesquisarExercicios = () => {
+const PesquisarExercicios = ({
+    adcionarExercicio
+}) => {
 
     const filtros = useFiltrosTreinos()
 
@@ -22,18 +24,6 @@ const PesquisarExercicios = () => {
 
     const [pagina, setPagina] = useState<number>(1)
 
-    const secoesCompletas = useMemo(() => {
-        if (!secoes) return []
-
-        return [
-            ...secoes,
-            {
-                titulo: 'Tipos',
-                tipo: 'tipos' as const,
-                dados: tipos,
-            },
-        ]
-    }, [secoes])
 
     const pesquisaDebounce = useDebounce(filtros.pesquisa, 500)
 
@@ -58,7 +48,7 @@ const PesquisarExercicios = () => {
                 />
 
                 <FiltrosChips
-                    secoes={secoesCompletas}
+                    secoes={secoes ?? []}
                     filtros={filtros.filtros}
                     removerFiltro={filtros.removerBadgeFiltro}
                 />
@@ -66,12 +56,12 @@ const PesquisarExercicios = () => {
                 <FiltroTreinoModal
                     {...filtros}
                 >
-                    {secoesCompletas.some(secao => secao.dados === undefined) ? (
+                    {secoes?.some(secao => secao.dados === undefined) ? (
                         <Texto className='animate-pulse'>
                             procurando filtros
                         </Texto>
                     ) : (
-                        secoesCompletas.map(secao => (
+                        secoes?.map(secao => (
                             <div key={secao.tipo}>
                                 <Texto>
                                     {secao.titulo}:
@@ -104,6 +94,7 @@ const PesquisarExercicios = () => {
                             <div className="grid grid-rows-5 gap-y-2 w-full">
                                 {exercicios?.data.map(exercicio => (
                                     <ExercicioCard
+                                        adcionarExercicio={adcionarExercicio}
                                         key={exercicio.id}
                                         exercicio={exercicio}
                                     />

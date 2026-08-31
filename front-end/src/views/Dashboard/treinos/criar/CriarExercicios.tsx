@@ -150,7 +150,7 @@ const CriarExercicios = () => {
     return (
         <div className="min-h-screen w-full">
             <div className="container mx-auto h-full">
-                <div className="flex flex-col gap-2 h-full divide-y-2 divide-base-terciaria">
+                <div className="flex flex-col h-full gap-2 divide-base-terciaria">
 
                     <Texto tipo="titulo" className="font-thin">
                         Adcione imagem
