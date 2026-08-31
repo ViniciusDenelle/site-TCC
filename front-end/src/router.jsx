@@ -17,6 +17,7 @@ import PesquisarTreino from './views/Dashboard/treinos/pesquisar/PesquisarTreino
 import CriarPrincipal from './views/Dashboard/treinos/criar/CriarPrincipal'
 import CriarExercicios from './views/Dashboard/treinos/criar/CriarExercicios'
 import DietListOnly from './views/Dashboard/dieta/DashboardDietas'
+import CriarTreinos from './views/Dashboard/treinos/criar/CriarTreinos'
 
 
 
@@ -54,7 +55,7 @@ const Rota = createBrowserRouter(
                     {/* criação */}
                     <Route path='criarPrincipal' element={<CriarPrincipal/>} />
                     <Route path='criarExercicio' element={<CriarExercicios/>}/>
-
+                    <Route path='criarTreino' element={<CriarTreinos/>}/>
                     
                 </Route>
 

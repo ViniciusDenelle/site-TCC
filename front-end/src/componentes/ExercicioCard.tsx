@@ -5,11 +5,13 @@ import { Dumbbell, Plus } from "lucide-react"
 import { ResExercicioProps } from "../logicas/dashboard/treinos/exercicios/FetchExercicio"
 import Texto from "./organizacao/Texto"
 import BotaoPrimario from "./botoes/BotaoPrimario"
+import { useState } from "react"
 
 
 
 const ExercicioCard = ({
-    exercicio
+    exercicio,
+    adcionarExercicio
 } :{
     exercicio : ResExercicioProps
 }) => {
@@ -21,9 +23,12 @@ const ExercicioCard = ({
   }
 
   const corNivel = obterCorNivel[exercicio.nivel.nome]
+
+  const [menuAdcionar, setMenuAdcionar] = useState<Boolean>(false)
   
   return (
-    <NavLink to={''}>
+    <>
+    
       <CardHorizontal className='hover:bg-base-terciaria/60'>
         <div className="flex justify-between items-center gap-2 text-base h-10">
           
@@ -61,7 +66,7 @@ const ExercicioCard = ({
             </div>
           </div>
           
-          <div className="flex gap-2 items-center">
+          <div className="relative flex gap-2 items-center">
             {/* <BotaoPrimario tipo='vazio' redondo classeAdicional='ring-transparent'>
                 ver
             </BotaoPrimario> */}
@@ -69,12 +74,23 @@ const ExercicioCard = ({
             <BotaoPrimario
               tipo='cheio' 
               icone={Plus}
+              onClick={() => setMenuAdcionar(prev => !prev)}
             />
+            {menuAdcionar && (
+              <div className="absolute bottom-1/2 right-0">
+
+                <CardHorizontal>
+                  adcionar
+                </CardHorizontal>
+
+              </div>
+            )}
           </div>
+
         </div>
       </CardHorizontal>
-    </NavLink>
-  )
-}
+    </>
+    
+)}
 
 export default ExercicioCard

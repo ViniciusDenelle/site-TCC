@@ -19,7 +19,7 @@ const FiltroTreinoModal = ({
     filtrosTemp,
     setFiltros,
     setFiltrosTemp,
-    children
+    children,
 } : FiltroModalProps) => {
     return (
         <AnimatePresence>
