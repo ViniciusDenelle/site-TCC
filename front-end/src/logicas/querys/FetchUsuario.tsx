@@ -4,23 +4,23 @@ import api from "../../api"
 import { useEffect } from "react"
 
 export type RetornoUsuario = {
-    nome: string
-    email: string
-    senha: string
-    genero: string
-    peso: number
-    tipo_peso: 'kilos' | 'libras'
-    peso_ideal: number
-    altura: number
-    data_de_nascimento: string
-    nivel_atividade: number | null,
-    objetivo: string
-    experiencia: string
-    calDiaria: number
-    veloPerda: number
-    idade: number
-    TMB: number
-    GET: number
+  nome: string
+  email: string
+  senha?: string
+  genero: string
+  peso: number
+  tipoPeso: 'kilos' | 'libras'
+  pesoIdeal: number
+  altura: number
+  dataDeNascimento: string
+  nivelDeAtividade: string | number | null
+  objetivo: string
+  experiencia: string
+  caloriasDiarias: number
+  veloPerda: string | number
+  idade: number
+  TMB: number
+  GET: number
 }
 
 const useFetchUsuario = () => {
@@ -34,7 +34,7 @@ const useFetchUsuario = () => {
         queryKey: ['usuario'],
         queryFn: async () => {
             const res = await api.get('/usuario')
-            return res.data
+            return res.data.data.data
         },
         initialData: () => {
             const salvo = localStorage.getItem('usuario')

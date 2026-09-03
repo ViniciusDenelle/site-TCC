@@ -16,11 +16,10 @@ import PesquisarExercicios from './views/Dashboard/treinos/pesquisar/PesquisarEx
 import PesquisarTreino from './views/Dashboard/treinos/pesquisar/PesquisarTreino'
 import CriarPrincipal from './views/Dashboard/treinos/criar/CriarPrincipal'
 import CriarExercicios from './views/Dashboard/treinos/criar/CriarExercicios'
-import DietListOnly from './views/Dashboard/dieta/DashboardDietas'
 import CriarTreinos from './views/Dashboard/treinos/criar/CriarTreinos'
-
-
-
+import DietaLayout from './layouts/dashboard/dieta/DietaLayout'
+import DashboardDietas from './views/Dashboard/dieta/DashboardDietas'
+import Home from './views/Dashboard/Home/Home'
 
 const Rota = createBrowserRouter(
     createRoutesFromElements(
@@ -43,6 +42,10 @@ const Rota = createBrowserRouter(
             <Route path='/dashboard' element={<DashboardLayout />}>
                 <Route index element={<Dashboard />} />
 
+                {/* Rotas de Home e Perfil */}
+                <Route path='home' element={<Home />} />
+                <Route path='perfil' element={<Home />} />
+
                 {/* Rotas de Treino */}
                 <Route path='treino' element={<TreinosLayout />}>
                     <Route path='treinos' element={<Treinos />} />
@@ -52,22 +55,24 @@ const Rota = createBrowserRouter(
                         <Route path='exercicio' element={<PesquisarExercicios />} />
                         <Route path='treino' element={<PesquisarTreino />} />
                     </Route>
-                    {/* criação */}
-                    <Route path='criarPrincipal' element={<CriarPrincipal/>} />
-                    <Route path='criarExercicio' element={<CriarExercicios/>}/>
-                    <Route path='criarTreino' element={<CriarTreinos/>}/>
-                    
+
+                    {/* Criação */}
+                    <Route path='criarPrincipal' element={<CriarPrincipal />} />
+                    <Route path='criarExercicio' element={<CriarExercicios />} />
+                    <Route path='criarTreino' element={<CriarTreinos />} />
                 </Route>
 
-                {/* Nova Rota de Dieta */}
-                <Route path='dietas' element={<DietListOnly/>}/>
-                {/* <Route path='dieta' element={<GymForgeDietPage />}>
-                    
-                    <Route index element={<Navigate to="dietas-prontas" replace />} />
-                    <Route path='resumo' element={<div>Resumo da Dieta</div>} />
-                    <Route path='dietas-prontas' element={<GymForgeDietPage />} />
-                    <Route path='plano-do-dia' element={<div>Plano do Dia</div>} />
-                </Route> */}
+                {/* Rotas de Dieta */}
+                <Route path='dieta' element={<DietaLayout />}>
+                    <Route index element={<DashboardDietas />} />
+                    <Route path='dieta' element={<div>Página Dieta</div>} />
+                    <Route path='pesquisar' element={<div>Pesquisar Dietas</div>} />
+                    <Route path='criarPrincipal' element={<div>Criar Dieta</div>} />
+                </Route>
+
+                {/* Redirecionamentos de segurança */}
+                <Route path='dietas' element={<Navigate to="/dashboard/dieta" replace />} />
+                <Route path='Home' element={<Navigate to="/dashboard/home" replace />} />
             </Route>
         </>
     )
