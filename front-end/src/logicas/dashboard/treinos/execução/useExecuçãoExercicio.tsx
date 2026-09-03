@@ -155,7 +155,7 @@ const useExecuçãoExercicio = (
     }, [exercicio]);
 
     const executarSerie = () => {
-        console.log('ababoui')
+        
         setSeries(prev => {
 
             const novasSeries = prev.map(serie =>
@@ -215,7 +215,7 @@ const useExecuçãoExercicio = (
 
         setSerieAtual(numeroSerie);
     };
-    console.log(series)
+    
 
     return {
         peso,

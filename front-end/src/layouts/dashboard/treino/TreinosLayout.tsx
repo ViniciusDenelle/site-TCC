@@ -8,7 +8,7 @@ export const NavegacaoSuperiorTreinos = ({
 }) => {
 
   return (
-    <NavLink to={to}>
+    <NavLink end to={to}>
       {({isActive}) => (
         <div className={`
           ${isActive 
@@ -29,7 +29,7 @@ const TreinosLayout = () => {
   const navegacaoSuperior = [
     {
       nome: 'Treinar',
-      to: 'treinos',
+      to: '.',
     },
     {
       nome: 'Meus Treinos',

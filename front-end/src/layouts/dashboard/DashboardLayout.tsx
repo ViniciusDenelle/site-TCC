@@ -93,7 +93,6 @@ const DashboardLayout = () => {
 
                 <Outlet />
                 
-                <MenuPlayer />
 
                 <DashboardMenuInferior 
                     setModalPlayer={setModalPlayer}

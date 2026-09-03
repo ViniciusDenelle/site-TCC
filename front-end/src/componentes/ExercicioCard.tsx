@@ -6,6 +6,7 @@ import { ResExercicioProps } from "../logicas/dashboard/treinos/exercicios/Fetch
 import Texto from "./organizacao/Texto"
 import BotaoPrimario from "./botoes/BotaoPrimario"
 import { useState } from "react"
+import MenuPlayer from "./dashboard/player/MenuPlayer"
 
 
 
@@ -14,6 +15,7 @@ const ExercicioCard = ({
     adcionarExercicio
 } :{
     exercicio : ResExercicioProps
+    adcionarExercicio: () => void
 }) => {
   
   const obterCorNivel = {
@@ -24,11 +26,18 @@ const ExercicioCard = ({
 
   const corNivel = obterCorNivel[exercicio.nivel.nome]
 
-  const [menuAdcionar, setMenuAdcionar] = useState<Boolean>(false)
+  const [menuAdcionar, setMenuAdcionar] = useState<boolean>(false)
   
   return (
     <>
-    
+      {menuAdcionar && (
+        <MenuPlayer 
+          menuAberto={menuAdcionar}
+          setMenuAberto={setMenuAdcionar}
+          exercicio={exercicio}
+          adcionar={adcionarExercicio}
+        />
+      )}
       <CardHorizontal className='hover:bg-base-terciaria/60'>
         <div className="flex justify-between items-center gap-2 text-base h-10">
           
@@ -76,15 +85,7 @@ const ExercicioCard = ({
               icone={Plus}
               onClick={() => setMenuAdcionar(prev => !prev)}
             />
-            {menuAdcionar && (
-              <div className="absolute bottom-1/2 right-0">
-
-                <CardHorizontal>
-                  adcionar
-                </CardHorizontal>
-
-              </div>
-            )}
+            
           </div>
 
         </div>

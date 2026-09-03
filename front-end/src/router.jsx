@@ -48,7 +48,7 @@ const Rota = createBrowserRouter(
 
                 {/* Rotas de Treino */}
                 <Route path='treino' element={<TreinosLayout />}>
-                    <Route path='treinos' element={<Treinos />} />
+                    <Route index element={<Treinos />} />
                     <Route path='exercicios' element={<Exercicios />} />
 
                     <Route path='pesquisar' element={<PesquisarTreinosLayout />}>
