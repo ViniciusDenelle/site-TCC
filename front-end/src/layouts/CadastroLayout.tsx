@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import { CadastroProvider } from '../contextos/CadastroContexto.js'
-import useFetchUsuario from '../logicas/querys/FetchUsuario.js'
+import useFetchUsuario from '../logicas/usuario/FetchUsuario.js'
 
 const Placeholder = () => {
 

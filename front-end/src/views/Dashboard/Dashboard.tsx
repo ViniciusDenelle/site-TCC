@@ -1,7 +1,7 @@
 
 // import useUsuarioContexto from "../../contextos/UsuarioContexto"
 import { useEffect, useState } from "react"
-import useFetchUsuario from "../../logicas/querys/FetchUsuario"
+import useFetchUsuario from "../../logicas/usuario/FetchUsuario"
 
 const Botao = () => {
     const {dadosUsuario} = useFetchUsuario()

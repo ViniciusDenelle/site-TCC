@@ -14,6 +14,7 @@ use App\Http\Controllers\UsuarioController;
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/usuario', [UsuarioController::class, 'fetch']);
     Route::get('/logout', [UsuarioController::class, 'logout']);
+    Route::put('/atualizarUsuario', [UsuarioController::class], 'update');
 
     Route::prefix('dashboard')->group(function() {
         // treinos 
