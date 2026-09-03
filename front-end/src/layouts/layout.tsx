@@ -23,9 +23,9 @@ import LinkQuadrado from '../componentes/links/LinkQuadrado.js'
 import LinkSimples from '../componentes/links/LinkSimples.js'
 import TemaContexto from '../contextos/TemaContexto.js'
 import BotaoPrimario from '../componentes/botoes/BotaoPrimario.js'
-import useFetchUsuario from '../logicas/querys/FetchUsuario.js'
+import useFetchUsuario from '../logicas/usuario/FetchUsuario.js'
 import BotaoSecundario from '../componentes/botoes/BotaoSecundario.js'
-import useLogout from '../logicas/querys/Logout.js'
+import useLogout from '../logicas/usuario/Logout.js'
 import Texto from '../componentes/organizacao/Texto.js'
 
 function LayoutDefault() {

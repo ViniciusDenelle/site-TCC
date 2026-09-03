@@ -10,11 +10,13 @@ import {
   Scale 
 } from 'lucide-react'
 
-import useFetchUsuario from '../../../logicas/querys/FetchUsuario'
+import useFetchUsuario from '../../../logicas/usuario/FetchUsuario'
 import CardHorizontal from '../../../componentes/CardHorizontal'
 import Texto from '../../../componentes/organizacao/Texto'
 import BotaoPrimario from '../../../componentes/botoes/BotaoPrimario'
 import BotaoSecundario from '../../../componentes/botoes/BotaoSecundario'
+import useUpdateUsuario from '../../../logicas/usuario/UpdateUsuario'
+import { NavLink, Outlet } from 'react-router-dom'
 
 export default function Home() {
   const {
@@ -76,11 +78,13 @@ export default function Home() {
           </div>
         </div>
 
-        <BotaoPrimario 
-          tipo="cheio" 
-          icone={Pencil}
-          texto='Editar perfil'
-        />
+        <NavLink to={'atualizarPerfil'}>
+          <BotaoPrimario 
+            tipo="cheio" 
+            icone={Pencil}
+            texto='Editar perfil'
+          />
+        </NavLink>
       </CardHorizontal>
 
       {/* 2. Métricas Principais */}
@@ -170,7 +174,7 @@ export default function Home() {
               Objetivo Atual
             </Texto>
             <div className="px-3 py-1 rounded-lg bg-base-terciaria border border-base-terciaria">
-              <Texto tipo="subtitulo" className="text-xs text-gray-300">
+              <Texto tipo="subtitulo" className="text-xs text-t-secundaria">
                 Ritmo: {dadosUsuario.veloPerda} kg/sem
               </Texto>
             </div>
@@ -244,6 +248,8 @@ export default function Home() {
         </CardHorizontal>
 
       </div>
+
+      <Outlet />
 
     </div>
   )

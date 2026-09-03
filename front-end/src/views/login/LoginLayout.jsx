@@ -1,6 +1,6 @@
 
 import { Outlet } from 'react-router-dom'
-import useFetchUsuario from '../../logicas/querys/FetchUsuario'
+import useFetchUsuario from '../../logicas/usuario/FetchUsuario'
 
 const LoginLayout = () => {
   const {
