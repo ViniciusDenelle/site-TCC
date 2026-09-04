@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native'
+import CreateDietForm from '../../componentes/CreateDietForm'
 
 /* =========================================================
    TIPOS
@@ -377,6 +378,8 @@ function CardRefeicao({
 
 export default function Dietas() {
     const [menuSelecionado, setMenuSelecionado] = useState<MenuTab>('plano')
+    // dietas criadas localmente via formulário
+    const [createdDietas, setCreatedDietas] = useState<DietaPronta[]>([])
 
     /* --- dietas prontas --- */
     const [minhasDietasProntas, setMinhasDietasProntas] = useState<string[]>([])
@@ -385,6 +388,12 @@ export default function Dietas() {
         setMinhasDietasProntas((prev) =>
             prev.includes(dieta.id) ? prev : [...prev, dieta.id]
         )
+    }
+
+    const handleCreateDieta = (dieta: DietaPronta) => {
+        setCreatedDietas((prev) => [dieta, ...prev])
+        setMinhasDietasProntas((prev) => (prev.includes(dieta.id) ? prev : [...prev, dieta.id]))
+        setMenuSelecionado('prontas')
     }
 
     /* --- plano do dia --- */
@@ -662,7 +671,7 @@ export default function Dietas() {
                 />
             )}
 
-            {/* ABA CRIAR (mantida) */}
+            {/* ABA CRIAR (melhorada) */}
             {menuSelecionado === 'criar' && (
                 <View style={styles.criarContainer}>
                     <Text style={styles.criarTitle}>Criar nova dieta</Text>
@@ -671,33 +680,23 @@ export default function Dietas() {
                         Monte uma dieta personalizada para seus objetivos.
                     </Text>
 
-                    <TextInput
-                        placeholder="Nome da dieta"
-                        placeholderTextColor="#636366"
-                        style={styles.input}
-                    />
+                    <CreateDietForm onCreate={handleCreateDieta} />
 
-                    <TextInput
-                        placeholder="Objetivo"
-                        placeholderTextColor="#636366"
-                        style={styles.input}
-                    />
+                    {createdDietas.length > 0 && (
+                        <>
+                            <Text style={[styles.secaoTitulo, { marginTop: 12 }]}>
+                                Dietas criadas
+                            </Text>
 
-                    <TextInput
-                        placeholder="Calorias diárias"
-                        placeholderTextColor="#636366"
-                        keyboardType="numeric"
-                        style={styles.input}
-                    />
-
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => {
-                            console.log('Criar dieta clicado')
-                        }}
-                    >
-                        <Text style={styles.buttonText}>Criar dieta</Text>
-                    </TouchableOpacity>
+                            {createdDietas.map((d) => (
+                                <CardDietaPronta
+                                    key={d.id}
+                                    dieta={d}
+                                    onPress={() => adicionarDietaPronta(d)}
+                                />
+                            ))}
+                        </>
+                    )}
                 </View>
             )}
         </SafeAreaView>

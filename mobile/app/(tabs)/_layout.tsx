@@ -1,8 +1,5 @@
 import { Tabs } from 'expo-router';
-import {
-    Ionicons,
-    MaterialCommunityIcons,
-} from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function TabsLayout() {
     return (
@@ -43,20 +40,7 @@ export default function TabsLayout() {
                 }}
             />
 
-            <Tabs.Screen
-                name="biblioteca"
-                options={{
-                    title: 'Biblioteca',
 
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons
-                            name="library-outline"
-                            size={size}
-                            color={color}
-                        />
-                    ),
-                }}
-            />
 
             <Tabs.Screen
                 name="exercicios"
@@ -66,6 +50,51 @@ export default function TabsLayout() {
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons
                             name="arm-flex"
+                            size={size}
+                            color={color}
+                        />
+                    ),
+                }}
+            />
+
+            <Tabs.Screen
+                name="dietas"
+                options={{
+                    title: 'Dietas',
+
+                    tabBarIcon: ({ color, size }) => (
+                        <MaterialCommunityIcons
+                            name="food-apple"
+                            size={size}
+                            color={color}
+                        />
+                    ),
+                }}
+            />
+
+            <Tabs.Screen
+                name="progresso"
+                options={{
+                    title: 'Progresso',
+
+                    tabBarIcon: ({ color, size }) => (
+                        <MaterialCommunityIcons
+                            name="chart-line"
+                            size={size}
+                            color={color}
+                        />
+                    ),
+                }}
+            />
+
+            <Tabs.Screen
+                name="perfil"
+                options={{
+                    title: 'Perfil',
+
+                    tabBarIcon: ({ color, size }) => (
+                        <MaterialCommunityIcons
+                            name="account"
                             size={size}
                             color={color}
                         />
