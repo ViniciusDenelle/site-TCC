@@ -20,7 +20,7 @@ const PesquisarExercicios = ({
 
     const { data: tipos } = useFetchBadge('tiposExercicio')
 
-    const { secoes } = useFetchBadgesCompartilhadas()
+    const { secoes } = useFetchBadgesCompartilhadas('exercicio')
 
     const [pagina, setPagina] = useState<number>(1)
 

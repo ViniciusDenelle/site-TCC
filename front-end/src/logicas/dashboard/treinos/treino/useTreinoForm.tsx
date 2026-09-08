@@ -1,7 +1,8 @@
 import { useCallback, useState } from "react"
 import { MetadadoExercicio, useTreinoFormProps } from "./TreinoProps"
-import { ResExercicioProps } from "../exercicios/FetchExercicio";
+import { Badge, ResExercicioProps } from "../exercicios/FetchExercicio";
 import useSelecaoComDados from "../selecionaveis/useSelecaoComDados";
+import useSelecaoUnica from "../selecionaveis/useSelecaoUnica";
 
 const metadadoPadrao: MetadadoExercicio = {
     sets: 3,
@@ -16,13 +17,12 @@ const useTreinoForm = (): useTreinoFormProps => {
     const [nome, setNome] = useState<string>('')
     const [descricao, setDescricao] = useState<string>('')
     const exercicios = useSelecaoComDados<ResExercicioProps, MetadadoExercicio>(metadadoPadrao)
-
+    const tipo = useSelecaoUnica<Badge>();
+    const foco = useSelecaoUnica<Badge>();
     // adiciona ou remove (toggle) um exercício do treino
-    const adicionarExercicio = useCallback(() => {
-        (exercicio: ResExercicioProps) => {
-            exercicios.toggle(exercicio)
-        }
-    }, [])
+    const adicionarExercicio = (exercicio: ResExercicioProps) => {
+        exercicios.toggle(exercicio)
+    }
 
     // atualiza um campo específico do metadado de um exercício já adicionado,
     // preservando os demais campos
@@ -40,6 +40,24 @@ const useTreinoForm = (): useTreinoFormProps => {
         })
     }
 
+    const montarPayload = () => {
+        return {
+            nome,
+            descricao,
+            foco_id: foco.selecionado?.id ?? 0,
+            tipo_id: tipo.selecionado?.id ?? 0,
+            exercicios: exercicios.selecionados.map((exercicio, index) => ({
+                exercicio_id: exercicio.id,
+                ordem: index + 1,
+                sets: exercicio.metadado.sets,
+                repeticoes_minimas: exercicio.metadado.repeticoes_minimas,
+                repeticoes_maximas: exercicio.metadado.repeticoes_maximas,
+                peso: exercicio.metadado.peso,
+                descanso: exercicio.metadado.descanso,
+            })),
+        };
+    };
+
     return {
         nome,
         setNome,
@@ -47,7 +65,10 @@ const useTreinoForm = (): useTreinoFormProps => {
         setDescricao,
         exercicios,
         adicionarExercicio,
-        atualizarMetadadoExercicio
+        atualizarMetadadoExercicio,
+        tipo,
+        foco,
+        montarPayload
     }
 }
 

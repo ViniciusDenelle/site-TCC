@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { AxiosError, AxiosResponse } from 'axios'
 import React from 'react'
 import api from '../../../../api'
+import { CriarTreinoPayload } from './TreinoProps'
 
 export type exerciciosInfo = {
     id: number
@@ -18,25 +19,21 @@ export type ReqTreinoProps = {
     exercicios: exerciciosInfo[]
 }
 
-const useCriarTreino = ({
-    id,
-    nome,
-    descricao,
-    exercicios
-} : ReqTreinoProps & {id: number}) => {
+const useCriarTreino = () => {
 
 
     const {
         mutate,
         isSuccess,
         isError,
-        isPending
+        isPending,
+        error
     } = useMutation<
         AxiosResponse,
         AxiosError,
-        ReqTreinoProps
+        CriarTreinoPayload
     >({
-        mutationFn: (dados:ReqTreinoProps) => api.post(`dashboard/treinos/treino/${id}`, dados),
+        mutationFn: (dados:CriarTreinoPayload) => api.post(`dashboard/treinos/treino`, dados),
         onSuccess: (res) => {
             console.log(res.data)
         },
@@ -45,19 +42,12 @@ const useCriarTreino = ({
         }
     })
 
-    const criarTreinoHandler = () => {
-        mutate({
-            nome: nome,
-            descricao: descricao,
-            exercicios: exercicios
-        })
-    }
-
   return {
         isSuccess,
         isError,
         isPending,
-        criarTreinoHandler
+        error,
+        mutate
   }
 }
 

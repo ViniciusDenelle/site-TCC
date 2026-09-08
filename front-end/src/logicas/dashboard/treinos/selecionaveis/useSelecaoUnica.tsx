@@ -1,5 +1,13 @@
 // hooks/selecao/useSelecaoUnica.ts
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
+
+export interface UseSelecaoUnicaProps<T extends { id: number }> {
+    selecionado: T | null;
+    selecionar: (item: T) => void;
+    isSelecionado: (id: number) => boolean;
+    limpar: () => void;
+    setSelecionado: Dispatch<SetStateAction<T | null>>;
+}
 
 function useSelecaoUnica<T extends { id: number }>() {
     const [selecionado, setSelecionado] = useState<T | null>(null);

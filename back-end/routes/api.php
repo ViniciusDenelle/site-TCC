@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
             //treino 
             Route::prefix('treino')->controller(TreinoController::class)->group(function() {
-                Route::post('/{ficha}', 'create');
+                Route::post('/', 'store');
                 Route::get('/{treino}', 'show');
                 Route::get('/', 'fetch');
                 Route::put('/{treino}', 'update');
@@ -59,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
             });
 
             Route::prefix('badges')->controller(BadgeTreinoController::class)->group(function(){
+                Route::get('treino', 'treino');
                 Route::get('exercicio', 'exercicio');
                 Route::get('musculos', 'musculos');
                 Route::get('equipamentos', 'equipamentos');

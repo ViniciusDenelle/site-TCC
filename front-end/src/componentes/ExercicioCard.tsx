@@ -6,7 +6,7 @@ import { ResExercicioProps } from "../logicas/dashboard/treinos/exercicios/Fetch
 import Texto from "./organizacao/Texto"
 import BotaoPrimario from "./botoes/BotaoPrimario"
 import { useState } from "react"
-import MenuPlayer from "./dashboard/player/MenuPlayer"
+import MenuPlayer from "./dashboard/player/menus/MenuPlayer"
 
 
 
@@ -15,7 +15,7 @@ const ExercicioCard = ({
     adcionarExercicio
 } :{
     exercicio : ResExercicioProps
-    adcionarExercicio: () => void
+    adcionarExercicio: (exercicio:ResExercicioProps) => void
 }) => {
   
   const obterCorNivel = {

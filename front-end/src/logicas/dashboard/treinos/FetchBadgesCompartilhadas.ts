@@ -4,7 +4,9 @@ import api from '../../../api'
 import { Badge } from './exercicios/FetchExercicio'
 import { ResBadges } from './exercicios/exercicoProps'
 
-const useFetchBadgesCompartilhadas = () => {
+type tipoProps = 'exercicio' | 'treino'
+
+const useFetchBadgesCompartilhadas = (tipo:tipoProps) => {
 
     const {
         data,
@@ -15,9 +17,9 @@ const useFetchBadgesCompartilhadas = () => {
     } = useQuery<
         ResBadges
     >({
-        queryKey: ['badges'],
+        queryKey: ['badges', tipo],
         queryFn: async () => {
-            const res = await api.get(`/dashboard/treinos/badges/exercicio`)
+            const res = await api.get(`/dashboard/treinos/badges/${tipo}`)
             return res.data
         }
     })

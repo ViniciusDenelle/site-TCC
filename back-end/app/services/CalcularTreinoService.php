@@ -1,57 +1,53 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
-class calcularTreinoService
+use App\Models\User;
+
+class CalcularTreinoService
 {
-    public function calcularTempoECalorias(array $exercicios, $usuario): array
+    public function calcularTempoECalorias(array $exercicios, User $usuario): array
     {
         $tempoEstimado = 0;
 
         $tempoPorRepeticao = 3; // segundos
         $tempoTrocaExercicio = 20; // segundos
-        $met = 4.5;
+        $met = 4.5; // Gasto energético médio (METs) para musculação
 
         foreach ($exercicios as $key => $exercicio) {
 
-            // Média de repetições
-            $mediaReps = (
-                $exercicio['repsMin'] +
-                $exercicio['repsMax']
-            ) / 2;
+            // Suporta as novas chaves `repeticoes_minimas`/`repeticoes_maximas` e mantém fallback para `repsMin`/`repsMax`
+            $repsMin = $exercicio['repeticoes_minimas'] ?? $exercicio['repsMin'] ?? 0;
+            $repsMax = $exercicio['repeticoes_maximas'] ?? $exercicio['repsMax'] ?? 0;
 
-            // Tempo executando as séries
-            $tempoExecucao =
-                $mediaReps *
-                $tempoPorRepeticao *
-                $exercicio['sets'];
+            // Média de repetições por série
+            $mediaReps = ($repsMin + $repsMax) / 2;
 
-            // Descansos entre as séries
-            $tempoDescanso =
-                max($exercicio['sets'] - 1, 0) *
-                $exercicio['descanso'];
+            // Tempo total de execução física das repetições
+            $tempoExecucao = $mediaReps * $tempoPorRepeticao * $exercicio['sets'];
+
+            // Tempo total de descanso entre as séries do mesmo exercício
+            $tempoDescanso = max($exercicio['sets'] - 1, 0) * $exercicio['descanso'];
 
             $tempoEstimado += $tempoExecucao + $tempoDescanso;
 
-            // Tempo de troca de exercício
+            // Transição entre exercícios diferentes
             if ($key < count($exercicios) - 1) {
                 $tempoEstimado += $tempoTrocaExercicio;
             }
         }
 
-        // Peso do usuário
-        $peso = $usuario->perfil->peso;
+        // Recupera o peso do usuário com valor padrão de segurança (70kg) caso não esteja cadastrado
+        $peso = $usuario->perfil->peso ?? 70;
 
-        // Segundos -> Horas
+        // Converte o tempo total de segundos para horas
         $horas = $tempoEstimado / 3600;
 
-        // Fórmula do MET
-        $caloriasEstimadas = round(
-            $met * $peso * $horas
-        );
+        // Cálculo de calorias baseado na fórmula do MET: MET * Peso (kg) * Duração (horas)
+        $caloriasEstimadas = (int) round($met * $peso * $horas);
 
         return [
-            'tempoEstimado' => $tempoEstimado,
+            'tempoEstimado' => (int) $tempoEstimado,
             'caloriasEstimadas' => $caloriasEstimadas,
         ];
     }

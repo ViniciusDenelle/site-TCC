@@ -25,6 +25,9 @@ export default function Home() {
     isError
   } = useFetchUsuario()
 
+  console.log(dadosUsuario)
+
+
   if (isPending) {
     return (
       <div className="w-full min-h-screen flex flex-col items-center justify-center bg-base-primaria text-white gap-3">

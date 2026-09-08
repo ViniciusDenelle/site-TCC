@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Treino extends Model
 {
     protected $fillable = [
+        'user_id',
+        'foco_id',
+        'tipo_id',
+        'nivel_id',
         'ficha_treino_id',
         'nome',
         'descricao',
@@ -14,31 +18,20 @@ class Treino extends Model
         'calorias_medias'
     ];
 
-    public function categoria()
+
+    public function foco()
     {
-        return $this->belongsTo(
-            CategoriaExercicio::class,
-            'categoria_id',
-            'id'
-        );
+        return $this->belongsTo(Foco::class, 'foco_id', 'id');
     }
 
     public function nivel()
     {
-        return $this->belongsTo(
-            NivelExercicio::class,
-            'nivel_id',
-            'id'
-        );
+        return $this->belongsTo(NivelExercicio::class, 'nivel_id', 'id');
     }
 
     public function tipo()
     {
-        return $this->belongsTo(
-            Foco::class,
-            'foco_id',
-            'id'
-        );
+        return $this->belongsTo(TipoTreino::class, 'tipo_id', 'id');
     }
 
     public function user()
@@ -48,7 +41,7 @@ class Treino extends Model
 
     public function ficha()
     {
-        return $this->belongsTo(FichaTreino::class);
+        return $this->belongsTo(FichaTreino::class, 'ficha_treino_id');
     }
 
     public function exercicios()

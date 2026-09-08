@@ -20,7 +20,7 @@ import DashbaordPaletaModal from "../../componentes/dashboard/DashboardPaletaMod
 import DashboardMenuInferior from "../../componentes/dashboard/DashboardMenuInferior"
 import { menu, nav } from "../../componentes/dashboard/DashboardlinksNav"
 import ModalPlayer from "../../componentes/dashboard/player/ModalPlayer"
-import MenuPlayer from "../../componentes/dashboard/player/MenuPlayer"
+import MenuPlayer from "../../componentes/dashboard/player/menus/MenuPlayer"
 // import { UsuarioProvider } from "../contextos/UsuarioContexto"
 
 const DashboardLayout = () => {
@@ -50,11 +50,12 @@ const DashboardLayout = () => {
 
     const { logout } = useLogout()
 
+    const [modalPlayer, setModalPlayer] = useState<boolean>(false)
+    
     if (isPending) return
     if (isError) return
     if (!token) navigation('/login')
 
-    const [modalPlayer, setModalPlayer] = useState<boolean>(false)
 
     return (
 

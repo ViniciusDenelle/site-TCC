@@ -26,3 +26,11 @@ export type RespostaErroLaravel = {
     errors: ErrosValidacao;
 };
 
+export type MetadadoExercicio = {
+    sets: number;
+    repeticoes_minimas: number;
+    repeticoes_maximas: number;
+    peso: number;
+    descanso: number;
+};
+

@@ -80,4 +80,18 @@ class BadgeTreinoController extends Controller
             ),
         ]);
     }
+
+    public function treino()
+    {
+        return response()->json([
+            
+            'focos' => BadgeResource::collection(
+                Foco::limit(12)->get()
+            ),
+
+            'tipos' => BadgeResource::collection(
+                TipoTreino::limit(12)->get()
+            ),
+        ]);
+    }
 }
