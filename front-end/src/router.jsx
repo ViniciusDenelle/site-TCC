@@ -22,6 +22,7 @@ import DashboardDietas from './views/Dashboard/dieta/DashboardDietas'
 import Home from './views/Dashboard/Home/Home'
 import AtualizarPerfil from './views/Dashboard/Home/AtualizarPerfil'
 import PaginaProgresso from "./views/Dashboard/progresso/progresso"
+import VerTreino from './views/Dashboard/treinos/ver/VerTreino'
 
 const Rota = createBrowserRouter(
     createRoutesFromElements(
@@ -67,6 +68,8 @@ const Rota = createBrowserRouter(
                     <Route path='criarPrincipal' element={<CriarPrincipal />} />
                     <Route path='criarExercicio' element={<CriarExercicios />} />
                     <Route path='criarTreino' element={<CriarTreinos />} />
+
+                    <Route path='verTreino/:id' element={<VerTreino />} />
                 </Route>
 
                 {/* Rotas de Dieta */}

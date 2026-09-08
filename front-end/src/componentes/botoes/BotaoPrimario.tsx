@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { motion } from 'motion/react'
 import { LucideIcon } from 'lucide-react'
-import Texto from '../organizacao/Texto'
-import WrapperIcone from '../organizacao/WrapperIcone'
+import Texto, { tipoTextoProps } from '../organizacao/Texto'
+import WrapperIcone, { WrapperIconeTamanhos } from '../organizacao/WrapperIcone'
 
 interface BotaoPrimarioProps {
   texto?: string,
@@ -13,6 +13,9 @@ interface BotaoPrimarioProps {
   disabled?: boolean
   type?: 'button' | 'submit' | 'reset'
   redondo?: boolean
+  tamanhoIcone?: WrapperIconeTamanhos
+  tipoFonte?: tipoTextoProps
+  textoClassName?: string
 }
 
 // O TRUQUE: Mudamos o tipo do componente para 'any'. 
@@ -27,7 +30,10 @@ const BotaoPrimario = ({
   disabled = false,
   type = 'button',
   redondo,
-  onClick
+  onClick,
+  tipoFonte = 'paragrafo',
+  tamanhoIcone = 'sm',
+  textoClassName = '',
 }: BotaoPrimarioProps) => {
 
   const classeBase = `
@@ -54,12 +60,12 @@ const BotaoPrimario = ({
       onClick={onClick}
     >
       {Icone && (
-        <WrapperIcone tamanho="sm">
+        <WrapperIcone tamanho={tamanhoIcone}>
           <Icone className="size-full" />
         </WrapperIcone>
       )}
       {texto && (
-        <Texto className='font-semibold'>
+        <Texto tipo={tipoFonte} className={textoClassName}>
           {texto}
         </Texto>
       )}

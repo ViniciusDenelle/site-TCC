@@ -1,18 +1,19 @@
-import { Dumbbell, PlusCircle } from "lucide-react"
+import { Dumbbell, Plus, PlusCircle } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
-import useExecutarTreinoContext from "../../../contextos/ExecutarTreinoContexto"
-import CardHorizontal from "../../CardHorizontal"
-import Texto from "../../organizacao/Texto"
-import WrapperIcone from "../../organizacao/WrapperIcone"
-import OpcoesMenuPlayer from "../../organizacao/opcoesMenuPlayer"
+import useExecutarTreinoContext from "../../../../contextos/ExecutarTreinoContexto"
+import CardHorizontal from "../../../CardHorizontal"
+import Texto from "../../../organizacao/Texto"
+import WrapperIcone from "../../../organizacao/WrapperIcone"
+import OpcoesMenuPlayer from "../../../organizacao/opcoesMenuPlayer"
 import { Dispatch, SetStateAction } from "react"
-import { ResExercicioProps } from "../../../logicas/dashboard/treinos/exercicios/FetchExercicio"
+import { ResExercicioProps } from "../../../../logicas/dashboard/treinos/exercicios/FetchExercicio"
+import BotaoPrimario from "../../../botoes/BotaoPrimario"
 
 type MenuPlayerProps = {
     menuAberto: boolean,
     setMenuAberto: Dispatch<SetStateAction<boolean>>
     exercicio: ResExercicioProps
-    adcionar: () => void
+    adcionar?: (exercicio:ResExercicioProps) => void
 }
 
 const MenuPlayer = ({
@@ -24,10 +25,10 @@ const MenuPlayer = ({
 
     const opcoesExercicio = [
         {
-            nome: 'adcionar a treino',
+            nome: 'Adcionar a treino já existente',
             tipo: 'link',
             icone: PlusCircle
-        }
+        },
     ]
 
     return (
@@ -70,6 +71,21 @@ const MenuPlayer = ({
                                 </div>
 
                                 {/* opções */}
+                                {adcionar && (
+                                    <BotaoPrimario 
+                                        icone={Plus}
+                                        texto="Adcionar a este treino"
+                                        tipo="vazio"
+                                        classeAdicional="gap-4"
+                                        tipoFonte="titulo"
+                                        tamanhoIcone="lg"
+                                        textoClassName="font-thin"
+                                        onClick={() => {
+                                            adcionar(exercicio)
+                                            setMenuAberto(false)
+                                        }}
+                                    />
+                                )}
                                 {opcoesExercicio.map(opcao => (
                                     <OpcoesMenuPlayer
                                         key={opcao.nome}

@@ -21,7 +21,7 @@ const WrapperIcone = ({
     }
 
   return (
-    <div className={`${classeWrapper[tamanho]} flex items-center justify-center block`}>
+    <div className={`${classeWrapper[tamanho]} flex items-center justify-center`}>
       {children}
     </div>
   )

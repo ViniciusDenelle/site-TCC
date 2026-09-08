@@ -126,6 +126,7 @@ const useExecuçãoExercicio = (
         onFinish: () => executarSerie(),
     });
 
+
     /**
      * Sempre que trocar de exercício,
      * reinicia toda a execução.

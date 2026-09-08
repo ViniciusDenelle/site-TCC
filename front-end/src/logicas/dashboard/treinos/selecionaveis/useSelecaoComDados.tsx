@@ -1,5 +1,19 @@
 // hooks/selecao/useSelecaoComMetadado.ts
-import { useState } from 'react';
+import { arrayMove } from '@dnd-kit/sortable';
+import { Reorder } from 'framer-motion';
+import { Dispatch, SetStateAction, useState } from 'react';
+
+export type ItemComDados<T, M> = T & { metadado: M };
+
+export interface UseSelecaoComDadosProps<T extends { id: number }, M> {
+    selecionados: ItemComDados<T, M>[];
+    toggle: (item: T, metadado?: M) => void;
+    atualizarDados: (id: number, metadado: M) => void;
+    remover: (id: number) => void;
+    isSelecionado: (id: number) => boolean;
+    setSelecionados: Dispatch<SetStateAction<ItemComDados<T, M>[]>>;
+    reordenar: (oldIndex: number, newIndex: number) => void;
+}
 
 function useSelecaoComDados<T extends { id: number }, M>(metadadoPadrao: M) {
     const [selecionados, setSelecionados] = useState<(T & { metadado: M })[]>([]);
@@ -24,7 +38,19 @@ function useSelecaoComDados<T extends { id: number }, M>(metadadoPadrao: M) {
         return selecionados.some(i => i.id === id);
     }
 
-    return { selecionados, toggle, atualizarDados, remover, isSelecionado, setSelecionados };
+    function reordenar(oldIndex: number, newIndex: number) {
+        setSelecionados(prev => arrayMove(prev, oldIndex, newIndex));
+    }
+
+    return { 
+        selecionados, 
+        toggle, 
+        atualizarDados, 
+        remover, 
+        isSelecionado, 
+        setSelecionados,
+        reordenar
+    };
 }
 
 export default useSelecaoComDados;

@@ -21,8 +21,8 @@ return new class extends Migration {
             $table->string('nome');
             $table->text('descricao')->nullable();
 
-            $table->integer('tempo_estimado')->nullable();
-            $table->integer('calorias_estimadas')->nullable();
+            $table->integer('tempo_medio')->nullable();       
+            $table->integer('calorias_medias')->nullable();
 
             $table->timestamps();
         });

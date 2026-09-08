@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import api from '../../../../api'
 import { AxiosError, AxiosResponse } from 'axios'
-import { Filtros } from '../useFiltrosTreinos'
+import { ResTreinoProps } from './TreinoProps'
 
 export type Exercicio = {
     id: number
@@ -20,15 +20,6 @@ export type ResExercicioTreinoProps = {
     descanso: number
 
     exercicio: Exercicio
-}
-
-export type ResTreinoProps = {
-    id: number
-    nome: string
-    nomeCriador: string
-    descricao: string | null
-
-    exercicios: ResExercicioTreinoProps[]
 }
 
 const useFetchTreinos = (filtros:Filtros, pagina:number) => {
