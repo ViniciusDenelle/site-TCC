@@ -1,30 +1,32 @@
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError, AxiosResponse } from 'axios'
 import api from '../../../../api'
-import { ReqTreinoProps } from './CriarTreino'
+import { CriarTreinoPayload, ResTreinoProps } from './TreinoProps'
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
-const useUpdateTreino = ({
-    id,
-    nome,
-    descricao,
-    exercicios
-}: ReqTreinoProps & { id: number }) => {
+const useUpdateTreino = (id:string) => {
+
+    const navigate = useNavigate()
 
     const {
-        mutate,
+        mutate: editarTreino,
         isSuccess,
         isError,
-        isPending
+        isPending,
+        error
     } = useMutation<
         AxiosResponse,
         AxiosError,
-        ReqTreinoProps
+        CriarTreinoPayload
     >({
-        mutationFn: (dados: ReqTreinoProps) =>
+        mutationFn: (dados: CriarTreinoPayload) =>
             api.put(`dashboard/treinos/treino/${id}`, dados),
 
         onSuccess: (res) => {
-            console.log(res.data)
+            toast.success('exercicio editado com sucesso')
+            navigate(`/dashboard/treinos/verTreino/${id}`);
+            
         },
 
         onError: (error) => {
@@ -32,19 +34,12 @@ const useUpdateTreino = ({
         }
     })
 
-    const atualizarTreinoHandler = () => {
-        mutate({
-            nome,
-            descricao,
-            exercicios
-        })
-    }
-
     return {
         isSuccess,
         isError,
         isPending,
-        atualizarTreinoHandler
+        editarTreino,
+        error
     }
 }
 

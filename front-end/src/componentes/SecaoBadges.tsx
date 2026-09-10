@@ -48,11 +48,11 @@ const SecaoBadges = ({
                 <BotaoTerciario
                     classeAdicional="flex items-center mx-auto"
                     onClick={() => setExpandido(prev => !prev)}
-                    texto={expandido ? `mostrar menos` : `mostrar mais`}
+                    texto={`${expandido ? `mostrar menos` : `mostrar mais`} ${itensRestantes}`}
                     icone={expandido ? Minus : Plus}
                 />
             )}
-            {error && (
+            {error.length > 0 && (
                 <Texto tipo="subtexto" className="text-red-500">
                     *{error}
                 </Texto>

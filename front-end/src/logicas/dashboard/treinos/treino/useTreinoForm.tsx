@@ -1,59 +1,90 @@
-import { useCallback, useState } from "react"
-import { MetadadoExercicio, useTreinoFormProps } from "./TreinoProps"
-import { Badge, ResExercicioProps } from "../exercicios/FetchExercicio";
-import useSelecaoComDados from "../selecionaveis/useSelecaoComDados";
-import useSelecaoUnica from "../selecionaveis/useSelecaoUnica";
+import { useState, useCallback } from 'react';
+import useSelecaoUnica from '../selecionaveis/useSelecaoUnica';
+import useSelecaoComDados from '../selecionaveis/useSelecaoComDados';
+import { ResExercicioProps } from '../exercicios/FetchExercicio';
+import { MetadadoExercicio } from '../exercicios/exercicoProps';
 
-const metadadoPadrao: MetadadoExercicio = {
-    sets: 3,
-    repeticoes_minimas: 8,
-    repeticoes_maximas: 12,
-    peso: 0,
-    descanso: 60,
-};
+export const useTreinoForm = () => {
+    const [nome, setNome] = useState('');
+    const [descricao, setDescricao] = useState('');
 
-const useTreinoForm = (): useTreinoFormProps => {
+    const tipo = useSelecaoUnica();
+    const foco = useSelecaoUnica();
 
-    const [nome, setNome] = useState<string>('')
-    const [descricao, setDescricao] = useState<string>('')
-    const exercicios = useSelecaoComDados<ResExercicioProps, MetadadoExercicio>(metadadoPadrao)
-    const tipo = useSelecaoUnica<Badge>();
-    const foco = useSelecaoUnica<Badge>();
-    // adiciona ou remove (toggle) um exercício do treino
-    const adicionarExercicio = (exercicio: ResExercicioProps) => {
-        exercicios.toggle(exercicio)
-    }
+    const metadadoPadrao: MetadadoExercicio = {
+        sets: 3,
+        repeticoes_minimas: 8,
+        repeticoes_maximas: 12,
+        peso: 0,
+        descanso: 60,
+    };
 
-    // atualiza um campo específico do metadado de um exercício já adicionado,
-    // preservando os demais campos
-    const atualizarMetadadoExercicio = (
-        id: number,
-        campo: keyof MetadadoExercicio,
-        valor: number
-    ) => {
-        const exercicioAtual = exercicios.selecionados.find(e => e.id === id)
-        if (!exercicioAtual) return
+    const exercicios = useSelecaoComDados<ResExercicioProps, MetadadoExercicio>(metadadoPadrao);
 
-        exercicios.atualizarDados(id, {
+    // Método responsável por popular todo o formulário com dados existentes
+    const popularFormulario = useCallback((treino: any) => {
+        if (!treino) return;
+
+        setNome(treino.nome || '');
+        setDescricao(treino.descricao || '');
+
+        if (treino.tipo) {
+            tipo.selecionar(treino.tipo);
+        }
+
+        if (treino.foco) {
+            foco.selecionar(treino.foco);
+        }
+
+        if (Array.isArray(treino.exercicios)) {
+            const exerciciosFormatados = [...treino.exercicios]
+                .sort((a, b) => a.ordem - b.ordem)
+                .filter(item => item.exercicio)
+                .map(item => ({
+                    ...item.exercicio,
+                    metadado: {
+                        sets: item.sets,
+                        repeticoes_minimas: item.repeticoes_minimas,
+                        repeticoes_maximas: item.repeticoes_maximas,
+                        peso: item.peso,
+                        descanso: item.descanso,
+                    },
+                }));
+
+            exercicios.setSelecionados(exerciciosFormatados);
+        }
+    }, []);
+
+    const adicionarExercicio = (item: ResExercicioProps) => {
+        exercicios.toggle(item, metadadoPadrao);
+    };
+
+    const atualizarMetadadoExercicio = (id: number, campo: keyof MetadadoExercicio, valor: number) => {
+        const exercicioAtual = exercicios.selecionados.find(e => e.id === id);
+        if (!exercicioAtual) return;
+
+        const novoMetadado = {
             ...exercicioAtual.metadado,
-            [campo]: valor
-        })
-    }
+            [campo]: valor,
+        };
+
+        exercicios.atualizarDados(id, novoMetadado);
+    };
 
     const montarPayload = () => {
         return {
             nome,
             descricao,
-            foco_id: foco.selecionado?.id ?? 0,
-            tipo_id: tipo.selecionado?.id ?? 0,
-            exercicios: exercicios.selecionados.map((exercicio, index) => ({
-                exercicio_id: exercicio.id,
+            tipo_id: tipo.selecionado?.id,
+            foco_id: foco.selecionado?.id,
+            exercicios: exercicios.selecionados.map((item, index) => ({
+                exercicio_id: item.id,
                 ordem: index + 1,
-                sets: exercicio.metadado.sets,
-                repeticoes_minimas: exercicio.metadado.repeticoes_minimas,
-                repeticoes_maximas: exercicio.metadado.repeticoes_maximas,
-                peso: exercicio.metadado.peso,
-                descanso: exercicio.metadado.descanso,
+                sets: item.metadado.sets,
+                repeticoes_minimas: item.metadado.repeticoes_minimas,
+                repeticoes_maximas: item.metadado.repeticoes_maximas,
+                peso: item.metadado.peso,
+                descanso: item.metadado.descanso,
             })),
         };
     };
@@ -63,13 +94,14 @@ const useTreinoForm = (): useTreinoFormProps => {
         setNome,
         descricao,
         setDescricao,
+        tipo,
+        foco,
         exercicios,
         adicionarExercicio,
         atualizarMetadadoExercicio,
-        tipo,
-        foco,
-        montarPayload
-    }
-}
+        montarPayload,
+        popularFormulario,
+    };
+};
 
-export default useTreinoForm
+export default useTreinoForm;

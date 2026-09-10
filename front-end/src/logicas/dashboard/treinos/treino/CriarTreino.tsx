@@ -4,21 +4,6 @@ import React from 'react'
 import api from '../../../../api'
 import { CriarTreinoPayload } from './TreinoProps'
 
-export type exerciciosInfo = {
-    id: number
-    repsMin: number,
-    repsMax: number,
-    sets: number,
-    peso: number,
-    descanso: number
-}
-
-export type ReqTreinoProps = {
-    nome: string,
-    descricao?: string,
-    exercicios: exerciciosInfo[]
-}
-
 const useCriarTreino = () => {
 
 

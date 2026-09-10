@@ -1,4 +1,4 @@
-import { Dumbbell, Plus, PlusCircle } from "lucide-react"
+import { Cog, Dumbbell, Plus, PlusCircle } from "lucide-react"
 import { AnimatePresence, motion, PanInfo } from "motion/react"
 import useExecutarTreinoContext from "../../../../contextos/ExecutarTreinoContexto"
 import CardHorizontal from "../../../CardHorizontal"
@@ -31,6 +31,15 @@ const MenuTreino = ({
         }
     }
 
+    const opcoes =[
+        {
+            titulo: 'Atualizar treino',
+            icone: Cog,
+            link:  `atualizarTreino/${treino.id}`,
+            tipo: 'link'
+        }
+    ]
+
     return (
         <AnimatePresence>
             {menuAberto && (
@@ -62,6 +71,22 @@ const MenuTreino = ({
                             <div className="flex flex-col gap-4">
 
                                 <div className="w-10 h-1 rounded-full bg-t-terciaria/50 mx-auto mt-2" />
+                                
+                                <div className="flex">
+                                    <Texto tipo="titulo" className="font-thin text-t-primaria">
+                                        {treino.nome}
+                                    </Texto>
+                                </div>
+
+                                {/* opções */}
+
+                                {opcoes.map(opcao => (
+                                    <OpcoesMenuPlayer 
+                                        to={opcao.link}
+                                        nome={opcao.titulo}
+                                        icone={opcao.icone}
+                                    />
+                                ))}
 
                             </div>
                         </CardHorizontal>
