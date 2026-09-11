@@ -108,9 +108,11 @@ class TreinoController extends Controller
 
     public function delete(Treino $treino)
     {
-        $treino->delete();
-
-        return response('deu certo');
+        DB::transaction(function () use ($treino) {
+            $treino->exercicios()->delete();
+            $treino->sessoes()->delete();
+            $treino->delete();
+        });
     }
 
 

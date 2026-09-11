@@ -41,7 +41,7 @@ class ExercicioController extends Controller
 
     public function show(Exercicio $exercicio)
     {
-        return new ExercicioResource($exercicio);
+        return new ExercicioResource($exercicio->load('tipo', 'nivel', 'foco', 'musculos', 'equipamentos'));
     }
 
     public function fetch(Request $request)
