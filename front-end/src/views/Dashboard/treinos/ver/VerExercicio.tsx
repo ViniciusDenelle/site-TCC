@@ -4,6 +4,8 @@ import Texto from '../../../../componentes/organizacao/Texto';
 import CardHorizontal from '../../../../componentes/CardHorizontal';
 import BotaoTerciario from '../../../../componentes/botoes/BotaoTerciario';
 import useShowExercicio from '../../../../logicas/dashboard/treinos/exercicios/ShowExercicio';
+import MenuPlayer from '../../../../componentes/dashboard/player/menus/MenuPlayer';
+import { useState } from 'react';
 
 const VerExercicio = () => {
     const { id } = useParams<{ id: string }>();
@@ -15,6 +17,11 @@ const VerExercicio = () => {
         error
     } = useShowExercicio(id)
 
+    const musculosPrimarios = exercicio?.musculos.filter(m => m.tipo.id === 1);
+    const musculosSecundarios = exercicio?.musculos.filter(m => m.tipo.id === 2);
+
+    const [menuAberto, setMenuAberto] = useState<boolean>(false)
+
     if (isPending) {
         return <Texto className="animate-pulse">carregando exercício...</Texto>;
     }
@@ -23,11 +30,16 @@ const VerExercicio = () => {
         return <Texto>Exercício não encontrado.</Texto>;
     }
 
-    const musculosPrimarios = exercicio.musculos.filter(m => m.tipo.id === 1);
-    const musculosSecundarios = exercicio.musculos.filter(m => m.tipo.id === 2);
 
     return (
         <div className="min-h-screen w-full">
+
+            <MenuPlayer 
+                menuAberto={menuAberto}
+                setMenuAberto={setMenuAberto}
+                exercicio={exercicio}
+            />
+
             <div className="container mx-auto flex flex-col gap-3">
 
                 <div className="flex flex-col gap-2">
@@ -35,6 +47,7 @@ const VerExercicio = () => {
                         icone={EllipsisVertical}
                         tamanhoIcone="md"
                         classeAdicional="ml-auto"
+                        onClick={() => setMenuAberto(true)}
                     />
 
                     <div className="size-7/10 mx-auto flex items-center justify-center bg-base-terciaria rounded-lg p-2">

@@ -1,11 +1,15 @@
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError, AxiosResponse } from 'axios'
 import api from '../../../../api'
+import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
-const useDeleteExercicio = (id: number) => {
+const   useDeleteExercicio = (id: number) => {
+
+    const navigate = useNavigate()
 
     const {
-        mutate,
+        mutate: deletarExercicio,
         isSuccess,
         isError,
         isPending
@@ -13,11 +17,14 @@ const useDeleteExercicio = (id: number) => {
         AxiosResponse,
         AxiosError
     >({
-        mutationFn: () =>
-            api.delete(`/dashboard/treinos/exercicio/${id}`),
+        mutationFn: async () => {
+            const res = await api.delete(`/dashboard/treinos/exercicio/${id}`)
+            return res.data
+        },
 
         onSuccess: (res) => {
-            console.log(res.data)
+            toast.success('Treino removido com sucesso')
+            navigate(-1)
         },
 
         onError: (error) => {
@@ -25,12 +32,9 @@ const useDeleteExercicio = (id: number) => {
         }
     })
 
-    const deletarExercicioHandler = () => {
-        mutate()
-    }
-
+    
     return {
-        deletarExercicioHandler,
+        deletarExercicio,
         isSuccess,
         isError,
         isPending

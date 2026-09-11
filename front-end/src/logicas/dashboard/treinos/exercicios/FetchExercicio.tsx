@@ -23,7 +23,7 @@ export type ResExercicioProps = {
     nome: string
     descricao: string | null
 
-    categoria: Badge
+    foco: Badge
     nivel: Badge
     tipo: Badge
 
