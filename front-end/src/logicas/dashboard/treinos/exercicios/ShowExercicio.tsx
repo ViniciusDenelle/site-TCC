@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { AxiosError, AxiosResponse } from 'axios'
 import api from '../../../../api'
-import { Exercicio } from './exercicoProps'
+import { ResExercicioProps } from './FetchExercicio'
 
 const useShowExercicio = (id: number | string) => {
 
@@ -14,7 +14,7 @@ const useShowExercicio = (id: number | string) => {
     } = useQuery<
         AxiosResponse,
         AxiosError,
-        Exercicio
+        ResExercicioProps
     >({
         queryKey: ['exercicio', id],
 

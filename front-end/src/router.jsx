@@ -21,9 +21,10 @@ import DietaLayout from './layouts/dashboard/dieta/DietaLayout'
 import DashboardDietas from './views/Dashboard/dieta/DashboardDietas'
 import Home from './views/Dashboard/Home/Home'
 import AtualizarPerfil from './views/Dashboard/Home/AtualizarPerfil'
-import PaginaProgresso from "./views/Dashboard/progresso/progresso"
 import VerTreino from './views/Dashboard/treinos/ver/VerTreino'
 import VerExercicio from './views/Dashboard/treinos/ver/VerExercicio'
+import Progresso from './views/Dashboard/progresso/progresso'
+import EditarExercicio from './views/Dashboard/treinos/editar/EditarExercicio'
 
 const Rota = createBrowserRouter(
     createRoutesFromElements(
@@ -53,7 +54,7 @@ const Rota = createBrowserRouter(
                 <Route path='perfil' element={<Home />} />
 
                 {/* Rota do Progresso */}
-                <Route path='progresso' element={<PaginaProgresso />} />
+                <Route path='progresso' element={<Progresso />} />
 
                 {/* Rotas de Treino */}
                 <Route path='treino' element={<TreinosLayout />}>
@@ -72,6 +73,8 @@ const Rota = createBrowserRouter(
 
                     <Route path='verTreino/:id' element={<VerTreino />} />
                     <Route path='verExercicio/:id' element={<VerExercicio />} />
+
+                    <Route path='editarExercicio/:id' element={<EditarExercicio />} />
                 </Route>
 
                 {/* Rotas de Dieta */}
