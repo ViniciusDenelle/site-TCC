@@ -1,4 +1,4 @@
-import { Dumbbell, Plus, PlusCircle } from "lucide-react"
+import { Dumbbell, Plus, PlusCircle, Trash } from "lucide-react"
 import { AnimatePresence, motion, PanInfo } from "motion/react"
 import useExecutarTreinoContext from "../../../../contextos/ExecutarTreinoContexto"
 import CardHorizontal from "../../../CardHorizontal"
@@ -9,6 +9,7 @@ import { Dispatch, SetStateAction } from "react"
 import { ResExercicioProps } from "../../../../logicas/dashboard/treinos/exercicios/FetchExercicio"
 import BotaoPrimario from "../../../botoes/BotaoPrimario"
 import { ResTreinoProps } from "../../../../logicas/dashboard/treinos/treino/TreinoProps"
+import useDeleteTreino from "../../../../logicas/dashboard/treinos/treino/DeleteTreino"
 
 type MenuTreinoProps = {
     menuAberto: boolean
@@ -30,6 +31,20 @@ const MenuTreino = ({
             setMenuAberto(false)
         }
     }
+
+    const {
+        deletarTreino
+    } = useDeleteTreino(treino.id)
+
+    const opcoes = [
+        {
+            titulo: 'Deletar Treino',
+            icone: Trash,
+            corIcone: 'text-red-600',
+            tipo: 'botao' as 'link' | 'botao',
+            onclick: () => deletarTreino()
+        }
+    ]
 
     return (
         <AnimatePresence>
@@ -62,6 +77,18 @@ const MenuTreino = ({
                             <div className="flex flex-col gap-4">
 
                                 <div className="w-10 h-1 rounded-full bg-t-terciaria/50 mx-auto mt-2" />
+
+                                {/* opcoes */}
+
+                                {opcoes.map(opcao => (
+                                    <OpcoesMenuPlayer 
+                                        nome={opcao.titulo}
+                                        tipo={opcao.tipo}
+                                        onclick={opcao.onclick}
+                                        icone={opcao.icone}
+                                        corIcone={opcao.corIcone}
+                                    />
+                                ))}
 
                             </div>
                         </CardHorizontal>

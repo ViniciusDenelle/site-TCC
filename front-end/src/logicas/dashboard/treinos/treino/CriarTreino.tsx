@@ -3,6 +3,8 @@ import { AxiosError, AxiosResponse } from 'axios'
 import React from 'react'
 import api from '../../../../api'
 import { CriarTreinoPayload } from './TreinoProps'
+import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 export type exerciciosInfo = {
     id: number
@@ -21,6 +23,7 @@ export type ReqTreinoProps = {
 
 const useCriarTreino = () => {
 
+    const navigate = useNavigate()
 
     const {
         mutate,
@@ -33,9 +36,13 @@ const useCriarTreino = () => {
         AxiosError,
         CriarTreinoPayload
     >({
-        mutationFn: (dados:CriarTreinoPayload) => api.post(`dashboard/treinos/treino`, dados),
-        onSuccess: (res) => {
-            console.log(res.data)
+        mutationFn: async (dados:CriarTreinoPayload) => {
+            const res =  await api.post(`dashboard/treinos/treino`, dados)
+            return res.data
+        } ,onSuccess: (res) => {
+            console.log(res)
+            toast.success('treino criado com sucesso')
+            navigate('/dashboard/treino/verTreino/' + res.data.id)
         },
         onError:(error) => {
             console.log(error)
