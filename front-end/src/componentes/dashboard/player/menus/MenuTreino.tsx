@@ -1,4 +1,4 @@
-import { Dumbbell, Plus, PlusCircle } from "lucide-react"
+import { Cog, Dumbbell, Plus, PlusCircle, Trash } from "lucide-react"
 import { AnimatePresence, motion, PanInfo } from "motion/react"
 import useExecutarTreinoContext from "../../../../contextos/ExecutarTreinoContexto"
 import CardHorizontal from "../../../CardHorizontal"
@@ -28,19 +28,22 @@ const MenuTreino = ({
         deletarTreino
     } = useDeleteTreino(treino.id)
 
-    const opcoes = [
+    const opcoesBotao = [
         {
             titulo: 'Deletar Treino',
             icone: Trash,
             corIcone: 'text-red-600',
-            tipo: 'botao' as 'link' | 'botao',
             onclick: () => deletarTreino()
         },
+        
+    ]
+
+    const opcoesLink = [
         {
             titulo: 'Atualizar treino',
             icone: Cog,
-            link:  `atualizarTreino/${treino.id}`,
-            tipo: 'link'
+            to:  `atualizarTreino/${treino.id}`,
+            corIcone: 'text-blue-500'
         }
     ]
 
@@ -53,11 +56,19 @@ const MenuTreino = ({
                 >   
                     {/* opcoes */}
 
-                    {opcoes.map(opcao => (
+                    {opcoesBotao.map(opcao => (
                         <OpcoesMenuPlayer
                             nome={opcao.titulo}
-                            tipo={opcao.tipo}
                             onclick={opcao.onclick}
+                            icone={opcao.icone}
+                            corIcone={opcao.corIcone}
+                        />
+                    ))}
+
+                    {opcoesLink.map(opcao => (
+                        <OpcoesMenuPlayer
+                            nome={opcao.titulo}
+                            to={opcao.to}
                             icone={opcao.icone}
                             corIcone={opcao.corIcone}
                         />
