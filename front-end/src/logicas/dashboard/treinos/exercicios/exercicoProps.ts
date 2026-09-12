@@ -33,4 +33,3 @@ export type MetadadoExercicio = {
     peso: number;
     descanso: number;
 };
-

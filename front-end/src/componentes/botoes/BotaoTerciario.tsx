@@ -13,6 +13,7 @@ interface BotaoTerciarioProps {
   tamanhoIcone?: WrapperIconeTamanhos
   tipoFonte?: tipoTextoProps
   textoClassName?: string
+  iconeClassName?: string
 }
 
 const MotionButton = motion.button as any;
@@ -27,6 +28,7 @@ const BotaoTerciario = ({
   tamanhoIcone = 'sm',
   tipoFonte = 'paragrafo',
   textoClassName = '',
+  iconeClassName = '',
 }: BotaoTerciarioProps) => {
   return (
     <MotionButton
@@ -40,7 +42,7 @@ const BotaoTerciario = ({
     >
       {Icone && (
         <WrapperIcone tamanho={tamanhoIcone}>
-          <Icone className="size-full" />
+          <Icone className={`size-full ${iconeClassName}`} />
         </WrapperIcone>
       )}
 
