@@ -22,9 +22,13 @@ import DashboardDietas from './views/Dashboard/dieta/DashboardDietas'
 import Home from './views/Dashboard/Home/Home'
 import AtualizarPerfil from './views/Dashboard/Home/AtualizarPerfil'
 import VerTreino from './views/Dashboard/treinos/ver/VerTreino'
+import EditarTreino from './views/Dashboard/treinos/editar/EditarTreino'
 import VerExercicio from './views/Dashboard/treinos/ver/VerExercicio'
 import Progresso from './views/Dashboard/progresso/progresso'
 import EditarExercicio from './views/Dashboard/treinos/editar/EditarExercicio'
+import CriarFichaTreino from './views/Dashboard/treinos/criar/CriarFicha'
+import VerFicha from './views/Dashboard/treinos/ver/VerFicha'
+import EditarFicha from './views/Dashboard/treinos/editar/EditarFicha'
 
 const Rota = createBrowserRouter(
     createRoutesFromElements(
@@ -70,11 +74,16 @@ const Rota = createBrowserRouter(
                     <Route path='criarPrincipal' element={<CriarPrincipal />} />
                     <Route path='criarExercicio' element={<CriarExercicios />} />
                     <Route path='criarTreino' element={<CriarTreinos />} />
+                    <Route path='criarFichaTreino' element={<CriarFichaTreino />} />
 
                     <Route path='verTreino/:id' element={<VerTreino />} />
                     <Route path='verExercicio/:id' element={<VerExercicio />} />
+                    <Route path='verFicha/:id' element={<VerFicha />} />
 
+                    <Route path='editarTreino/:id' element={<EditarTreino />} />
                     <Route path='editarExercicio/:id' element={<EditarExercicio />} />
+                    <Route path='editarFicha/:id' element={<EditarFicha />} />
+
                 </Route>
 
                 {/* Rotas de Dieta */}

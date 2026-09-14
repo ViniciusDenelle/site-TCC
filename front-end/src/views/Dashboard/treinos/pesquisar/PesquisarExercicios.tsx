@@ -1,29 +1,32 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import Texto from '../../../../componentes/organizacao/Texto'
-import useFetchBadge from '../../../../logicas/dashboard/treinos/FetchBadge'
 import Paginacao from '../../../../componentes/outros/Paginacao'
-import useFiltrosTreinos from '../../../../logicas/dashboard/treinos/useFiltrosTreinos'
 import ExercicioCard from '../../../../componentes/ExercicioCard'
 import FiltrosPesquisa from '../../../../componentes/filtros/FiltrosPesquisa'
 import FiltrosChips from '../../../../componentes/filtros/FiltrosChips'
 import FiltroTreinoModal from '../../../../componentes/filtros/FiltroTreinoModal'
+import SecaoBadges from '../../../../componentes/SecaoBadges'
 import useDebounce from '../../../../logicas/useDebounce'
+import useFiltrosExercicio from '../../../../logicas/dashboard/treinos/exercicios/useFiltrosExercicio'
 import useFetchBadgesCompartilhadas from '../../../../logicas/dashboard/treinos/FetchBadgesCompartilhadas'
-import InputCheckbox from '../../../../componentes/inputs/InputCheckbox'
 import useFetchExercicios from '../../../../logicas/dashboard/treinos/exercicios/FetchExercicio'
+import { ResExercicioProps } from '../../../../logicas/dashboard/treinos/exercicios/FetchExercicio'
+
+type Props = {
+    adcionarExercicio: (exercicio: ResExercicioProps) => void;
+    exerciciosSelecionadosIds?: number[];
+}
 
 const PesquisarExercicios = ({
-    adcionarExercicio
-}) => {
+    adcionarExercicio,
+    exerciciosSelecionadosIds = [],
+}: Props) => {
 
-    const filtros = useFiltrosTreinos()
+    const filtros = useFiltrosExercicio()
 
-    const { data: tipos } = useFetchBadge('tiposExercicio')
-
-    const { secoes } = useFetchBadgesCompartilhadas('exercicio')
+    const { secoes, isSuccess: isSuccessBadges } = useFetchBadgesCompartilhadas('exercicio')
 
     const [pagina, setPagina] = useState<number>(1)
-
 
     const pesquisaDebounce = useDebounce(filtros.pesquisa, 500)
 
@@ -40,87 +43,76 @@ const PesquisarExercicios = ({
     } = useFetchExercicios(filtrosPesquisa, pagina)
 
     return (
-        <>
-            <div className="flex flex-col gap-2 w-full">
+        <div className="flex flex-col gap-2 w-full">
 
-                <FiltrosPesquisa
-                    {...filtros}
-                />
+            <FiltrosPesquisa
+                abrirMenuFiltro={filtros.abrirMenuFiltro}
+                quantidadeFiltros={filtros.quantidadeFiltros}
+                pesquisa={filtros.pesquisa}
+                setPesquisa={filtros.setPesquisa}
+            />
 
-                <FiltrosChips
-                    secoes={secoes ?? []}
-                    filtros={filtros.filtros}
-                    removerFiltro={filtros.removerBadgeFiltro}
-                />
+            {/* <FiltrosChips
+                secoes={secoes ?? []}
+                filtros={filtros.filtros}
+                removerFiltro={filtros.removerBadgeFiltro}
+            /> */}
 
-                <FiltroTreinoModal
-                    {...filtros}
-                >
-                    {secoes?.some(secao => secao.dados === undefined) ? (
-                        <Texto className='animate-pulse'>
-                            procurando filtros
-                        </Texto>
-                    ) : (
-                        secoes?.map(secao => (
-                            <div key={secao.tipo}>
-                                <Texto>
-                                    {secao.titulo}:
-                                </Texto>
-
-                                <div className="grid grid-cols-2 gap-y-1">
-                                    {secao.dados.map(item => (
-                                        <InputCheckbox
-                                            key={item.id}
-                                            name={secao.tipo}
-                                            valor={item.id}
-                                            checked={filtros.filtrosTemp[secao.tipo]?.includes(item.id)}
-                                            onChange={() =>
-                                                filtros.adicionarBadgeFiltro(item.id, secao.tipo)
-                                            }
-                                        >
-                                            {item.nome}
-                                        </InputCheckbox>
-                                    ))}
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </FiltroTreinoModal>
-
-
-                {!isPending ? (
-                    <>
-                        <div className="flex w-full justify-center items-center">
-                            <div className="grid grid-rows-5 gap-y-2 w-full">
-                                {exercicios?.data.map(exercicio => (
-                                    <ExercicioCard
-                                        adcionarExercicio={adcionarExercicio}
-                                        key={exercicio.id}
-                                        exercicio={exercicio}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-
-                        <Paginacao
-                            pagina={pagina}
-                            setPagina={setPagina}
-                            meta={exercicios?.meta}
-                        />
-                    </>
-                ) : (
+            <FiltroTreinoModal
+                menuFiltroAberto={filtros.menuFiltroAberto}
+                setMenuFiltroAberto={filtros.setMenuFiltroAberto}
+                aplicarFiltros={filtros.aplicarFiltros}
+                limparFiltros={filtros.limparFiltros}
+            >
+                {!isSuccessBadges ? (
                     <Texto className='animate-pulse'>
-                        procurando exercicios...
+                        procurando filtros
                     </Texto>
+                ) : (
+                    secoes?.map(secao => (
+                        secao.dados && (
+                            <SecaoBadges
+                                key={secao.tipo}
+                                titulo={secao.titulo}
+                                itens={secao.dados}
+                                isSelecionado={id => filtros.isBadgeSelecionadoTemp(id, secao.tipo as any)}
+                                onToggle={item => filtros.toggleBadgeTemp(item.id, secao.tipo as any)}
+                                limiteItems={6}
+                            />
+                        )
+                    ))
                 )}
+            </FiltroTreinoModal>
 
+            {!isPending ? (
+                <>
+                    <div className="flex w-full justify-center items-center">
+                        <div className="grid grid-rows-5 gap-y-2 w-full">
+                            {exercicios?.data.map(exercicio => (
+                                <ExercicioCard
+                                    key={exercicio.id}
+                                    exercicio={exercicio}
+                                    adcionarExercicio={adcionarExercicio}
+                                    // selecionado={exerciciosSelecionadosIds.includes(exercicio.id)}
+                                    // onSelecionar={() => adcionarExercicio(exercicio)}
+                                />
+                            ))}
+                        </div>
+                    </div>
 
-            </div>
+                    <Paginacao
+                        pagina={pagina}
+                        setPagina={setPagina}
+                        meta={exercicios?.meta}
+                    />
+                </>
+            ) : (
+                <Texto className='animate-pulse'>
+                    procurando exercicios...
+                </Texto>
+            )}
 
-
-
-
-        </>
+        </div>
     )
 }
 

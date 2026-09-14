@@ -76,7 +76,7 @@ const VerTreino = () => {
 
                     <div className="rounded-full bg-base-secundaria px-2">
                         <Texto>
-                            {treino.foco.nome}
+                            {treino.foco?.nome}
                         </Texto>
                     </div>
                 </div>

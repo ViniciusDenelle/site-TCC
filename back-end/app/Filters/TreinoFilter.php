@@ -14,10 +14,6 @@ class TreinoFilter
                 $q->where('nome', 'like', "%{$nome}%");
             })
 
-            ->when($request->categorias, function ($q, $categorias) {
-                $q->whereIn('categoria_id', $categorias);
-            })
-
             ->when($request->niveis, function ($q, $niveis) {
                 $q->whereIn('nivel_id', $niveis);
             })
@@ -30,33 +26,32 @@ class TreinoFilter
                 $q->whereIn('foco_id', $focos);
             })
 
+            ->when($request->calorias_min, function ($q, $min) {
+                $q->where('calorias_medias', '>=', $min);
+            })
+
+            ->when($request->calorias_max, function ($q, $max) {
+                $q->where('calorias_medias', '<=', $max);
+            })
+
+            ->when($request->tempo_min, function ($q, $min) {
+                $q->where('tempo_medio', '>=', $min);
+            })
+
+            ->when($request->tempo_max, function ($q, $max) {
+                $q->where('tempo_medio', '<=', $max);
+            })
+
             ->when($request->musculos, function ($q, $musculos) {
-
-                foreach ($musculos as $musculo) {
-
-                    $q->whereHas('exercicios.musculos', function ($q2) use ($musculo) {
-
-                        $q2->where('musculos.id', $musculo);
-
-                    });
-
-                }
-
+                $q->whereHas('exercicios.exercicio.musculos', function ($q2) use ($musculos) {
+                    $q2->whereIn('musculos.id', $musculos);
+                });
             })
 
             ->when($request->equipamentos, function ($q, $equipamentos) {
-
-                foreach ($equipamentos as $equipamento) {
-
-                    $q->whereHas('exercicios.equipamentos', function ($q2) use ($equipamento) {
-
-                        $q2->where('equipamentos.id', $equipamento);
-
-                    });
-
-                }
-
+                $q->whereHas('exercicios.exercicio.equipamentos', function ($q2) use ($equipamentos) {
+                    $q2->whereIn('equipamentos.id', $equipamentos);
+                });
             });
-
     }
 }

@@ -263,7 +263,6 @@ const useCadastro = (): UseCadastroReturn => {
         CadastroInfo
     >({
         mutationFn: async (dados) => {
-            console.log(dados)
             const res = await api.post('/cadastro', dados)
             
             return res.data

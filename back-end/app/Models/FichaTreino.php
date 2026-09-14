@@ -8,24 +8,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class FichaTreino extends Model
 {
     protected $table = 'fichas_treino';
-
     protected $fillable = [
-        'nome',
-        'descricao'
+        'nome', 
+        'descricao', 
+        'user_id'
     ];
-
-    public function dias(): HasMany
-    {
-        return $this->hasMany(DiaFicha::class);
-    }
 
     public function divisoes(): HasMany
     {
         return $this->hasMany(DivisaoFicha::class);
     }
 
-    public function treinos(): HasMany
+    public function dias(): HasMany
     {
-        return $this->hasMany(Treino::class);
+        return $this->hasMany(DiaFicha::class);
     }
 }

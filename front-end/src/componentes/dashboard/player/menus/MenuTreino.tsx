@@ -1,4 +1,4 @@
-import { Dumbbell, Plus, PlusCircle, Trash } from "lucide-react"
+import { Cog, Dumbbell, Plus, PlusCircle, Settings, Trash } from "lucide-react"
 import { AnimatePresence, motion, PanInfo } from "motion/react"
 import useExecutarTreinoContext from "../../../../contextos/ExecutarTreinoContexto"
 import CardHorizontal from "../../../CardHorizontal"
@@ -11,30 +11,43 @@ import BotaoPrimario from "../../../botoes/BotaoPrimario"
 import { ResTreinoProps } from "../../../../logicas/dashboard/treinos/treino/TreinoProps"
 import useDeleteTreino from "../../../../logicas/dashboard/treinos/treino/DeleteTreino"
 import MenuLayout from "./MenuLayout"
+import BotaoTerciario from "../../../botoes/BotaoTerciario"
 
 type MenuTreinoProps = {
     menuAberto: boolean
     setMenuAberto: Dispatch<SetStateAction<boolean>>
     treino: ResTreinoProps
+    adicionar?: (treino:ResTreinoProps) => void 
 }
 
 const MenuTreino = ({
     treino,
     menuAberto,
-    setMenuAberto
+    setMenuAberto,
+    adicionar
 }: MenuTreinoProps) => {
+
 
     const {
         deletarTreino
     } = useDeleteTreino(treino.id)
 
-    const opcoes = [
+    const opcoesBotao = [
         {
             titulo: 'Deletar Treino',
             icone: Trash,
             corIcone: 'text-red-600',
-            tipo: 'botao' as 'link' | 'botao',
             onclick: () => deletarTreino()
+        },
+        
+    ]
+
+    const opcoesLink = [
+        {
+            titulo: 'Atualizar treino',
+            icone: Settings,
+            to:  `atualizarTreino/${treino.id}`,
+            corIcone: 'text-blue-500'
         }
     ]
 
@@ -47,11 +60,32 @@ const MenuTreino = ({
                 >   
                     {/* opcoes */}
 
-                    {opcoes.map(opcao => (
+                    <Texto tipo="titulo" className="font-thin text-t-primaria">
+                        {treino?.nome}
+                    </Texto>
+
+                    {adicionar && (
+                        <BotaoPrimario 
+                            icone={Plus}
+                            texto="Adcionar a Ficha"
+                            onClick={() => adicionar(treino)}
+                            tipo="vazio"
+                        />
+                    )}
+
+                    {opcoesBotao.map(opcao => (
                         <OpcoesMenuPlayer
                             nome={opcao.titulo}
-                            tipo={opcao.tipo}
                             onclick={opcao.onclick}
+                            icone={opcao.icone}
+                            corIcone={opcao.corIcone}
+                        />
+                    ))}
+
+                    {opcoesLink.map(opcao => (
+                        <OpcoesMenuPlayer
+                            nome={opcao.titulo}
+                            to={opcao.to}
                             icone={opcao.icone}
                             corIcone={opcao.corIcone}
                         />

@@ -6,21 +6,6 @@ import { CriarTreinoPayload } from './TreinoProps'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 
-export type exerciciosInfo = {
-    id: number
-    repsMin: number,
-    repsMax: number,
-    sets: number,
-    peso: number,
-    descanso: number
-}
-
-export type ReqTreinoProps = {
-    nome: string,
-    descricao?: string,
-    exercicios: exerciciosInfo[]
-}
-
 const useCriarTreino = () => {
 
     const navigate = useNavigate()

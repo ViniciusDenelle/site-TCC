@@ -2,25 +2,19 @@ import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 import api from '../../../../api'
 import { AxiosError, AxiosResponse } from 'axios'
+import { Ficha } from './FichaProps'
 
-export type ResFichaProps = {
-    nome: string,
-    descricao?: string,
-    diasSemana: number[],
-    divisao: string[]
-}
-
-const useShowFicha = (id: number) => {
+const useShowFicha = (id: number|string) => {
     
     const {
-        data: dadosFicha,
+        data: ficha,
         isSuccess,
         isError,
         isPending
     } = useQuery<
         AxiosResponse,
         AxiosError,
-        ResFichaProps
+        Ficha
     >({
         queryKey: ['ficha', id],
         queryFn: async () => {
@@ -31,7 +25,7 @@ const useShowFicha = (id: number) => {
     })
 
   return {
-        dadosFicha,
+        ficha,
         isSuccess,
         isError,
         isPending

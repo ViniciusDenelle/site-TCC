@@ -131,7 +131,7 @@ const Cadastro: React.FC = () => {
                                 já possui uma conta?
                                 <LinkSimples
                                     to="/login"
-                                    classeAdicional="text-destaque-s-escuro">
+                                    className="text-destaque-s-escuro">
                                     login
                                 </LinkSimples>
                             </div>

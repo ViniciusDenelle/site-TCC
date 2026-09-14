@@ -11,6 +11,7 @@ import { Mail } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '../../api'
 import toast from 'react-hot-toast'
+import Texto from '../../componentes/organizacao/Texto'
 
 const Login = () => {
 
@@ -109,15 +110,16 @@ const Login = () => {
             <div className='flex flex-col items-center gap-1'>
 
                 <div className='flex flex-col sm:flex-row items-center gap-2'>
-                    <p>não tem uma conta?</p>
-                    <LinkSimples classeAdcional='text-destaque-s-escuro 
-                    font-semibold' to='/cadastro'>
+                    <Texto tipo='subtexto'>
+                        Não possui uma conta?
+                    </Texto>
+                    <LinkSimples className='text-indigo-500 font-semibold' to='/cadastro'>
                         crie uma conta
                     </LinkSimples>
                 </div>
 
                 <LinkSimples
-                    classeAdcional='text-destaque-s-escuro 
+                    className='text-destaque-s-escuro 
                   font-semibold'
                     to='recuperar-senha'>
                     esqueceu sua senha?

@@ -24,7 +24,7 @@ const CriarPrincipal = () => {
             `
         },
         {
-            to: '/dashboard/treino/criarFicha',
+            to: '/dashboard/treino/criarFichaTreino',
             legenda: 'Criar Ficha',
             icone: Clipboard,
             texto: `
