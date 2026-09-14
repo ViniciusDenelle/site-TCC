@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Treino extends Model
 {
@@ -52,5 +53,10 @@ class Treino extends Model
     public function sessoes()
     {
         return $this->hasMany(SessaoTreino::class);
+    }
+
+    public function divisao(): BelongsTo
+    {
+        return $this->belongsTo(DivisaoFicha::class, 'divisao_ficha_id');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\NivelTreino;
+use App\Filters\TreinoFilter;
 use App\Http\Requests\TreinoRequest;
 use App\Http\Resources\TreinoResource;
 use App\Models\FichaTreino;
@@ -61,12 +62,14 @@ class TreinoController extends Controller
         return new TreinoResource($treino->load(['exercicios.exercicio', 'nivel', 'foco', 'tipo']));
     }
 
-    public function fetch()
+    public function fetch(Request $request)
     {
-        $treinos = Treino::with(['exercicios.exercicio'])
+        $treinos = TreinoFilter::apply(
+            Treino::query()->with(['exercicios.exercicio', 'foco', 'nivel', 'tipo']),
+            $request
+        )
             ->latest()
-            ->limit(5)
-            ->get();
+            ->paginate(10);
 
         return TreinoResource::collection($treinos);
     }

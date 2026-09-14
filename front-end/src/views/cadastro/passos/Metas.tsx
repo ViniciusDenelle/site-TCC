@@ -83,7 +83,7 @@ const Metas = () => {
             <Texto className='text-t-primaria'>
               Tempo estimado
             </Texto>
-            <p className="flex sm:flex-col text-base">
+            <div className="flex sm:flex-col text-base">
               <Texto tipo='subtexto'>
                 {tempoEstimado.meses} meses e
               </Texto>
@@ -91,7 +91,7 @@ const Metas = () => {
               <Texto tipo='subtexto'>
                 {tempoEstimado.semanas} semanas
               </Texto>
-            </p>
+            </div>
             
             <Texto tipo='subtexto'>
                 previsão: {tempoEstimado.previsao}
@@ -126,7 +126,8 @@ const Metas = () => {
   <div className="flex flex-col gap-4 w-full mb-5">
     <div className="relative flex justify-between items-center w-full">
       <Texto tipo='subtitulo' className='text-t-primaria'>
-        meta de peso:
+          meta de peso:
+      </Texto>
         <div className="absolute -bottom-3 left-0 flex items-center text-xs gap-1">
           <Texto 
             tipo='subtexto' 
@@ -139,7 +140,6 @@ const Metas = () => {
             <span className="text-red-500">{erroPesoFinal}</span>
           )}
         </div>
-      </Texto>
 
       <InputSimples
         classeAdicional="w-20"

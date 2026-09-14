@@ -1,4 +1,4 @@
-import { Cog, Dumbbell, Plus, PlusCircle, Trash } from "lucide-react"
+import { Cog, Dumbbell, Plus, PlusCircle, Settings, Trash } from "lucide-react"
 import { AnimatePresence, motion, PanInfo } from "motion/react"
 import useExecutarTreinoContext from "../../../../contextos/ExecutarTreinoContexto"
 import CardHorizontal from "../../../CardHorizontal"
@@ -11,18 +11,22 @@ import BotaoPrimario from "../../../botoes/BotaoPrimario"
 import { ResTreinoProps } from "../../../../logicas/dashboard/treinos/treino/TreinoProps"
 import useDeleteTreino from "../../../../logicas/dashboard/treinos/treino/DeleteTreino"
 import MenuLayout from "./MenuLayout"
+import BotaoTerciario from "../../../botoes/BotaoTerciario"
 
 type MenuTreinoProps = {
     menuAberto: boolean
     setMenuAberto: Dispatch<SetStateAction<boolean>>
     treino: ResTreinoProps
+    adicionar?: (treino:ResTreinoProps) => void 
 }
 
 const MenuTreino = ({
     treino,
     menuAberto,
-    setMenuAberto
+    setMenuAberto,
+    adicionar
 }: MenuTreinoProps) => {
+
 
     const {
         deletarTreino
@@ -41,7 +45,7 @@ const MenuTreino = ({
     const opcoesLink = [
         {
             titulo: 'Atualizar treino',
-            icone: Cog,
+            icone: Settings,
             to:  `atualizarTreino/${treino.id}`,
             corIcone: 'text-blue-500'
         }
@@ -55,6 +59,19 @@ const MenuTreino = ({
                     setMenuAberto={setMenuAberto}
                 >   
                     {/* opcoes */}
+
+                    <Texto tipo="titulo" className="font-thin text-t-primaria">
+                        {treino?.nome}
+                    </Texto>
+
+                    {adicionar && (
+                        <BotaoPrimario 
+                            icone={Plus}
+                            texto="Adcionar a Ficha"
+                            onClick={() => adicionar(treino)}
+                            tipo="vazio"
+                        />
+                    )}
 
                     {opcoesBotao.map(opcao => (
                         <OpcoesMenuPlayer

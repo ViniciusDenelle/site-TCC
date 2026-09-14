@@ -38,7 +38,7 @@ const SecaoBadges = ({
                         key={item.id}
                         texto={item.nome}
                         classeAdicional={`p-1
-                        bg-base-secundaria/80 rounded-lg ${isSelecionado(item.id) && `bg-base-terciaria`}`}
+                        bg-base-terciaria/80 rounded-lg ${isSelecionado(item.id) && `bg-base-secundaria`}`}
                         onClick={() => onToggle(item)}
                         textoClassName={isSelecionado(item.id) && `text-destaque-p-escuro`}
                     />
@@ -52,7 +52,7 @@ const SecaoBadges = ({
                     icone={expandido ? Minus : Plus}
                 />
             )}
-            {error.length > 0 && (
+            {error?.length > 0 && (
                 <Texto tipo="subtexto" className="text-red-500">
                     *{error}
                 </Texto>

@@ -4,19 +4,19 @@ import { NavLink } from 'react-router-dom'
 interface LinkSimplesProps {
   children: ReactNode
   to: string
-  classeAdicional?: string
+  className?: string
 }
 
 const LinkSimples = ({
   children,
   to,
-  classeAdicional
+  className
 }: LinkSimplesProps) => {
 
   const classeBase = `
     hover:text-destaque-p-escuro
     transition-colors duration-200 font-medium
-    ${classeAdicional ?? ''}
+    ${className ?? ''}
   `
 
   const classeAtivo = `

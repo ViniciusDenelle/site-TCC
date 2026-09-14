@@ -1,56 +1,38 @@
-import { useMutation } from '@tanstack/react-query'
-import { AxiosError, AxiosResponse } from 'axios'
-import React from 'react'
-import api from '../../../../api'
+import { useMutation } from '@tanstack/react-query';
+import { AxiosError, AxiosResponse } from 'axios';
+import api from '../../../../api';
+import toast from 'react-hot-toast';
 
-export type ReqFichaProps = {
-    nome: string,
-    diasSemana: number[]
-    divisao: string[]
-    descricao: string
-}
+type DiaSemana = 'segunda' | 'terca' | 'quarta' | 'quinta' | 'sexta' | 'sabado' | 'domingo';
 
-const useCriarFicha = ({
-    nome, 
-    diasSemana, 
-    divisao, 
-    descricao
-} : ReqFichaProps) => {
-    
+export type FichaPayload = {
+    nome: string;
+    descricao: string;
+    divisoes: { nome: string; treino_ids: number[] }[];
+    dias: Partial<Record<DiaSemana, number | null>>;
+};
+
+const useCriarFicha = () => {
     const {
         mutate,
         isSuccess,
         isError,
-        isPending
-    } = useMutation<
-        AxiosResponse,
-        AxiosError,
-        ReqFichaProps
-    >({
-        mutationFn: (dados:ReqFichaProps) => api.post('/dashboard/treinos/ficha', dados),
-        onSuccess: (dados) => {
-            console.log(dados)
+        isPending,
+        error,
+    } = useMutation<AxiosResponse, AxiosError, FichaPayload>({
+        mutationFn: (dados: FichaPayload) => api.post('/dashboard/treinos/ficha', dados),
+        onSuccess: (res) => {
+            toast.success('Ficha criada com sucesso')
         },
-        onError: (error) => {
-            console.log(error)
-        }
-    })
-
-    const criarFichaHandler = () => {
-        mutate({
-            nome: nome,
-            diasSemana: diasSemana,
-            divisao: divisao,
-            descricao: descricao
-        })
-    }
+    });
 
     return {
+        mutate,
         isSuccess,
         isError,
         isPending,
-        criarFichaHandler
-    }
-}
+        error,
+    };
+};
 
-export default useCriarFicha
+export default useCriarFicha;
