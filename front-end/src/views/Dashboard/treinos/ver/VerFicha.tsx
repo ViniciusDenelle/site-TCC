@@ -13,7 +13,7 @@ const nomesDias: Record<DiaSemana, string> = {
     quinta: 'Quinta', sexta: 'Sexta', sabado: 'Sábado',
 };
 
-const ordemDias: DiaSemana[] = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
+const ordemDias: DiaSemana[] = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', ];
 
 const VerFicha = () => {
     const { id } = useParams<{ id: string }>();
@@ -22,6 +22,8 @@ const VerFicha = () => {
         isPending, 
         isError 
     } = useShowFicha(id);
+
+    console.log(ficha)
 
     const [menuAberto, setMenuAberto] = useState<boolean>(false)
 

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { DiaSemana } from './FichaProps';
 
-const diasDaSemana: DiaSemana[] = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
+const diasDaSemana: DiaSemana[] = [ 'domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado',];
 
 type DivisaoBase = {
     id: string;
