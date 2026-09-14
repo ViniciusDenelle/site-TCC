@@ -1,248 +1,600 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+
 import BotaoPrimario from '../../../componentes/botoes/BotaoPrimario';
-import { CardMetrica, CardCarga, CardMedicao } from '../../../componentes/CardProgresso';
-import useFetchProgresso from '../../../logicas/Progresso/useFetchProgresso'; // Importe seu Hook
+
+import {
+  CardMetrica,
+  CardMedicao,
+} from '../../../componentes/CardProgresso';
+import GraficoSeries from '../../../componentes/graficos/GraficoSeries';
+import GraficoPeso from '../../../componentes/graficos/GraficoPeso';
+import GraficoFrequencia from '../../../componentes/graficos/GraficoFrequencia';
+import GraficoCargas from '../../../componentes/graficos/GraficoCargas';
+
+// =====================================================
+// DADOS SIMULADOS (MOCK) - Substituto temporário da API
+// =====================================================
+const DADOS_MOCK = {
+  tendencia: 'Tendência de Queda',
+  metaPeso: 75,
+  inicioPeso: 88,
+  mediaSemanal: '81.5 kg',
+  totalTreinos: 18,
+  metricas: [
+    { id: 1, titulo: 'Peso Atual', valor: '81.2 kg', variacao: '-0.8 kg', icon: 'scale' },
+    { id: 2, titulo: 'Gordura Corporal', valor: '18.4%', variacao: '-1.2%', icon: 'activity' },
+    { id: 3, titulo: 'Massa Magra', valor: '66.2 kg', variacao: '+0.5 kg', icon: 'biceps' },
+    { id: 4, titulo: 'Treinos no Mês', valor: '18 treinos', variacao: '+2', icon: 'calendar' },
+    { id: 5, titulo: 'Carga Máxima', valor: '110 kg', variacao: '+5 kg', icon: 'dumbbell' },
+  ],
+  historicoPeso: [
+    { data: '01/05', peso: 85.0 },
+    { data: '08/05', peso: 84.2 },
+    { data: '15/05', peso: 83.5 },
+    { data: '22/05', peso: 82.8 },
+    { data: '29/05', peso: 82.0 },
+    { data: '05/06', peso: 81.2 },
+  ],
+  frequenciaSemanal: [
+    { dia: 'Seg', treinos: 1 },
+    { dia: 'Ter', treinos: 1 },
+    { dia: 'Qua', treinos: 0 },
+    { dia: 'Qui', treinos: 1 },
+    { dia: 'Sex', treinos: 1 },
+    { dia: 'Sáb', treinos: 1 },
+    { dia: 'Dom', treinos: 0 },
+  ],
+  exerciciosCargas: [
+    { nome: 'Supino Reto', cargaInicial: 60, cargaAtual: 80 },
+    { nome: 'Agachamento Livre', cargaInicial: 80, cargaAtual: 110 },
+    { nome: 'Levantamento Terra', cargaInicial: 90, cargaAtual: 120 },
+    { nome: 'Desenvolvimento', cargaInicial: 30, cargaAtual: 45 },
+  ],
+  exerciciosSeries: [
+    { nome: 'Supino Reto', seriesIniciais: 3, seriesAtuais: 4 },
+    { nome: 'Agachamento Livre', seriesIniciais: 3, seriesAtuais: 5 },
+    { nome: 'Levantamento Terra', seriesIniciais: 2, seriesAtuais: 4 },
+    { nome: 'Desenvolvimento', seriesIniciais: 3, seriesAtuais: 4 },
+  ],
+  registrosMedidas: [
+    { id: 1, nome: 'Tórax / Peitoral', valor: '102 cm', data: '10/05/2026', periodo: 'Último mês' },
+    { id: 2, nome: 'Braço Direito', valor: '38.5 cm', data: '10/05/2026', periodo: 'Último mês' },
+    { id: 3, nome: 'Cintura', valor: '82 cm', data: '10/05/2026', periodo: 'Último mês' },
+    { id: 4, nome: 'Coxa Direita', valor: '58 cm', data: '10/05/2026', periodo: 'Último mês' },
+  ],
+};
 
 const Progresso = () => {
   const [periodoSelecionado, setPeriodoSelecionado] = useState('Mes Atual');
-  const [barAtiva, setBarAtiva] = useState<number | null>(null);
 
-  // Busca de dados reais da API
-  const { data, isLoading, isError } = useFetchProgresso();
+  const data = DADOS_MOCK;
 
-  if (isLoading) {
-    return (
-      <div className="w-full min-h-screen flex items-center justify-center bg-base-primaria text-t-primaria">
-        <p className="animate-pulse font-semibold">Carregando métricas e gráficos...</p>
-      </div>
-    );
-  }
+  /* =====================================================
+     DESESTRUTURAÇÃO DOS DADOS
+  ===================================================== */
+  const {
+    metricas = [],
+    historicoPeso = [],
+    frequenciaSemanal = [],
+    exerciciosCargas = [],
+    exerciciosSeries = [],
+    registrosMedidas = [],
+  } = data;
 
-  if (isError || !data) {
-    return (
-      <div className="w-full min-h-screen flex items-center justify-center bg-base-primaria text-red-400">
-        <p>Erro ao carregar as informações do progresso.</p>
-      </div>
-    );
-  }
-
-  // Desestruturação dos dados recebidos da API
-  const { metricas = [], historicoPeso = [], frequenciaSemanal = [], exercicios = [], registrosMedidas = [] } = data;
-
-  // Cálculo para escala automática do gráfico de peso
-  const pesosValores = historicoPeso.map((item: any) => item.valor);
-  const minPeso = Math.min(...pesosValores, 50);
-  const maxPeso = Math.max(...pesosValores, 100);
-
+  /* =====================================================
+     ANIMAÇÃO
+  ===================================================== */
   const containerVariantes = {
-    hidden: { opacity: 0, y: 15 },
+    hidden: {
+      opacity: 0,
+      y: 15,
+    },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { staggerChildren: 0.08, duration: 0.4 }
-    }
+      transition: {
+        staggerChildren: 0.08,
+        duration: 0.4,
+      },
+    },
   };
 
   return (
-    <motion.div 
+    <motion.main
       initial="hidden"
       animate="visible"
       variants={containerVariantes}
-      className="w-full min-h-screen flex flex-col gap-8 px-6 md:px-12 py-8 pb-20 bg-base-primaria transition-colors duration-300"
+      className="
+        w-full
+        min-h-screen
+        flex
+        flex-col
+        gap-6
+        px-4
+        md:px-8
+        lg:px-12
+        py-8
+        pb-20
+        bg-base-primaria
+      "
     >
-      {/* CABEÇALHO */}
-      <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-base-quaternaria/60 pb-6">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-extrabold text-t-primaria tracking-tight">Seu Progresso</h1>
-          <p className="text-sm text-t-secundaria/80">
-            Acompanhe sua evolução física, métricas de carga e constância.
+      {/* =====================================================
+          CABEÇALHO
+      ===================================================== */}
+      <section className="
+        flex
+        flex-col
+        md:flex-row
+        md:items-center
+        md:justify-between
+        gap-5
+        border-b
+        border-base-quaternaria/60
+        pb-6
+      ">
+        <div>
+          <p className="
+            text-xs
+            uppercase
+            tracking-[0.2em]
+            text-destaque-p-medio
+            font-bold
+            mb-2
+          ">
+            Dashboard
+          </p>
+
+          <h1 className="
+            text-3xl
+            md:text-4xl
+            font-extrabold
+            text-t-primaria
+            tracking-tight
+          ">
+            Seu Progresso
+          </h1>
+
+          <p className="
+            text-sm
+            text-t-secundaria/80
+            mt-2
+            max-w-xl
+          ">
+            Acompanhe sua evolução, frequência e desempenho nos treinos.
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
-          <select 
+        <div className="
+          flex
+          flex-col
+          sm:flex-row
+          gap-3
+        ">
+          <select
             value={periodoSelecionado}
             onChange={(e) => setPeriodoSelecionado(e.target.value)}
-            className="px-4 py-2.5 bg-base-terciaria ring-1 ring-base-quaternaria/80 hover:ring-destaque-p-medio rounded-xl text-sm font-semibold text-t-primaria outline-none cursor-pointer transition-all shadow-sm"
+            className="
+              px-4
+              py-2.5
+              bg-base-terciaria
+              ring-1
+              ring-base-quaternaria/80
+              hover:ring-destaque-p-medio
+              rounded-xl
+              text-sm
+              font-semibold
+              text-t-primaria
+              outline-none
+              cursor-pointer
+              transition-all
+            "
           >
             <option value="Mes Atual">Últimos 30 dias</option>
             <option value="Trimestre">Últimos 3 meses</option>
-            <option value="Ano">Ano Atual</option>
+            <option value="Ano">Ano atual</option>
           </select>
 
           <BotaoPrimario tipo="cheio" texto="+ Adicionar Medição" />
         </div>
-      </div>
+      </section>
 
-      {/* METRICAS DINÂMICAS */}
-      <motion.div variants={containerVariantes} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 w-full">
-        {metricas.map((m: any) => (
-          <CardMetrica 
-            key={m.id} 
-            titulo={m.titulo} 
-            valor={m.valor} 
-            variacao={m.variacao} 
-            icon={m.icon} 
+      {/* =====================================================
+          MÉTRICAS
+      ===================================================== */}
+      <section className="
+        grid
+        grid-cols-1
+        sm:grid-cols-2
+        lg:grid-cols-3
+        xl:grid-cols-5
+        gap-4
+      ">
+        {metricas.map((metrica: any) => (
+          <CardMetrica
+            key={metrica.id}
+            titulo={metrica.titulo}
+            valor={metrica.valor}
+            variacao={metrica.variacao}
+            icon={metrica.icon}
           />
         ))}
-      </motion.div>
+      </section>
 
-      {/* GRÁFICOS E RESUMOS */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
-        
-        {/* EVOLUÇÃO DE PESO DINÂMICA */}
-        <div className="lg:col-span-2 p-6 bg-base-terciaria/30 ring-1 ring-base-quaternaria rounded-3xl flex flex-col gap-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-t-primaria flex items-center gap-2">
-              <span>📈</span> Evolução do Peso & Composição
-            </h2>
-            <span className="text-xs font-semibold text-green-400 bg-green-500/10 px-3 py-1 rounded-full ring-1 ring-green-500/20">
+      {/* =====================================================
+          PESO + FREQUÊNCIA
+      ===================================================== */}
+      <section className="
+        grid
+        grid-cols-1
+        xl:grid-cols-3
+        gap-6
+      ">
+        {/* PESO */}
+        <div className="
+          xl:col-span-2
+          p-5
+          md:p-6
+          bg-base-terciaria/30
+          ring-1
+          ring-base-quaternaria
+          rounded-3xl
+          shadow-sm
+        ">
+          <div className="
+            flex
+            flex-col
+            sm:flex-row
+            sm:items-center
+            sm:justify-between
+            gap-3
+            mb-4
+          ">
+            <div>
+              <p className="
+                text-xs
+                uppercase
+                tracking-wider
+                text-t-secundaria/70
+              ">
+                Evolução
+              </p>
+
+              <h2 className="
+                text-lg
+                font-bold
+                text-t-primaria
+              ">
+                Peso ao longo do tempo
+              </h2>
+            </div>
+
+            <span className="
+              w-fit
+              text-xs
+              font-semibold
+              text-green-400
+              bg-green-500/10
+              px-3
+              py-1.5
+              rounded-full
+              ring-1
+              ring-green-500/20
+            ">
               {data.tendencia || 'Tendência de Queda'}
             </span>
           </div>
 
-          <div className="w-full h-56 bg-black/20 rounded-2xl ring-1 ring-white/5 flex flex-col justify-between p-5 relative overflow-hidden">
-            <div className="flex justify-between items-center text-xs text-t-secundaria/70 border-b border-white/5 pb-2">
-              <span>Meta: <b className="text-t-primaria">{data.metaPeso || 0} kg</b></span>
-              <span>Início: <b className="text-t-primaria">{data.inicioPeso || 0} kg</b></span>
+          <div className="
+            flex
+            flex-wrap
+            gap-6
+            mb-2
+            text-xs
+          ">
+            <div>
+              <span className="text-t-secundaria/70">Meta</span>
+              <p className="text-sm font-bold text-t-primaria">
+                {data.metaPeso || 0} kg
+              </p>
             </div>
 
-            {/* BARRAS DO GRÁFICO DINÂMICAS */}
-            <div className="w-full flex items-end justify-between gap-3 h-32 px-2 relative z-10">
-              {historicoPeso.map((item: any, i: number) => {
-                const alturaPorcentagem = ((item.valor - minPeso) / (maxPeso - minPeso || 1)) * 80 + 20;
-
-                return (
-                  <div 
-                    key={item.id || i} 
-                    className="relative flex flex-col items-center flex-1 h-full justify-end group cursor-pointer"
-                    onMouseEnter={() => setBarAtiva(i)}
-                    onMouseLeave={() => setBarAtiva(null)}
-                  >
-                    <AnimatePresence>
-                      {barAtiva === i && (
-                        <motion.div 
-                          initial={{ opacity: 0, y: 4 }} 
-                          animate={{ opacity: 1, y: -24 }} 
-                          exit={{ opacity: 0, y: 4 }}
-                          transition={{ duration: 0.15 }}
-                          className="absolute text-[10px] font-bold text-t-primaria bg-base-terciaria ring-1 ring-base-quaternaria px-2 py-0.5 rounded-md shadow-md z-20 pointer-events-none whitespace-nowrap"
-                        >
-                          {item.valor} kg
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    <div className="w-full h-full flex items-end">
-                      <motion.div 
-                        initial={{ height: 0 }}
-                        animate={{ height: `${alturaPorcentagem}%` }}
-                        transition={{ duration: 0.8, delay: i * 0.05 }}
-                        className="w-full bg-destaque-p-medio/80 group-hover:bg-destaque-p-medio rounded-t-md transition-colors" 
-                      />
-                    </div>
-
-                    <span className="text-[10px] text-t-secundaria/70 font-mono mt-2 group-hover:text-t-primaria transition-colors">
-                      {item.data}
-                    </span>
-                  </div>
-                );
-              })}
+            <div>
+              <span className="text-t-secundaria/70">Peso inicial</span>
+              <p className="text-sm font-bold text-t-primaria">
+                {data.inicioPeso || 0} kg
+              </p>
             </div>
 
-            <div className="flex items-center justify-between border-t border-white/5 pt-2 text-xs text-t-secundaria/80">
-              <span>Média semanal: <b className="text-t-primaria">{data.mediaSemanal || '0 kg'}</b></span>
-              <span className="text-destaque-p-medio font-semibold">Dentro da Meta 🔥</span>
+            <div>
+              <span className="text-t-secundaria/70">Média semanal</span>
+              <p className="text-sm font-bold text-t-primaria">
+                {data.mediaSemanal || '0 kg'}
+              </p>
             </div>
           </div>
+
+          {historicoPeso.length > 0 ? (
+            <GraficoPeso dados={historicoPeso} />
+          ) : (
+            <div className="
+              h-[300px]
+              flex
+              items-center
+              justify-center
+              text-sm
+              text-t-secundaria/60
+            ">
+              Nenhum registro de peso encontrado.
+            </div>
+          )}
         </div>
 
-        {/* FREQUÊNCIA DE TREINOS DINÂMICA */}
-        <div className="p-6 bg-base-terciaria/30 ring-1 ring-base-quaternaria rounded-3xl flex flex-col justify-between gap-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-t-primaria flex items-center gap-2">
-              <span>📊</span> Consistência
-            </h2>
-            <span className="text-xs text-t-secundaria/70">Por semana</span>
+        {/* FREQUÊNCIA */}
+        <div className="
+          p-5
+          md:p-6
+          bg-base-terciaria/30
+          ring-1
+          ring-base-quaternaria
+          rounded-3xl
+          shadow-sm
+        ">
+          <div className="
+            flex
+            items-start
+            justify-between
+            mb-3
+          ">
+            <div>
+              <p className="
+                text-xs
+                uppercase
+                tracking-wider
+                text-t-secundaria/70
+              ">
+                Constância
+              </p>
+
+              <h2 className="
+                text-lg
+                font-bold
+                text-t-primaria
+              ">
+                Frequência semanal
+              </h2>
+            </div>
+
+            <span className="text-xs text-t-secundaria/60">
+              Por semana
+            </span>
           </div>
 
-          <div className="flex items-end justify-between gap-3 h-36 pt-2 px-1">
-            {frequenciaSemanal.map((s: any, idx: number) => (
-              <div key={s.id || idx} className="flex flex-col items-center gap-2 flex-1 h-full justify-end group">
-                <span className="text-xs font-bold text-destaque-p-medio group-hover:scale-110 transition-transform">{s.qtd}</span>
-                <div className="w-full bg-base-quaternaria/40 rounded-xl h-24 flex items-end overflow-hidden p-1">
-                  <motion.div 
-                    initial={{ height: 0 }}
-                    animate={{ height: `${(s.qtd / (s.max || 5)) * 100}%` }}
-                    transition={{ duration: 0.8, delay: idx * 0.1 }}
-                    className="w-full bg-destaque-p-medio rounded-lg transition-colors" 
-                  />
-                </div>
-                <span className="text-[10px] font-medium text-t-secundaria/70">{s.dia}</span>
-              </div>
-            ))}
-          </div>
+          {frequenciaSemanal.length > 0 ? (
+            <GraficoFrequencia dados={frequenciaSemanal} />
+          ) : (
+            <div className="
+              h-[280px]
+              flex
+              items-center
+              justify-center
+              text-sm
+              text-t-secundaria/60
+            ">
+              Nenhum treino registrado.
+            </div>
+          )}
 
-          <div className="p-3 bg-black/20 rounded-2xl ring-1 ring-white/5 text-center text-xs text-t-secundaria/80">
-            Total acumulado: <b className="text-t-primaria">{data.totalTreinos || 0} treinos concluídos</b>
+          <div className="
+            mt-2
+            p-3
+            bg-black/20
+            rounded-2xl
+            ring-1
+            ring-white/5
+            text-center
+          ">
+            <span className="text-xs text-t-secundaria/70">
+              Total acumulado
+            </span>
+
+            <p className="text-sm font-bold text-t-primaria mt-1">
+              {data.totalTreinos || 0} treinos concluídos
+            </p>
           </div>
         </div>
+      </section>
 
-      </div>
+      {/* =====================================================
+          CARGAS E SÉRIES (LADO A LADO)
+      ===================================================== */}
+      <section className="
+        grid
+        grid-cols-1
+        lg:grid-cols-2
+        gap-6
+      ">
+        {/* CARGAS */}
+        <div className="
+          p-5
+          md:p-6
+          bg-base-terciaria/30
+          ring-1
+          ring-base-quaternaria
+          rounded-3xl
+          shadow-sm
+        ">
+          <div className="
+            flex
+            items-center
+            justify-between
+            mb-4
+          ">
+            <div>
+              <p className="
+                text-xs
+                uppercase
+                tracking-wider
+                text-t-secundaria/70
+              ">
+                Performance
+              </p>
 
-      {/* SEÇÃO INFERIOR */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
-        
-        {/* EVOLUÇÃO DE CARGAS DINÂMICA */}
-        <div className="p-6 bg-base-terciaria/30 ring-1 ring-base-quaternaria rounded-3xl flex flex-col gap-4 shadow-sm">
-          <div className="flex items-center justify-between mb-1">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-t-primaria flex items-center gap-2">
-              <span>🏋️</span> Evolução de Cargas
-            </h2>
-            <button className="text-xs text-destaque-p-medio hover:underline transition-colors font-bold">VER TODOS</button>
+              <h2 className="text-lg font-bold text-t-primaria">
+                Evolução das cargas
+              </h2>
+            </div>
+
+            <button className="
+              text-xs
+              text-destaque-p-medio
+              hover:underline
+              font-bold
+            ">
+              VER TODOS
+            </button>
           </div>
 
-          <div className="flex flex-col gap-3">
-            {exercicios.map((ex: any) => (
-              <CardCarga 
-                key={ex.id} 
-                nome={ex.nome} 
-                carga={ex.carga} 
-                evolucao={ex.evolucao} 
-                porcentagem={ex.porcentagem} 
-              />
-            ))}
-          </div>
+          {exerciciosCargas.length > 0 ? (
+            <GraficoCargas dados={exerciciosCargas} />
+          ) : (
+            <div className="
+              h-[300px]
+              flex
+              items-center
+              justify-center
+              text-sm
+              text-t-secundaria/60
+            ">
+              Nenhum exercício registrado.
+            </div>
+          )}
         </div>
 
-        {/* ÚLTIMAS MEDIÇÕES DINÂMICAS */}
-        <div className="p-6 bg-base-terciaria/30 ring-1 ring-base-quaternaria rounded-3xl flex flex-col justify-between gap-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-t-primaria flex items-center gap-2">
-              <span>📏</span> Últimas Medições
+        {/* SÉRIES */}
+        <div className="
+          p-5
+          md:p-6
+          bg-base-terciaria/30
+          ring-1
+          ring-base-quaternaria
+          rounded-3xl
+          shadow-sm
+        ">
+          <div className="
+            flex
+            items-center
+            justify-between
+            mb-4
+          ">
+            <div>
+              <p className="
+                text-xs
+                uppercase
+                tracking-wider
+                text-t-secundaria/70
+              ">
+                Volume
+              </p>
+
+              <h2 className="text-lg font-bold text-t-primaria">
+                Evolução do nº de séries
+              </h2>
+            </div>
+
+            <button className="
+              text-xs
+              text-destaque-p-medio
+              hover:underline
+              font-bold
+            ">
+              VER TODOS
+            </button>
+          </div>
+
+          {exerciciosSeries.length > 0 ? (
+            <GraficoSeries dados={exerciciosSeries} />
+          ) : (
+            <div className="
+              h-[300px]
+              flex
+              items-center
+              justify-center
+              text-sm
+              text-t-secundaria/60
+            ">
+              Nenhum registro de série.
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* =====================================================
+          MEDIÇÕES
+      ===================================================== */}
+      <section className="
+        p-5
+        md:p-6
+        bg-base-terciaria/30
+        ring-1
+        ring-base-quaternaria
+        rounded-3xl
+        shadow-sm
+      ">
+        <div className="
+          flex
+          items-center
+          justify-between
+          mb-5
+        ">
+          <div>
+            <p className="
+              text-xs
+              uppercase
+              tracking-wider
+              text-t-secundaria/70
+            ">
+              Avaliação física
+            </p>
+
+            <h2 className="text-lg font-bold text-t-primaria">
+              Últimas medições
             </h2>
-            <button className="text-xs text-destaque-p-medio hover:underline transition-colors font-bold">HISTÓRICO</button>
           </div>
 
-          <div className="flex flex-col gap-3">
-            {registrosMedidas.map((item: any) => (
-              <CardMedicao 
-                key={item.id} 
-                nome={item.nome} 
-                valor={item.valor} 
-                data={item.data} 
-                periodo={item.periodo} 
-              />
-            ))}
-          </div>
+          <button className="
+            text-xs
+            text-destaque-p-medio
+            hover:underline
+            font-bold
+          ">
+            HISTÓRICO
+          </button>
+        </div>
 
+        <div className="
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          xl:grid-cols-4
+          gap-3
+        ">
+          {registrosMedidas.map((item: any) => (
+            <CardMedicao
+              key={item.id}
+              nome={item.nome}
+              valor={item.valor}
+              data={item.data}
+              periodo={item.periodo}
+            />
+          ))}
+        </div>
+
+        <div className="mt-5 flex justify-end">
           <BotaoPrimario tipo="vazio" texto="Nova Avaliação Física" />
         </div>
-
-      </div>
-
-    </motion.div>
+      </section>
+    </motion.main>
   );
 };
 
