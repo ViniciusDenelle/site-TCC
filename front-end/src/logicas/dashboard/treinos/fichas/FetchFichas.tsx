@@ -2,26 +2,24 @@ import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 import api from '../../../../api'
 import { AxiosError, AxiosResponse } from 'axios'
-import { ResFichaProps } from './ShowFicha'
+import { Ficha } from './FichaProps'
 
-const useFetchFichas = () => {
+const useFetchFichas = (nome:string, pagina:number) => {
 
     const {
         data: fichas,
         isSuccess,
         isError,
         isPending
-    } = useQuery<
-        AxiosResponse,
-        AxiosError,
-        ResFichaProps
-    >({
-        queryKey: ['fichas'],
+    } = useQuery({
+        queryKey: ['fichas', nome, pagina],
         queryFn: async () => {
-            const res = await api.get('dashboard/treinos/ficha')
-            return res.data.data
-        }
-    })
+            const res = await api.get('/dashboard/treinos/ficha', {
+                params: { nome: nome || undefined, page: pagina },
+            });
+            return res.data;
+        },
+    });
 
   return {
         fichas,

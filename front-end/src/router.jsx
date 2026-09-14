@@ -29,6 +29,7 @@ import EditarExercicio from './views/Dashboard/treinos/editar/EditarExercicio'
 import CriarFichaTreino from './views/Dashboard/treinos/criar/CriarFicha'
 import VerFicha from './views/Dashboard/treinos/ver/VerFicha'
 import EditarFicha from './views/Dashboard/treinos/editar/EditarFicha'
+import PesquisarFichas from './views/Dashboard/treinos/pesquisar/PesquisarFichas'
 
 const Rota = createBrowserRouter(
     createRoutesFromElements(
@@ -68,6 +69,7 @@ const Rota = createBrowserRouter(
                     <Route path='pesquisar' element={<PesquisarTreinosLayout />}>
                         <Route path='exercicio' element={<PesquisarExercicios />} />
                         <Route path='treino' element={<PesquisarTreino />} />
+                        <Route path='ficha' element={<PesquisarFichas />} />
                     </Route>
 
                     {/* Criação */}

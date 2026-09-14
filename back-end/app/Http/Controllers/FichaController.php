@@ -6,6 +6,8 @@ use App\Http\Requests\CreateFichaRequest;
 use App\Http\Resources\FichaResource;
 use App\Models\FichaTreino;
 use Illuminate\Support\Facades\DB;
+use App\Filters\FichaFilter;
+use Illuminate\Http\Request;
 
 class FichaController extends Controller
 {
@@ -58,9 +60,14 @@ class FichaController extends Controller
         return new FichaResource($ficha->load(['dias.treino', 'divisoes.treinos']));
     }
 
-    public function fetch()
+    public function fetch(Request $request)
     {
-        $fichas = FichaTreino::with(['dias.treino', 'divisoes.treinos'])
+        $fichas = FichaFilter::apply(
+            FichaTreino::query()
+                ->where('user_id', $request->user()->id)
+                ->with(['dias.treino', 'divisoes.treinos']),
+            $request
+        )
             ->latest()
             ->paginate(10);
 

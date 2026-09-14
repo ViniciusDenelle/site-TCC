@@ -100,6 +100,8 @@ const EditarFicha = () => {
         return <Texto>Ficha não encontrada.</Texto>;
     }
 
+    console.log(montarPayload())
+
     return (
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
             <div className="min-h-screen w-full">
