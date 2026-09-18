@@ -1,4 +1,5 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import useTema from '@/contextos/TemaContexto'
 
 import SaudacaoUsuario from '../../componentes/treino/SaudacaoUsuario'
 import ProgressoSemana from '../../componentes/treino/ProgressoSemana'
@@ -31,6 +32,12 @@ const destaques: Destaque[] = [
 ]
 
 export default function Treinos() {
+    const { temaAtual, formatarCor } = useTema()
+
+    const cores = {
+        fundo: formatarCor(temaAtual['--color-base-primaria'], 1),
+        titulo: formatarCor(temaAtual['--color-t-primaria'], 1),
+    }
 
     const nomeUsuario = 'Guilherme'
 
@@ -47,7 +54,7 @@ export default function Treinos() {
 
     return (
         <ScrollView
-            style={styles.container}
+            style={[styles.container, { backgroundColor: cores.fundo }]}
             contentContainerStyle={styles.content}
             showsVerticalScrollIndicator={false}
         >
@@ -71,7 +78,7 @@ export default function Treinos() {
 
             <View style={styles.section}>
 
-                <Text style={styles.sectionTitle}>
+                <Text style={[styles.sectionTitle, { color: cores.titulo }]}>
                     Treino de Hoje
                 </Text>
 
@@ -94,7 +101,7 @@ export default function Treinos() {
 
             <View style={styles.section}>
 
-                <Text style={styles.sectionTitle}>
+                <Text style={[styles.sectionTitle, { color: cores.titulo }]}>
                     Resumo da Semana
                 </Text>
 
@@ -111,7 +118,7 @@ export default function Treinos() {
 
             <View style={styles.section}>
 
-                <Text style={styles.sectionTitle}>
+                <Text style={[styles.sectionTitle, { color: cores.titulo }]}>
                     Acesso Rápido
                 </Text>
 
@@ -136,7 +143,7 @@ export default function Treinos() {
 
             <View style={styles.section}>
 
-                <Text style={styles.sectionTitle}>
+                <Text style={[styles.sectionTitle, { color: cores.titulo }]}>
                     Destaques
                 </Text>
 
@@ -160,7 +167,6 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#000000',
     },
 
     content: {
@@ -173,7 +179,6 @@ const styles = StyleSheet.create({
     },
 
     sectionTitle: {
-        color: '#ffffff',
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 12,

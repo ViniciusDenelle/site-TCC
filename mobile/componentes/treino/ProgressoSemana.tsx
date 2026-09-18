@@ -54,6 +54,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#ff5b5b',
         borderRadius: 3,
     },
+        const { temaAtual, formatarCor } = useTema()
+
+        const cores = {
+            trilha: formatarCor(temaAtual['--color-base-quaternaria'], 1),
+            progresso: formatarCor(temaAtual['--color-destaque-p-medio'], 1),
+            texto: formatarCor(temaAtual['--color-t-terciaria'], 1),
+        }
 
     quote: {
         color: '#636366',
@@ -61,4 +68,5 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginTop: 10,
     },
+                            { backgroundColor: cores.progresso },
 })

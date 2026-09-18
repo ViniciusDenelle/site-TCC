@@ -1,15 +1,19 @@
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import useTema from '@/contextos/TemaContexto';
 
 export default function TabsLayout() {
+    const { tema, temaAtual, formatarCor } = useTema()
+
     return (
         <Tabs
+            key={tema}
             screenOptions={{
                 headerShown: false,
 
                 tabBarStyle: {
-                    backgroundColor: '#121214',
-                    borderTopColor: '#1c1c1e',
+                    backgroundColor: formatarCor(temaAtual['--color-base-secundaria'], 1),
+                    borderTopColor: formatarCor(temaAtual['--color-base-quaternaria'], 1),
                     height: 65,
                     paddingTop: 5,
                     paddingBottom: 8,
@@ -20,8 +24,8 @@ export default function TabsLayout() {
                     fontWeight: '600',
                 },
 
-                tabBarActiveTintColor: '#ff5b5b',
-                tabBarInactiveTintColor: '#8e8e93',
+                tabBarActiveTintColor: formatarCor(temaAtual['--color-destaque-p-medio'], 1),
+                tabBarInactiveTintColor: formatarCor(temaAtual['--color-contraste-secundaria'], 1),
             }}
         >
 

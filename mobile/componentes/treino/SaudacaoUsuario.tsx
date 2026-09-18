@@ -1,14 +1,22 @@
 import { StyleSheet, Text, View } from 'react-native'
+import useTema from '@/contextos/TemaContexto'
 
+    const { temaAtual, formatarCor } = useTema()
+
+    const cores = {
+        texto: formatarCor(temaAtual['--color-t-primaria'], 1),
+        destaque: formatarCor(temaAtual['--color-destaque-p-medio'], 1),
+        meta: formatarCor(temaAtual['--color-t-terciaria'], 1),
+    }
 type Props = {
     nome: string
     metaAtual: number
     metaTotal: number
-}
-
+            <Text style={[styles.greeting, { color: cores.texto }]}>
+                Olá, <Text style={[styles.highlight, { color: cores.destaque }]}>{nome}</Text>
 export default function SaudacaoUsuario({
     nome,
-    metaAtual,
+            <Text style={[styles.meta, { color: cores.meta }]}>
     metaTotal,
 }: Props) {
 
@@ -35,15 +43,12 @@ const styles = StyleSheet.create({
     greeting: {
         fontSize: 26,
         fontWeight: 'bold',
-        color: '#ffffff',
     },
 
     highlight: {
-        color: '#ff5b5b',
     },
 
     meta: {
-        color: '#aeaeb2',
         fontSize: 14,
         marginTop: 8,
     },

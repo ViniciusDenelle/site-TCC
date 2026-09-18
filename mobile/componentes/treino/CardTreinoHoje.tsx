@@ -29,69 +29,82 @@ export default function CardTreinoHoje({
 
     return (
         <View style={styles.card}>
+    const { temaAtual, formatarCor } = useTema()
 
-            <View style={styles.header}>
-
-                <View style={styles.info}>
+    const cores = {
+        card: formatarCor(temaAtual['--color-base-secundaria'], 1),
+        texto: formatarCor(temaAtual['--color-t-primaria'], 1),
+        subtitulo: formatarCor(temaAtual['--color-t-terciaria'], 1),
+        botao: formatarCor(temaAtual['--color-destaque-p-medio'], 1),
+        borda: formatarCor(temaAtual['--color-base-quaternaria'], 1),
+        icone: formatarCor(temaAtual['--color-destaque-p-medio'], 1),
+        uso: formatarCor(temaAtual['--color-t-terciaria'], 1),
+        exercicios: formatarCor(temaAtual['--color-t-primaria'], 1),
+    }
+        icone: formatarCor(temaAtual['--color-destaque-p-medio'], 1),
+        uso: formatarCor(temaAtual['--color-t-terciaria'], 1),
+        <View style={[styles.card, { backgroundColor: cores.card }]}>
+    }
                     <Text style={styles.title}>
                         {nome}
-                    </Text>
+        <View style={[styles.card, { backgroundColor: cores.card }]}>
 
                     <Text style={styles.subtitle}>
                         📋 {nivel} • ⏱️ {duracao}
+                    <Text style={[styles.title, { color: cores.texto }]}>
                     </Text>
                 </View>
 
-                <TouchableOpacity
+                    <Text style={[styles.subtitle, { color: cores.subtitulo }]}>
                     style={styles.button}
-                    onPress={onPress}
+                    style={[styles.button, { backgroundColor: cores.botao }]}
                 >
                     <Text style={styles.buttonText}>
                         Começar
-                    </Text>
+                    style={[styles.button, { backgroundColor: cores.botao }]}
                 </TouchableOpacity>
 
             </View>
 
             {usadoHa && (
-                <Text style={styles.used}>
+                <Text style={[styles.used, { color: cores.uso }]}>
                     Usado há {usadoHa}
                 </Text>
             )}
-
+                <Text style={[styles.used, { color: cores.uso }]}>
             <View style={styles.footer}>
 
                 <Text style={styles.exerciseCount}>
                     {quantidadeExercicios} exercícios
                 </Text>
 
-                <View style={styles.icons}>
+                    <Text style={[styles.exerciseCount, { color: cores.exercicios }]}>
 
                     <View style={styles.icon}>
                         <MaterialCommunityIcons
                             name="arm-flex"
                             size={14}
-                            color="#ffbe59"
+                            color={cores.icone}
                         />
                     </View>
 
-                    <View style={styles.icon}>
+                            color={cores.icone}
                         <MaterialCommunityIcons
                             name="arm-flex"
                             size={14}
-                            color="#ffbe59"
+                            color={cores.icone}
                         />
                     </View>
 
-                    <View style={styles.icon}>
+                            color={cores.icone}
                         <MaterialCommunityIcons
                             name="run"
                             size={14}
-                            color="#ffbe59"
+                            color={cores.icone}
                         />
                     </View>
 
-                </View>
+                            color={cores.icone}
 
             </View>
 
@@ -102,7 +115,7 @@ export default function CardTreinoHoje({
 const styles = StyleSheet.create({
     card: {
         backgroundColor: '#1c1c1e',
-        borderRadius: 16,
+        backgroundColor: '#1c1c1e', // This line remains unchanged
         padding: 16,
     },
 
@@ -110,30 +123,26 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
-    },
+        color: '#ffffff', // This line remains unchanged
 
     info: {
         flex: 1,
-        marginRight: 10,
     },
 
     title: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#ffffff',
     },
 
     subtitle: {
         color: '#8e8e93',
         fontSize: 13,
         marginTop: 4,
-    },
 
     button: {
         backgroundColor: '#ff5b5b',
         paddingHorizontal: 14,
         paddingVertical: 8,
-        borderRadius: 20,
     },
 
     buttonText: {

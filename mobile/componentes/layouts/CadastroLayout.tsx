@@ -2,12 +2,10 @@ import useTema from "@/contextos/TemaContexto"
 import { vars } from "nativewind"
 import { ReactNode } from "react"
 import { View } from "react-native"
-import { LinearGradient } from 'expo-linear-gradient'
 import BotaoPrimario from "../BotaoPrimario"
-import { BlurView } from 'expo-blur'
 import BotaoSecundario from "../BotaoSecundario"
 import { useRouter } from "expo-router"
-import { ArrowLeft, Lightbulb } from "lucide-react-native"
+import { ArrowLeft } from "lucide-react-native"
 
  
  type props = {
@@ -25,23 +23,11 @@ import { ArrowLeft, Lightbulb } from "lucide-react-native"
     const { 
         temaAtual, 
         formatarCor,
-        tema,
-        setTema
     } = useTema()
-
-    const coresGradiente = {
-        destaque: temaAtual['--color-destaque-p-escuro'],
-        base: temaAtual['--color-base-primaria'], 
-    }
 
     const router = useRouter()
 
     const corIcone = formatarCor(temaAtual['--color-t-secundaria'], 1)
-
-    function mudarTema() {
-        const novoTema = tema === 'light' ? 'dark' : 'light'
-        setTema(novoTema)
-    }
 
     function handleProximo()
     {
@@ -67,13 +53,6 @@ import { ArrowLeft, Lightbulb } from "lucide-react-native"
                                 >
                                 <ArrowLeft color={corIcone} size={16} />
                                 </BotaoSecundario>
-
-                                <BotaoPrimario
-                                    className="border-transparent"
-                                    onPress={mudarTema}
-                                >
-                                    <Lightbulb color={corIcone}/>
-                                </BotaoPrimario>
 
                             </View>
 
