@@ -25,9 +25,9 @@ export default function Login() {
     // LOGIN GOOGLE
     const redirectUri = AuthSession.makeRedirectUri();
 
-console.log(redirectUri);
+    console.log(redirectUri);
 
-const [request, response, promptAsync] =
+    const [request, response, promptAsync] =
     Google.useAuthRequest({
         clientId:
             '336196057614-6sevla699fpvhcvcj45pjmh8avh48247.apps.googleusercontent.com',
@@ -61,41 +61,44 @@ const [request, response, promptAsync] =
                         user.picture
                     */
 
-                    router.push("/");
+                    // Mudado para substituir a rota e empurrar para as Abas
+                    router.replace("/(tabs)");
                 });
         }
 
     }, [response]);
 
-     const loginMutation = useMutation({
-            mutationFn: async ({ email, senha } : {email: string, senha: string}) => {
-                const res = await api.post('/login', {
-                    email,
-                    senha,
-                })
-                return res.data
-            },
-            onSuccess: data => {
-                console.log(data)
-            },
-            onError: error => {
-                console.log(error)
-            }
-        })
-    
-        function cadastro() {
-            loginMutation.mutate({
+    const loginMutation = useMutation({
+        mutationFn: async ({ email, senha } : {email: string, senha: string}) => {
+            const res = await api.post('/login', {
                 email,
                 senha,
             })
+            return res.data
+        },
+        onSuccess: data => {
+            console.log("LOGIN COM SUCESSO:", data);
+            
+            // Redireciona para as abas limpando o histórico para ele não voltar ao login com o botão "Voltar"
+            router.replace("/(tabs)");
+        },
+        onError: error => {
+            console.log(error)
         }
+    })
+    
+    function cadastro() {
+        loginMutation.mutate({
+            email,
+            senha,
+        })
+    }
 
     return (
 
         <View
             style={vars(temaAtual)}
-            className="flex-1 bg-base-primaria 
-            justify-center items-center px-4"
+            className="flex-1 bg-base-primaria justify-center items-center px-4"
         >
 
             <View
@@ -273,4 +276,3 @@ const [request, response, promptAsync] =
         </View>
     );
 }
-
