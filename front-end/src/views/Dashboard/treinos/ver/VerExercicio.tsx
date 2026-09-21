@@ -6,6 +6,7 @@ import BotaoTerciario from '../../../../componentes/botoes/BotaoTerciario';
 import useShowExercicio from '../../../../logicas/dashboard/treinos/exercicios/ShowExercicio';
 import MenuPlayer from '../../../../componentes/dashboard/player/menus/MenuPlayer';
 import { useState } from 'react';
+import useFetchUsuario from '../../../../logicas/usuario/FetchUsuario';
 
 const VerExercicio = () => {
     const { id } = useParams<{ id: string }>();
@@ -17,19 +18,22 @@ const VerExercicio = () => {
         error
     } = useShowExercicio(id)
 
+    const {
+        dadosUsuario
+    } = useFetchUsuario()
+
     const musculosPrimarios = exercicio?.musculos.filter(m => m.tipo.id === 1);
     const musculosSecundarios = exercicio?.musculos.filter(m => m.tipo.id === 2);
 
     const [menuAberto, setMenuAberto] = useState<boolean>(false)
 
     if (isPending) {
-        return <Texto className="animate-pulse">carregando exercício...</Texto>;
+        return <Texto className="animate-pulse m-auto">carregando exercício...</Texto>;
     }
 
     if (isError || !exercicio) {
         return <Texto>Exercício não encontrado.</Texto>;
     }
-
 
     return (
         <div className="min-h-screen w-full">
@@ -42,7 +46,7 @@ const VerExercicio = () => {
 
             <div className="container mx-auto flex flex-col gap-3">
 
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-1">
                     <BotaoTerciario
                         icone={EllipsisVertical}
                         tamanhoIcone="md"
@@ -56,6 +60,10 @@ const VerExercicio = () => {
 
                     <Texto tipo="titulo" className="text-t-primaria">
                         {exercicio.nome}
+                    </Texto>
+
+                    <Texto tipo="subtitulo" className="text-t-secundaria">
+                        criador: {exercicio.criador?.id === dadosUsuario.id  ? 'você' : exercicio.criador?.nome}
                     </Texto>
 
                     {exercicio.descricao && (

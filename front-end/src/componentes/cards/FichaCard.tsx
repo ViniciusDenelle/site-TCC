@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { Ficha, TreinoResumido } from "../../logicas/dashboard/treinos/fichas/FichaProps"
 import CardHorizontal from "../CardHorizontal"
 import { Layers } from "lucide-react"
@@ -18,6 +18,8 @@ const FichaCard = ({ ficha }: { ficha: Ficha }) => {
         (item): item is TreinoResumido => item !== null
     ).length;
 
+    const navigate = useNavigate()
+
     
     return (
             <CardHorizontal className='hover:bg-base-terciaria/60 h-80 w-full'>
@@ -30,9 +32,9 @@ const FichaCard = ({ ficha }: { ficha: Ficha }) => {
                                 {ficha.nome}
                             </Texto>
 
-                            <div className="flex flex-row gap-1 text-xs items-center flex-wrap">
-
-                            </div>
+                            <Texto tipo='titulo' className='font-medium text-t-primaria'>
+                                {ficha.criador.nome}
+                            </Texto>
                         </div>
 
                     </div>
@@ -57,7 +59,7 @@ const FichaCard = ({ ficha }: { ficha: Ficha }) => {
 
                     <CardHorizontal>
                         <div className="flex flex-col divide-y divide-t-terciaria/50">
-                            <div className="flex flex-col py-2">
+                            <div className="flex flex-col py-2  max-h-25 overflow-auto">
                                 <Texto tipo="subtitulo"  className="text-destaque-p-medio">
                                     Divisões:
                                 </Texto>
@@ -70,6 +72,7 @@ const FichaCard = ({ ficha }: { ficha: Ficha }) => {
                                                 {divisao.treinos.map(treino => treino.nome)}
                                             </Texto>
                                         </div>
+                                        
                                     </>
                                 ))}
                             </div>
@@ -88,6 +91,7 @@ const FichaCard = ({ ficha }: { ficha: Ficha }) => {
 
                     <BotaoPrimario
                         texto="vizualizar ficha"
+                        onClick={() => navigate(`/dashboard/treino/verFicha/${ficha.id}`)}
                     />
 
                 </div>

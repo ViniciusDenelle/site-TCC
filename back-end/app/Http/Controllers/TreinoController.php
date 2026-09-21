@@ -25,10 +25,11 @@ class TreinoController extends Controller
         $dadosCalculados = $calculadora->calcularTempoECalorias($dados['exercicios'], $request->user());
         $nivelTreino = $calculadoraDeNivel->calcularNivelPorPontuacao($dados['exercicios']);
 
-        $treino = DB::transaction(function () use ($dados, $dadosCalculados, $nivelTreino) {
+        $treino = DB::transaction(function () use ($dados, $dadosCalculados, $nivelTreino, $request) {
 
             // 2. Cria o registro principal do Treino
             $treino = Treino::create([
+                'user_id' => $request->user()->id,
                 'nome' => $dados['nome'],
                 'descricao' => $dados['descricao'] ?? null,
                 'foco_id' => $dados['foco_id'],
@@ -51,7 +52,13 @@ class TreinoController extends Controller
                 ]);
             }
 
-            return $treino->load(['exercicios.exercicio', 'nivel', 'foco', 'tipo']);
+            return $treino->load([
+                'criador',
+                'exercicios.exercicio', 
+                'nivel', 
+                'foco', 
+                'tipo'
+            ]);
         });
 
         return new TreinoResource($treino);
@@ -65,7 +72,13 @@ class TreinoController extends Controller
     public function fetch(Request $request)
     {
         $treinos = TreinoFilter::apply(
-            Treino::query()->with(['exercicios.exercicio', 'foco', 'nivel', 'tipo']),
+            Treino::query()->with([
+                'criador',
+                'exercicios.exercicio', 
+                'nivel', 
+                'foco', 
+                'tipo'
+            ]),
             $request
         )
             ->latest()

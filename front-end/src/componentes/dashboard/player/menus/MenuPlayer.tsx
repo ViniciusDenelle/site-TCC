@@ -5,11 +5,12 @@ import CardHorizontal from "../../../CardHorizontal"
 import Texto from "../../../organizacao/Texto"
 import WrapperIcone from "../../../organizacao/WrapperIcone"
 import OpcoesMenuPlayer from "../../../organizacao/opcoesMenuPlayer"
-import { Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction, useMemo } from "react"
 import { ResExercicioProps } from "../../../../logicas/dashboard/treinos/exercicios/FetchExercicio"
 import BotaoPrimario from "../../../botoes/BotaoPrimario"
 import MenuLayout from "./MenuLayout"
 import useDeleteExercicio from "../../../../logicas/dashboard/treinos/exercicios/DeleteExercicio"
+import useFetchUsuario from "../../../../logicas/usuario/FetchUsuario"
 
 type MenuPlayerProps = {
     menuAberto: boolean,
@@ -34,12 +35,14 @@ const MenuPlayer = ({
             nome: 'Atualizar exercicio',
             icone: Settings,
             to: '/dashboard/treino/editarExercicio/' + exercicio?.id,
-            corIcone: 'text-blue-500'
+            corIcone: 'text-blue-500',
+            publico: false
         },
         {
             nome: 'Adcionar a treino já existente',
             tipo: 'link',
-            icone: PlusCircle
+            icone: PlusCircle,
+            publico: true
         },
     ]
 
@@ -49,9 +52,18 @@ const MenuPlayer = ({
             icone: Trash,
             tipo: 'botao',
             onclick: () => deletarExercicio(),
-            corIcone: 'text-red-600'
+            corIcone: 'text-red-600',
+            publico: false
         }
     ]
+
+    const {
+        dadosUsuario
+    } = useFetchUsuario()
+
+    const ExercicioProrio = useMemo(() => {
+        return exercicio.criador.id === dadosUsuario.id
+    }, [])
 
     return (
         <AnimatePresence>
@@ -91,25 +103,52 @@ const MenuPlayer = ({
                         />
                     )}
                     {opcoesBotao.map(opcao => (
-                        <OpcoesMenuPlayer 
-                            tipo="botao"
-                            nome={opcao.nome}
-                            onclick={opcao.onclick}
-                            corIcone={opcao.corIcone}
-                            icone={opcao.icone}
-                        />
+                        !opcao.publico ? (
+                            ExercicioProrio && (
+                                <OpcoesMenuPlayer
+                                    tipo="botao"
+                                    nome={opcao.nome}
+                                    onclick={opcao.onclick}
+                                    corIcone={opcao.corIcone}
+                                    icone={opcao.icone}
+                                />
+                            )
+                        ) : (
+                            <OpcoesMenuPlayer
+                                tipo="botao"
+                                nome={opcao.nome}
+                                onclick={opcao.onclick}
+                                corIcone={opcao.corIcone}
+                                icone={opcao.icone}
+                            />
+                        )
                     ))}
+
+
                     {opcoesLink.map(opcao => (
-                        <OpcoesMenuPlayer
-                            key={opcao.nome}
-                            to={opcao.to}
-                            icone={opcao.icone}
-                            nome={opcao.nome}
-                            tipo="link"
-                            corIcone={opcao.corIcone ?? ''}
-                        />
-                    ))} 
-                    
+                        !opcao.publico ? (
+                            ExercicioProrio && (
+                                <OpcoesMenuPlayer
+                                    key={opcao.nome}
+                                    to={opcao.to}
+                                    icone={opcao.icone}
+                                    nome={opcao.nome}
+                                    tipo="link"
+                                    corIcone={opcao.corIcone ?? ''}
+                                />
+                            )
+                        ) : (
+                            <OpcoesMenuPlayer
+                                key={opcao.nome}
+                                to={opcao.to}
+                                icone={opcao.icone}
+                                nome={opcao.nome}
+                                tipo="link"
+                                corIcone={opcao.corIcone ?? ''}
+                            />
+                        )
+                    ))}
+
                 </MenuLayout>
             )}
         </AnimatePresence>

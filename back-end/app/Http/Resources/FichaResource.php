@@ -13,6 +13,12 @@ class FichaResource extends JsonResource
             'id' => $this->id,
             'nome' => $this->nome,
             'descricao' => $this->descricao,
+            'criador'   => $this->when($this->relationLoaded('criador'), function () {
+                return $this->criador ? [
+                    'id'   => $this->criador->id,
+                    'nome' => $this->criador->name,
+                ] : null;
+            }),
 
             'divisoes' => $this->whenLoaded('divisoes', fn () =>
                 $this->divisoes->sortBy('ordem')->values()->map(fn ($divisao) => [

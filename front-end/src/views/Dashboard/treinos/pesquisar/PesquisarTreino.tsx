@@ -77,6 +77,8 @@ const PesquisarTreinos = ({
     pagina
   );
 
+  console.log(treinos)
+
   return (
     <div className="flex flex-col gap-2 w-full">
 

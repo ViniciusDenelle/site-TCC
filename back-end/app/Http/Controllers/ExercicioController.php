@@ -16,8 +16,9 @@ class ExercicioController extends Controller
     {
         $dados = $request->validated();
 
-        $exercicio = DB::transaction(function () use ($dados) {
+        $exercicio = DB::transaction(function () use ($dados, $request) {
             $exercicio = Exercicio::create([
+                'user_id' => $request->user()->id,
                 'nome' => $dados['nome'],
                 'descricao' => $dados['descricao'] ?? null,
                 'tipo_id' => $dados['tipo_id'],
@@ -36,18 +37,26 @@ class ExercicioController extends Controller
             return $exercicio;
         });
 
-        return new ExercicioResource($exercicio->load('tipo', 'nivel', 'foco', 'musculos', 'equipamentos'));
+        return new ExercicioResource($exercicio->load(
+            'criador',
+            'tipo', 
+            'nivel', 
+            'foco', 
+            'musculos', 
+            'equipamentos'
+        ));
     }
 
     public function show(Exercicio $exercicio)
     {
-        return new ExercicioResource($exercicio->load('tipo', 'nivel', 'foco', 'musculos', 'equipamentos'));
+        return new ExercicioResource($exercicio->load('criador', 'tipo', 'nivel', 'foco', 'musculos', 'equipamentos'));
     }
 
     public function fetch(Request $request)
     {
         $query = Exercicio::query()
             ->with([
+                'criador',
                 'nivel',
                 'foco',
                 'tipo',

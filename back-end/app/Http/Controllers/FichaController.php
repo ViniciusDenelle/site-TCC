@@ -27,6 +27,7 @@ class FichaController extends Controller
 
         $ficha = DB::transaction(function () use ($dados, $request) {
             $ficha = FichaTreino::create([
+                'user_id' => $request->user()->id,
                 'nome' => $dados['nome'],
                 'descricao' => $dados['descricao'] ?? null,
                 'user_id' => $request->user()->id,
@@ -52,7 +53,11 @@ class FichaController extends Controller
             return $ficha;
         });
 
-        return new FichaResource($ficha->load(['dias.treino', 'divisoes.treinos']));
+        return new FichaResource($ficha->load([
+            'criador',
+            'dias.treino', 
+            'divisoes.treinos'
+        ]));
     }
 
     public function show(FichaTreino $ficha)
@@ -65,11 +70,15 @@ class FichaController extends Controller
         $fichas = FichaFilter::apply(
             FichaTreino::query()
                 ->where('user_id', $request->user()->id)
-                ->with(['dias.treino', 'divisoes.treinos']),
+                ->with([
+                    'criador',
+                    'dias.treino', 
+                    'divisoes.treinos'
+                ]),
             $request
         )
             ->latest()
-            ->paginate(10);
+            ->paginate(5);
 
         return FichaResource::collection($fichas);
     }
