@@ -7,12 +7,26 @@ use Illuminate\Database\Eloquent\Model;
 class Exercicio extends Model
 {
     protected $fillable = [
+        'user_id',
         'nome',
         'descricao',
         'tipo_id',
         'nivel_id',
         'foco_id',
     ];
+
+    public function criador()
+    {
+        return $this->belongsTo(User::class, 'user_id')->withDefault([
+            'nome' => 'Criador Desconhecido',
+        ]);
+    }
+
+    public function usuariosQueAdicionaram()
+    {
+        return $this->belongsToMany(User::class, 'exercicio_usuario', 'exercicio_id', 'user_id')
+            ->withTimestamps();
+    }
 
     public function tipo()
     {

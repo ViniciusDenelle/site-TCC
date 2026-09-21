@@ -9,10 +9,21 @@ class FichaTreino extends Model
 {
     protected $table = 'fichas_treino';
     protected $fillable = [
-        'nome', 
-        'descricao', 
-        'user_id'
+        'user_id',
+        'nome',
+        'descricao',
     ];
+
+    public function criador()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function usuariosQueAdicionaram()
+    {
+        return $this->belongsToMany(User::class, 'ficha_usuario', 'ficha_treino_id', 'user_id')
+            ->withTimestamps();
+    }
 
     public function divisoes(): HasMany
     {

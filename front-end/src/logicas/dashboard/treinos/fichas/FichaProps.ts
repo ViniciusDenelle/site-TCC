@@ -1,3 +1,5 @@
+import { Criador } from "../tipagens/GenericosProps";
+
 // tipagens/FichaTreino.ts
 export type DivisaoTemp = {
     id: string; // id temporário no client (uuid), não confundir com id do banco
@@ -31,6 +33,7 @@ export type DivisaoDaFicha = {
 export type Ficha = {
     id: number;
     nome: string;
+    criador: Criador
     descricao: string;
     divisoes: DivisaoDaFicha[];
     dias: Record<number, TreinoResumido | null>; // chave numérica (0-6), não nome

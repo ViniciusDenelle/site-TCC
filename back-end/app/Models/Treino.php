@@ -12,13 +12,23 @@ class Treino extends Model
         'foco_id',
         'tipo_id',
         'nivel_id',
-        'ficha_treino_id',
+        'divisao_ficha_id',
         'nome',
         'descricao',
         'tempo_medio',
-        'calorias_medias'
+        'calorias_medias',
     ];
 
+    public function criador()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function usuariosQueAdicionaram()
+    {
+        return $this->belongsToMany(User::class, 'treino_usuario', 'treino_id', 'user_id')
+            ->withTimestamps();
+    }
 
     public function foco()
     {

@@ -9,6 +9,7 @@ class UsuarioResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'nome'               => $this->name,
             'email'              => $this->email,
             // 'senha' removida por segurança!

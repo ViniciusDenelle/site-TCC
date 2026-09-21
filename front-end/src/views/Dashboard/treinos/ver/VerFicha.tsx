@@ -1,5 +1,5 @@
-import { useParams } from 'react-router-dom';
-import { Layers, EllipsisVertical } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Layers, EllipsisVertical, ArrowBigLeft, ArrowLeft } from 'lucide-react';
 import Texto from '../../../../componentes/organizacao/Texto';
 import CardHorizontal from '../../../../componentes/CardHorizontal';
 import BotaoTerciario from '../../../../componentes/botoes/BotaoTerciario';
@@ -26,6 +26,7 @@ const VerFicha = () => {
     console.log(ficha)
 
     const [menuAberto, setMenuAberto] = useState<boolean>(false)
+    const navigate = useNavigate()
 
     if (isPending) {
         return <Texto className="animate-pulse">carregando ficha...</Texto>;
@@ -47,12 +48,19 @@ const VerFicha = () => {
             <div className="container mx-auto flex flex-col gap-3">
 
                 <div className="flex flex-col gap-2">
-                    <BotaoTerciario
-                        icone={EllipsisVertical}
-                        tamanhoIcone="md"
-                        classeAdicional="ml-auto"
-                        onClick={() => setMenuAberto(true)}
-                    />
+                    <div className="flex justify-between items-center">
+                        <BotaoTerciario 
+                            icone={ArrowLeft}
+                            onClick={() => navigate(-1)}
+                            tamanhoIcone='md'
+                        />
+
+                        <BotaoTerciario
+                            icone={EllipsisVertical}
+                            tamanhoIcone="md"
+                            onClick={() => setMenuAberto(true)}
+                        />
+                    </div>
 
                     <div className="size-7/10 mx-auto flex items-center justify-center bg-base-terciaria rounded-lg p-2">
                         <Layers className="size-full" strokeWidth={1} />

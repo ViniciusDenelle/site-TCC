@@ -1,12 +1,13 @@
 import { NavLink } from "react-router-dom"
 
 import CardHorizontal from "./CardHorizontal"
-import { Dumbbell, Plus } from "lucide-react"
+import { ChartArea, ChartLine, Dumbbell, Plus } from "lucide-react"
 import { ResExercicioProps } from "../logicas/dashboard/treinos/exercicios/FetchExercicio"
 import Texto from "./organizacao/Texto"
 import BotaoPrimario from "./botoes/BotaoPrimario"
 import { useState } from "react"
 import MenuPlayer from "./dashboard/player/menus/MenuPlayer"
+import WrapperIcone from "./organizacao/WrapperIcone"
 
 
 
@@ -19,9 +20,9 @@ const ExercicioCard = ({
 }) => {
 
   const obterCorNivel = {
-    'Iniciante': 'border-green-600 text-green-600',
-    'Intermediário': 'border-yellow-600 text-yellow-600',
-    'Avançado': 'border-red-600 text-red-600'
+    'Iniciante': ' text-green-600',
+    'Intermediário': 'text-yellow-600',
+    'Avançado': 'text-red-600'
   }
 
   const corNivel = obterCorNivel[exercicio.nivel.nome]
@@ -60,11 +61,13 @@ const ExercicioCard = ({
               </div>
               <div className="flex flex-row gap-1 text-xs items-center">
 
-                <div className={`rounded-full border-2 px-1 opacity-80 ${corNivel}`}>
-                  <Texto tipo='subtexto'>
-                    {exercicio.nivel.nome}
-                  </Texto>
-                </div>
+                <WrapperIcone>
+                  <ChartLine className={corNivel}/>
+                </WrapperIcone>
+
+                <Texto className="text-t-secundaria">
+                  {exercicio.criador.nome}
+                </Texto>
 
                 {exercicio.musculos.map(musculo => (
                   musculo.tipo.nome === 'Primário' && (

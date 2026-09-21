@@ -3,6 +3,7 @@ import { AxiosError, AxiosResponse } from 'axios'
 import api from '../../../../api'
 import { Paginacao } from '../../../tipagens/PaginacaoProps'
 import { Filtros } from '../tipagens/FiltrosProps'
+import { Criador } from '../tipagens/GenericosProps'
 
 export type Badge = {
     id: number
@@ -22,6 +23,8 @@ export type ResExercicioProps = {
     id: number
     nome: string
     descricao: string | null
+
+    criador: Criador
 
     foco: Badge
     nivel: Badge

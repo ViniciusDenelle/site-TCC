@@ -33,8 +33,7 @@ const PesquisarFichas = () => {
 
             {isSuccess ? (
                 <>
-                    <div className="grid grid-rows-2 grid-flow-col 
-                    auto-cols-max overflow-x-auto gap-4 pb-2 shrink-0">
+                    <div className="flex flex-col gap-4 pb-2 shrink-0">
                         {fichas?.data.map((ficha: any) => (
                             <FichaCard key={ficha.id} ficha={ficha} />
                         ))}

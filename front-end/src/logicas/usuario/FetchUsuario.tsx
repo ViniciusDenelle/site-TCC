@@ -4,6 +4,7 @@ import api from "../../api"
 import { useEffect } from "react"
 
 export type RetornoUsuario = {
+    id: number
   nome: string
   email: string
   senha?: string
