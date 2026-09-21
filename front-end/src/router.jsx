@@ -30,6 +30,8 @@ import CriarFichaTreino from './views/Dashboard/treinos/criar/CriarFicha'
 import VerFicha from './views/Dashboard/treinos/ver/VerFicha'
 import EditarFicha from './views/Dashboard/treinos/editar/EditarFicha'
 import PesquisarFichas from './views/Dashboard/treinos/pesquisar/PesquisarFichas'
+import CriarDieta from './views/Dashboard/dieta/criar/CriarDieta'
+import VerDieta from './views/Dashboard/dieta/ver/VerDieta'
 
 const Rota = createBrowserRouter(
     createRoutesFromElements(
@@ -93,7 +95,9 @@ const Rota = createBrowserRouter(
                     <Route index element={<DashboardDietas />} />
                     <Route path='dieta' element={<div>Página Dieta</div>} />
                     <Route path='pesquisar' element={<div>Pesquisar Dietas</div>} />
-                    <Route path='criarPrincipal' element={<div>Criar Dieta</div>} />
+                    <Route path='criarPrincipal' element={<CriarDieta />} />
+
+                    <Route path='verDieta/:id' element={<VerDieta />} />
                 </Route>
 
                 {/* Redirecionamentos de segurança */}
