@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 
-import useShowTreino from '@/hooks/useShowTreino'
+import useShowTreino from '../treino/ShowTreino'
 
 import {
     ResExercicioTreinoProps,
@@ -10,7 +10,7 @@ import {
     SerieExecutada,
 } from '@/types/executarTreino'
 
-import useExecucaoExercicio from '@/hooks/useExecucaoExercicio'
+import useExecucaoExercicio from './useExecuçãoExercicio'
 
 const useExecucaoTreino = (id: number) => {
 

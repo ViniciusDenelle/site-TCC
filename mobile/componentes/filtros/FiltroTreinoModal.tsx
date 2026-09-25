@@ -7,7 +7,7 @@ import Texto from '../organizacao/Texto'
 import InputCheckbox from '../inputs/InputCheckbox'
 import BotaoPrimario from '../botoes/BotaoPrimario'
 import CardHorizontal from '../CardHorizontal'
-import { UseFiltrosProps } from '../../logicas/dashboard/treinos/tipagens/FiltrosProps'
+import { UseFiltrosProps } from '../../logicas/dashBoard/treinos/tipagens/FiltrosProps'
 
 type FiltroModalProps = UseFiltrosProps & {
     children: ReactNode

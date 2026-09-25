@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
+import useTema from '@/contextos/TemaContexto'
 
 type Props = {
     atual: number
@@ -10,26 +11,60 @@ export default function ProgressoSemana({
     total,
 }: Props) {
 
+    const { temaAtual, formatarCor } = useTema()
+
     const porcentagem =
         total > 0
             ? Math.min((atual / total) * 100, 100)
             : 0
 
+    const cores = {
+        trilha: formatarCor(
+            temaAtual['--color-base-quaternaria'],
+            1
+        ),
+
+        progresso: formatarCor(
+            temaAtual['--color-destaque-p-medio'],
+            1
+        ),
+
+        texto: formatarCor(
+            temaAtual['--color-t-terciaria'],
+            1
+        ),
+    }
+
     return (
         <View style={styles.container}>
 
-            <View style={styles.track}>
+            <View
+                style={[
+                    styles.track,
+                    {
+                        backgroundColor: cores.trilha,
+                    },
+                ]}
+            >
                 <View
                     style={[
                         styles.progress,
                         {
                             width: `${porcentagem}%`,
+                            backgroundColor: cores.progresso,
                         },
                     ]}
                 />
             </View>
 
-            <Text style={styles.quote}>
+            <Text
+                style={[
+                    styles.quote,
+                    {
+                        color: cores.texto,
+                    },
+                ]}
+            >
                 "Você se motiva agindo, o movimento traz energia."
             </Text>
 
@@ -44,29 +79,18 @@ const styles = StyleSheet.create({
 
     track: {
         height: 6,
-        backgroundColor: '#1c1c1e',
         borderRadius: 3,
         overflow: 'hidden',
     },
 
     progress: {
         height: '100%',
-        backgroundColor: '#ff5b5b',
         borderRadius: 3,
     },
-        const { temaAtual, formatarCor } = useTema()
-
-        const cores = {
-            trilha: formatarCor(temaAtual['--color-base-quaternaria'], 1),
-            progresso: formatarCor(temaAtual['--color-destaque-p-medio'], 1),
-            texto: formatarCor(temaAtual['--color-t-terciaria'], 1),
-        }
 
     quote: {
-        color: '#636366',
         fontStyle: 'italic',
         fontSize: 12,
         marginTop: 10,
     },
-                            { backgroundColor: cores.progresso },
 })
