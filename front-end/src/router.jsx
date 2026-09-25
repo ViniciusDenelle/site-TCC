@@ -32,6 +32,8 @@ import EditarFicha from './views/Dashboard/treinos/editar/EditarFicha'
 import PesquisarFichas from './views/Dashboard/treinos/pesquisar/PesquisarFichas'
 import CriarDieta from './views/Dashboard/dieta/criar/CriarDieta'
 import VerDieta from './views/Dashboard/dieta/ver/VerDieta'
+import MeusTreinosLayout from './layouts/dashboard/treino/MeusTreinosLayout'
+import BibliotecaTreinosHome from './views/Dashboard/treinos/meusTreinos/BibliotecaTreinosHome'
 
 const Rota = createBrowserRouter(
     createRoutesFromElements(
@@ -72,6 +74,10 @@ const Rota = createBrowserRouter(
                         <Route path='exercicio' element={<PesquisarExercicios />} />
                         <Route path='treino' element={<PesquisarTreino />} />
                         <Route path='ficha' element={<PesquisarFichas />} />
+                    </Route>
+
+                    <Route path='meusTreinos' element={<MeusTreinosLayout />}>
+                        <Route path='biblioteca' element={<BibliotecaTreinosHome />} />
                     </Route>
 
                     {/* Criação */}

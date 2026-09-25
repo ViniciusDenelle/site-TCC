@@ -33,7 +33,7 @@ const TreinosLayout = () => {
     },
     {
       nome: 'Meus Treinos',
-      to: '/',
+      to: 'meusTreinos',
     },
     {
       nome: 'Pesquisar',
