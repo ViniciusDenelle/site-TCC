@@ -53,8 +53,9 @@ const MeusTreinosLayout = () => {
 
     return (
         <>
-            <div className="absolute top-22 left-0 w-full">
-                <div className="container mx-auto px-4">
+        <div className="flex flex-col w-full">
+            <div className=" flex w-full">
+                <div className="container mx-auto">
                     <div className="flex flex-col gap-2">
                         <div className="flex justify-between">
                             <Texto tipo='titulo' className='text-t-primaria w-1/3'>
@@ -99,6 +100,8 @@ const MeusTreinosLayout = () => {
                 </div>
             </div>
             <Outlet />
+
+        </div>
 
         </>
     )

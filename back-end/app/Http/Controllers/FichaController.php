@@ -136,4 +136,34 @@ class FichaController extends Controller
 
         return response()->json(['mensagem' => 'ficha deletada com sucesso']);
     }
+
+    public function meusCriados(Request $request)
+    {
+        $fichas = $request->user()
+            ->fichasCriados()
+            ->with([
+                    'criador',
+                    'dias.treino', 
+                    'divisoes.treinos'
+                ])
+            ->latest()
+            ->paginate(10);
+
+        return TreinoResource::collection($fichas);
+    }
+
+    public function meusAdicionados(Request $request)
+    {
+        $fichas = $request->user()
+            ->fichasAdicionados()
+            ->with([
+                    'criador',
+                    'dias.treino', 
+                    'divisoes.treinos'
+                ])
+            ->latest()
+            ->paginate(10);
+
+        return TreinoResource::collection($fichas);
+    }
 }

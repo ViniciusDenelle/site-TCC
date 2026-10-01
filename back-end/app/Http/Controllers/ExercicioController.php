@@ -112,4 +112,49 @@ class ExercicioController extends Controller
             'message' => 'Exercício deletado com sucesso.'
         ]);
     }
+
+    public function meusCriados(Request $request)
+    {
+        $exercicios = $request->user()
+            ->exerciciosCriados()
+            ->with([
+                'criador',
+                'nivel',
+                'foco',
+                'tipo',
+                'musculos',
+                'equipamentos'
+            ])
+            ->latest()
+            ->paginate(10);
+
+        return ExercicioResource::collection($exercicios);
+    }
+
+    public function meusAdicionados(Request $request)
+    {
+        $exercicios = $request->user()
+            ->exerciciosAdicionados()
+            ->with([
+                'criador',
+                'nivel',
+                'foco',
+                'tipo',
+                'musculos',
+                'equipamentos'
+            ])
+            ->latest()
+            ->paginate(10);
+
+        return ExercicioResource::collection($exercicios);
+    }
+
+    public function adcionar(Exercicio $exercicio, Request $request)
+    {  
+        $request->user()->exerciciosAdicionados()->attach($exercicio);
+
+        return response()->json([
+            'message' => 'Exercício adicionado com sucesso.'
+        ]);
+    }
 }

@@ -42,89 +42,95 @@ import BibliotecaTreinosHome from './views/Dashboard/treinos/meusTreinos/Bibliot
 import SobreNos from './views/Dashboard/SobreNos'
 
 const Rota = createBrowserRouter(
-  createRoutesFromElements(
-    <>
-      {/* Home e Auth */}
-      <Route path='/' element={<LayoutDefault />}>
-        <Route index element={<App />} />
+    createRoutesFromElements(
+        <>
+            {/* Home e Auth */}
+            <Route path='/' element={<LayoutDefault />}>
+                <Route index element={<App />} />
 
-        <Route path="login" element={<LoginLayout />}>
-          <Route index element={<Login />} />
-          <Route path='recuperar-senha' element={<RecuperarSenha />} />
-        </Route>
+                <Route path="login" element={<LoginLayout />}>
+                    <Route index element={<Login />} />
+                    <Route path='recuperar-senha' element={<RecuperarSenha />} />
+                </Route>
 
-        <Route path="cadastro" element={<CadastroLayout />}>
-          <Route index element={<Cadastro />} />
-        </Route>
-      </Route>
+                <Route path="cadastro" element={<CadastroLayout />}>
+                    <Route index element={<Cadastro />} />
+                </Route>
+            </Route>
 
-      {/* Todas as páginas do Dashboard ficam DENTRO desta Route */}
-      <Route path='/dashboard' element={<DashboardLayout />}>
-        <Route index element={<Dashboard />} />
+            {/* Todas as páginas do Dashboard ficam DENTRO desta Route */}
+            <Route path='/dashboard' element={<DashboardLayout />}>
+                <Route index element={<Dashboard />} />
 
-        {/* Home e Perfil */}
-        <Route path='home' element={<Home />}>
-          <Route path='atualizarPerfil' element={<AtualizarPerfil />} />
-        </Route>
-        <Route path='perfil' element={<Home />} />
+                {/* Home e Perfil */}
+                <Route path='home' element={<Home />}>
+                    <Route path='atualizarPerfil' element={<AtualizarPerfil />} />
+                </Route>
+                <Route path='perfil' element={<Home />} />
 
-        {/* Sobre Nós */}
-        <Route path='sobre-nos' element={<SobreNos />} />
+                {/* Sobre Nós */}
+                <Route path='sobre-nos' element={<SobreNos />} />
 
-        {/* Progresso */}
-        <Route path='progresso' element={<Progresso />} />
+                {/* Progresso */}
+                <Route path='progresso' element={<Progresso />} />
 
-        {/* Rotas de Treino */}
-        <Route path='treino' element={<TreinosLayout />}>
-          <Route index element={<Treinos />} />
-          <Route path='exercicios' element={<Exercicios />} />
 
-          <Route path='pesquisar' element={<PesquisarTreinosLayout />}>
-            <Route path='exercicio' element={<PesquisarExercicios />} />
-            <Route path='treino' element={<PesquisarTreino />} />
-            <Route path='ficha' element={<PesquisarFichas />} />
-          </Route>
+                {/* Rotas de Treino */}
+                <Route path='treino' element={<TreinosLayout />}>
+                    <Route index element={<Treinos />} />
+                    <Route path='exercicios' element={<Exercicios />} />
+                    
+                    <Route path='meusTreinos' element={<MeusTreinosLayout />}>
+                        <Route index element={<BibliotecaTreinosHome />} />
+                    </Route>
 
-          <Route path='meusTreinos' element={<MeusTreinosLayout />}>
-            <Route path='biblioteca' element={<BibliotecaTreinosHome />} />
-          </Route>
 
-          <Route path='criarPrincipal' element={<CriarPrincipal />} />
-          <Route path='criarExercicio' element={<CriarExercicios />} />
-          <Route path='criarTreino' element={<CriarTreinos />} />
-          <Route path='criarFichaTreino' element={<CriarFichaTreino />} />
+                    <Route path='pesquisar' element={<PesquisarTreinosLayout />}>
+                        <Route path='exercicio' element={<PesquisarExercicios />} />
+                        <Route path='treino' element={<PesquisarTreino />} />
+                        <Route path='ficha' element={<PesquisarFichas />} />
+                    </Route>
 
-          <Route path='verTreino/:id' element={<VerTreino />} />
-          <Route path='verExercicio/:id' element={<VerExercicio />} />
-          <Route path='verFicha/:id' element={<VerFicha />} />
+                    <Route path='meusTreinos' element={<MeusTreinosLayout />}>
+                        <Route path='biblioteca' element={<BibliotecaTreinosHome />} />
+                    </Route>
 
-          <Route path='editarTreino/:id' element={<EditarTreino />} />
-          <Route path='editarExercicio/:id' element={<EditarExercicio />} />
-          <Route path='editarFicha/:id' element={<EditarFicha />} />
-        </Route>
+                    <Route path='criarPrincipal' element={<CriarPrincipal />} />
+                    <Route path='criarExercicio' element={<CriarExercicios />} />
+                    <Route path='criarTreino' element={<CriarTreinos />} />
+                    <Route path='criarFichaTreino' element={<CriarFichaTreino />} />
 
-        {/* Rotas de Dieta */}
-        <Route path='dieta' element={<DietaLayout />}>
-          <Route index element={<DashboardDietas />} />
-          <Route path='pesquisar' element={<div>Pesquisar Dietas</div>} />
-          
-          {/* Página com as duas opções (Criar Dieta / Criar Alimento) */}
-          <Route path='criarPrincipal' element={<CriarOpcoesDieta />} />
+                    <Route path='verTreino/:id' element={<VerTreino />} />
+                    <Route path='verExercicio/:id' element={<VerExercicio />} />
+                    <Route path='verFicha/:id' element={<VerFicha />} />
 
-          {/* Formulários específicos de criação */}
-          <Route path='CriarDieta' element={<CriarDieta />} />
-          <Route path='CriarAlimento' element={<CriarAlimento />} />
+                    <Route path='editarTreino/:id' element={<EditarTreino />} />
+                    <Route path='editarExercicio/:id' element={<EditarExercicio />} />
+                    <Route path='editarFicha/:id' element={<EditarFicha />} />
+                </Route>
 
-          <Route path='verDieta/:id' element={<VerDieta />} />
-        </Route>
-      </Route>
+                {/* Rotas de Dieta */}
+                <Route path='dieta' element={<DietaLayout />}>
+                    <Route index element={<DashboardDietas />} />
+                    <Route path='pesquisar' element={<div>Pesquisar Dietas</div>} />
 
-      {/* Redirecionamentos de segurança */}
-      <Route path='dietas' element={<Navigate to="/dashboard/dieta" replace />} />
-      <Route path='Home' element={<Navigate to="/dashboard/home" replace />} />
-      <Route path='Progresso' element={<Navigate to="/dashboard/progresso" replace />} />
-    </>
-  )
+                    {/* Página com as duas opções (Criar Dieta / Criar Alimento) */}
+                    <Route path='criarPrincipal' element={<CriarOpcoesDieta />} />
+
+                    {/* Formulários específicos de criação */}
+                    <Route path='CriarDieta' element={<CriarDieta />} />
+                    <Route path='CriarAlimento' element={<CriarAlimento />} />
+
+                    <Route path='verDieta/:id' element={<VerDieta />} />
+                </Route>
+            </Route>
+
+            {/* Redirecionamentos de segurança */}
+            <Route path='dietas' element={<Navigate to="/dashboard/dieta" replace />} />
+            <Route path='Home' element={<Navigate to="/dashboard/home" replace />} />
+            <Route path='Progresso' element={<Navigate to="/dashboard/progresso" replace />} />
+        </>
+    )
 )
 
 export default Rota
