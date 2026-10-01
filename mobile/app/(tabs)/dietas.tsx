@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native'
+import useTema from '@/contextos/TemaContexto'
 import CreateDietForm from '../../componentes/CreateDietForm'
 
 /* =========================================================
@@ -145,12 +146,14 @@ function Tag({ texto }: { texto: string }) {
     )
 }
 
-function BarraProgresso({ percentual }: { percentual: number }) {
+function BarraProgresso({ percentual, cores }: { percentual: number; cores?: any }) {
     const largura = Math.min(Math.max(percentual, 0), 1) * 100
+    const corFundo = cores ? cores.quaternaria : '#2c2c2e'
+    const corBarra = cores ? cores.destaque : '#ff5b6d'
 
     return (
-        <View style={styles.barraFundo}>
-            <View style={[styles.barraPreenchida, { width: `${largura}%` }]} />
+        <View style={[styles.barraFundo, { backgroundColor: corFundo }]}>
+            <View style={[styles.barraPreenchida, { width: `${largura}%`, backgroundColor: corBarra }]} />
         </View>
     )
 }
@@ -158,25 +161,33 @@ function BarraProgresso({ percentual }: { percentual: number }) {
 function CardDietaPronta({
     dieta,
     onPress,
+    temaAtual,
+    formatarCor,
 }: {
     dieta: DietaPronta
     onPress: (dieta: DietaPronta) => void
+    temaAtual: any
+    formatarCor: (color: string, opacidade: number) => string
 }) {
     const cores = NIVEL_CORES[dieta.nivel]
+    const corCard = formatarCor(temaAtual['--color-base-secundaria'], 1)
+    const corIconWrapper = formatarCor(temaAtual['--color-base-terciaria'], 1)
+    const corNome = formatarCor(temaAtual['--color-t-primaria'], 1)
+    const corDescricao = formatarCor(temaAtual['--color-t-secundaria'], 1)
 
     return (
         <TouchableOpacity
-            style={styles.prontaCard}
+            style={[styles.prontaCard, { backgroundColor: corCard }]}
             activeOpacity={0.8}
             onPress={() => onPress(dieta)}
         >
-            <View style={styles.prontaIconWrapper}>
+            <View style={[styles.prontaIconWrapper, { backgroundColor: corIconWrapper }]}>
                 <Text style={styles.prontaIcon}>{dieta.emoji}</Text>
             </View>
 
             <View style={styles.prontaContent}>
-                <Text style={styles.prontaNome}>{dieta.nome}</Text>
-                <Text style={styles.prontaDescricao}>
+                <Text style={[styles.prontaNome, { color: corNome }]}>{dieta.nome}</Text>
+                <Text style={[styles.prontaDescricao, { color: corDescricao }]}>
                     {dieta.objetivo} · {dieta.refeicoes} refeições · {dieta.duracao}
                 </Text>
             </View>
@@ -208,6 +219,8 @@ function CardRefeicao({
     onRemoverAlimento,
     onAdicionarAlimento,
     onMarcarComido,
+    temaAtual,
+    formatarCor,
 }: {
     refeicao: Refeicao
     emEdicao: boolean
@@ -219,69 +232,78 @@ function CardRefeicao({
     onRemoverAlimento: (index: number) => void
     onAdicionarAlimento: () => void
     onMarcarComido: (comido: boolean) => void
+    temaAtual: any
+    formatarCor: (color: string, opacidade: number) => string
 }) {
+    const corCard = formatarCor(temaAtual['--color-base-secundaria'], 1)
+    const corTexto = formatarCor(temaAtual['--color-t-primaria'], 1)
+    const corTextoSecundario = formatarCor(temaAtual['--color-t-secundaria'], 1)
+    const corInputBg = formatarCor(temaAtual['--color-base-terciaria'], 1)
+    const corDestaque = formatarCor(temaAtual['--color-destaque-p-medio'], 1)
+    const corAlimento = formatarCor(temaAtual['--color-base-terciaria'], 1)
+
     if (emEdicao && rascunho) {
         return (
-            <View style={[styles.refeicaoCard, styles.refeicaoCardEdicao]}>
+            <View style={[styles.refeicaoCard, styles.refeicaoCardEdicao, { backgroundColor: corCard, borderColor: corDestaque }]}>
                 <View style={styles.refeicaoHeaderRow}>
                     <View>
-                        <Text style={styles.refeicaoHorarioLabel}>
+                        <Text style={[styles.refeicaoHorarioLabel, { color: corTextoSecundario }]}>
                             {refeicao.horario}
                         </Text>
-                        <Text style={styles.refeicaoNome}>{refeicao.nome}</Text>
-                        <Text style={styles.refeicaoKcalSub}>
+                        <Text style={[styles.refeicaoNome, { color: corTexto }]}>{refeicao.nome}</Text>
+                        <Text style={[styles.refeicaoKcalSub, { color: corTextoSecundario }]}>
                             {rascunho.calorias || 0} kcal
                         </Text>
                     </View>
 
                     <View style={styles.refeicaoHeaderBotoes}>
                         <TouchableOpacity
-                            style={styles.botaoCancelar}
+                            style={[styles.botaoCancelar, { backgroundColor: corInputBg }]}
                             onPress={onCancelar}
                         >
-                            <Text style={styles.botaoCancelarTexto}>Cancelar</Text>
+                            <Text style={[styles.botaoCancelarTexto, { color: corTextoSecundario }]}>Cancelar</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            style={styles.botaoSalvar}
+                            style={[styles.botaoSalvar, { backgroundColor: corDestaque }]}
                             onPress={onSalvar}
                         >
-                            <Text style={styles.botaoSalvarTexto}>Salvar</Text>
+                            <Text style={[styles.botaoSalvarTexto, { color: corTexto }]}>Salvar</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
 
                 <View style={styles.camposDuploContainer}>
                     <View style={styles.campoDuplo}>
-                        <Text style={styles.campoLabel}>CALORIAS</Text>
+                        <Text style={[styles.campoLabel, { color: corTextoSecundario }]}>CALORIAS</Text>
                         <TextInput
                             value={rascunho.calorias}
                             onChangeText={(v) => onMudarRascunho('calorias', v)}
                             keyboardType="numeric"
-                            style={styles.campoInput}
-                            placeholderTextColor="#636366"
+                            style={[styles.campoInput, { backgroundColor: corInputBg, color: corTexto }]}
+                            placeholderTextColor={corTextoSecundario}
                         />
                     </View>
 
                     <View style={styles.campoDuplo}>
-                        <Text style={styles.campoLabel}>HORÁRIO</Text>
+                        <Text style={[styles.campoLabel, { color: corTextoSecundario }]}>HORÁRIO</Text>
                         <TextInput
                             value={rascunho.horario}
                             onChangeText={(v) => onMudarRascunho('horario', v)}
-                            style={styles.campoInput}
-                            placeholderTextColor="#636366"
+                            style={[styles.campoInput, { backgroundColor: corInputBg, color: corTexto }]}
+                            placeholderTextColor={corTextoSecundario}
                         />
                     </View>
                 </View>
 
-                <Text style={styles.campoLabel}>ALIMENTOS</Text>
+                <Text style={[styles.campoLabel, { color: corTextoSecundario }]}>ALIMENTOS</Text>
 
                 {rascunho.alimentos.map((alimento, index) => (
-                    <View key={`${alimento}-${index}`} style={styles.alimentoLinha}>
-                        <Text style={styles.alimentoTexto}>{alimento}</Text>
+                    <View key={`${alimento}-${index}`} style={[styles.alimentoLinha, { backgroundColor: corAlimento }]}>
+                        <Text style={[styles.alimentoTexto, { color: corTexto }]}>{alimento}</Text>
 
                         <TouchableOpacity onPress={() => onRemoverAlimento(index)}>
-                            <Text style={styles.alimentoRemover}>×</Text>
+                            <Text style={[styles.alimentoRemover, { color: corTextoSecundario }]}>×</Text>
                         </TouchableOpacity>
                     </View>
                 ))}
@@ -291,32 +313,32 @@ function CardRefeicao({
                         value={rascunho.novoAlimento}
                         onChangeText={(v) => onMudarRascunho('novoAlimento', v)}
                         placeholder="Adicionar alimento..."
-                        placeholderTextColor="#636366"
-                        style={styles.adicionarAlimentoInput}
+                        placeholderTextColor={corTextoSecundario}
+                        style={[styles.adicionarAlimentoInput, { backgroundColor: corInputBg, color: corTexto }]}
                         onSubmitEditing={onAdicionarAlimento}
                     />
 
                     <TouchableOpacity
-                        style={styles.botaoAdd}
+                        style={[styles.botaoAdd, { backgroundColor: corInputBg }]}
                         onPress={onAdicionarAlimento}
                     >
-                        <Text style={styles.botaoAddTexto}>+ Add</Text>
+                        <Text style={[styles.botaoAddTexto, { color: corDestaque }]}>+ Add</Text>
                     </TouchableOpacity>
                 </View>
 
                 <View style={styles.comidoRow}>
                     <TouchableOpacity
-                        style={styles.botaoNaoComi}
+                        style={[styles.botaoNaoComi, { backgroundColor: corInputBg }]}
                         onPress={() => onMarcarComido(false)}
                     >
-                        <Text style={styles.botaoNaoComiTexto}>Não comi</Text>
+                        <Text style={[styles.botaoNaoComiTexto, { color: corTextoSecundario }]}>Não comi</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        style={styles.botaoComi}
+                        style={[styles.botaoComi, { backgroundColor: corDestaque }]}
                         onPress={() => onMarcarComido(true)}
                     >
-                        <Text style={styles.botaoComiTexto}>Comi ✓</Text>
+                        <Text style={[styles.botaoComiTexto, { color: corTexto }]}>Comi ✓</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -328,36 +350,37 @@ function CardRefeicao({
             style={[
                 styles.refeicaoCard,
                 refeicao.concluida && styles.refeicaoCardConcluida,
+                { backgroundColor: corCard },
             ]}
         >
             <View style={styles.refeicaoHeaderRow}>
                 <View>
-                    <Text style={styles.refeicaoHorarioLabel}>
+                    <Text style={[styles.refeicaoHorarioLabel, { color: corTextoSecundario }]}>
                         {refeicao.horario}
                     </Text>
-                    <Text style={styles.refeicaoNome}>{refeicao.nome}</Text>
-                    <Text style={styles.refeicaoKcalSub}>
+                    <Text style={[styles.refeicaoNome, { color: corTexto }]}>{refeicao.nome}</Text>
+                    <Text style={[styles.refeicaoKcalSub, { color: corTextoSecundario }]}>
                         {refeicao.calorias} kcal
                     </Text>
                 </View>
 
                 <View style={styles.refeicaoHeaderBotoes}>
                     <TouchableOpacity
-                        style={styles.botaoEditar}
+                        style={[styles.botaoEditar, { backgroundColor: corInputBg }]}
                         onPress={onEditar}
                     >
-                        <Text style={styles.botaoEditarTexto}>Editar</Text>
+                        <Text style={[styles.botaoEditarTexto, { color: corTexto }]}>Editar</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                         style={[
                             styles.checkCirculo,
-                            refeicao.concluida && styles.checkCirculoAtivo,
+                            refeicao.concluida && { ...styles.checkCirculoAtivo, backgroundColor: corDestaque },
                         ]}
                         onPress={() => onMarcarComido(!refeicao.concluida)}
                     >
                         {refeicao.concluida && (
-                            <Text style={styles.checkMarca}>✓</Text>
+                            <Text style={[styles.checkMarca, { color: corTexto }]}>✓</Text>
                         )}
                     </TouchableOpacity>
                 </View>
@@ -377,6 +400,18 @@ function CardRefeicao({
 ========================================================= */
 
 export default function Dietas() {
+    const { temaAtual, formatarCor } = useTema()
+
+    const cores = {
+        fundo: formatarCor(temaAtual['--color-base-primaria'], 1),
+        card: formatarCor(temaAtual['--color-base-secundaria'], 1),
+        cardTerciaria: formatarCor(temaAtual['--color-base-terciaria'], 1),
+        texto: formatarCor(temaAtual['--color-t-primaria'], 1),
+        textoSecundario: formatarCor(temaAtual['--color-t-secundaria'], 1),
+        destaque: formatarCor(temaAtual['--color-destaque-p-medio'], 1),
+        quaternaria: formatarCor(temaAtual['--color-base-quaternaria'], 1),
+    }
+
     const [menuSelecionado, setMenuSelecionado] = useState<MenuTab>('plano')
     // dietas criadas localmente via formulário
     const [createdDietas, setCreatedDietas] = useState<DietaPronta[]>([])
@@ -494,17 +529,17 @@ export default function Dietas() {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, { backgroundColor: cores.fundo }]}>
             {/* CABEÇALHO */}
             <View style={styles.header}>
-                <Text style={styles.title}>Dieta</Text>
-                <Text style={styles.subtitle}>
+                <Text style={[styles.title, { color: cores.texto }]}>Dieta</Text>
+                <Text style={[styles.subtitle, { color: cores.textoSecundario }]}>
                     Suas dietas e planos alimentares
                 </Text>
             </View>
 
             {/* MENU */}
-            <View style={styles.menu}>
+            <View style={[styles.menu, { backgroundColor: cores.card }]}>
                 {(
                     [
                         { id: 'resumo', label: 'Resumo' },
@@ -520,13 +555,17 @@ export default function Dietas() {
                             key={item.id}
                             style={[
                                 styles.menuItem,
-                                ativo && styles.menuItemAtivo,
+                                ativo && {
+                                    ...styles.menuItemAtivo,
+                                    backgroundColor: cores.destaque,
+                                },
                             ]}
                             onPress={() => setMenuSelecionado(item.id)}
                         >
                             <Text
                                 style={[
                                     styles.menuText,
+                                    { color: ativo ? cores.texto : cores.textoSecundario },
                                     ativo && styles.menuTextAtivo,
                                 ]}
                             >
@@ -543,26 +582,26 @@ export default function Dietas() {
                     contentContainerStyle={styles.list}
                     showsVerticalScrollIndicator={false}
                 >
-                    <View style={styles.resumoCard}>
+                    <View style={[styles.resumoCard, { backgroundColor: cores.card }]}>
                         <View style={styles.resumoTopo}>
-                            <Text style={styles.resumoKcal}>
+                            <Text style={[styles.resumoKcal, { color: cores.texto }]}>
                                 {resumoDia.consumidas}
-                                <Text style={styles.resumoKcalUnidade}> kcal</Text>
+                                <Text style={[styles.resumoKcalUnidade, { color: cores.textoSecundario }]}> kcal</Text>
                             </Text>
 
-                            <Text style={styles.resumoPercentual}>
+                            <Text style={[styles.resumoPercentual, { color: cores.destaque }]}>
                                 {Math.round(resumoDia.percentual * 100)}%
                             </Text>
                         </View>
 
-                        <Text style={styles.resumoMeta}>
+                        <Text style={[styles.resumoMeta, { color: cores.textoSecundario }]}>
                             de {META_CALORIAS} kcal hoje
                         </Text>
 
-                        <BarraProgresso percentual={resumoDia.percentual} />
+                        <BarraProgresso percentual={resumoDia.percentual} cores={cores} />
 
                         <View style={styles.resumoRodape}>
-                            <Text style={styles.resumoRodapeTexto}>
+                            <Text style={[styles.resumoRodapeTexto, { color: cores.textoSecundario }]}>
                                 {resumoDia.concluidas} de {resumoDia.total}{' '}
                                 refeições concluídas
                             </Text>
@@ -573,11 +612,11 @@ export default function Dietas() {
                         </View>
                     </View>
 
-                    <Text style={styles.secaoTitulo}>Suas dietas prontas</Text>
+                    <Text style={[styles.secaoTitulo, { color: cores.texto }]}>Suas dietas prontas</Text>
 
                     {minhasDietasProntas.length === 0 ? (
                         <View style={styles.empty}>
-                            <Text style={styles.emptyText}>
+                            <Text style={[styles.emptyText, { color: cores.textoSecundario }]}>
                                 Você ainda não adicionou nenhuma dieta pronta.
                             </Text>
                         </View>
@@ -589,6 +628,8 @@ export default function Dietas() {
                                 key={dieta.id}
                                 dieta={dieta}
                                 onPress={() => setMenuSelecionado('prontas')}
+                                temaAtual={temaAtual}
+                                formatarCor={formatarCor}
                             />
                         ))
                     )}
@@ -606,6 +647,8 @@ export default function Dietas() {
                         <CardDietaPronta
                             dieta={item}
                             onPress={adicionarDietaPronta}
+                            temaAtual={temaAtual}
+                            formatarCor={formatarCor}
                         />
                     )}
                 />
@@ -629,7 +672,7 @@ export default function Dietas() {
                                     </Text>
                                 </Text>
 
-                                <Text style={styles.resumoPercentual}>
+                                <Text style={[styles.resumoPercentual, { color: cores.destaque }]}>
                                     {Math.round(resumoDia.percentual * 100)}%
                                 </Text>
                             </View>
@@ -638,7 +681,7 @@ export default function Dietas() {
                                 de {META_CALORIAS} kcal hoje
                             </Text>
 
-                            <BarraProgresso percentual={resumoDia.percentual} />
+                            <BarraProgresso percentual={resumoDia.percentual} cores={cores} />
 
                             <View style={styles.resumoRodape}>
                                 <Text style={styles.resumoRodapeTexto}>
@@ -666,6 +709,8 @@ export default function Dietas() {
                             onMarcarComido={(comido) =>
                                 marcarComido(item.id, comido)
                             }
+                            temaAtual={temaAtual}
+                            formatarCor={formatarCor}
                         />
                     )}
                 />
@@ -684,7 +729,7 @@ export default function Dietas() {
 
                     {createdDietas.length > 0 && (
                         <>
-                            <Text style={[styles.secaoTitulo, { marginTop: 12 }]}>
+                            <Text style={[styles.secaoTitulo, { marginTop: 12, color: cores.texto }]}>
                                 Dietas criadas
                             </Text>
 

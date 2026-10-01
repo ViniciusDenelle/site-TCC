@@ -5,6 +5,7 @@ import {
     TextInput,
     View,
 } from 'react-native'
+import useTema from '@/contextos/TemaContexto'
 
 type Props = {
     valor: string
@@ -15,22 +16,27 @@ export default function BarraBuscaExercicio({
     valor,
     onChange,
 }: Props) {
+    const { temaAtual, formatarCor } = useTema()
+
+    const corBase = formatarCor(temaAtual['--color-base-secundaria'], 1)
+    const corTexto = formatarCor(temaAtual['--color-t-primaria'], 1)
+    const corTextoSecundaria = formatarCor(temaAtual['--color-t-secundaria'], 1)
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: corBase }]}>
 
             <Ionicons
                 name="search"
                 size={18}
-                color="#636366"
+                color={corTextoSecundaria}
             />
 
             <TextInput
                 value={valor}
                 onChangeText={onChange}
                 placeholder="Buscar exercício..."
-                placeholderTextColor="#636366"
-                style={styles.input}
+                placeholderTextColor={corTextoSecundaria}
+                style={[styles.input, { color: corTexto }]}
             />
 
         </View>
@@ -39,8 +45,6 @@ export default function BarraBuscaExercicio({
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#1c1c1e',
-
         borderRadius: 10,
 
         flexDirection: 'row',
@@ -53,8 +57,6 @@ const styles = StyleSheet.create({
 
     input: {
         flex: 1,
-
-        color: '#ffffff',
 
         fontSize: 15,
 

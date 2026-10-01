@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native'
+import useTema from '@/contextos/TemaContexto'
 
 export type Rotina = {
     id: string
@@ -25,10 +26,15 @@ export default function CardRotina({
     rotina,
     onPress,
 }: Props) {
+    const { temaAtual, formatarCor } = useTema()
+
+    const corBase = formatarCor(temaAtual['--color-base-secundaria'], 1)
+    const corTexto = formatarCor(temaAtual['--color-t-primaria'], 1)
+    const corTextoSecundaria = formatarCor(temaAtual['--color-t-secundaria'], 1)
 
     return (
         <TouchableOpacity
-            style={styles.card}
+            style={[styles.card, { backgroundColor: corBase }]}
             onPress={() => onPress?.(rotina)}
         >
             <View style={styles.left}>
@@ -43,11 +49,11 @@ export default function CardRotina({
                 />
 
                 <View>
-                    <Text style={styles.name}>
+                    <Text style={[styles.name, { color: corTexto }]}>
                         {rotina.nome}
                     </Text>
 
-                    <Text style={styles.meta}>
+                    <Text style={[styles.meta, { color: corTextoSecundaria }]}>
                         {rotina.tipo} • {rotina.duracao}
                     </Text>
                 </View>
@@ -56,14 +62,14 @@ export default function CardRotina({
 
             <View style={styles.right}>
 
-                <Text style={styles.count}>
+                <Text style={[styles.count, { color: corTextoSecundaria }]}>
                     {rotina.exercicios} exs
                 </Text>
 
                 <Ionicons
                     name="chevron-forward"
                     size={16}
-                    color="#636366"
+                    color={corTextoSecundaria}
                 />
 
             </View>
@@ -74,7 +80,6 @@ export default function CardRotina({
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#1c1c1e',
         borderRadius: 12,
         padding: 16,
 
@@ -99,13 +104,11 @@ const styles = StyleSheet.create({
     },
 
     name: {
-        color: '#ffffff',
         fontSize: 16,
         fontWeight: 'bold',
     },
 
     meta: {
-        color: '#8e8e93',
         fontSize: 13,
         marginTop: 4,
     },
@@ -117,7 +120,6 @@ const styles = StyleSheet.create({
     },
 
     count: {
-        color: '#aeaeb2',
         fontSize: 13,
     },
 })
