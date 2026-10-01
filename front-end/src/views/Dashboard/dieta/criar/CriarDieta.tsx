@@ -1,532 +1,428 @@
-import { useState } from 'react'
-import { Plus, X, Utensils, Clock } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { Plus, Utensils, Clock, Target, FileText, Calendar } from 'lucide-react'
 
 import Texto from '../../../../componentes/organizacao/Texto'
 import InputSimples from '../../../../componentes/inputs/InputSimples'
 import InputTextarea from '../../../../componentes/inputs/InputTextarea'
 import BotaoPrimario from '../../../../componentes/botoes/BotaoPrimario'
-import BotaoTerciario from '../../../../componentes/botoes/BotaoTerciario'
 import BotaoSecundario from '../../../../componentes/botoes/BotaoSecundario'
 import WrapperIcone from '../../../../componentes/organizacao/WrapperIcone'
 
-interface AlimentoFormulario {
-    id: string
-    nome: string
-    quantidade: string
-    calorias: string
-    proteinas: string
-    carboidratos: string
-    gorduras: string
-}
+import { CardRefeicao } from '../../../../componentes/dieta/CardRefeicao'
+import { SeletorDias } from '../../../../componentes/dieta/SeletorDias'
+import { ResumoNutricionalDia } from '../../../../componentes/dieta/ResumoNutricionalDia'
+import { AlimentoFormulario, RefeicaoFormulario, DiaSemana } from '../../../../componentes/dieta/types'
 
-interface RefeicaoFormulario {
-    id: string
-    nome: string
-    horario: string
-    alimentos: AlimentoFormulario[]
-}
+const DIAS_DA_SEMANA: DiaSemana[] = [
+  { id: 'segunda', label: 'Segunda-feira', short: 'Seg' },
+  { id: 'terca', label: 'Terça-feira', short: 'Ter' },
+  { id: 'quarta', label: 'Quarta-feira', short: 'Qua' },
+  { id: 'quinta', label: 'Quinta-feira', short: 'Qui' },
+  { id: 'sexta', label: 'Sexta-feira', short: 'Sex' },
+  { id: 'sabado', label: 'Sábado', short: 'Sáb' },
+  { id: 'domingo', label: 'Domingo', short: 'Dom' },
+]
 
 const CriarDieta = () => {
-
-    const [nome, setNome] = useState('')
-    const [descricao, setDescricao] = useState('')
-    const [objetivo, setObjetivo] = useState('')
-    const [nivel, setNivel] = useState('')
-    const [duracao, setDuracao] = useState('')
-
-    const [refeicoes, setRefeicoes] = useState<RefeicaoFormulario[]>([])
-
-    const [nomeNovaRefeicao, setNomeNovaRefeicao] = useState('')
-    const [horarioNovaRefeicao, setHorarioNovaRefeicao] = useState('')
-
-    const [refeicaoAberta, setRefeicaoAberta] = useState<string | null>(null)
-
-    function adicionarRefeicao() {
-
-        if (!nomeNovaRefeicao.trim()) return
-
-        const novaRefeicao: RefeicaoFormulario = {
-            id: crypto.randomUUID(),
-            nome: nomeNovaRefeicao.trim(),
-            horario: horarioNovaRefeicao || '--:--',
-            alimentos: [],
-        }
-
-        setRefeicoes(prev => [...prev, novaRefeicao])
-
-        setNomeNovaRefeicao('')
-        setHorarioNovaRefeicao('')
-
-        setRefeicaoAberta(novaRefeicao.id)
-    }
-
-    function removerRefeicao(id: string) {
-
-        setRefeicoes(prev =>
-            prev.filter(refeicao => refeicao.id !== id)
-        )
-
-        if (refeicaoAberta === id) {
-            setRefeicaoAberta(null)
-        }
-    }
-
-    function adicionarAlimento(refeicaoId: string) {
-
-        const novoAlimento: AlimentoFormulario = {
-            id: crypto.randomUUID(),
-            nome: '',
-            quantidade: '',
-            calorias: '',
-            proteinas: '',
-            carboidratos: '',
-            gorduras: '',
-        }
-
-        setRefeicoes(prev =>
-            prev.map(refeicao =>
-                refeicao.id === refeicaoId
-                    ? {
-                        ...refeicao,
-                        alimentos: [
-                            ...refeicao.alimentos,
-                            novoAlimento,
-                        ],
-                    }
-                    : refeicao
-            )
-        )
-    }
-
-    function removerAlimento(
-        refeicaoId: string,
-        alimentoId: string
-    ) {
-
-        setRefeicoes(prev =>
-            prev.map(refeicao =>
-                refeicao.id === refeicaoId
-                    ? {
-                        ...refeicao,
-                        alimentos: refeicao.alimentos.filter(
-                            alimento => alimento.id !== alimentoId
-                        ),
-                    }
-                    : refeicao
-            )
-        )
-    }
-
-    function atualizarAlimento(
-        refeicaoId: string,
-        alimentoId: string,
-        campo: keyof AlimentoFormulario,
-        valor: string
-    ) {
-
-        setRefeicoes(prev =>
-            prev.map(refeicao =>
-                refeicao.id === refeicaoId
-                    ? {
-                        ...refeicao,
-                        alimentos: refeicao.alimentos.map(
-                            alimento =>
-                                alimento.id === alimentoId
-                                    ? {
-                                        ...alimento,
-                                        [campo]: valor,
-                                    }
-                                    : alimento
-                        ),
-                    }
-                    : refeicao
-            )
-        )
-    }
-
-    function salvarDieta() {
-
-        const dieta = {
-            nome,
-            descricao,
-            objetivo,
-            nivel,
-            duracao,
-            refeicoes,
-        }
-
-        console.log('Dieta criada:', dieta)
-
-        alert('Dieta criada com sucesso!')
-    }
-
-    return (
-        <div className="min-h-screen w-full">
-
-            <div className="container mx-auto flex flex-col gap-4">
-
-                <Texto
-                    tipo="titulo"
-                    className="font-thin"
-                >
-                    Nome da dieta
-                </Texto>
-
-                <InputSimples
-                    tipo="text"
-                    valor={nome}
-                    onChange={e => setNome(e.target.value)}
-                    placeholder="ex: Plano Alimentar"
-                />
-
-                <Texto
-                    tipo="titulo"
-                    className="font-thin"
-                >
-                    Descrição
-                </Texto>
-
-                <InputTextarea
-                    valor={descricao}
-                    onChange={e => setDescricao(e.target.value)}
-                    classeAdicional="h-20"
-                    placeholder="descrição da dieta"
-                />
-
-                <Texto
-                    tipo="titulo"
-                    className="font-thin mt-2"
-                >
-                    Objetivo
-                </Texto>
-
-                <InputSimples
-                    tipo="text"
-                    valor={objetivo}
-                    onChange={e => setObjetivo(e.target.value)}
-                    placeholder="ex: Manutenção, desempenho..."
-                />
-
-                <Texto
-                    tipo="titulo"
-                    className="font-thin"
-                >
-                    Nível
-                </Texto>
-
-                <InputSimples
-                    tipo="text"
-                    valor={nivel}
-                    onChange={e => setNivel(e.target.value)}
-                    placeholder="ex: Iniciante, Intermediário..."
-                />
-
-                <Texto
-                    tipo="titulo"
-                    className="font-thin"
-                >
-                    Duração
-                </Texto>
-
-                <InputSimples
-                    tipo="text"
-                    valor={duracao}
-                    onChange={e => setDuracao(e.target.value)}
-                    placeholder="ex: 8 semanas"
-                />
-
-                <div className="flex gap-1 items-center mt-3">
-
-                    <WrapperIcone>
-                        <Utensils className="size-full" />
-                    </WrapperIcone>
-
-                    <Texto
-                        tipo="titulo"
-                        className="font-thin"
-                    >
-                        Refeições
-                    </Texto>
-
-                </div>
-
-                <Texto
-                    tipo="subtexto"
-                    className="opacity-50 -mt-2"
-                >
-                    adicione as refeições que farão parte da dieta
-                </Texto>
-
-                <div className="flex flex-col sm:flex-row gap-2">
-
-                    <InputSimples
-                        tipo="text"
-                        valor={nomeNovaRefeicao}
-                        onChange={e =>
-                            setNomeNovaRefeicao(e.target.value)
-                        }
-                        placeholder="ex: Café da manhã"
-                        classeAdicional="w-full"
-                    />
-
-                    <InputSimples
-                        tipo="time"
-                        valor={horarioNovaRefeicao}
-                        onChange={e =>
-                            setHorarioNovaRefeicao(e.target.value)
-                        }
-                        classeAdicional="sm:w-40"
-                    />
-
-                    <BotaoSecundario
-                        icone={Plus}
-                        onClick={adicionarRefeicao}
-                        tipo="cheio"
-                    />
-
-                </div>
-
-                <div className="flex flex-col gap-3">
-
-                    {refeicoes.map(refeicao => (
-
-                        <div
-                            key={refeicao.id}
-                            className="
-                                w-full
-                                p-4
-                                rounded-2xl
-                                bg-base-terciaria/70
-                                shadow-md
-                                shadow-gray-900/20
-                            "
-                        >
-
-                            <div className="flex items-center justify-between">
-
-                                <div className="flex items-center gap-2">
-
-                                    <WrapperIcone>
-
-                                        <Clock className="size-full" />
-
-                                    </WrapperIcone>
-
-                                    <div>
-
-                                        <Texto tipo="subtitulo">
-                                            {refeicao.nome}
-                                        </Texto>
-
-                                        <Texto
-                                            tipo="subtexto"
-                                            className="opacity-60"
-                                        >
-                                            {refeicao.horario}
-                                        </Texto>
-
-                                    </div>
-
-                                </div>
-
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        removerRefeicao(refeicao.id)
-                                    }
-                                >
-                                    <X className="size-4 opacity-60" />
-                                </button>
-
-                            </div>
-
-                            <BotaoTerciario
-                                texto={
-                                    refeicaoAberta === refeicao.id
-                                        ? 'fechar refeição'
-                                        : 'editar refeição'
-                                }
-                                onClick={() =>
-                                    setRefeicaoAberta(
-                                        refeicaoAberta === refeicao.id
-                                            ? null
-                                            : refeicao.id
-                                    )
-                                }
-                                classeAdicional="w-full mt-3"
-                            />
-
-                            {refeicaoAberta === refeicao.id && (
-
-                                <div className="flex flex-col gap-3 mt-4">
-
-                                    <Texto
-                                        tipo="subtexto"
-                                        className="opacity-60"
-                                    >
-                                        Alimentos
-                                    </Texto>
-
-                                    {refeicao.alimentos.map(alimento => (
-
-                                        <div
-                                            key={alimento.id}
-                                            className="
-                                                p-3
-                                                rounded-xl
-                                                bg-base-secundaria
-                                                border
-                                                border-base-terciaria/30
-                                                flex flex-col gap-2
-                                            "
-                                        >
-
-                                            <div className="flex justify-between items-center">
-
-                                                <Texto tipo="subtexto">
-                                                    Alimento
-                                                </Texto>
-
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        removerAlimento(
-                                                            refeicao.id,
-                                                            alimento.id
-                                                        )
-                                                    }
-                                                >
-                                                    <X className="size-4 opacity-60" />
-                                                </button>
-
-                                            </div>
-
-                                            <InputSimples
-                                                tipo="text"
-                                                valor={alimento.nome}
-                                                onChange={e =>
-                                                    atualizarAlimento(
-                                                        refeicao.id,
-                                                        alimento.id,
-                                                        'nome',
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="Nome do alimento"
-                                            />
-
-                                            <InputSimples
-                                                tipo="text"
-                                                valor={alimento.quantidade}
-                                                onChange={e =>
-                                                    atualizarAlimento(
-                                                        refeicao.id,
-                                                        alimento.id,
-                                                        'quantidade',
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="Quantidade"
-                                            />
-
-                                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-
-                                                <InputSimples
-                                                    tipo="number"
-                                                    valor={alimento.calorias}
-                                                    onChange={e =>
-                                                        atualizarAlimento(
-                                                            refeicao.id,
-                                                            alimento.id,
-                                                            'calorias',
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    placeholder="Kcal"
-                                                />
-
-                                                <InputSimples
-                                                    tipo="number"
-                                                    valor={alimento.proteinas}
-                                                    onChange={e =>
-                                                        atualizarAlimento(
-                                                            refeicao.id,
-                                                            alimento.id,
-                                                            'proteinas',
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    placeholder="Proteínas"
-                                                />
-
-                                                <InputSimples
-                                                    tipo="number"
-                                                    valor={alimento.carboidratos}
-                                                    onChange={e =>
-                                                        atualizarAlimento(
-                                                            refeicao.id,
-                                                            alimento.id,
-                                                            'carboidratos',
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    placeholder="Carboidratos"
-                                                />
-
-                                                <InputSimples
-                                                    tipo="number"
-                                                    valor={alimento.gorduras}
-                                                    onChange={e =>
-                                                        atualizarAlimento(
-                                                            refeicao.id,
-                                                            alimento.id,
-                                                            'gorduras',
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    placeholder="Gorduras"
-                                                />
-
-                                            </div>
-
-                                        </div>
-
-                                    ))}
-
-                                    <BotaoTerciario
-                                        texto="adicionar alimento"
-                                        icone={Plus}
-                                        onClick={() =>
-                                            adicionarAlimento(refeicao.id)
-                                        }
-                                        classeAdicional="
-                                            flex
-                                            items-center
-                                            justify-center
-                                            gap-2
-                                        "
-                                    />
-
-                                </div>
-
-                            )}
-
-                        </div>
-
-                    ))}
-
-                </div>
-
-                <BotaoPrimario
-                    texto="salvar dieta"
-                    icone={Plus}
-                    onClick={salvarDieta}
-                />
-
-            </div>
-
-        </div>
+  // --- Metadados da Dieta ---
+  const [nome, setNome] = useState('')
+  const [descricao, setDescricao] = useState('')
+  const [objetivo, setObjetivo] = useState('')
+  const [nivel, setNivel] = useState('')
+  const [duracao, setDuracao] = useState('')
+  const [metaAgua, setMetaAgua] = useState<number | ''>(3)
+
+  // --- Metas Nutricionais Diárias ---
+  const [metasAlvo, setMetasAlvo] = useState({
+    calorias: '' as number | '',
+    proteinas: '' as number | '',
+    carboidratos: '' as number | '',
+    gorduras: '' as number | '',
+  })
+
+  // --- Estrutura dos Dias ---
+  const [diaAtivo, setDiaAtivo] = useState('segunda')
+  const [refeicoesPorDia, setRefeicoesPorDia] = useState<Record<string, RefeicaoFormulario[]>>({
+    segunda: [],
+    terca: [],
+    quarta: [],
+    quinta: [],
+    sexta: [],
+    sabado: [],
+    domingo: [],
+  })
+
+  // --- Formulário de Nova Refeição ---
+  const [nomeNovaRefeicao, setNomeNovaRefeicao] = useState('')
+  const [horarioNovaRefeicao, setHorarioNovaRefeicao] = useState('')
+  const [refeicaoAberta, setRefeicaoAberta] = useState<string | null>(null)
+  const [observacoesFinais, setObservacoesFinais] = useState('')
+
+  // Refeições do dia selecionado
+  const refeicoesDoDia = useMemo(() => refeicoesPorDia[diaAtivo] || [], [refeicoesPorDia, diaAtivo])
+
+  // CÁLCULOS DO DIA ATIVO
+  const totaisDiaAtual = useMemo(() => {
+    return refeicoesDoDia.reduce(
+      (acc, refeicao) => {
+        refeicao.alimentos.forEach(alimento => {
+          acc.calorias += Number(alimento.calorias) || 0
+          acc.proteinas += Number(alimento.proteinas) || 0
+          acc.carboidratos += Number(alimento.carboidratos) || 0
+          acc.gorduras += Number(alimento.gorduras) || 0
+        })
+        return acc
+      },
+      { calorias: 0, proteinas: 0, carboidratos: 0, gorduras: 0 }
     )
+  }, [refeicoesDoDia])
+
+  const distribuicaoMacros = useMemo(() => {
+    const calProt = totaisDiaAtual.proteinas * 4
+    const calCarb = totaisDiaAtual.carboidratos * 4
+    const calGord = totaisDiaAtual.gorduras * 9
+    const totalCal = calProt + calCarb + calGord
+
+    return {
+      percProt: totalCal > 0 ? Math.round((calProt / totalCal) * 100) : 0,
+      percCarb: totalCal > 0 ? Math.round((calCarb / totalCal) * 100) : 0,
+      percGord: totalCal > 0 ? Math.round((calGord / totalCal) * 100) : 0,
+    }
+  }, [totaisDiaAtual])
+
+  // ACCIONS: REFEIÇÕES
+  function adicionarRefeicao() {
+    if (!nomeNovaRefeicao.trim()) return
+
+    const novaRefeicao: RefeicaoFormulario = {
+      id: crypto.randomUUID(),
+      nome: nomeNovaRefeicao.trim(),
+      horario: horarioNovaRefeicao || '--:--',
+      alimentos: [],
+    }
+
+    setRefeicoesPorDia(prev => ({
+      ...prev,
+      [diaAtivo]: [...(prev[diaAtivo] || []), novaRefeicao],
+    }))
+
+    setNomeNovaRefeicao('')
+    setHorarioNovaRefeicao('')
+    setRefeicaoAberta(novaRefeicao.id)
+  }
+
+  function removerRefeicao(id: string) {
+    setRefeicoesPorDia(prev => ({
+      ...prev,
+      [diaAtivo]: (prev[diaAtivo] || []).filter(r => r.id !== id),
+    }))
+  }
+
+  function atualizarRefeicao(id: string, campo: 'nome' | 'horario', valor: string) {
+    setRefeicoesPorDia(prev => ({
+      ...prev,
+      [diaAtivo]: (prev[diaAtivo] || []).map(r => (r.id === id ? { ...r, [campo]: valor } : r)),
+    }))
+  }
+
+  // ACCIONS: ALIMENTOS
+  function adicionarAlimento(refeicaoId: string) {
+    const novoAlimento: AlimentoFormulario = {
+      id: crypto.randomUUID(),
+      nome: '',
+      quantidade: '',
+      calorias: '',
+      proteinas: '',
+      carboidratos: '',
+      gorduras: '',
+    }
+
+    setRefeicoesPorDia(prev => ({
+      ...prev,
+      [diaAtivo]: (prev[diaAtivo] || []).map(ref =>
+        ref.id === refeicaoId ? { ...ref, alimentos: [...ref.alimentos, novoAlimento] } : ref
+      ),
+    }))
+  }
+
+  function removerAlimento(refeicaoId: string, alimentoId: string) {
+    setRefeicoesPorDia(prev => ({
+      ...prev,
+      [diaAtivo]: (prev[diaAtivo] || []).map(ref =>
+        ref.id === refeicaoId
+          ? { ...ref, alimentos: ref.alimentos.filter(a => a.id !== alimentoId) }
+          : ref
+      ),
+    }))
+  }
+
+  function atualizarAlimento(
+    refeicaoId: string,
+    alimentoId: string,
+    campo: keyof AlimentoFormulario,
+    valor: string
+  ) {
+    const camposNumericos = ['calorias', 'proteinas', 'carboidratos', 'gorduras']
+    const valorTratado = camposNumericos.includes(campo) ? (valor === '' ? '' : Number(valor)) : valor
+
+    setRefeicoesPorDia(prev => ({
+      ...prev,
+      [diaAtivo]: (prev[diaAtivo] || []).map(ref =>
+        ref.id === refeicaoId
+          ? {
+              ...ref,
+              alimentos: ref.alimentos.map(a =>
+                a.id === alimentoId ? { ...a, [campo]: valorTratado } : a
+              ),
+            }
+          : ref
+      ),
+    }))
+  }
+
+  function copiarCardapioParaOutrosDias() {
+    if (refeicoesDoDia.length === 0) return
+
+    const diaNome = DIAS_DA_SEMANA.find(d => d.id === diaAtivo)?.label
+    if (!confirm(`Deseja replicar as refeições de ${diaNome} para TODOS os outros dias?`)) return
+
+    setRefeicoesPorDia(prev => {
+      const novorefeicoesPorDia = { ...prev }
+      DIAS_DA_SEMANA.forEach(dia => {
+        if (dia.id !== diaAtivo) {
+          novorefeicoesPorDia[dia.id] = refeicoesDoDia.map(ref => ({
+            ...ref,
+            id: crypto.randomUUID(),
+            alimentos: ref.alimentos.map(ali => ({ ...ali, id: crypto.randomUUID() })),
+          }))
+        }
+      })
+      return novorefeicoesPorDia
+    })
+  }
+
+  function salvarDieta(e: React.FormEvent) {
+    e.preventDefault()
+    if (!nome.trim()) return alert('Informe o nome da dieta.')
+
+    const dietaCompleta = {
+      nome,
+      descricao,
+      objetivo,
+      nivel,
+      duracao,
+      metaAgua,
+      metasAlvo,
+      observacoesFinais,
+      planilhaPorDia: refeicoesPorDia,
+    }
+
+    console.log('Dieta completa:', dietaCompleta)
+    alert('Dieta cadastrada com sucesso!')
+  }
+
+  return (
+    <div className="min-h-screen w-full py-6">
+      <form onSubmit={salvarDieta} className="container mx-auto flex flex-col gap-4">
+        {/* Cabeçalho */}
+        <div className="flex gap-2 items-center">
+          <WrapperIcone>
+            <Utensils className="size-full" />
+          </WrapperIcone>
+          <Texto tipo="titulo" className="font-thin">
+            Cadastrar Nova Dieta
+          </Texto>
+        </div>
+
+        {/* Info Geral */}
+        <Texto tipo="titulo" className="font-thin mt-2">
+          Nome da dieta
+        </Texto>
+        <InputSimples valor={nome} onChange={e => setNome(e.target.value)} placeholder="ex: Plano Cutting" />
+
+        <Texto tipo="titulo" className="font-thin">
+          Descrição / Orientações Gerais
+        </Texto>
+        <InputTextarea
+          valor={descricao}
+          onChange={e => setDescricao(e.target.value)}
+          classeAdicional="h-20"
+          placeholder="Orientações iniciais..."
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-2">
+          <div>
+            <Texto tipo="titulo" className="font-thin mb-1">Objetivo</Texto>
+            <InputSimples valor={objetivo} onChange={e => setObjetivo(e.target.value)} placeholder="ex: Hipertrofia" />
+          </div>
+          <div>
+            <Texto tipo="titulo" className="font-thin mb-1">Nível</Texto>
+            <InputSimples valor={nivel} onChange={e => setNivel(e.target.value)} placeholder="ex: Avançado" />
+          </div>
+          <div>
+            <Texto tipo="titulo" className="font-thin mb-1">Duração</Texto>
+            <InputSimples valor={duracao} onChange={e => setDuracao(e.target.value)} placeholder="ex: 8 semanas" />
+          </div>
+          <div>
+            <Texto tipo="titulo" className="font-thin mb-1">Meta Água (L/dia)</Texto>
+            <InputSimples
+              tipo="number"
+              valor={metaAgua}
+              onChange={e => setMetaAgua(e.target.value === '' ? '' : Number(e.target.value))}
+              placeholder="ex: 3.5"
+            />
+          </div>
+        </div>
+
+        {/* Metas Nutricionais */}
+        <div className="flex gap-2 items-center mt-3">
+          <WrapperIcone>
+            <Target className="size-full" />
+          </WrapperIcone>
+          <Texto tipo="titulo" className="font-thin">
+            Metas Nutricionais Diárias (Alvo)
+          </Texto>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div>
+            <label className="text-xs opacity-60 block mb-1">Calorias (kcal)</label>
+            <InputSimples
+              tipo="number"
+              valor={metasAlvo.calorias}
+              onChange={e => setMetasAlvo(p => ({ ...p, calorias: e.target.value === '' ? '' : Number(e.target.value) }))}
+            />
+          </div>
+          <div>
+            <label className="text-xs opacity-60 block mb-1">Proteínas (g)</label>
+            <InputSimples
+              tipo="number"
+              valor={metasAlvo.proteinas}
+              onChange={e => setMetasAlvo(p => ({ ...p, proteinas: e.target.value === '' ? '' : Number(e.target.value) }))}
+            />
+          </div>
+          <div>
+            <label className="text-xs opacity-60 block mb-1">Carbs (g)</label>
+            <InputSimples
+              tipo="number"
+              valor={metasAlvo.carboidratos}
+              onChange={e => setMetasAlvo(p => ({ ...p, carboidratos: e.target.value === '' ? '' : Number(e.target.value) }))}
+            />
+          </div>
+          <div>
+            <label className="text-xs opacity-60 block mb-1">Gorduras (g)</label>
+            <InputSimples
+              tipo="number"
+              valor={metasAlvo.gorduras}
+              onChange={e => setMetasAlvo(p => ({ ...p, gorduras: e.target.value === '' ? '' : Number(e.target.value) }))}
+            />
+          </div>
+        </div>
+
+        {/* Navegação por Dias */}
+        <div className="flex gap-2 items-center mt-5">
+          <WrapperIcone>
+            <Calendar className="size-full" />
+          </WrapperIcone>
+          <Texto tipo="titulo" className="font-thin">
+            Planilha Semanal
+          </Texto>
+        </div>
+
+        <SeletorDias
+          dias={DIAS_DA_SEMANA}
+          diaAtivo={diaAtivo}
+          onSelecionarDia={setDiaAtivo}
+          refeicoesPorDia={refeicoesPorDia}
+        />
+
+        {/* Resumo do Dia */}
+        <ResumoNutricionalDia
+          labelDia={DIAS_DA_SEMANA.find(d => d.id === diaAtivo)?.label}
+          totais={totaisDiaAtual}
+          metas={metasAlvo}
+          distribuicao={distribuicaoMacros}
+          temRefeicoes={refeicoesDoDia.length > 0}
+          onCopiarCardapio={copiarCardapioParaOutrosDias}
+        />
+
+        {/* Adicionar Refeição */}
+        <div className="flex gap-2 items-center mt-3">
+          <WrapperIcone>
+            <Clock className="size-full" />
+          </WrapperIcone>
+          <Texto tipo="titulo" className="font-thin capitalize">
+            Refeições ({DIAS_DA_SEMANA.find(d => d.id === diaAtivo)?.label})
+          </Texto>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-2">
+          <InputSimples
+            tipo="text"
+            valor={nomeNovaRefeicao}
+            onChange={e => setNomeNovaRefeicao(e.target.value)}
+            placeholder="ex: Café da Manhã, Almoço..."
+            classeAdicional="w-full"
+          />
+          <InputSimples
+            tipo="time"
+            valor={horarioNovaRefeicao}
+            onChange={e => setHorarioNovaRefeicao(e.target.value)}
+            classeAdicional="sm:w-40"
+          />
+          <BotaoSecundario icone={Plus} onClick={adicionarRefeicao} tipo="cheio" />
+        </div>
+
+        {/* Lista de Refeições */}
+        <div className="flex flex-col gap-3">
+          {refeicoesDoDia.length === 0 && (
+            <div className="p-8 text-center rounded-2xl bg-base-terciaria/40 border border-dashed border-base-terciaria/60">
+              <Texto tipo="subtexto" className="opacity-50">
+                Nenhuma refeição cadastrada para {DIAS_DA_SEMANA.find(d => d.id === diaAtivo)?.label}.
+              </Texto>
+            </div>
+          )}
+
+          {refeicoesDoDia.map(refeicao => (
+            <CardRefeicao
+              key={refeicao.id}
+              refeicao={refeicao}
+              estaAberta={refeicaoAberta === refeicao.id}
+              onToggleAberta={() =>
+                setRefeicaoAberta(refeicaoAberta === refeicao.id ? null : refeicao.id)
+              }
+              onAtualizarRefeicao={(campo, valor) => atualizarRefeicao(refeicao.id, campo, valor)}
+              onRemoverRefeicao={() => removerRefeicao(refeicao.id)}
+              onAdicionarAlimento={() => adicionarAlimento(refeicao.id)}
+              onRemoverAlimento={alimentoId => removerAlimento(refeicao.id, alimentoId)}
+              onAtualizarAlimento={(alimentoId, campo, valor) =>
+                atualizarAlimento(refeicao.id, alimentoId, campo, valor)
+              }
+            />
+          ))}
+        </div>
+
+        {/* Observações */}
+        <div className="flex gap-2 items-center mt-3">
+          <WrapperIcone>
+            <FileText className="size-full" />
+          </WrapperIcone>
+          <Texto tipo="titulo" className="font-thin">
+            Suplementação & Observações Adicionais
+          </Texto>
+        </div>
+
+        <InputTextarea
+          valor={observacoesFinais}
+          onChange={e => setObservacoesFinais(e.target.value)}
+          classeAdicional="h-24"
+          placeholder="ex: Creatina, Glutamina..."
+        />
+
+        <BotaoPrimario texto="salvar dieta completa" icone={Plus} onClick={() => salvarDieta} />
+      </form>
+    </div>
+  )
 }
 
 export default CriarDieta
