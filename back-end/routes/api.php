@@ -23,6 +23,8 @@ Route::middleware('auth:sanctum')->group(function () {
             // ficha 
             Route::prefix('ficha')->controller(FichaController::class)->group(function() {
                 Route::post('/', 'create');
+                Route::get('/meus-criados', 'meusCriados');
+                Route::get('/meus-adcionados', 'meusAdcionados');
                 Route::get('/{ficha}', 'show');
                 Route::get('/', 'fetch');
                 Route::put('/{ficha}', 'update');
@@ -32,6 +34,8 @@ Route::middleware('auth:sanctum')->group(function () {
             //treino 
             Route::prefix('treino')->controller(TreinoController::class)->group(function() {
                 Route::post('/', 'store');
+                Route::get('/meus-criados', 'meusCriados');
+                Route::get('/meus-adicionados', 'meusAdicionados');
                 Route::get('/{treino}', 'show');
                 Route::get('/', 'fetch');
                 Route::put('/{treino}', 'update');
@@ -40,7 +44,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
             Route::prefix('exercicio')->controller(ExercicioController::class)->group(function() {
                 Route::post('', 'create');
+                Route::get('/meus-criados', 'meusCriados');
+                Route::get('/meus-adicionados', 'meusAdicionados');
                 Route::get('/{exercicio}', 'show');
+                Route::post('/adcionar/{exercicio}', 'adcionar');
                 Route::get('/', 'fetch');
                 Route::put('/{exercicio}', 'update');
                 Route::delete('/{exercicio}', 'delete');

@@ -77,7 +77,7 @@ const Rota = createBrowserRouter(
                     </Route>
 
                     <Route path='meusTreinos' element={<MeusTreinosLayout />}>
-                        <Route path='biblioteca' element={<BibliotecaTreinosHome />} />
+                        <Route index element={<BibliotecaTreinosHome />} />
                     </Route>
 
                     {/* Criação */}
