@@ -7,38 +7,40 @@ use Illuminate\Database\Eloquent\Model;
 class Exercicio extends Model
 {
     protected $fillable = [
+        'user_id',
         'nome',
         'descricao',
-        'categoria_id',
+        'tipo_id',
         'nivel_id',
-        'tipo_id'
+        'foco_id',
     ];
+
+    public function criador()
+    {
+        return $this->belongsTo(User::class, 'user_id')->withDefault([
+            'nome' => 'Criador Desconhecido',
+        ]);
+    }
+
+    public function usuariosQueAdicionaram()
+    {
+        return $this->belongsToMany(User::class, 'exercicio_usuario', 'exercicio_id', 'user_id')
+            ->withTimestamps();
+    }
 
     public function tipo()
     {
-        return $this->belongsTo(
-            TipoExercicio::class,
-            'tipo_id',
-            'id'
-        );
+        return $this->belongsTo(TipoExercicio::class, 'tipo_id', 'id');
     }
 
     public function nivel()
     {
-        return $this->belongsTo(
-            NivelExercicio::class,
-            'nivel_id',
-            'id'
-        );
+        return $this->belongsTo(NivelExercicio::class, 'nivel_id', 'id');
     }
 
     public function foco()
     {
-        return $this->belongsTo(
-            Foco::class,
-            'foco_id',
-            'id'
-        );
+        return $this->belongsTo(Foco::class, 'foco_id', 'id');
     }
 
     public function musculos()
@@ -63,10 +65,6 @@ class Exercicio extends Model
 
     public function treinos()
     {
-        return $this->hasMany(
-            ExercicioTreino::class,
-            'exercicio_id',
-            'id'
-        );
+        return $this->hasMany(ExercicioTreino::class, 'exercicio_id', 'id');
     }
 }

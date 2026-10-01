@@ -9,8 +9,8 @@ const CardHorizontal = ({
     children,
     className = ''
 }: CardHorizontalProps) => {
-    const classeBase = `relative w-full p-3 rounded-2xl
-        bg-base-terciaria/40 backdrop-blur-md 
+    const classeBase = `w-full p-3 rounded-2xl
+        bg-base-terciaria/70 backdrop-blur-md shadow-md shadow-gray-900/20
         transition-colors duration-200 text-t-terciaria`
     return (
         <div className={`${classeBase} ${className}`}>

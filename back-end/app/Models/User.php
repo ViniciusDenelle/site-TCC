@@ -82,5 +82,38 @@ class User extends Authenticatable
         return $this->hasOne(ObjetivosUsuario::class);
     }
 
+    public function exerciciosCriados()
+    {
+        return $this->hasMany(Exercicio::class, 'user_id');
+    }
+
+    public function treinosCriados()
+    {
+        return $this->hasMany(Treino::class, 'user_id');
+    }
+
+    public function fichasCriadas()
+    {
+        return $this->hasMany(FichaTreino::class, 'user_id');
+    }
+
+    public function exerciciosAdicionados()
+    {
+        return $this->belongsToMany(Exercicio::class, 'exercicio_usuario', 'user_id', 'exercicio_id')
+            ->withTimestamps();
+    }
+
+    public function treinosAdicionados()
+    {
+        return $this->belongsToMany(Treino::class, 'treino_usuario', 'user_id', 'treino_id')
+            ->withTimestamps();
+    }
+
+    public function fichasAdicionadas()
+    {
+        return $this->belongsToMany(FichaTreino::class, 'ficha_usuario', 'user_id', 'ficha_treino_id')
+            ->withTimestamps();
+    }
+
     
 }

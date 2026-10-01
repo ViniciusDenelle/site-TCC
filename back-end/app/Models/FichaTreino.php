@@ -8,15 +8,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class FichaTreino extends Model
 {
     protected $table = 'fichas_treino';
-
     protected $fillable = [
+        'user_id',
         'nome',
-        'descricao'
+        'descricao',
     ];
 
-    public function dias(): HasMany
+    public function criador()
     {
-        return $this->hasMany(DiaFicha::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function usuariosQueAdicionaram()
+    {
+        return $this->belongsToMany(User::class, 'ficha_usuario', 'ficha_treino_id', 'user_id')
+            ->withTimestamps();
     }
 
     public function divisoes(): HasMany
@@ -24,8 +30,8 @@ class FichaTreino extends Model
         return $this->hasMany(DivisaoFicha::class);
     }
 
-    public function treinos(): HasMany
+    public function dias(): HasMany
     {
-        return $this->hasMany(Treino::class);
+        return $this->hasMany(DiaFicha::class);
     }
 }

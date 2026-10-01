@@ -2,62 +2,44 @@ import { useMutation } from '@tanstack/react-query'
 import { AxiosError, AxiosResponse } from 'axios'
 import React from 'react'
 import api from '../../../../api'
+import { CriarTreinoPayload } from './TreinoProps'
+import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
-export type exerciciosInfo = {
-    id: number
-    repsMin: number,
-    repsMax: number,
-    sets: number,
-    peso: number,
-    descanso: number
-}
+const useCriarTreino = () => {
 
-export type ReqTreinoProps = {
-    nome: string,
-    descricao?: string,
-    exercicios: exerciciosInfo[]
-}
-
-const useCriarTreino = ({
-    id,
-    nome,
-    descricao,
-    exercicios
-} : ReqTreinoProps & {id: number}) => {
-
+    const navigate = useNavigate()
 
     const {
         mutate,
         isSuccess,
         isError,
-        isPending
+        isPending,
+        error
     } = useMutation<
         AxiosResponse,
         AxiosError,
-        ReqTreinoProps
+        CriarTreinoPayload
     >({
-        mutationFn: (dados:ReqTreinoProps) => api.post(`dashboard/treinos/treino/${id}`, dados),
-        onSuccess: (res) => {
-            console.log(res.data)
+        mutationFn: async (dados:CriarTreinoPayload) => {
+            const res =  await api.post(`dashboard/treinos/treino`, dados)
+            return res.data
+        } ,onSuccess: (res) => {
+            console.log(res)
+            toast.success('treino criado com sucesso')
+            navigate('/dashboard/treino/verTreino/' + res.data.id)
         },
         onError:(error) => {
             console.log(error)
         }
     })
 
-    const criarTreinoHandler = () => {
-        mutate({
-            nome: nome,
-            descricao: descricao,
-            exercicios: exercicios
-        })
-    }
-
   return {
         isSuccess,
         isError,
         isPending,
-        criarTreinoHandler
+        error,
+        mutate
   }
 }
 

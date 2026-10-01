@@ -5,92 +5,135 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateFichaRequest;
 use App\Http\Resources\FichaResource;
 use App\Models\FichaTreino;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Filters\FichaFilter;
+use Illuminate\Http\Request;
 
 class FichaController extends Controller
 {
-    public function create(CreateFichaRequest $request)
-    {   
-        $dados= $request->validated();
+    private const DIAS_SEMANA = [
+        'domingo' => 0,
+        'segunda' => 1,
+        'terca' => 2,
+        'quarta' => 3,
+        'quinta' => 4,
+        'sexta' => 5,
+        'sabado' => 6,
+    ];
 
-        $ficha = DB::transaction(function() use ($dados) {
+    public function create(CreateFichaRequest $request)
+    {
+        $dados = $request->validated();
+
+        $ficha = DB::transaction(function () use ($dados, $request) {
             $ficha = FichaTreino::create([
+                'user_id' => $request->user()->id,
                 'nome' => $dados['nome'],
-                'descricao' => $dados['descricao'],
+                'descricao' => $dados['descricao'] ?? null,
+                'user_id' => $request->user()->id,
             ]);
 
-            foreach ($dados['diasSemana'] as $dia) {
-                
-                $ficha->dias()->create([
-                    'dia_semana' => $dia
+            foreach ($dados['divisoes'] as $ordem => $divisaoDados) {
+                $divisao = $ficha->divisoes()->create([
+                    'divisao' => $divisaoDados['nome'],
+                    'ordem' => $ordem,
                 ]);
-            };
 
-            foreach ($dados['divisao'] as $divisao) {
-                $ficha->divisoes()->create([
-                    'divisao' => $divisao
+                \App\Models\Treino::whereIn('id', $divisaoDados['treino_ids'])
+                    ->update(['divisao_ficha_id' => $divisao->id]);
+            }
+
+            foreach ($dados['dias'] as $diaSemana => $treinoId) {
+                $ficha->dias()->create([
+                    'dia_semana' => self::DIAS_SEMANA[$diaSemana],
+                    'treino_id' => $treinoId,
                 ]);
             }
+
             return $ficha;
         });
-        return response($ficha->load(['dias', 'divisoes']));
+
+        return new FichaResource($ficha->load([
+            'criador',
+            'dias.treino', 
+            'divisoes.treinos'
+        ]));
     }
 
     public function show(FichaTreino $ficha)
     {
-        return new FichaResource($ficha->load(['dias', 'divisoes']));
+        return new FichaResource($ficha->load(['dias.treino', 'divisoes.treinos']));
     }
 
-    public function fetch()
+    public function fetch(Request $request)
     {
-        $fichas = FichaTreino::with(['dias', 'divisoes'])
-        ->orderBy('created_at')
-        ->limit(5)
-        ->get();
+        $fichas = FichaFilter::apply(
+            FichaTreino::query()
+                ->where('user_id', $request->user()->id)
+                ->with([
+                    'criador',
+                    'dias.treino', 
+                    'divisoes.treinos'
+                ]),
+            $request
+        )
+            ->latest()
+            ->paginate(5);
 
         return FichaResource::collection($fichas);
-        
     }
 
-    public function update(CreateFichaRequest $request ,FichaTreino $ficha){
-        
+    public function update(CreateFichaRequest $request, FichaTreino $ficha)
+    {
         $dados = $request->validated();
 
-        $novaFicha = DB::transaction(function () use ($dados, $ficha) {
+        $ficha = DB::transaction(function () use ($dados, $ficha) {
             $ficha->update([
                 'nome' => $dados['nome'],
-                'descricao' => $dados['descricao']
+                'descricao' => $dados['descricao'] ?? null,
             ]);
 
-            $ficha->dias()->delete();
-
-            foreach ($dados['diasSemana'] as $dia) {
-                $ficha->dias()->create([
-                    'dia_semana' => $dia
-                ]);
-            }
+            // desvincula treinos das divisões antigas antes de apagar as divisões
+            \App\Models\Treino::whereIn('divisao_ficha_id', $ficha->divisoes()->pluck('id'))
+                ->update(['divisao_ficha_id' => null]);
 
             $ficha->divisoes()->delete();
+            $ficha->dias()->delete();
 
-            foreach ($dados['divisao'] as $divisao) {
-                $ficha->divisoes()->create([
-                    'divisao' => $divisao
+            foreach ($dados['divisoes'] as $ordem => $divisaoDados) {
+                $divisao = $ficha->divisoes()->create([
+                    'divisao' => $divisaoDados['nome'],
+                    'ordem' => $ordem,
+                ]);
+
+                \App\Models\Treino::whereIn('id', $divisaoDados['treino_ids'])
+                    ->update(['divisao_ficha_id' => $divisao->id]);
+            }
+
+            foreach ($dados['dias'] as $diaSemana => $treinoId) {
+                $ficha->dias()->create([
+                    'dia_semana' => self::DIAS_SEMANA[$diaSemana],
+                    'treino_id' => $treinoId,
                 ]);
             }
 
             return $ficha;
         });
 
-        return new FichaResource($novaFicha);
+        return new FichaResource($ficha->load(['dias.treino', 'divisoes.treinos']));
     }
 
     public function delete(FichaTreino $ficha)
     {
-        $ficha->delete();
+        DB::transaction(function () use ($ficha) {
+            \App\Models\Treino::whereIn('divisao_ficha_id', $ficha->divisoes()->pluck('id'))
+                ->update(['divisao_ficha_id' => null]);
 
-        return response([
-            'mensagem' => 'ficha deletada com sucesso'
-        ]);
+            $ficha->dias()->delete();
+            $ficha->divisoes()->delete();
+            $ficha->delete();
+        });
+
+        return response()->json(['mensagem' => 'ficha deletada com sucesso']);
     }
 }

@@ -6,11 +6,12 @@ import BotaoPrimario from '../../componentes/botoes/BotaoPrimario'
 import GoogleIcone from '../../assets/icones/googleIcone.svg'
 import LinkSimples from '../../componentes/links/LinkSimples'
 import useCadastro from '../../logicas/cadastro/useCadastro'
-import useConfirmacao from '../../logicas/querys/useConfirmacao'
+import useConfirmacao from '../../logicas/usuario/useConfirmacao'
 import { Mail } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '../../api'
 import toast from 'react-hot-toast'
+import Texto from '../../componentes/organizacao/Texto'
 
 const Login = () => {
 
@@ -93,37 +94,32 @@ const Login = () => {
 
             <BotaoPrimario
                 tipo='vazio'
-                classeAdcional="gap-4">
-                <span className='flex relative'>
-                    <img src={GoogleIcone} alt=""
-                        className='h-6 absolute -left-7
-                      '
-                    />
-                    google
-
-                </span>
-            </BotaoPrimario>
+                classeAdcional="gap-4"
+                texto='google'
+            />
+                
+            
 
             <BotaoPrimario
                 tipo='cheio'
                 classeAdcional="mt-1"
                 onClick={cadastro}
-            >
-                login
-            </BotaoPrimario>
+                texto='login'
+            />
 
             <div className='flex flex-col items-center gap-1'>
 
                 <div className='flex flex-col sm:flex-row items-center gap-2'>
-                    <p>não tem uma conta?</p>
-                    <LinkSimples classeAdcional='text-destaque-s-escuro 
-                    font-semibold' to='/cadastro'>
+                    <Texto tipo='subtexto'>
+                        Não possui uma conta?
+                    </Texto>
+                    <LinkSimples className='text-indigo-500 font-semibold' to='/cadastro'>
                         crie uma conta
                     </LinkSimples>
                 </div>
 
                 <LinkSimples
-                    classeAdcional='text-destaque-s-escuro 
+                    className='text-destaque-s-escuro 
                   font-semibold'
                     to='recuperar-senha'>
                     esqueceu sua senha?

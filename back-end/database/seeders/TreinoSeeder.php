@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use App\Models\TipoTreino;
 use App\Models\Treino;
 use App\Models\Exercicio;
 use App\Models\NivelExercicio;
 use App\Models\Foco;
-use App\Models\CategoriaExercicio;
 use App\Models\ExercicioTreino;
 use Illuminate\Database\Seeder;
 
@@ -15,6 +15,8 @@ class TreinoSeeder extends Seeder
 {
     public function run(): void
     {
+        $user = User::where('email', 'vinicius@gmail.com')->firstOrFail();
+
         $treinos = [
 
             [
@@ -28,21 +30,21 @@ class TreinoSeeder extends Seeder
                     [
                         'nome' => 'Supino reto',
                         'sets' => 4,
-                        'reps' => [6,8],
+                        'reps' => [6, 8],
                         'peso' => 40,
                         'descanso' => 120,
                     ],
                     [
                         'nome' => 'Desenvolvimento militar',
                         'sets' => 3,
-                        'reps' => [8,10],
+                        'reps' => [8, 10],
                         'peso' => 22,
                         'descanso' => 90,
                     ],
                     [
                         'nome' => 'Tríceps pulley',
                         'sets' => 3,
-                        'reps' => [10,12],
+                        'reps' => [10, 12],
                         'peso' => 25,
                         'descanso' => 60,
                     ],
@@ -60,21 +62,21 @@ class TreinoSeeder extends Seeder
                     [
                         'nome' => 'Puxada frontal',
                         'sets' => 4,
-                        'reps' => [8,10],
+                        'reps' => [8, 10],
                         'peso' => 45,
                         'descanso' => 90,
                     ],
                     [
                         'nome' => 'Remada curvada',
                         'sets' => 4,
-                        'reps' => [6,8],
+                        'reps' => [6, 8],
                         'peso' => 55,
                         'descanso' => 120,
                     ],
                     [
                         'nome' => 'Rosca direta',
                         'sets' => 3,
-                        'reps' => [10,12],
+                        'reps' => [10, 12],
                         'peso' => 18,
                         'descanso' => 60,
                     ],
@@ -92,21 +94,21 @@ class TreinoSeeder extends Seeder
                     [
                         'nome' => 'Agachamento livre',
                         'sets' => 4,
-                        'reps' => [5,8],
+                        'reps' => [5, 8],
                         'peso' => 70,
                         'descanso' => 180,
                     ],
                     [
                         'nome' => 'Leg press',
                         'sets' => 4,
-                        'reps' => [10,12],
+                        'reps' => [10, 12],
                         'peso' => 180,
                         'descanso' => 120,
                     ],
                     [
                         'nome' => 'Levantamento terra',
                         'sets' => 3,
-                        'reps' => [6,8],
+                        'reps' => [6, 8],
                         'peso' => 80,
                         'descanso' => 180,
                     ],
@@ -124,32 +126,33 @@ class TreinoSeeder extends Seeder
                     [
                         'nome' => 'Agachamento livre',
                         'sets' => 3,
-                        'reps' => [10,12],
+                        'reps' => [10, 12],
                         'peso' => 30,
                         'descanso' => 90,
                     ],
                     [
                         'nome' => 'Supino reto',
                         'sets' => 3,
-                        'reps' => [10,12],
+                        'reps' => [10, 12],
                         'peso' => 25,
                         'descanso' => 90,
                     ],
                     [
                         'nome' => 'Puxada frontal',
                         'sets' => 3,
-                        'reps' => [10,12],
+                        'reps' => [10, 12],
                         'peso' => 30,
                         'descanso' => 90,
                     ],
                 ],
             ],
-
         ];
 
         foreach ($treinos as $dadosTreino) {
 
             $treino = Treino::create([
+                'user_id' => $user->id,
+
                 'nome' => $dadosTreino['nome'],
                 'descricao' => $dadosTreino['descricao'],
 
@@ -174,7 +177,7 @@ class TreinoSeeder extends Seeder
                 $exercicio = Exercicio::where(
                     'nome',
                     $dadosExercicio['nome']
-                )->first();
+                )->firstOrFail();
 
                 ExercicioTreino::create([
                     'treino_id' => $treino->id,

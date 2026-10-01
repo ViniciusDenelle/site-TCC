@@ -16,30 +16,53 @@ class ExercicioController extends Controller
     {
         $dados = $request->validated();
 
-        $exercicio = Exercicio::create([
+        $exercicio = DB::transaction(function () use ($dados, $request) {
+            $exercicio = Exercicio::create([
+                'user_id' => $request->user()->id,
                 'nome' => $dados['nome'],
                 'descricao' => $dados['descricao'] ?? null,
+                'tipo_id' => $dados['tipo_id'],
+                'nivel_id' => $dados['nivel_id'],
+                'foco_id' => $dados['foco_id'],
             ]);
 
+            foreach ($dados['musculos'] as $musculo) {
+                $exercicio->musculos()->attach($musculo['id'], ['tipo' => $musculo['tipo']]);
+            }
 
-        return new ExercicioResource($exercicio);
+            if (!empty($dados['equipamentos'])) {
+                $exercicio->equipamentos()->attach($dados['equipamentos']);
+            }
+
+            return $exercicio;
+        });
+
+        return new ExercicioResource($exercicio->load(
+            'criador',
+            'tipo', 
+            'nivel', 
+            'foco', 
+            'musculos', 
+            'equipamentos'
+        ));
     }
 
     public function show(Exercicio $exercicio)
     {
-        return new ExercicioResource($exercicio);
+        return new ExercicioResource($exercicio->load('criador', 'tipo', 'nivel', 'foco', 'musculos', 'equipamentos'));
     }
 
     public function fetch(Request $request)
     {
         $query = Exercicio::query()
-        ->with([
-            'nivel', 
-            'foco', 
-            'tipo', 
-            'musculos', 
-            'equipamentos'
-        ]);
+            ->with([
+                'criador',
+                'nivel',
+                'foco',
+                'tipo',
+                'musculos',
+                'equipamentos'
+            ]);
 
         $query = \App\Filters\ExercicioFilter::apply($query, $request);
 
@@ -52,14 +75,31 @@ class ExercicioController extends Controller
     {
         $dados = $request->validated();
 
+        $exercicio = DB::transaction(function () use ($exercicio, $dados) {
+            // 1. Atualiza os dados diretos da tabela exercicios
+            $exercicio->update([
+                'nome' => $dados['nome'],
+                'descricao' => $dados['descricao'] ?? null,
+                'tipo_id' => $dados['tipo_id'],
+                'nivel_id' => $dados['nivel_id'],
+                'foco_id' => $dados['foco_id'],
+            ]);
 
-        $exercicio->update([
-            'nome' => $dados['nome'],
-            'descricao' => $dados['descricao'] ?? null,
-        ]);
+            $musculosSync = [];
+            if (!empty($dados['musculos'])) {
+                foreach ($dados['musculos'] as $musculo) {
+                    $musculosSync[$musculo['id']] = ['tipo' => $musculo['tipo']];
+                }
+            }
+            $exercicio->musculos()->sync($musculosSync);
 
+            $exercicio->equipamentos()->sync($dados['equipamentos'] ?? []);
 
-        return new ExercicioResource($exercicio);
+            return $exercicio;
+        });
+
+        // Recarrega os relacionamentos para retornar a resposta completa na Resource
+        return new ExercicioResource($exercicio->load('tipo', 'nivel', 'foco', 'musculos', 'equipamentos'));
     }
 
     public function delete(Exercicio $exercicio)

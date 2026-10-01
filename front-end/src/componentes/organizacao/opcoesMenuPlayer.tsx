@@ -8,6 +8,7 @@ type OpcoesProps = {
     tipo?: 'link' | 'botao'
     to?: string
     icone?: LucideIcon
+    corIcone?: string
     nome: string
     onclick?: () => void
 }
@@ -16,6 +17,7 @@ const OpcoesMenuPlayer = ({
     tipo = 'botao',
     to = '',
     icone: Icone,
+    corIcone = '',
     nome,
     onclick
 } : OpcoesProps) => {
@@ -26,7 +28,7 @@ const OpcoesMenuPlayer = ({
                 <NavLink to={to}>
                     <div className="flex gap-4 items-center">
                         <WrapperIcone tamanho="lg">
-                            <Icone className="size-full" />
+                            <Icone className={`size-full ${corIcone}`} />
                         </WrapperIcone>
 
                         <Texto tipo="titulo" className="text-t-secundaria font-thin">
@@ -43,6 +45,7 @@ const OpcoesMenuPlayer = ({
                     tamanhoIcone="lg" 
                     tipoFonte="titulo"
                     textoClassName="text-t-secundaria font-thin"
+                    iconeClassName={corIcone}
                 />
             )}
         </>

@@ -11,13 +11,19 @@ class ExercicioResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'criador'   => $this->when($this->relationLoaded('criador'), function () {
+                return $this->criador ? [
+                    'id'   => $this->criador->id,
+                    'nome' => $this->criador->name,
+                ] : null;
+            }),
 
             'nome' => $this->nome,
             'descricao' => $this->descricao,
 
             'foco' => [
-                'id' => $this->foco->id,
-                'nome' => $this->foco->nome,
+                'id' => $this->foco?->id,
+                'nome' => $this->foco?->nome,
             ],
 
             'nivel' => [

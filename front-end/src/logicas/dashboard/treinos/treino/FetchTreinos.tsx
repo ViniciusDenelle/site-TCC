@@ -1,67 +1,33 @@
-import { useQuery } from '@tanstack/react-query'
-import api from '../../../../api'
-import { AxiosError, AxiosResponse } from 'axios'
-import { Filtros } from '../useFiltrosTreinos'
+// logicas/dashboard/treinos/treino/FetchTreinos.ts
+import { useQuery } from '@tanstack/react-query';
+import api from '../../../../api';
 
-export type Exercicio = {
-    id: number
-    nome: string
-    descricao: string
-}
+type Filtros = Partial<Record<'foco_id' | 'nivel_id' | 'tipo_id', number[]>>;
 
-export type ResExercicioTreinoProps = {
-    id: number
-    ordem: number
-
-    repsMin: number
-    repsMax: number
-    sets: number
-    peso: number
-    descanso: number
-
-    exercicio: Exercicio
-}
-
-export type ResTreinoProps = {
-    id: number
-    nome: string
-    nomeCriador: string
-    descricao: string | null
-
-    exercicios: ResExercicioTreinoProps[]
-}
-
-const useFetchTreinos = (filtros:Filtros, pagina:number) => {
-    const {
-        data: treinos,
-        isPending,
-        isSuccess,
-        isError,
-        error,
-    } = useQuery<
-        AxiosResponse,
-        AxiosError,
-        ResTreinoProps[]
-    >({
-        queryKey: ['treinos', filtros, pagina],
+function useFetchTreinos(
+    filtros: Filtros,
+    pesquisa: string,
+    caloriasRange: { min: number | null; max: number | null },
+    tempoRange: { min: number | null; max: number | null },
+    pagina: number
+) {
+    return useQuery({
+        queryKey: ['treinos', filtros, pesquisa, caloriasRange, tempoRange, pagina],
         queryFn: async () => {
-            const res = await api.get('/dashboard/treinos/treino', 
-            {params: {
-                ...filtros,
-                page: pagina
-            }})
-
-            return res.data
+            const res = await api.get('/dashboard/treinos/treino', {
+                params: {
+                    ...filtros,
+                    nome: pesquisa || undefined,
+                    calorias_min: caloriasRange.min ?? undefined,
+                    calorias_max: caloriasRange.max ?? undefined,
+                    tempo_min: tempoRange.min ?? undefined,
+                    tempo_max: tempoRange.max ?? undefined,
+                    page: pagina,
+                },
+            });
+            return res.data;
         },
-    })
-
-    return {
-        treinos,
-        isPending,
-        isSuccess,
-        isError,
-        error,
-    }
+    });
 }
 
-export default useFetchTreinos
+export default useFetchTreinos;

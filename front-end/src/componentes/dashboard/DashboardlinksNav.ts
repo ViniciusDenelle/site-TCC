@@ -14,7 +14,7 @@ export const nav = [
     {
         icone: Flame,
         legenda: 'dieta',
-        to: '/dieta'
+        to: 'dietas'
     },
     {
         icone: ChartBarIncreasing,

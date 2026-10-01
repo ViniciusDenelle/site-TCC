@@ -126,6 +126,7 @@ const useExecuçãoExercicio = (
         onFinish: () => executarSerie(),
     });
 
+
     /**
      * Sempre que trocar de exercício,
      * reinicia toda a execução.
@@ -155,7 +156,7 @@ const useExecuçãoExercicio = (
     }, [exercicio]);
 
     const executarSerie = () => {
-        console.log('ababoui')
+        
         setSeries(prev => {
 
             const novasSeries = prev.map(serie =>
@@ -215,7 +216,7 @@ const useExecuçãoExercicio = (
 
         setSerieAtual(numeroSerie);
     };
-    console.log(series)
+    
 
     return {
         peso,

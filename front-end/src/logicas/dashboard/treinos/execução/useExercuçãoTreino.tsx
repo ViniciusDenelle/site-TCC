@@ -42,7 +42,7 @@ const useExercuçãoTreino = (id) => {
                               removerSerieExecutada
                             )
 
-  console.log(seriesExecutadas)
+  
 
   return {
     treinoQuery,

@@ -1,11 +1,15 @@
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError, AxiosResponse } from 'axios'
 import api from '../../../../api'
+import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 const useDeleteTreino = (id: number) => {
 
+    const navigate = useNavigate()
+
     const {
-        mutate,
+        mutate: deletarTreino,
         isSuccess,
         isError,
         isPending
@@ -15,9 +19,10 @@ const useDeleteTreino = (id: number) => {
     >({
         mutationFn: () =>
             api.delete(`dashboard/treinos/treino/${id}`),
-
+                
         onSuccess: (res) => {
-            console.log(res.data)
+            toast.success('treino deletado com sucesso')
+            navigate(-1)
         },
 
         onError: (error) => {
@@ -25,15 +30,11 @@ const useDeleteTreino = (id: number) => {
         }
     })
 
-    const deletarTreinoHandler = () => {
-        mutate()
-    }
-
     return {
         isSuccess,
         isError,
         isPending,
-        deletarTreinoHandler
+        deletarTreino
     }
 }
 

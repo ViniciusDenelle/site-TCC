@@ -10,7 +10,7 @@ import { Route, useNavigate } from 'react-router-dom'
 
 type Passo = 1 | 2 | 3 | 4 | 5 | 6
 
-type DadosCadastro = {
+export type ReqUsuarioProps = {
     nome: string
     email: string
     senha: string
@@ -35,6 +35,9 @@ type DadosCadastro = {
         previsao: string
     }
     veloPerda: number
+}
+
+type DadosCadastro = ReqUsuarioProps & {
     codigoConfirmacao: string
     passo?: number
 }
@@ -260,7 +263,6 @@ const useCadastro = (): UseCadastroReturn => {
         CadastroInfo
     >({
         mutationFn: async (dados) => {
-            console.log(dados)
             const res = await api.post('/cadastro', dados)
             
             return res.data

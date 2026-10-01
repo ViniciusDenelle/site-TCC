@@ -56,7 +56,7 @@ class BadgeTreinoController extends Controller
         return BadgeResource::collection($focos);
     }
 
-    public function compartilhadas()
+    public function exercicio()
     {
         return response()->json([
             'musculos' => BadgeResource::collection(
@@ -77,6 +77,20 @@ class BadgeTreinoController extends Controller
 
             'tipos' => BadgeResource::collection(
                 TipoExercicio::limit(12)->get()
+            ),
+        ]);
+    }
+
+    public function treino()
+    {
+        return response()->json([
+            
+            'focos' => BadgeResource::collection(
+                Foco::limit(12)->get()
+            ),
+
+            'tipos' => BadgeResource::collection(
+                TipoTreino::limit(12)->get()
             ),
         ]);
     }

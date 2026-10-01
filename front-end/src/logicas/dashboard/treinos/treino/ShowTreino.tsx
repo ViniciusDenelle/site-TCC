@@ -2,10 +2,11 @@
 import { useQuery } from '@tanstack/react-query'
 import api from '../../../../api'
 import { AxiosError, AxiosResponse } from 'axios'
-import { ResTreinoProps } from './FetchTreinos'
+import { ResTreinoProps } from './TreinoProps'
 
 
-const useShowTreino = (id: number) => {
+
+const useShowTreino = (id: number | string) => {
     const {
         data: treino,
         isPending,

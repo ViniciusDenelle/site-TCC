@@ -14,7 +14,13 @@ createRoot(document.getElementById('root')).render(
     <QueryClientProvider client={queryClient}>
       <TemaContextoProvider>
         <RouterProvider router={Rota} />
-        <Toaster />
+        <Toaster 
+          toastOptions={{
+            className: 'bg-base-terciaria text-t-secundaria',
+            success: {className: 'bg-base-terciaria rounded-lg text-t-secundaria'},
+            error: {className: 'bg-base-terciaria rounded-lg text-t-secundaria'}
+          }}
+        />
       </TemaContextoProvider>
     </QueryClientProvider>
   </StrictMode>

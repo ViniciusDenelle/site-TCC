@@ -1,26 +1,26 @@
-import { AnimatePresence } from 'framer-motion'
-import {motion} from 'framer-motion'
-import React, { ReactNode } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ReactNode } from 'react'
 import WrapperIcone from '../organizacao/WrapperIcone'
 import { X } from 'lucide-react'
 import Texto from '../organizacao/Texto'
-import InputCheckbox from '../inputs/InputCheckbox'
 import BotaoPrimario from '../botoes/BotaoPrimario'
 import CardHorizontal from '../CardHorizontal'
-import { UseFiltrosProps } from '../../logicas/dashboard/treinos/tipagens/FiltrosProps'
 
-type FiltroModalProps = UseFiltrosProps & {
-    children: ReactNode
-}
+type Props = {
+    menuFiltroAberto: boolean;
+    setMenuFiltroAberto: (aberto: boolean) => void;
+    aplicarFiltros: () => void;
+    limparFiltros: () => void;
+    children: ReactNode;
+};
 
 const FiltroTreinoModal = ({
     menuFiltroAberto,
     setMenuFiltroAberto,
-    filtrosTemp,
-    setFiltros,
-    setFiltrosTemp,
-    children
-} : FiltroModalProps) => {
+    aplicarFiltros,
+    limparFiltros,
+    children,
+}: Props) => {
     return (
         <AnimatePresence>
             {menuFiltroAberto && (
@@ -32,20 +32,15 @@ const FiltroTreinoModal = ({
                         initial={{ y: '100%' }}
                         animate={{ y: 0 }}
                         exit={{ y: '100%' }}
-                        transition={{
-                            duration: 0.4,
-                            ease: 'easeOut'
-                        }}
+                        transition={{ duration: 0.4, ease: 'easeOut' }}
                         className="fixed bottom-0 left-0 w-full z-1200"
                     >
-                        <CardHorizontal className='relative not-first:h-100 rounded-b-none '>
+                        <CardHorizontal className='relative not-first:h-100 rounded-b-none'>
 
                             <div className="absolute top-2 right-2">
-                                <button
-                                    onClick={() => setMenuFiltroAberto(false)}
-                                >
+                                <button onClick={() => setMenuFiltroAberto(false)}>
                                     <WrapperIcone tamanho='sm'>
-                                        <X className='w-full' />
+                                        <X className='size-full' />
                                     </WrapperIcone>
                                 </button>
                             </div>
@@ -60,7 +55,7 @@ const FiltroTreinoModal = ({
                                 <BotaoPrimario
                                     texto='aplicar filtros'
                                     onClick={() => {
-                                        setFiltros(filtrosTemp)
+                                        aplicarFiltros()
                                         setMenuFiltroAberto(false)
                                     }}
                                 />
@@ -68,8 +63,7 @@ const FiltroTreinoModal = ({
                                     tipo='vazio'
                                     texto='limpar filtros'
                                     onClick={() => {
-                                        setFiltrosTemp({})
-                                        setFiltros({})
+                                        limparFiltros()
                                         setMenuFiltroAberto(false)
                                     }}
                                 />

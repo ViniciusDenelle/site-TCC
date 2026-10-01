@@ -1,16 +1,16 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { ArrowLeft, ArrowRight, ChartBarIncreasing, CheckCircle, Cog, CogIcon, DotSquare, Flame, Home, Info, InfoIcon, Lightbulb, LogOut, LogOutIcon, LucideIcon, Newspaper, NewspaperIcon, Palette, Pause, PauseCircle, Redo, SkipBack, SkipForward, TextAlignJustify, UserCircle, Weight, X, Zap } from "lucide-react"
 import { ReactNode, useContext, useEffect, useState } from "react"
-import { NavLink, Outlet } from "react-router-dom"
+import { NavLink, Outlet, useNavigate, useNavigation } from "react-router-dom"
 import TemaContexto from "../../contextos/TemaContexto"
 import BotaoSecundario from "../../componentes/botoes/BotaoSecundario"
-import useFetchUsuario from "../../logicas/querys/FetchUsuario"
+import useFetchUsuario from "../../logicas/usuario/FetchUsuario"
 import LinkSimples from "../../componentes/links/LinkSimples"
 import CardHorizontal from "../../componentes/CardHorizontal"
 import CardPaleta from "../../componentes/CardPaleta"
 import LinkNavDashboard from "../../componentes/links/LinkNavDashboard"
 import BotaoPrimario from "../../componentes/botoes/BotaoPrimario"
-import useLogout from "../../logicas/querys/Logout"
+import useLogout from "../../logicas/usuario/Logout"
 import Texto from "../../componentes/organizacao/Texto"
 import WrapperIcone from "../../componentes/organizacao/WrapperIcone"
 import InputSimples from "../../componentes/inputs/InputSimples"
@@ -20,7 +20,7 @@ import DashbaordPaletaModal from "../../componentes/dashboard/DashboardPaletaMod
 import DashboardMenuInferior from "../../componentes/dashboard/DashboardMenuInferior"
 import { menu, nav } from "../../componentes/dashboard/DashboardlinksNav"
 import ModalPlayer from "../../componentes/dashboard/player/ModalPlayer"
-import MenuPlayer from "../../componentes/dashboard/player/MenuPlayer"
+import MenuPlayer from "../../componentes/dashboard/player/menus/MenuPlayer"
 // import { UsuarioProvider } from "../contextos/UsuarioContexto"
 
 const DashboardLayout = () => {
@@ -46,13 +46,16 @@ const DashboardLayout = () => {
         setPaletaAberta(prev => !prev)
     }
 
+    const navigation = useNavigate()
+
     const { logout } = useLogout()
 
+    const [modalPlayer, setModalPlayer] = useState<boolean>(false)
+    
     if (isPending) return
     if (isError) return
-    if (!token) navigation.navigate('/login')
+    if (!token) navigation('/login')
 
-    const [modalPlayer, setModalPlayer] = useState<boolean>(false)
 
     return (
 
@@ -90,8 +93,7 @@ const DashboardLayout = () => {
                 )}
 
                 <Outlet />
-
-                <MenuPlayer />
+                
 
                 <DashboardMenuInferior 
                     setModalPlayer={setModalPlayer}

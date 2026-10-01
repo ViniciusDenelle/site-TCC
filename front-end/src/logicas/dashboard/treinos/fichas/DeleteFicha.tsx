@@ -2,11 +2,15 @@ import { useMutation } from '@tanstack/react-query'
 import React from 'react'
 import api from '../../../../api'
 import { AxiosError, AxiosResponse } from 'axios'
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 const useDeleteFicha = (id:number) => {
 
+    const navigate = useNavigate()
+
     const {
-        mutate,
+        mutate: deletarFicha,
         isSuccess,
         isError,
         isPending
@@ -16,22 +20,19 @@ const useDeleteFicha = (id:number) => {
     >({
         mutationFn: () => api.delete(`dashboard/treinos/ficha/${id}`),
         onSuccess: (res) => {
-            console.log(res)
+            toast.success('Ficha deletada com sucesso')
+            navigate(-1)
         },
         onError: (error) => {
             console.log(error)
         }
     })
 
-    const deleteFichaHandler = () =>{
-        mutate()
-    }
-
   return {
         isSuccess,
         isError,
         isPending,
-        deleteFichaHandler
+        deletarFicha
   }
 }
 

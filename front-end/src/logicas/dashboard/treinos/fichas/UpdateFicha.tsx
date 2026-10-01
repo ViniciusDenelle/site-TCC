@@ -1,32 +1,32 @@
 import { useMutation } from '@tanstack/react-query'
 import React from 'react'
 import api from '../../../../api'
-import { ReqFichaProps } from './CriarFicha'
+import { FichaPayload } from './CriarFicha'
 import { AxiosError, AxiosResponse } from 'axios'
+import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
-type UpdateFichaProps = ReqFichaProps & {id: number}
+const useUpdateFicha = (id:string|number) => {
 
-const useUpdateFicha = ({
-    id,
-    nome, 
-    diasSemana, 
-    divisao, 
-    descricao
-} : UpdateFichaProps) => {
+    const navigate = useNavigate()
 
     const {
-        mutate,
+        mutate: editarFicha,
         isSuccess,
         isError,
         isPending
     } = useMutation<
         AxiosResponse,
         AxiosError,
-        UpdateFichaProps
+        FichaPayload
     >({
-        mutationFn: (dados:UpdateFichaProps) => api.put(`dashboard/treinos/ficha/${id}`, dados),
+        mutationFn: async (payload:FichaPayload) => {
+            const res = await api.put(`dashboard/treinos/ficha/${id}`, payload)
+            return res.data
+        },
         onSuccess: (res) => {
-            console.log(res)
+            navigate(`/dashboard/treino/verFicha/${res.data.id}`)
+            toast.success('Ficha atualizada com sucesso')
         },
         onError: (error) => {
             console.log(error)
@@ -34,20 +34,11 @@ const useUpdateFicha = ({
     })
 
 
-    const updateFichaHandler = () => {
-        mutate({
-            id: id,
-            nome: nome,
-            descricao: descricao,
-            diasSemana: diasSemana,
-            divisao: divisao,
-        })
-    }
   return {
         isSuccess,
         isError,
         isPending,
-        updateFichaHandler
+        editarFicha
   }
 }
 
