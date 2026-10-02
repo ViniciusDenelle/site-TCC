@@ -4,45 +4,44 @@ export const nav = [
     {
         icone: Home,
         legenda: 'Home',
-        to: 'home'
+        to: '/dashboard/home'
     },
     {
         icone: Weight,
         legenda: 'treinos',
-        to: 'treino'
+        to: '/dashboard/treino'
     },
     {
         icone: Flame,
         legenda: 'dieta',
-        to: 'dietas'
+        to: '/dashboard/dieta'
     },
     {
         icone: ChartBarIncreasing,
         legenda: 'progresso',
-        to: '/progresso'
+        to: '/dashboard/progresso'
     },
     {
         icone: UserCircle,
         legenda: 'perfil',
-        to: '/perfil'
+        to: '/dashboard/perfil'
     },
-
 ]
 
 export const menu = [
     {
         legenda: 'Configurações',
-        to: '/',
+        to: '/dashboard',
         icone: CogIcon,
     },
     {
-        legenda: 'Sobre',
-        to: '/',
+        legenda: 'Sobre Nós',
+        to: '/dashboard/sobre-nos',
         icone: InfoIcon,
     },
     {
         legenda: 'Novidades',
-        to: '/',
+        to: '/dashboard',
         icone: NewspaperIcon,
     }
 ]

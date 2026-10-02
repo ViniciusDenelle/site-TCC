@@ -144,5 +144,26 @@ class TreinoController extends Controller
         });
     }
 
+    public function meusCriados(Request $request)
+    {
+        $treinos = $request->user()
+            ->treinosCriados()
+            ->with(['foco', 'nivel', 'tipo'])
+            ->latest()
+            ->paginate(10);
+
+        return TreinoResource::collection($treinos);
+    }
+
+    public function meusAdicionados(Request $request)
+    {
+        $treinos = $request->user()
+            ->treinosAdicionados()
+            ->with(['foco', 'nivel', 'tipo'])
+            ->latest()
+            ->paginate(10);
+
+        return TreinoResource::collection($treinos);
+    }
 
 }

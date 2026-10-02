@@ -30,10 +30,16 @@ import CriarFichaTreino from './views/Dashboard/treinos/criar/CriarFicha'
 import VerFicha from './views/Dashboard/treinos/ver/VerFicha'
 import EditarFicha from './views/Dashboard/treinos/editar/EditarFicha'
 import PesquisarFichas from './views/Dashboard/treinos/pesquisar/PesquisarFichas'
+
+// Import da página de seleção de criação e dos formulários de dieta
+import CriarOpcoesDieta from './views/Dashboard/dieta/criar/Criar'
 import CriarDieta from './views/Dashboard/dieta/criar/CriarDieta'
+import CriarAlimento from './views/Dashboard/dieta/criar/CriarAlimento'
 import VerDieta from './views/Dashboard/dieta/ver/VerDieta'
+
 import MeusTreinosLayout from './layouts/dashboard/treino/MeusTreinosLayout'
 import BibliotecaTreinosHome from './views/Dashboard/treinos/meusTreinos/BibliotecaTreinosHome'
+import SobreNos from './views/Dashboard/SobreNos'
 
 const Rota = createBrowserRouter(
     createRoutesFromElements(
@@ -46,29 +52,38 @@ const Rota = createBrowserRouter(
                     <Route index element={<Login />} />
                     <Route path='recuperar-senha' element={<RecuperarSenha />} />
                 </Route>
-                    
+
                 <Route path="cadastro" element={<CadastroLayout />}>
                     <Route index element={<Cadastro />} />
                 </Route>
             </Route>
 
-            {/* Dashboard */}
+            {/* Todas as páginas do Dashboard ficam DENTRO desta Route */}
             <Route path='/dashboard' element={<DashboardLayout />}>
                 <Route index element={<Dashboard />} />
 
-                {/* Rotas de Home e Perfil */}
+                {/* Home e Perfil */}
                 <Route path='home' element={<Home />}>
                     <Route path='atualizarPerfil' element={<AtualizarPerfil />} />
                 </Route>
                 <Route path='perfil' element={<Home />} />
 
-                {/* Rota do Progresso */}
+                {/* Sobre Nós */}
+                <Route path='sobre-nos' element={<SobreNos />} />
+
+                {/* Progresso */}
                 <Route path='progresso' element={<Progresso />} />
+
 
                 {/* Rotas de Treino */}
                 <Route path='treino' element={<TreinosLayout />}>
                     <Route index element={<Treinos />} />
                     <Route path='exercicios' element={<Exercicios />} />
+                    
+                    <Route path='meusTreinos' element={<MeusTreinosLayout />}>
+                        <Route index element={<BibliotecaTreinosHome />} />
+                    </Route>
+
 
                     <Route path='pesquisar' element={<PesquisarTreinosLayout />}>
                         <Route path='exercicio' element={<PesquisarExercicios />} />
@@ -80,7 +95,6 @@ const Rota = createBrowserRouter(
                         <Route path='biblioteca' element={<BibliotecaTreinosHome />} />
                     </Route>
 
-                    {/* Criação */}
                     <Route path='criarPrincipal' element={<CriarPrincipal />} />
                     <Route path='criarExercicio' element={<CriarExercicios />} />
                     <Route path='criarTreino' element={<CriarTreinos />} />
@@ -93,24 +107,28 @@ const Rota = createBrowserRouter(
                     <Route path='editarTreino/:id' element={<EditarTreino />} />
                     <Route path='editarExercicio/:id' element={<EditarExercicio />} />
                     <Route path='editarFicha/:id' element={<EditarFicha />} />
-
                 </Route>
 
                 {/* Rotas de Dieta */}
                 <Route path='dieta' element={<DietaLayout />}>
                     <Route index element={<DashboardDietas />} />
-                    <Route path='dieta' element={<div>Página Dieta</div>} />
                     <Route path='pesquisar' element={<div>Pesquisar Dietas</div>} />
-                    <Route path='criarPrincipal' element={<CriarDieta />} />
+
+                    {/* Página com as duas opções (Criar Dieta / Criar Alimento) */}
+                    <Route path='criarPrincipal' element={<CriarOpcoesDieta />} />
+
+                    {/* Formulários específicos de criação */}
+                    <Route path='CriarDieta' element={<CriarDieta />} />
+                    <Route path='CriarAlimento' element={<CriarAlimento />} />
 
                     <Route path='verDieta/:id' element={<VerDieta />} />
                 </Route>
-
-                {/* Redirecionamentos de segurança */}
-                <Route path='dietas' element={<Navigate to="/dashboard/dieta" replace />} />
-                <Route path='Home' element={<Navigate to="/dashboard/home" replace />} />
-                <Route path='Progresso' element={<Navigate to="/dashboard/progresso" replace />} />
             </Route>
+
+            {/* Redirecionamentos de segurança */}
+            <Route path='dietas' element={<Navigate to="/dashboard/dieta" replace />} />
+            <Route path='Home' element={<Navigate to="/dashboard/home" replace />} />
+            <Route path='Progresso' element={<Navigate to="/dashboard/progresso" replace />} />
         </>
     )
 )

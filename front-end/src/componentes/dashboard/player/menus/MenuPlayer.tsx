@@ -11,6 +11,7 @@ import BotaoPrimario from "../../../botoes/BotaoPrimario"
 import MenuLayout from "./MenuLayout"
 import useDeleteExercicio from "../../../../logicas/dashboard/treinos/exercicios/DeleteExercicio"
 import useFetchUsuario from "../../../../logicas/usuario/FetchUsuario"
+import useAdcionarExercicio from "../../../../logicas/dashboard/treinos/exercicios/AdcionarExercicio"
 
 type MenuPlayerProps = {
     menuAberto: boolean,
@@ -29,6 +30,10 @@ const MenuPlayer = ({
     const {
         deletarExercicio
     } = useDeleteExercicio(exercicio.id)
+
+    const {
+        AdcionarExercicio
+    } = useAdcionarExercicio(exercicio.id)
 
     const opcoesLink = [
         {
@@ -54,7 +59,14 @@ const MenuPlayer = ({
             onclick: () => deletarExercicio(),
             corIcone: 'text-red-600',
             publico: false
-        }
+        },
+        {
+            nome: 'Adcionar à biblioteca',
+            icone: Plus,
+            tipo: 'botao',
+            onclick: () => AdcionarExercicio(),
+            publico: true
+        },
     ]
 
     const {
