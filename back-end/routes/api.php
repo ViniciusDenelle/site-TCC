@@ -10,12 +10,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\DietaController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/usuario', [UsuarioController::class, 'fetch']);
     Route::get('/logout', [UsuarioController::class, 'logout']);
     Route::put('/atualizarUsuario', [UsuarioController::class], 'update');
-
+    Route::apiResource('dietas', DietaController::class)->only(['index', 'store', 'show']);
     Route::prefix('dashboard')->group(function() {
         // treinos 
         Route::prefix('treinos')->group(function() {
@@ -85,3 +86,6 @@ Route::controller(AuthController::class)->group(function() {
     Route::post('/cadastro', 'cadastro');
     Route::post('/cadastroEmail', 'cadastroEmail');
 });
+
+
+
