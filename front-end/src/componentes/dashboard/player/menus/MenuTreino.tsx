@@ -1,4 +1,4 @@
-import { Cog, Dumbbell, Plus, PlusCircle, Settings, Trash } from "lucide-react"
+import { Cog, Dumbbell, Goal, Plus, PlusCircle, Settings, Trash } from "lucide-react"
 import { AnimatePresence, motion, PanInfo } from "motion/react"
 import useExecutarTreinoContext from "../../../../contextos/ExecutarTreinoContexto"
 import CardHorizontal from "../../../CardHorizontal"
@@ -27,6 +27,11 @@ const MenuTreino = ({
     adicionar
 }: MenuTreinoProps) => {
 
+    const {
+        treinoAtual,
+        setTreinoAtual
+    } = useExecutarTreinoContext()
+
 
     const {
         deletarTreino
@@ -39,6 +44,12 @@ const MenuTreino = ({
             corIcone: 'text-red-600',
             onclick: () => deletarTreino()
         },
+        {
+            titulo: 'Iniciar Treino',
+            icone: Goal,
+            corIcone: 'text-destaque-p-medio',
+            onclick: () => setTreinoAtual(treino.id)
+        }
         
     ]
 

@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom"
-import { Layers, Plus, Flame, Clock } from "lucide-react"
+import { Layers, Plus, Flame, Clock, EllipsisVertical } from "lucide-react"
 import { ResTreinoProps } from "../../logicas/dashboard/treinos/treino/TreinoProps"
 import { useState } from "react"
 import MenuPlayer from "../dashboard/player/menus/MenuPlayer"
@@ -7,6 +7,7 @@ import CardHorizontal from "../CardHorizontal"
 import Texto from "../organizacao/Texto"
 import BotaoPrimario from "../botoes/BotaoPrimario"
 import MenuTreino from "../dashboard/player/menus/MenuTreino"
+import BotaoTerciario from "../botoes/BotaoTerciario"
 
 const TreinoCard = ({
   treino,
@@ -72,9 +73,9 @@ const TreinoCard = ({
           </div>
 
           <div className="relative flex gap-2 items-center">
-            <BotaoPrimario
-              tipo='cheio'
-              icone={Plus}
+            <BotaoTerciario
+              icone={EllipsisVertical}
+              tamanhoIcone="md"
               onClick={() => setMenuAdcionar(prev => !prev)}
             />
           </div>

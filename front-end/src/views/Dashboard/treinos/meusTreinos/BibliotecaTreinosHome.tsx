@@ -6,6 +6,7 @@ import { ResTreinoProps } from "../../../../logicas/dashboard/treinos/treino/Tre
 import TreinoCard from "../../../../componentes/cards/TreinoCard";
 import ExercicioCard from "../../../../componentes/ExercicioCard";
 import Texto from "../../../../componentes/organizacao/Texto";
+import FichaCardHorizontal from "../../../../componentes/cards/FichaCardHorizontal";
 
 const BibliotecaTreinosHome = () => {
 
@@ -33,11 +34,13 @@ const BibliotecaTreinosHome = () => {
         'adicionados', 
         pagina
     );
-    // const { data: fichasAdicionadas } = useFetchMeusItens<Ficha>(
-    //     'fichas', 
-    //     'adicionados', 
-    //     pagina
-    // );
+    const { data: fichasAdicionadas } = useFetchMeusItens<Ficha>(
+        'fichas', 
+        'adicionados', 
+        pagina
+    );
+
+    const {data:fichasCriadas} = useFetchMeusItens<Ficha>('fichas', 'criados', pagina)
 
     console.log(treinosAdicionados, treinosCriados, )
 
@@ -52,6 +55,11 @@ const BibliotecaTreinosHome = () => {
                 {treinosCriados?.data.map(treino => (
                     <TreinoCard 
                         treino={treino}
+                    />
+                ))}
+                {fichasCriadas?.data.map(ficha => (
+                    <FichaCardHorizontal 
+                        ficha={ficha}
                     />
                 ))}
                 {exerciciosAdicionados?.data.map(exercicio => (
