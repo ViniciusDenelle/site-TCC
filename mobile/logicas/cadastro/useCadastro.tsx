@@ -16,7 +16,9 @@ export type DadosCadastro = {
     genero: string
     peso: number
     tipoPeso: 'kilos' | 'libras'
-    pesoFinal: number
+    pesoIdeal: number
+    pesoMinimo?: number | null,
+    pesoMaximo?: number | null,
     altura: number
     dataDeNascimento: string
     nivelAtividade: number | null,
@@ -93,7 +95,9 @@ const useCadastro = (): UseCadastroReturn => {
         genero: '',
         peso: 20,
         tipoPeso: 'kilos',
-        pesoFinal: 0,
+        pesoIdeal: 0,
+        pesoMinimo: 0,
+        pesoMaximo: 0,
         altura: 80,
         dataDeNascimento: '',
         nivelAtividade: 0,
@@ -224,7 +228,7 @@ const useCadastro = (): UseCadastroReturn => {
 
         4: () =>
             dados.veloPerda !== 0 &&
-            dados.pesoFinal !== 0,
+            dados.pesoIdeal !== 0,
 
         5: () => true,
 
@@ -249,7 +253,7 @@ const useCadastro = (): UseCadastroReturn => {
         objetivo: '/cadastro/passo3',
         experiencia: '/cadastro/passo3',
         veloPerda: '/cadastro/passo4',
-        pesoFinal: '/cadastro/passo4',
+        pesoIdeal: '/cadastro/passo4',
         nome: '/cadastro/passo6',
         email: '/cadastro/passo6',
         senha: '/cadastro/passo6'
@@ -270,7 +274,7 @@ const useCadastro = (): UseCadastroReturn => {
         CadastroInfo
     >({
         mutationFn: async (dadosCadastro) => {
-
+            console.log(dadosCadastro)
             const res = await api.post(
                 '/cadastro',
                 dadosCadastro

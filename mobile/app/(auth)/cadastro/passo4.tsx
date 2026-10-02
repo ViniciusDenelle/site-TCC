@@ -32,7 +32,7 @@ const Metas = () => {
 
     const {
         peso,
-        pesoFinal,
+        pesoIdeal,
         veloPerda,
         objetivo,
     } = dados
@@ -147,7 +147,7 @@ const Metas = () => {
 
                         <View className="absolute -bottom-4 left-0 flex flex-row gap-1">
 
-                            {pesoFinal < minMaxPeso.maxRec && pesoFinal > minMaxPeso.minRec ? (
+                            {pesoIdeal < minMaxPeso.maxRec && pesoIdeal > minMaxPeso.minRec ? (
                                 <Texto className="text-green-500 text-xs">
                                     recomendado
                                 </Texto>
@@ -157,9 +157,9 @@ const Metas = () => {
                                 </Texto>
                             )}
 
-                            {errosCampo['pesoFinal'] && (
+                            {errosCampo['pesoIdeal'] && (
                                 <Text className="text-red-500 text-xs">
-                                    {errosCampo['pesoFinal']}
+                                    {errosCampo['pesoIdeal']}
                                 </Text>
                             )}
 
@@ -169,18 +169,18 @@ const Metas = () => {
                             <InputSimples
                                 className="w-20"
                                 tipo="number"
-                                valor={String(pesoFinal)}
-                                onChange={valor => mudarDados('pesoFinal', parseNumero(valor))}
+                                valor={String(pesoIdeal)}
+                                onChange={valor => mudarDados('pesoIdeal', parseNumero(valor))}
                             />
                         </View>
                     </View>
 
 
                     <InputRange
-                        valor={pesoFinal}
+                        valor={pesoIdeal}
                         min={minMaxPeso.min}
                         max={minMaxPeso.max}
-                        onChange={value => mudarDados('pesoFinal', value)}
+                        onChange={value => mudarDados('pesoIdeal', value)}
                         recomendadoMin={minMaxPeso.minRec}
                         recomendadoMax={minMaxPeso.maxRec}
                     />
