@@ -25,9 +25,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::prefix('ficha')->controller(FichaController::class)->group(function() {
                 Route::post('/', 'create');
                 Route::get('/meus-criados', 'meusCriados');
-                Route::get('/meus-adcionados', 'meusAdcionados');
-                Route::get('/{ficha}', 'show');
+                Route::get('/meus-adicionados', 'meusAdicionados');
                 Route::get('/', 'fetch');
+                Route::get('/{ficha}', 'show');
                 Route::put('/{ficha}', 'update');
                 Route::delete('/{ficha}', 'delete');
             });

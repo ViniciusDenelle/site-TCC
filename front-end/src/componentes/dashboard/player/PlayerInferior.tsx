@@ -12,7 +12,8 @@ const PlayerInferior = ({
         treinoQuery,
         exercicioData,
         exercicioExecucao,
-        setOrdem
+        setOrdem,
+        treino
     } = useExecutarTreinoContext()
 
     if (treinoQuery.isPending) {
@@ -45,7 +46,7 @@ const PlayerInferior = ({
                             </Texto>
                             <div className="flex gap-1">
                             <Texto className="truncate">
-                                {exercicioData.repsMin} a {exercicioData?.repsMax}
+                                {exercicioData.repeticoes_minimas} a {exercicioData?.repeticoes_maximas}
                             </Texto>
                             <Texto className="truncate">
                                 com {exercicioExecucao?.peso} kg

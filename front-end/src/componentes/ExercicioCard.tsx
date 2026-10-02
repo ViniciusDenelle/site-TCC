@@ -1,13 +1,14 @@
 import { NavLink } from "react-router-dom"
 
 import CardHorizontal from "./CardHorizontal"
-import { ChartArea, ChartLine, Dumbbell, Plus } from "lucide-react"
+import { ChartArea, ChartLine, Dumbbell, EllipsisVertical, Plus } from "lucide-react"
 import { ResExercicioProps } from "../logicas/dashboard/treinos/exercicios/FetchExercicio"
 import Texto from "./organizacao/Texto"
 import BotaoPrimario from "./botoes/BotaoPrimario"
 import { useState } from "react"
 import MenuPlayer from "./dashboard/player/menus/MenuPlayer"
 import WrapperIcone from "./organizacao/WrapperIcone"
+import BotaoTerciario from "./botoes/BotaoTerciario"
 
 
 
@@ -85,9 +86,9 @@ const ExercicioCard = ({
                 ver
             </BotaoPrimario> */}
 
-            <BotaoPrimario
-              tipo='cheio'
-              icone={Plus}
+            <BotaoTerciario
+              icone={EllipsisVertical}
+              tamanhoIcone="md"
               onClick={() => setMenuAdcionar(prev => !prev)}
             />
 
