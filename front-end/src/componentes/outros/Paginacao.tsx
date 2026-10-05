@@ -16,7 +16,7 @@ const Paginacao = ({
     setPagina
 }) => {
     return (
-        <div className='flex justify-between gap-2'>
+        <div className='flex justify-between gap-2 mt-auto'>
 
             <BotaoSecundario
                 disabled={pagina === 1}

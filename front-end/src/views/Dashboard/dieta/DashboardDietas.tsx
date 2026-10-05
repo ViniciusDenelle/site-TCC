@@ -4,6 +4,8 @@ import { DietaCard } from '../../../componentes/dieta/DIetaCard'
 import Texto from '../../../componentes/organizacao/Texto'
 
 import dietasMock from '../../../logicas/dashboard/dieta/DietaMock'
+import useFetchDietas from '../../../logicas/dashboard/dieta/FetchDietas'
+import { useState } from 'react'
 
 const imagensDietas: Record<string, string> = {
     '1': 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&q=80&w=600',
@@ -15,6 +17,13 @@ const imagensDietas: Record<string, string> = {
 export default function DashboardDietas() {
 
     const navigate = useNavigate()
+
+    const [pagina, setPagina] = useState<number>(1)
+
+    const {
+        dietas
+    } = useFetchDietas(pagina)
+    console.log(dietas)
 
     return (
         <div className="w-full font-poppins">
@@ -41,26 +50,12 @@ export default function DashboardDietas() {
             {/* CARDS */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
 
-                {dietasMock.map((dieta) => (
+                {dietas?.data?.map((dieta) => (
 
                     <DietaCard
                         key={dieta.id}
 
-                        title={dieta.nome}
-
-                        description={dieta.descricao}
-
-                        calories={`${dieta.meta.calorias} kcal/dia`}
-
-                        protein={`${dieta.meta.proteinas}g proteína`}
-
-                        imageUrl={imagensDietas[dieta.id]}
-
-                        onAdd={() =>
-                            navigate(
-                                `/dashboard/dieta/verDieta/${dieta.id}`
-                            )
-                        }
+                        dieta={dieta}
                     />
 
                 ))}

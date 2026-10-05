@@ -25,7 +25,12 @@ class DatabaseSeeder extends Seeder
             NivelExercicioSeeder::class,
             TipoTreinoSeeder::class,
             ExercicioSeeder::class,
-            TreinoSeeder::class
+            TreinoSeeder::class,
+            ObjetivoDietaSeeder::class,
+            NivelDietaSeeder::class,
+            AlimentoSeeder::class,
+            DietaSeeder::class,
+            RefeicaoSeeder::class,
         ]);
     }
 }

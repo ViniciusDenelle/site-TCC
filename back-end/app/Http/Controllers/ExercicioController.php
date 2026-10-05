@@ -66,7 +66,7 @@ class ExercicioController extends Controller
 
         $query = \App\Filters\ExercicioFilter::apply($query, $request);
 
-        $exercicios = $query->paginate(5);
+        $exercicios = $query->paginate(10);
 
         return ExercicioResource::collection($exercicios);
     }

@@ -1,26 +1,35 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Dieta extends Model
 {
     protected $fillable = [
-        'user_id', 'nome', 'descricao', 'objetivo', 'nivel', 'duracao',
-        'meta_agua', 'meta_calorias', 'meta_proteinas', 'meta_carboidratos',
-        'meta_gorduras', 'observacoes_finais',
+        'user_id',
+        'objetivo_id',
+        'nivel_id',
+        'nome',
+        'descricao',
     ];
 
-    public function user(): BelongsTo
+    public function usuario()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function refeicoes(): HasMany
+    public function objetivo()
     {
-        return $this->hasMany(Refeicao::class)->orderBy('ordem');
+        return $this->belongsTo(ObjetivoDieta::class, 'objetivo_id');
+    }
+
+    public function nivel()
+    {
+        return $this->belongsTo(NivelDieta::class, 'nivel_id');
+    }
+
+    public function refeicoes()
+    {
+        return $this->hasMany(Refeicao::class);
     }
 }
