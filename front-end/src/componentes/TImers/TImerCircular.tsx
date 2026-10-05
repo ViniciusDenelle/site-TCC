@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 type Props = {
     tempo: number;
     tempoInicial: number;
@@ -53,4 +55,4 @@ const TimerCircular = ({
     );
 };
 
-export default TimerCircular
+export default memo(TimerCircular)

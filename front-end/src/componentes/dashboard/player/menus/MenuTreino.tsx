@@ -28,7 +28,6 @@ const MenuTreino = ({
 }: MenuTreinoProps) => {
 
     const {
-        treinoAtual,
         setTreinoAtual
     } = useExecutarTreinoContext()
 
@@ -48,7 +47,10 @@ const MenuTreino = ({
             titulo: 'Iniciar Treino',
             icone: Goal,
             corIcone: 'text-destaque-p-medio',
-            onclick: () => setTreinoAtual(treino.id)
+            onclick: () => {
+                setTreinoAtual(treino.id)
+                setMenuAberto(false)
+            }
         }
         
     ]
@@ -86,6 +88,7 @@ const MenuTreino = ({
 
                     {opcoesBotao.map(opcao => (
                         <OpcoesMenuPlayer
+                            key={opcao.titulo}
                             nome={opcao.titulo}
                             onclick={opcao.onclick}
                             icone={opcao.icone}
@@ -95,6 +98,7 @@ const MenuTreino = ({
 
                     {opcoesLink.map(opcao => (
                         <OpcoesMenuPlayer
+                            key={opcao.titulo}
                             nome={opcao.titulo}
                             to={opcao.to}
                             icone={opcao.icone}

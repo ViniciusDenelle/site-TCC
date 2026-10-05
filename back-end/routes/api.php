@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::post('/', 'store');
                 Route::get('/meus-criados', 'meusCriados');
                 Route::get('/meus-adicionados', 'meusAdicionados');
+                Route::get('/{treino}/historico', 'historico');
                 Route::get('/{treino}', 'show');
                 Route::get('/', 'fetch');
                 Route::put('/{treino}', 'update');

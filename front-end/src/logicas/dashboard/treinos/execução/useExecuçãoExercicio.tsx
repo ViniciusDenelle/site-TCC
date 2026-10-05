@@ -6,41 +6,68 @@ import { ExercicioDoTreino } from "../treino/TreinoProps";
 const useExecuçãoExercicio = (
     exercicio: Partial<ExercicioDoTreino>,
     adicionarSerieExecutada: (serie: SerieExecutada) => void,
-    removerSerieExecutada: (serie: SerieExecutada) => void
+    removerSerieExecutada: (serie: SerieExecutada) => void,
+    seriesExecutadas: SerieExecutada[],
+    onExercicioConcluido?: () => void
 ): UseExecucaoExercicio => {
 
     const [serieAtual, setSerieAtual] = useState(1);
     const [peso, setPeso] = useState(0);
     const [reps, setReps] = useState(0);
     const [series, setSeries] = useState<SerieExecutada[]>([]);
+    const [concluida, setConcluida] = useState<boolean>(false);
 
     const timer = useTimer({
         tempoInicial: exercicio.descanso ?? 0,
         onFinish: () => executarSerie(),
     });
 
-    /**
-     * Reinicia as séries e dados sempre que o exercício mudar
-     */
     useEffect(() => {
         if (!exercicio.id) return;
 
-        setPeso(exercicio.peso ?? 0);
-        setReps(exercicio.repeticoes_minimas ?? 0);
-        setSerieAtual(1);
+        const salvasDoExercicio = seriesExecutadas.filter(
+            sr => sr.exercicioTreinoId === exercicio.id
+        );
 
-        setSeries(
-            Array.from(
-                { length: exercicio.sets ?? 0 },
-                (_, index): SerieExecutada => ({
+        const totalSets = exercicio.sets ?? 0;
+        const seriesMontadas: SerieExecutada[] = Array.from(
+            { length: totalSets },
+            (_, index): SerieExecutada => {
+                const numeroSerie = index + 1;
+                const serieSalva = salvasDoExercicio.find(s => s.serie === numeroSerie);
+
+                if (serieSalva) {
+                    return { ...serieSalva };
+                }
+
+                return {
                     exercicioTreinoId: exercicio.id!,
-                    serie: index + 1,
+                    serie: numeroSerie,
                     repeticoes: exercicio.repeticoes_maximas ?? 0,
                     peso: exercicio.peso ?? 0,
                     concluida: false,
-                })
-            )
+                };
+            }
         );
+
+        setSeries(seriesMontadas);
+
+        const proximaPendente = seriesMontadas.find(s => !s.concluida);
+
+        if (proximaPendente) {
+            setConcluida(false);
+            setSerieAtual(proximaPendente.serie);
+            setPeso(proximaPendente.peso);
+            setReps(proximaPendente.repeticoes);
+        } else {
+            setConcluida(true);
+            const ultimaSerie = seriesMontadas[seriesMontadas.length - 1];
+            if (ultimaSerie) {
+                setSerieAtual(ultimaSerie.serie);
+                setPeso(ultimaSerie.peso);
+                setReps(ultimaSerie.repeticoes);
+            }
+        }
 
         timer.parar();
     }, [exercicio.id]);
@@ -72,6 +99,13 @@ const useExecuçãoExercicio = (
                 setSerieAtual(proxima.serie);
                 setPeso(proxima.peso);
                 setReps(proxima.repeticoes);
+            } else {
+                // Se não há mais séries pendentes neste exercício
+                setConcluida(true);
+                if (onExercicioConcluido) {
+                    // Chama a transição diretamente na ação do usuário
+                    onExercicioConcluido();
+                }
             }
 
             return novasSeries;
@@ -79,6 +113,8 @@ const useExecuçãoExercicio = (
     };
 
     const refazerSerie = (numeroSerie: number) => {
+        setConcluida(false);
+
         const serieAlvo = series.find(serieA => serieA.serie === numeroSerie);
         if (serieAlvo) {
             removerSerieExecutada(serieAlvo);
@@ -109,6 +145,7 @@ const useExecuçãoExercicio = (
         refazerSerie,
         series,
         timer,
+        concluida
     };
 };
 
