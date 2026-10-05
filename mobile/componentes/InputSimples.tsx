@@ -4,7 +4,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 import useTema from '@/contextos/TemaContexto'
 
 type props = {
-    tipo?: "text" | "number",
+    tipo?: "text" | "number" | "email",
     valor: string,
     onChange: (text: string) => void,
     placeholder?: string,
@@ -13,6 +13,7 @@ type props = {
     className?: string,
     visivel?: boolean
     abilitado?: boolean
+    senha?: boolean
 }
 
 const InputSimples = ({
@@ -24,7 +25,9 @@ const InputSimples = ({
     minimo,
     className = '',
     visivel = true,
-    abilitado = true
+    abilitado = true,
+    senha = false
+
 } : props) => {
 
     const escala = useSharedValue(1)
@@ -86,8 +89,12 @@ const InputSimples = ({
             value={valor}
             placeholder={placeholder}
             placeholderTextColor={corIcone}
-            keyboardType={tipo === 'number' ? 'numeric' : 'default'}
-            secureTextEntry={!visivel}
+            keyboardType={tipo === 'number' ? 'numeric' 
+              : tipo === 'email' ? 'email-address' 
+              : 'default'}
+              autoCapitalize={tipo === 'email' || senha ? 'none' : undefined}
+            autoCorrect={tipo === 'email' || senha ? false : undefined}
+            secureTextEntry={senha || !visivel}
             editable={abilitado}
             onChangeText={dataBind}
             onFocus={() => {

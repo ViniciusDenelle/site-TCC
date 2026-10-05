@@ -99,7 +99,7 @@ export default function Login() {
 
     function cadastro() {
         loginMutation.mutate({
-            email,
+            email: email.trim(),
             senha,
         })
     }
@@ -175,6 +175,7 @@ export default function Login() {
                         valor={email}
                         onChange={setEmail}
                         placeholder="Digite seu email"
+                        tipo="email"
                     />
 
                     <InputSimples
