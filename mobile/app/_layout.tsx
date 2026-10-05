@@ -10,6 +10,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { vars } from 'nativewind'
 import TemaToggle from '@/componentes/TemaToggle'
 import { StatusBar } from 'expo-status-bar'
+import { UsuarioProvider } from '@/contextos/UsuarioContexto'
 
 const queryClient = new QueryClient()
 
@@ -46,9 +47,11 @@ export default function RootLayout() {
   return (
     <TemaProvider>
       <QueryClientProvider client={queryClient}>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <AppContent />
-        </GestureHandlerRootView>
+        <UsuarioProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <AppContent />
+          </GestureHandlerRootView>
+        </UsuarioProvider>
       </QueryClientProvider>
     </TemaProvider>
   );

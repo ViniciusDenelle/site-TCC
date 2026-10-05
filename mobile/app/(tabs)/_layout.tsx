@@ -1,9 +1,17 @@
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import useTema from '@/contextos/TemaContexto';
+import useUsuario from '@/contextos/UsuarioContexto';
 
-export default function TabsLayout() {
+    
+    export default function TabsLayout() {
     const { tema, temaAtual, formatarCor } = useTema()
+    const { autenticado, carregando } = useUsuario()
+
+    // Sem sessão (ou token expirado) -> volta para o login
+    if (!carregando && !autenticado) {
+        return <Redirect href="/(auth)/login" />
+    }
 
     return (
         <Tabs
