@@ -2,7 +2,7 @@ import React from 'react'
 import WrapperIcone from '../organizacao/WrapperIcone'
 import { X } from 'lucide-react'
 import Texto from '../organizacao/Texto'
-import { SecaoFiltro, UseFiltrosProps } from '../../logicas/dashboard/treinos/tipagens/FiltrosProps'
+import { SecaoFiltro, UseFiltrosProps } from '../../logicas/dashBoard/treinos/tipagens/FiltrosProps'
 import Chip from './Chip'
 
 type FiltroChipsProps = UseFiltrosProps & { secoes: SecaoFiltro[] }

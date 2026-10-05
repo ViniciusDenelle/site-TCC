@@ -1,16 +1,31 @@
 import { useEffect, useState } from 'react'
 
 export type UseTimerReturn = {
+    tempo: number
     segundos: number
+    tempoInicial: number
     rodando: boolean
+    ativo: boolean
     iniciar: () => void
     pausar: () => void
+    reiniciar: () => void
     resetar: () => void
+    parar: () => void
+    finalizar: () => void
+    definirTempo: (tempo: number) => void
 }
 
-export default function useTimer() {
+type UseTimerOptions = {
+    tempoInicial?: number
+    onFinish?: () => void
+}
 
-    const [segundos, setSegundos] = useState(0)
+export default function useTimer({
+    tempoInicial = 0,
+    onFinish,
+}: UseTimerOptions = {}) {
+
+    const [tempo, setTempo] = useState(tempoInicial)
     const [rodando, setRodando] = useState(false)
 
     useEffect(() => {
@@ -20,14 +35,21 @@ export default function useTimer() {
         }
 
         const intervalo = setInterval(() => {
+            setTempo(valor => {
+                if (valor <= 1) {
+                    clearInterval(intervalo)
+                    setRodando(false)
+                    onFinish?.()
+                    return 0
+                }
 
-            setSegundos(valor => valor + 1)
-
+                return valor - 1
+            })
         }, 1000)
 
         return () => clearInterval(intervalo)
 
-    }, [rodando])
+    }, [rodando, onFinish])
 
     const iniciar = () => {
         setRodando(true)
@@ -37,16 +59,40 @@ export default function useTimer() {
         setRodando(false)
     }
 
-    const resetar = () => {
+    const reiniciar = () => {
         setRodando(false)
-        setSegundos(0)
+        setTempo(tempoInicial)
+    }
+
+    const resetar = reiniciar
+
+    const parar = () => {
+        setRodando(false)
+        setTempo(tempoInicial)
+    }
+
+    const finalizar = () => {
+        setRodando(false)
+        setTempo(0)
+        onFinish?.()
+    }
+
+    const definirTempo = (novoTempo: number) => {
+        setTempo(novoTempo)
     }
 
     return {
-        segundos,
+        tempo,
+        segundos: tempo,
+        tempoInicial,
         rodando,
+        ativo: rodando,
         iniciar,
         pausar,
+        reiniciar,
         resetar,
+        parar,
+        finalizar,
+        definirTempo,
     }
 }

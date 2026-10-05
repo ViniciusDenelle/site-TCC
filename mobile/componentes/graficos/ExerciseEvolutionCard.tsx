@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
+import useTema from '@/contextos/TemaContexto'
 
 type Exercicio = {
   nome: string
@@ -14,16 +15,22 @@ const exercicios: Exercicio[] = [
 ]
 
 export default function ExerciseEvolutionCard() {
+  const { temaAtual, formatarCor } = useTema()
+
+  const corCard = formatarCor(temaAtual['--color-base-secundaria'], 1)
+  const corTexto = formatarCor(temaAtual['--color-t-primaria'], 1)
+  const corTextoSecundaria = formatarCor(temaAtual['--color-t-secundaria'], 1)
+
   return (
-    <View style={styles.card}>
-      <Text style={styles.title}>Evolução por exercício</Text>
-      <Text style={styles.subtitle}>Comparação do seu progresso atual</Text>
+    <View style={[styles.card, { backgroundColor: corCard }]}>
+      <Text style={[styles.title, { color: corTexto }]}>Evolução por exercício</Text>
+      <Text style={[styles.subtitle, { color: corTextoSecundaria }]}>Comparação do seu progresso atual</Text>
 
       {exercicios.map(item => (
         <View key={item.nome} style={styles.row}>
           <View style={styles.rowHeader}>
-            <Text style={styles.exerciseName}>{item.nome}</Text>
-            <Text style={styles.percent}>{item.progresso}%</Text>
+            <Text style={[styles.exerciseName, { color: corTexto }]}>{item.nome}</Text>
+            <Text style={[styles.percent, { color: corTextoSecundaria }]}>{item.progresso}%</Text>
           </View>
 
           <View style={styles.progressTrack}>
@@ -45,18 +52,15 @@ export default function ExerciseEvolutionCard() {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#1d2230',
     borderRadius: 16,
     padding: 16,
     marginBottom: 20,
   },
   title: {
-    color: '#ffffff',
     fontSize: 18,
     fontWeight: '700',
   },
   subtitle: {
-    color: '#9aa0aa',
     fontSize: 13,
     marginTop: 4,
     marginBottom: 14,
@@ -70,12 +74,10 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   exerciseName: {
-    color: '#ffffff',
     fontSize: 14,
     fontWeight: '600',
   },
   percent: {
-    color: '#9aa0aa',
     fontSize: 13,
     fontWeight: '600',
   },

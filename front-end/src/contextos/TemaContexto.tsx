@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
 import { createContext, useState } from 'react'
 
-type Tema = string
-
 type temas = 'dark' | 'light'
+
+type Tema = temas
 
 type TemaContextType = [
   Tema,
@@ -22,16 +22,18 @@ export function TemaContextoProvider({
   children
 }: TemaContextoProviderProps) {
 
+  const temaSalvo = localStorage.getItem('tema')
+
   const [tema, setTema] = useState<Tema>(
-    localStorage.getItem('tema') ?? ''
+    temaSalvo === 'dark' ? 'dark' : 'light'
   )
 
   document.documentElement.dataset.theme = tema
 
-  function alterarTema(novoTema) {
+  function alterarTema(novoTema?: temas) {
 
-    const temaFinal = novoTema ? novoTema : (tema === 'dark'
-        ? ''
+    const temaFinal = novoTema ?? (tema === 'dark'
+        ? 'light'
         : 'dark')
 
     document.documentElement.dataset.theme =

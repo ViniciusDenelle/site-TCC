@@ -5,7 +5,7 @@ import InputSimples from '../inputs/InputSimples'
 import WrapperIcone from '../organizacao/WrapperIcone'
 import Texto from '../organizacao/Texto'
 import { AnimatePresence } from 'framer-motion'
-import { UseFiltrosProps } from '../../logicas/dashboard/treinos/tipagens/FiltrosProps'
+import { UseFiltrosProps } from '../../logicas/dashBoard/treinos/tipagens/FiltrosProps'
 
 const FiltrosPesquisa = ({
     setMenuFiltroAberto,

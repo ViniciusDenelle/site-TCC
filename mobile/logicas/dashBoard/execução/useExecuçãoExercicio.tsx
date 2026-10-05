@@ -6,7 +6,7 @@ import {
   UseExecucaoExercicio,
 } from './ExecutarTreinoProps';
 
-import useTimer from '@/hooks/useTimer';
+import useTimer from '../../../hooks/useTimer';
 
 const useExecucaoExercicio = (
   exercicio: Partial<ResExercicioTreinoProps>,
@@ -67,9 +67,8 @@ const useExecucaoExercicio = (
 
   const timer = useTimer({
     tempoInicial: exercicio.descanso ?? 0,
-
     onFinish: executarSerie,
-  });
+  })
 
   /**
    * Sempre que trocar de exercício,

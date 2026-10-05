@@ -12,12 +12,18 @@ import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { useMutation } from "@tanstack/react-query";
 import api from "@/api";
+import Toast from "react-native-toast-message";
+import useUsuario from "@/contextos/UsuarioContexto";
+import { RespostaLogin } from "@/logicas/tipagens/UsuarioProps";
+import { mensagemDeErro } from "@/logicas/auth/mensagemDeErro";
+
 
 WebBrowser.maybeCompleteAuthSession();
 
 export default function Login() {
 
     const { temaAtual } = useTema();
+    const { entrar } = useUsuario();
 
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
@@ -69,24 +75,28 @@ export default function Login() {
     }, [response]);
 
     const loginMutation = useMutation({
-        mutationFn: async ({ email, senha } : {email: string, senha: string}) => {
-            const res = await api.post('/login', {
-                email,
-                senha,
-            })
-            return res.data
-        },
-        onSuccess: data => {
-            console.log("LOGIN COM SUCESSO:", data);
-            
-            // Redireciona para as abas limpando o histórico para ele não voltar ao login com o botão "Voltar"
-            router.replace("/(tabs)");
-        },
-        onError: error => {
-            console.log(error)
-        }
-    })
-    
+    mutationFn: async ({ email, senha } : {email: string, senha: string}) => {
+        const res = await api.post<RespostaLogin>('/login', {
+            email,
+            senha,
+        })
+        return res.data
+    },
+    onSuccess: async data => {
+        // Guarda token + usuário (AsyncStorage) e libera as rotas protegidas
+        await entrar(data.token, data.usuario)
+
+        // Redireciona para as abas limpando o histórico para ele não voltar ao login com o botão "Voltar"
+        router.replace("/(tabs)");
+    },
+    onError: error => {
+        Toast.show({
+            type: "error",
+            text1: mensagemDeErro(error),
+        });
+    }
+})
+
     function cadastro() {
         loginMutation.mutate({
             email,

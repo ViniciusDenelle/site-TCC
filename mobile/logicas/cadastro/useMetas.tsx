@@ -12,7 +12,7 @@ const useMetas = ({
     const {
         veloPerda,
         objetivo,
-        pesoFinal,
+        pesoIdeal,
         peso,
         altura,
     } = dados
@@ -49,7 +49,7 @@ const useMetas = ({
     }, [veloPerda, GET, objetivo])
 
     const tempoEstimado = useMemo(() => {
-        if (!pesoFinal || !veloPerda) {
+        if (!pesoIdeal || !veloPerda) {
             return {
                 meses: 0,
                 semanas: 0,
@@ -59,8 +59,8 @@ const useMetas = ({
 
         let difPeso =
             objetivo === 'perder_peso'
-                ? peso - pesoFinal
-                : pesoFinal - peso
+                ? peso - pesoIdeal
+                : pesoIdeal - peso
 
         /*
           evita número negativo
@@ -99,7 +99,7 @@ const useMetas = ({
                 ),
         }
     }, [
-        pesoFinal,
+        pesoIdeal,
         veloPerda,
         objetivo,
         peso,

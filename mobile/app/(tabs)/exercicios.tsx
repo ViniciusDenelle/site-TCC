@@ -1,3 +1,4 @@
+
 import { useMemo, useState } from 'react'
 import {
   FlatList,
@@ -9,36 +10,132 @@ import {
   View,
 } from 'react-native'
 
+import useTema from '@/contextos/TemaContexto'
+
+import CardExercicio, {
+  Exercicio,
+} from '../../componentes/exercicios/CardExercicio'
+
 import BarraBuscaExercicio from '../../componentes/exercicios/BarraBuscaExercicio'
-import CardExercicio, { Exercicio } from '../../componentes/exercicios/CardExercicio'
+
 import FiltroExercicio from '../../componentes/exercicios/FiltroExercicio'
-import CardRotina, { Rotina } from '@/componentes/biblioteca/CardRotina'
+
+import CardRotina, {
+  Rotina,
+} from '@/componentes/biblioteca/CardRotina'
 
 type AbaSelecionada = 'exercicios' | 'biblioteca'
 
 const exercicios: Exercicio[] = [
-  { id: '1', nome: 'Supino reto', grupo: 'Peito', icone: 'weight-lifter' },
-  { id: '2', nome: 'Supino inclinado', grupo: 'Peito', icone: 'weight-lifter' },
-  { id: '3', nome: 'Agachamento livre', grupo: 'Pernas', icone: 'human' },
-  { id: '4', nome: 'Leg Press', grupo: 'Pernas', icone: 'human' },
-  { id: '5', nome: 'Rosca direta', grupo: 'Bíceps', icone: 'arm-flex' },
-  { id: '6', nome: 'Tríceps pulley', grupo: 'Tríceps', icone: 'arm-flex' },
-  { id: '7', nome: 'Puxada frontal', grupo: 'Costas', icone: 'weight-lifter' },
-  { id: '8', nome: 'Elevação lateral', grupo: 'Ombros', icone: 'arm-flex' },
+  {
+    id: '1',
+    nome: 'Supino reto',
+    grupo: 'Peito',
+    icone: 'weight-lifter',
+  },
+  {
+    id: '2',
+    nome: 'Supino inclinado',
+    grupo: 'Peito',
+    icone: 'weight-lifter',
+  },
+  {
+    id: '3',
+    nome: 'Agachamento livre',
+    grupo: 'Pernas',
+    icone: 'human',
+  },
+  {
+    id: '4',
+    nome: 'Leg Press',
+    grupo: 'Pernas',
+    icone: 'human',
+  },
+  {
+    id: '5',
+    nome: 'Rosca direta',
+    grupo: 'Bíceps',
+    icone: 'arm-flex',
+  },
+  {
+    id: '6',
+    nome: 'Tríceps pulley',
+    grupo: 'Tríceps',
+    icone: 'arm-flex',
+  },
+  {
+    id: '7',
+    nome: 'Puxada frontal',
+    grupo: 'Costas',
+    icone: 'weight-lifter',
+  },
+  {
+    id: '8',
+    nome: 'Elevação lateral',
+    grupo: 'Ombros',
+    icone: 'arm-flex',
+  },
 ]
 
 const rotinas: Rotina[] = [
-  { id: '1', nome: 'Treino A', tipo: 'Peito e Tríceps', duracao: '45 min', exercicios: 8, cor: '#ff5b5b' },
-  { id: '2', nome: 'Treino B', tipo: 'Costas e Bíceps', duracao: '50 min', exercicios: 9, cor: '#4cd964' },
-  { id: '3', nome: 'Treino C', tipo: 'Pernas', duracao: '60 min', exercicios: 10, cor: '#ffbd59' },
-  { id: '4', nome: 'Treino D', tipo: 'Ombros e Abdômen', duracao: '40 min', exercicios: 7, cor: '#5ac8fa' },
+  {
+    id: '1',
+    nome: 'Treino A',
+    tipo: 'Peito e Tríceps',
+    duracao: '45 min',
+    exercicios: 8,
+    cor: '#ff5b5b',
+  },
+  {
+    id: '2',
+    nome: 'Treino B',
+    tipo: 'Costas e Bíceps',
+    duracao: '50 min',
+    exercicios: 9,
+    cor: '#4cd964',
+  },
+  {
+    id: '3',
+    nome: 'Treino C',
+    tipo: 'Pernas',
+    duracao: '60 min',
+    exercicios: 10,
+    cor: '#ffbd59',
+  },
+  {
+    id: '4',
+    nome: 'Treino D',
+    tipo: 'Ombros e Abdômen',
+    duracao: '40 min',
+    exercicios: 7,
+    cor: '#5ac8fa',
+  },
 ]
 
 export default function Exercicios() {
-  const [abaSelecionada, setAbaSelecionada] = useState<AbaSelecionada>('exercicios')
+  const { temaAtual, formatarCor } = useTema()
+
+  const [abaSelecionada, setAbaSelecionada] =
+    useState<AbaSelecionada>('exercicios')
+
   const [buscaExercicio, setBuscaExercicio] = useState('')
   const [categoria, setCategoria] = useState('Todos')
   const [buscaRotina, setBuscaRotina] = useState('')
+
+  const cores = {
+    fundo: formatarCor(temaAtual['--color-base-primaria'], 1),
+    card: formatarCor(temaAtual['--color-base-secundaria'], 1),
+    texto: formatarCor(temaAtual['--color-t-primaria'], 1),
+    secundario: formatarCor(temaAtual['--color-t-terciaria'], 1),
+    destaque: formatarCor(
+      temaAtual['--color-destaque-p-medio'],
+      1
+    ),
+    contraste: formatarCor(
+      temaAtual['--color-contraste-primaria'],
+      1
+    ),
+  }
 
   const categorias = [
     'Todos',
@@ -51,9 +148,10 @@ export default function Exercicios() {
   ]
 
   const exerciciosFiltrados = useMemo(() => {
-    return exercicios.filter(exercicio => {
+    return exercicios.filter((exercicio) => {
       const correspondeCategoria =
-        categoria === 'Todos' || exercicio.grupo === categoria
+        categoria === 'Todos' ||
+        exercicio.grupo === categoria
 
       const correspondeBusca = exercicio.nome
         .toLowerCase()
@@ -64,30 +162,60 @@ export default function Exercicios() {
   }, [buscaExercicio, categoria])
 
   const rotinasFiltradas = useMemo(() => {
-    return rotinas.filter(rotina =>
-      rotina.nome.toLowerCase().includes(buscaRotina.toLowerCase())
+    return rotinas.filter((rotina) =>
+      rotina.nome
+        .toLowerCase()
+        .includes(buscaRotina.toLowerCase())
     )
   }, [buscaRotina])
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        { backgroundColor: cores.fundo },
+      ]}
+    >
       <View style={styles.header}>
-        <Text style={styles.title}>Treinos</Text>
-        <Text style={styles.subtitle}>Exercícios e biblioteca em um só lugar</Text>
+        <Text
+          style={[
+            styles.title,
+            { color: cores.texto },
+          ]}
+        >
+          Treinos
+        </Text>
+
+        <Text
+          style={[
+            styles.subtitle,
+            { color: cores.secundario },
+          ]}
+        >
+          Exercícios e biblioteca em um só lugar
+        </Text>
       </View>
 
       <View style={styles.menuContainer}>
         <Pressable
           style={[
             styles.menuButton,
-            abaSelecionada === 'exercicios' && styles.menuButtonAtivo,
+            { backgroundColor: cores.card },
+            abaSelecionada === 'exercicios' && {
+              backgroundColor: cores.texto,
+            },
           ]}
-          onPress={() => setAbaSelecionada('exercicios')}
+          onPress={() =>
+            setAbaSelecionada('exercicios')
+          }
         >
           <Text
             style={[
               styles.menuText,
-              abaSelecionada === 'exercicios' && styles.menuTextAtivo,
+              { color: cores.texto },
+              abaSelecionada === 'exercicios' && {
+                color: cores.fundo,
+              },
             ]}
           >
             Exercícios
@@ -97,14 +225,22 @@ export default function Exercicios() {
         <Pressable
           style={[
             styles.menuButton,
-            abaSelecionada === 'biblioteca' && styles.menuButtonAtivo,
+            { backgroundColor: cores.card },
+            abaSelecionada === 'biblioteca' && {
+              backgroundColor: cores.texto,
+            },
           ]}
-          onPress={() => setAbaSelecionada('biblioteca')}
+          onPress={() =>
+            setAbaSelecionada('biblioteca')
+          }
         >
           <Text
             style={[
               styles.menuText,
-              abaSelecionada === 'biblioteca' && styles.menuTextAtivo,
+              { color: cores.texto },
+              abaSelecionada === 'biblioteca' && {
+                color: cores.fundo,
+              },
             ]}
           >
             Biblioteca
@@ -115,7 +251,10 @@ export default function Exercicios() {
       {abaSelecionada === 'exercicios' ? (
         <>
           <View style={styles.searchContainer}>
-            <BarraBuscaExercicio valor={buscaExercicio} onChange={setBuscaExercicio} />
+            <BarraBuscaExercicio
+              valor={buscaExercicio}
+              onChange={setBuscaExercicio}
+            />
           </View>
 
           <View style={styles.filterContainer}>
@@ -128,20 +267,30 @@ export default function Exercicios() {
 
           <FlatList
             data={exerciciosFiltrados}
-            keyExtractor={item => item.id}
+            keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.list}
             renderItem={({ item }) => (
               <CardExercicio
                 exercicio={item}
                 onPress={(exercicio) => {
-                  console.log('Exercício selecionado:', exercicio.nome)
+                  console.log(
+                    'Exercício selecionado:',
+                    exercicio.nome
+                  )
                 }}
               />
             )}
             ListEmptyComponent={
               <View style={styles.empty}>
-                <Text style={styles.emptyText}>Nenhum exercício encontrado.</Text>
+                <Text
+                  style={[
+                    styles.emptyText,
+                    { color: cores.secundario },
+                  ]}
+                >
+                  Nenhum exercício encontrado.
+                </Text>
               </View>
             }
           />
@@ -153,27 +302,43 @@ export default function Exercicios() {
               value={buscaRotina}
               onChangeText={setBuscaRotina}
               placeholder="Buscar rotina..."
-              placeholderTextColor="#636366"
-              style={styles.search}
+              placeholderTextColor={cores.secundario}
+              style={[
+                styles.search,
+                {
+                  backgroundColor: cores.card,
+                  color: cores.texto,
+                },
+              ]}
             />
           </View>
 
           <FlatList
             data={rotinasFiltradas}
-            keyExtractor={item => item.id}
+            keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.list}
             renderItem={({ item }) => (
               <CardRotina
                 rotina={item}
                 onPress={(rotina) => {
-                  console.log('Rotina selecionada:', rotina.nome)
+                  console.log(
+                    'Rotina selecionada:',
+                    rotina.nome
+                  )
                 }}
               />
             )}
             ListEmptyComponent={
               <View style={styles.empty}>
-                <Text style={styles.emptyText}>Nenhuma rotina encontrada.</Text>
+                <Text
+                  style={[
+                    styles.emptyText,
+                    { color: cores.secundario },
+                  ]}
+                >
+                  Nenhuma rotina encontrada.
+                </Text>
               </View>
             }
           />
@@ -186,72 +351,71 @@ export default function Exercicios() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
   },
+
   header: {
     paddingHorizontal: 16,
     paddingTop: 20,
     paddingBottom: 12,
   },
+
   title: {
-    color: '#ffffff',
     fontSize: 24,
     fontWeight: 'bold',
   },
+
   subtitle: {
-    color: '#8e8e93',
     fontSize: 14,
     marginTop: 4,
   },
+
   menuContainer: {
     flexDirection: 'row',
     paddingHorizontal: 16,
     gap: 10,
     marginBottom: 12,
   },
+
   menuButton: {
     flex: 1,
     paddingVertical: 10,
     borderRadius: 10,
-    backgroundColor: '#1c1c1e',
     alignItems: 'center',
   },
-  menuButtonAtivo: {
-    backgroundColor: '#ffffff',
-  },
+
   menuText: {
-    color: '#ffffff',
     fontWeight: '600',
   },
-  menuTextAtivo: {
-    color: '#000000',
-  },
+
   searchContainer: {
     paddingHorizontal: 16,
   },
+
   filterContainer: {
     marginTop: 14,
     paddingLeft: 16,
   },
+
   search: {
     height: 40,
-    backgroundColor: '#1c1c1e',
     borderRadius: 10,
     paddingHorizontal: 14,
-    color: '#ffffff',
     fontSize: 15,
   },
+
   list: {
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 30,
   },
+
   empty: {
     alignItems: 'center',
     paddingTop: 40,
   },
+
   emptyText: {
-    color: '#8e8e93',
     fontSize: 14,
   },
 })
+

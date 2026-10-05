@@ -28,7 +28,7 @@ const InputSimples = ({
   const classeBase = `
     rounded-xl bg-base-terciaria p-1 border-2
     border-base-quaternaria cursor-pointer hover:bg-base-secundaria
-    hover:border-contraste-principal/50 transition-colors duration-200
+    hover:border-contraste-primaria/50 transition-colors duration-200
     focus:outline-none focus:border-destaque-s-medio
     invalid:border-red-500 invalid:focus:border-red-500
     invalid:hover:border-red-500

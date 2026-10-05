@@ -1,15 +1,27 @@
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import useTema from '@/contextos/TemaContexto';
+import useUsuario from '@/contextos/UsuarioContexto';
 
-export default function TabsLayout() {
+    
+    export default function TabsLayout() {
+    const { tema, temaAtual, formatarCor } = useTema()
+    const { autenticado, carregando } = useUsuario()
+
+    // Sem sessão (ou token expirado) -> volta para o login
+    if (!carregando && !autenticado) {
+        return <Redirect href="/(auth)/login" />
+    }
+
     return (
         <Tabs
+            key={tema}
             screenOptions={{
                 headerShown: false,
 
                 tabBarStyle: {
-                    backgroundColor: '#121214',
-                    borderTopColor: '#1c1c1e',
+                    backgroundColor: formatarCor(temaAtual['--color-base-secundaria'], 1),
+                    borderTopColor: formatarCor(temaAtual['--color-base-quaternaria'], 1),
                     height: 65,
                     paddingTop: 5,
                     paddingBottom: 8,
@@ -20,8 +32,8 @@ export default function TabsLayout() {
                     fontWeight: '600',
                 },
 
-                tabBarActiveTintColor: '#ff5b5b',
-                tabBarInactiveTintColor: '#8e8e93',
+                tabBarActiveTintColor: formatarCor(temaAtual['--color-destaque-p-medio'], 1),
+                tabBarInactiveTintColor: formatarCor(temaAtual['--color-contraste-secundaria'], 1),
             }}
         >
 

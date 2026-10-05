@@ -4,6 +4,7 @@ import {
     Text,
     TouchableOpacity,
 } from 'react-native'
+import useTema from '@/contextos/TemaContexto'
 
 type Props = {
     categorias: string[]
@@ -16,6 +17,12 @@ export default function FiltroExercicio({
     selecionada,
     onChange,
 }: Props) {
+    const { temaAtual, formatarCor } = useTema()
+
+    const corBase = formatarCor(temaAtual['--color-base-secundaria'], 1)
+    const corDestaque = formatarCor(temaAtual['--color-destaque-p-claro'], 1)
+    const corTexto = formatarCor(temaAtual['--color-t-primaria'], 1)
+    const corTextoSecundaria = formatarCor(temaAtual['--color-t-secundaria'], 1)
 
     return (
         <ScrollView
@@ -34,14 +41,16 @@ export default function FiltroExercicio({
                         onPress={() => onChange(categoria)}
                         style={[
                             styles.chip,
-                            ativo && styles.chipActive,
+                            { backgroundColor: corBase },
+                            ativo && { backgroundColor: corDestaque },
                         ]}
                     >
 
                         <Text
                             style={[
                                 styles.text,
-                                ativo && styles.textActive,
+                                { color: corTextoSecundaria },
+                                ativo && { color: corTexto, fontWeight: 'bold' },
                             ]}
                         >
                             {categoria}
@@ -57,8 +66,6 @@ export default function FiltroExercicio({
 
 const styles = StyleSheet.create({
     chip: {
-        backgroundColor: '#1c1c1e',
-
         paddingHorizontal: 14,
         paddingVertical: 8,
 
@@ -67,21 +74,9 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
 
-    chipActive: {
-        backgroundColor: '#ff5b5b',
-    },
-
     text: {
-        color: '#8e8e93',
-
         fontSize: 13,
 
         fontWeight: '500',
-    },
-
-    textActive: {
-        color: '#ffffff',
-
-        fontWeight: 'bold',
     },
 })

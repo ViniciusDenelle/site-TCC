@@ -36,7 +36,7 @@ const ExibirInfo = () => {
         genero,
         peso,
         tipoPeso,
-        pesoFinal,
+        pesoIdeal,
         altura,
         nivelAtividade,
         objetivo,
@@ -297,7 +297,7 @@ const ExibirInfo = () => {
                             </Texto>
 
                             <Texto variante='legenda' className="text-t-primaria">
-                                {pesoFinal} kg
+                                {pesoIdeal} kg
                             </Texto>
                         </View>
 
@@ -314,7 +314,7 @@ const ExibirInfo = () => {
                                 </Texto>
 
                                 <Texto variante='legenda' className="text-t-primaria">
-                                    {peso - pesoFinal} kg
+                                    {peso - pesoIdeal} kg
                                 </Texto>
 
                             </View>
@@ -331,7 +331,7 @@ const ExibirInfo = () => {
                                 </Texto>
 
                                 <Texto variante='legenda' className="text-t-primaria">
-                                    {pesoFinal - peso} kg
+                                    {pesoIdeal - peso} kg
                                 </Texto>
 
                             </View>

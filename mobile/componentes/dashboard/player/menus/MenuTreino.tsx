@@ -1,0 +1,91 @@
+import { Plus, Settings, Trash } from "lucide-react-native"
+import Texto from "../../../organizacao/Texto"
+import OpcoesMenuPlayer from "../../../organizacao/opcoesMenuPlayer"
+import { Dispatch, SetStateAction } from "react"
+import BotaoPrimario from "../../../botoes/BotaoPrimario"
+import { ResTreinoProps } from "../../../../logicas/dashboard/treinos/treino/TreinoProps"
+import useDeleteTreino from "../../../../logicas/dashBoard/treino/DeletarTreino"
+import MenuLayout from "./MenuLayout"
+
+type MenuTreinoProps = {
+    menuAberto: boolean
+    setMenuAberto: Dispatch<SetStateAction<boolean>>
+    treino: ResTreinoProps
+    adicionar?: (treino:ResTreinoProps) => void 
+}
+
+const MenuTreino = ({
+    treino,
+    menuAberto,
+    setMenuAberto,
+    adicionar
+}: MenuTreinoProps) => {
+
+
+    const {
+        deletarTreinoHandler: deletarTreino
+    } = useDeleteTreino(treino.id)
+
+    const opcoesBotao = [
+        {
+            titulo: 'Deletar Treino',
+            icone: Trash,
+            corIcone: 'text-red-600',
+            onclick: () => deletarTreino()
+        },
+        
+    ]
+
+    const opcoesLink = [
+        {
+            titulo: 'Atualizar treino',
+            icone: Settings,
+            to:  `atualizarTreino/${treino.id}`,
+            corIcone: 'text-blue-500'
+        }
+    ]
+
+    return (
+        menuAberto ? (
+            <MenuLayout
+                menuAberto={menuAberto}
+                setMenuAberto={setMenuAberto}
+            >   
+                <Texto tipo="titulo" className="font-thin text-t-primaria">
+                    {treino?.nome}
+                </Texto>
+
+                {adicionar && (
+                    <BotaoPrimario 
+                        icone={Plus}
+                        texto="Adcionar a Ficha"
+                        onClick={() => adicionar(treino)}
+                        tipo="vazio"
+                    />
+                )}
+
+                {opcoesBotao.map(opcao => (
+                    <OpcoesMenuPlayer
+                        key={opcao.titulo}
+                        nome={opcao.titulo}
+                        onclick={opcao.onclick}
+                        icone={opcao.icone}
+                        corIcone={opcao.corIcone}
+                    />
+                ))}
+
+                {opcoesLink.map(opcao => (
+                    <OpcoesMenuPlayer
+                        key={opcao.titulo}
+                        nome={opcao.titulo}
+                        to={opcao.to}
+                        icone={opcao.icone}
+                        corIcone={opcao.corIcone}
+                    />
+                ))}
+            </MenuLayout>
+        ) : null
+    )
+}
+
+export default MenuTreino

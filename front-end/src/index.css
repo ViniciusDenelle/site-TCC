@@ -10,7 +10,7 @@
     --color-base-quaternaria: var(--color-slate-300);
     --color-contraste-primaria: var(--color-zinc-400);
     --color-contraste-secundaria: var(--color-zinc-500);
-    --color-contraste-secundaria: var(--color-zinc-600);
+    --color-contraste-terciaria: var(--color-zinc-600);
 
     /* textos */
     --color-t-primaria: var(--color-slate-900);
@@ -33,9 +33,9 @@
     --color-base-secundaria: var(--color-gray-800);
     --color-base-terciaria: var(--color-gray-700);
     --color-base-quaternaria: var(--color-gray-600);
-    --color-contraste-principal: var(--color-zinc-400);
+    --color-contraste-primaria: var(--color-zinc-400);
     --color-contraste-secundaria: var(--color-zinc-300);
-    --color-contraste-secundaria: var(--color-zinc-200);
+    --color-contraste-terciaria: var(--color-zinc-200);
 
     /* textos */
     --color-t-primaria: var(--color-slate-100);
