@@ -2,60 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreDietaRequest;
+use App\Http\Requests\DietaRequest;
+use App\Http\Resources\DietaResource;
 use App\Models\Dieta;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DietaController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function fetch(Request $request)
     {
-        $dietas = Dieta::where('user_id', $request->user()->id)
+        $dietas = Dieta::with(['objetivo', 'nivel', 'refeicoes.alimentos'])
             ->latest()
-            ->get();
+            ->paginate(10);
 
-        return response()->json($dietas);
+        return DietaResource::collection($dietas);
     }
 
-    public function store(StoreDietaRequest $request): JsonResponse
+    public function store(DietaRequest $request)
     {
         $dados = $request->validated();
 
         $dieta = DB::transaction(function () use ($dados, $request) {
-            $refeicoes = $dados['refeicoes'] ?? [];
-            unset($dados['refeicoes']);
+            $dieta = Dieta::create([
+                'user_id' => $request->user()->id,
+                'objetivo_id' => $dados['objetivo_id'],
+                'nivel_id' => $dados['nivel_id'],
+                'nome' => $dados['nome'],
+                'descricao' => $dados['descricao'] ?? null,
+            ]);
 
-            $dieta = Dieta::create([...$dados, 'user_id' => $request->user()->id]);
-
-            foreach ($refeicoes as $indice => $dadosRefeicao) {
-                $alimentos = $dadosRefeicao['alimentos'] ?? [];
-                unset($dadosRefeicao['alimentos']);
-
+            foreach (($dados['refeicoes'] ?? []) as $ordem => $dadosRefeicao) {
                 $refeicao = $dieta->refeicoes()->create([
-                    ...$dadosRefeicao,
-                    'ordem' => $dadosRefeicao['ordem'] ?? $indice,
+                    'nome' => $dadosRefeicao['nome'],
+                    'dia_semana' => $dadosRefeicao['dia_semana'],
+                    'horario' => $dadosRefeicao['horario'] ?? null,
+                    'ordem' => $dadosRefeicao['ordem'] ?? $ordem,
                 ]);
 
-                if ($alimentos) {
-                    $refeicao->alimentos()->createMany($alimentos);
+                foreach (($dadosRefeicao['alimentos'] ?? []) as $itemAlimento) {
+                    $refeicao->alimentos()->attach($itemAlimento['alimento_id'], [
+                        'quantidade_porcoes' => $itemAlimento['quantidade_porcoes'],
+                    ]);
                 }
             }
 
             return $dieta;
         });
 
-        return response()->json(
-            $dieta->load('refeicoes.alimentos'),
-            201
-        );
+        return new DietaResource($dieta->load(['objetivo', 'nivel', 'refeicoes.alimentos']));
     }
 
-    public function show(Request $request, Dieta $dieta): JsonResponse
+    public function show(Dieta $dieta, Request $request)
     {
-        abort_unless($dieta->user_id === $request->user()->id, 403);
+        // if ($dieta->user_id !== $request->user()->id) {
+        //     abort(403, 'Você não tem permissão para ver esta dieta.');
+        // }
 
-        return response()->json($dieta->load('refeicoes.alimentos'));
+        return new DietaResource($dieta->load(['objetivo', 'nivel', 'refeicoes.alimentos']));
     }
 }

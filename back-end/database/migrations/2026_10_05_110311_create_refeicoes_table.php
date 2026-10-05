@@ -10,14 +10,12 @@ return new class extends Migration
     {
         Schema::create('refeicoes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('dieta_id')->constrained()->cascadeOnDelete();
-            $table->string('dia_semana', 10);
-            $table->string('nome');
+            $table->foreignId('dieta_id')->constrained('dietas')->cascadeOnDelete();
+            $table->tinyInteger('dia_semana'); // 0 = domingo ... 6 = sábado
+            $table->string('nome'); // ex: "Café da manhã"
             $table->time('horario')->nullable();
-            $table->unsignedSmallInteger('ordem')->default(0);
+            $table->unsignedTinyInteger('ordem')->default(0);
             $table->timestamps();
-
-            $table->index(['dieta_id', 'dia_semana']);
         });
     }
 

@@ -1,30 +1,53 @@
-export interface Alimento {
-    id: string;
-    nome: string;
-    quantidade: string;
-}
+// tipagens/Dieta.ts
 
-export interface Refeicao {
-    id: string;
+type ObjetivoDieta = {
+    id: number;
     nome: string;
-    horario: string;
+};
+
+type NivelDieta = {
+    id: number;
+    nome: string;
+};
+
+type Alimento = {
+    id: number;
+    nome: string;
+    porcao_descricao: string;
+    porcao_gramas: number | null;
     calorias: number;
     proteinas: number;
     carboidratos: number;
     gorduras: number;
-    alimentos: Alimento[];
-}
+};
 
-export interface Dieta {
-    id: string;
+type AlimentoNaRefeicao = {
+    id: number;
+    nome: string;
+    porcao_descricao: string;
+    quantidade_porcoes: number;
+    calorias: number;
+    proteinas: number;
+    carboidratos: number;
+    gorduras: number;
+};
+
+type RefeicaoDaDieta = {
+    id: number;
+    nome: string;
+    dia_semana: number;
+    horario: string | null;
+    alimentos: AlimentoNaRefeicao[];
+};
+
+type Dieta = {
+    id: number;
     nome: string;
     descricao: string;
-    objetivo: string;
-    nivel: string;
-    calorias: number;
-    proteinas: number;
-    carboidratos: number;
-    gorduras: number;
-    duracao: string;
-    refeicoes: Refeicao[];
-}
+    objetivo: ObjetivoDieta;
+    nivel: NivelDieta;
+    refeicoes: RefeicaoDaDieta[];
+};
+
+export default Dieta;
+export type { ObjetivoDieta, NivelDieta, Alimento, AlimentoNaRefeicao, RefeicaoDaDieta };

@@ -16,7 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/usuario', [UsuarioController::class, 'fetch']);
     Route::get('/logout', [UsuarioController::class, 'logout']);
     Route::put('/atualizarUsuario', [UsuarioController::class], 'update');
-    Route::apiResource('dietas', DietaController::class)->only(['index', 'store', 'show']);
+    
     Route::prefix('dashboard')->group(function() {
         // treinos 
         Route::prefix('treinos')->group(function() {
@@ -77,6 +77,15 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::get('niveis', 'niveis');
                 Route::get('focos', 'focos');
             });
+        });
+
+        Route::prefix('dietas')->group(function () {
+
+            Route::controller(DietaController::class)->group(function() {
+                Route::get('/{dieta}', 'show');
+                Route::get('/', 'fetch');
+            });
+
         });
     });
 });
