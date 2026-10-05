@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from "react"
 import { Badge, ResExercicioProps } from "../exercicios/FetchExercicio"
 import { UseSelecaoComDadosProps } from "../selecionaveis/useSelecaoComDados";
 import { UseSelecaoUnicaProps } from "../selecionaveis/useSelecaoUnica";
+import { SerieExecutada } from "../execução/ExercutarTreinoProps";
 
 // hooks/formularios/TreinoProps.ts
 
@@ -78,4 +79,25 @@ export type ResTreinoProps = {
     foco: { id: number; nome: string };
     nivel: { id: number; nome: string };
     exercicios: ExercicioDoTreino[];
+};
+
+export type ExercicioDaSessao = {
+    exercicio_treino_id: number;
+    exercicio: { id: number; nome: string } | null;
+    ordem: number;
+    planejado: {
+        sets: number;
+        repeticoes_minimas: number;
+        repeticoes_maximas: number;
+        peso: number;
+    };
+    series_executadas: SerieExecutada[];
+};
+
+export type SessaoTreino = {
+    id: number;
+    iniciado_em: string;
+    finalizado_em: string | null;
+    duracao: number | null;
+    exercicios: ExercicioDaSessao[];
 };

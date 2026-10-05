@@ -50,10 +50,8 @@ const DashboardLayout = () => {
 
     const { logout } = useLogout()
 
-    const [modalPlayer, setModalPlayer] = useState<boolean>(false)
-    
     if (isPending) return
-    if (isError) return
+    if (isError) navigation('/login')
     if (!token) navigation('/login')
 
 
@@ -86,19 +84,12 @@ const DashboardLayout = () => {
                     </>
                 )}
 
-                {modalPlayer && (
-                    <ModalPlayer 
-                        SetModalPlayerAberto={setModalPlayer}
-                    />
-                )}
+                <ModalPlayer />
 
                 <Outlet />
                 
 
-                <DashboardMenuInferior 
-                    setModalPlayer={setModalPlayer}
-                    linksNav={nav}
-                />
+                <DashboardMenuInferior linksNav={nav}/>
             </TreinoProvider>
 
         </>

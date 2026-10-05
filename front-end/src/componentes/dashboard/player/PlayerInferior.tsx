@@ -4,15 +4,14 @@ import Texto from "../../organizacao/Texto"
 import WrapperIcone from "../../organizacao/WrapperIcone"
 import useExecutarTreinoContext from "../../../contextos/ExecutarTreinoContexto"
 
-const PlayerInferior = ({
-    setModalPlayer
-}) => {
+const PlayerInferior = () => {
 
     const {
+        temTreinoAtivo,
+        setModalAberto,
         treinoQuery,
         exercicioData,
         exercicioExecucao,
-        setOrdem,
         treino
     } = useExecutarTreinoContext()
 
@@ -20,53 +19,57 @@ const PlayerInferior = ({
 
     } else {
         return (
-            <div
-                className="w-[95%] mx-auto mb-1 flex items-center 
+            <>
+                {temTreinoAtivo && (
+                    <div
+                        className="w-[95%] mx-auto mb-1 flex items-center 
                 justify-center"
-            >
+                    >
 
-                <CardHorizontal>
-                    <div className="relative flex gap-2">
+                        <CardHorizontal>
+                            <div className="relative flex gap-2">
 
-                        <div 
-                            onClick={() => setModalPlayer(true)}
-                            className="absolute inset-0 z-10 cursor-pointer"
-                        />
-                        
-                        <div className="size-10 bg-base-terciaria">
+                                <div
+                                    onClick={() => setModalAberto(true)}
+                                    className="absolute inset-0 z-10 cursor-pointer"
+                                />
 
-                        </div>
+                                <div className="size-10 bg-base-terciaria">
 
-                        <div className="flex flex-col w-2/4 overflow-hidden">
-                            <Texto 
-                                tipo="subtitulo" 
-                                className="truncate text-t-primaria"
-                            >
-                                {exercicioData?.exercicio?.nome} {exercicioExecucao?.serieAtual}/{exercicioData?.sets}
-                            </Texto>
-                            <div className="flex gap-1">
-                            <Texto className="truncate">
-                                {exercicioData.repeticoes_minimas} a {exercicioData?.repeticoes_maximas}
-                            </Texto>
-                            <Texto className="truncate">
-                                com {exercicioExecucao?.peso} kg
-                            </Texto>
+                                </div>
+
+                                <div className="flex flex-col w-2/4 overflow-hidden">
+                                    <Texto
+                                        tipo="subtitulo"
+                                        className="truncate text-t-primaria"
+                                    >
+                                        {exercicioData?.exercicio?.nome} {exercicioExecucao?.serieAtual}/{exercicioData?.sets}
+                                    </Texto>
+                                    <div className="flex gap-1">
+                                        <Texto className="truncate">
+                                            {exercicioData.repeticoes_minimas} a {exercicioData?.repeticoes_maximas}
+                                        </Texto>
+                                        <Texto className="truncate">
+                                            com {exercicioExecucao?.peso} kg
+                                        </Texto>
+
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-end items-center w-1/4 z-20">
+                                    <div onClick={exercicioExecucao.executarSerie}>
+                                        <WrapperIcone>
+                                            <CheckCircle />
+                                        </WrapperIcone>
+                                    </div>
+                                </div>
 
                             </div>
-                        </div>
-
-                        <div className="flex justify-end items-center w-1/4 z-20">
-                            <div onClick={exercicioExecucao.executarSerie}>
-                                <WrapperIcone>
-                                    <CheckCircle/>
-                                </WrapperIcone>
-                            </div>
-                        </div>
+                        </CardHorizontal>
 
                     </div>
-                </CardHorizontal>
-
-            </div>
+                )}
+            </>
         )
     }
 }

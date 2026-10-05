@@ -5,6 +5,7 @@ import useExecutarTreinoContext from "../../../../contextos/ExecutarTreinoContex
 import BotaoPrimario from "../../../botoes/BotaoPrimario"
 import BotaoTerciario from "../../../botoes/BotaoTerciario"
 import PlayerComandoTimer from "./PlayerComandoTimer"
+import PlayerComando from "./PlayerComando"
 
 const ModalPlayerComando = () => {
 
@@ -30,11 +31,13 @@ const ModalPlayerComando = () => {
                             <div className="flex gap-2 items-center">
 
                                 <Texto tipo="titulo" className="text-t-primaria">
-                                    {exercicioExecucao.serieAtual} de {exercicioData.sets} series
+                                    {exercicioExecucao.concluida 
+                                    ? `Exercicio Concluido` 
+                                    : `${exercicioExecucao.serieAtual - 1} de ${exercicioData.sets} series`}
                                 </Texto>
 
                                 <Texto tipo="subtitulo">
-                                    {exercicioData.exercicio.nome} {exercicioExecucao.timer.tempo}
+                                    {exercicioData.exercicio.nome} 
                                 </Texto>
                             </div>
                             <Texto>
@@ -47,10 +50,12 @@ const ModalPlayerComando = () => {
 
                 <div className="flex justify-between place-items-center">
                     {exercicioExecucao.timer.ativo ? (
-                        <PlayerComandoTimer />
-                    ) : (
-                        <></>
-                    )}
+                            <PlayerComandoTimer />
+                        ) : (
+                            <PlayerComando 
+                                concluida={exercicioExecucao.concluida}
+                            />
+                        )}
                 </div>
             </div>
 

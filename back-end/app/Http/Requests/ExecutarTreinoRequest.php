@@ -23,9 +23,10 @@ class ExecutarTreinoRequest extends FormRequest
     {
         return [
             'duracao' => 'required|integer|min:1',
+            'inicio' => 'required',
 
             'seriesExecutadas' => 'required|array|min:1',
-            'seriesExecutadas.*.id' => 'required|integer|exists:exercicios_treino,id',
+            'seriesExecutadas.*.exercicioTreinoId' => 'required|integer|exists:exercicios_treino,id',
             'seriesExecutadas.*.serie' => 'required|integer|min:1',
             'seriesExecutadas.*.peso' => 'required|numeric|min:0',
             'seriesExecutadas.*.repeticoes' => 'required|integer|min:0',

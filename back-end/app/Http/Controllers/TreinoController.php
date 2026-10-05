@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Enums\NivelTreino;
 use App\Filters\TreinoFilter;
 use App\Http\Requests\TreinoRequest;
+use App\Http\Resources\SessaoTreinoResource;
 use App\Http\Resources\TreinoResource;
 use App\Models\FichaTreino;
+use App\Models\SessaoTreino;
 use App\Models\Treino;
 use App\services\calcularNivelPorPontuacao;
 use App\services\calcularTreinoService;
@@ -54,9 +56,9 @@ class TreinoController extends Controller
 
             return $treino->load([
                 'criador',
-                'exercicios.exercicio', 
-                'nivel', 
-                'foco', 
+                'exercicios.exercicio',
+                'nivel',
+                'foco',
                 'tipo'
             ]);
         });
@@ -74,9 +76,9 @@ class TreinoController extends Controller
         $treinos = TreinoFilter::apply(
             Treino::query()->with([
                 'criador',
-                'exercicios.exercicio', 
-                'nivel', 
-                'foco', 
+                'exercicios.exercicio',
+                'nivel',
+                'foco',
                 'tipo'
             ]),
             $request
@@ -86,6 +88,20 @@ class TreinoController extends Controller
 
         return TreinoResource::collection($treinos);
     }
+
+    // TreinoController
+    public function historico(Request $request, Treino $treino)
+    {
+        $sessoes = SessaoTreino::where('treino_id', $treino->id)
+            ->where('user_id', $request->user()->id)
+            ->whereNotNull('finalizado_em') // só sessões concluídas
+            ->with(['series.exercicioTreino.exercicio'])
+            ->orderByDesc('iniciado_em')
+            ->paginate(10);
+
+        return SessaoTreinoResource::collection($sessoes);
+    }
+
 
     public function update(
         TreinoRequest $request,

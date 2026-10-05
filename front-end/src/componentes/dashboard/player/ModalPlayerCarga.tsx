@@ -42,7 +42,7 @@ const ModalPlayerCarga = () => {
                             serieCompleta={exercicioExecucao.series?.find(
                                 serieE => serieE.serie === serie  
                             )}
-                            éSerieAtual={serie === exercicioExecucao.serieAtual}
+                            éSerieAtual={exercicioExecucao.concluida ? false : serie === exercicioExecucao.serieAtual}
                             
                         />
                     ))}

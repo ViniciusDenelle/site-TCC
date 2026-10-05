@@ -25,7 +25,7 @@ class treinosExecucaoController extends Controller
 
             foreach ($dados['seriesExecutadas'] as $serie) {
                 $sessao->series()->create([
-                    'exercicio_treino_id' => $serie['id'],
+                    'exercicio_treino_id' => $serie['exercicioTreinoId'],
                     'serie' => $serie['serie'],
                     'peso' => $serie['peso'],
                     'repeticoes' => $serie['repeticoes'],
