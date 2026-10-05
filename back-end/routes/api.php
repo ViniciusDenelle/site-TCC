@@ -11,11 +11,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\DietaController;
+use App\Http\Controllers\RankingController;
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/usuario', [UsuarioController::class, 'fetch']);
     Route::get('/logout', [UsuarioController::class, 'logout']);
-    Route::put('/atualizarUsuario', [UsuarioController::class], 'update');
+    Route::put('/atualizarUsuario', [UsuarioController::class, 'update']);
     Route::apiResource('dietas', DietaController::class)->only(['index', 'store', 'show']);
     Route::prefix('dashboard')->group(function() {
         // treinos 
@@ -67,6 +69,12 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::get('exercicio/{exercicio}', 'exercicio');
             });
 
+            // ranking
+            Route::prefix('ranking')->controller(RankingController::class)->group(function() {
+                Route::get('exercicios', 'exercicios');
+                Route::get('exercicios/{exercicio}', 'exercicio');
+            });
+
             Route::prefix('badges')->controller(BadgeTreinoController::class)->group(function(){
                 Route::get('treino', 'treino');
                 Route::get('exercicio', 'exercicio');
@@ -87,6 +95,3 @@ Route::controller(AuthController::class)->group(function() {
     Route::post('/cadastro', 'cadastro');
     Route::post('/cadastroEmail', 'cadastroEmail');
 });
-
-
-
