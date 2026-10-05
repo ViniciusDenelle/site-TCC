@@ -2,16 +2,18 @@ import { useMutation } from '@tanstack/react-query'
 import React from 'react'
 import api from '../../../../api'
 import { SerieExecutada } from './ExercutarTreinoProps'
+import toast from 'react-hot-toast'
 
 export type ReqExecutarTreinoProps = {
     duracao: number,
-    seriesExecutadas: SerieExecutada[]
+    seriesExecutadas: SerieExecutada[],
+    inicio: Date
 }
 
 const useExecutarTreino = (id : number) => {
 
     const {
-        mutate,
+        mutate: executarTreino,
         isSuccess,
         isError,
         isPending,
@@ -19,20 +21,15 @@ const useExecutarTreino = (id : number) => {
     } = useMutation({
         mutationFn: (dados:ReqExecutarTreinoProps) => api.post(`/dashboard/treinos/executarTreino/${id}`, dados),
         onSuccess: (res) => {
-            console.log(res.data)
+            toast.success('Treino realizado com sucesso')
         },
         onError: (error) => {
             console.log(error)
         }
     })
 
-    const executarTreinohandler = (dados:ReqExecutarTreinoProps) => {
-        mutate(dados)
-    }
-
-
   return {
-    executarTreinohandler,
+    executarTreino,
     isSuccess,
     isError,
     isPending,

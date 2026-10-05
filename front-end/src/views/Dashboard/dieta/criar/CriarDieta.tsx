@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { Plus, Utensils, Clock, Target, FileText, Calendar } from 'lucide-react'
 
 import Texto from '../../../../componentes/organizacao/Texto'
@@ -13,6 +13,8 @@ import { SeletorDias } from '../../../../componentes/dieta/SeletorDias'
 import { ResumoNutricionalDia } from '../../../../componentes/dieta/ResumoNutricionalDia'
 import { AlimentoFormulario, RefeicaoFormulario, DiaSemana } from '../../../../componentes/dieta/types'
 
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api'
+
 const DIAS_DA_SEMANA: DiaSemana[] = [
   { id: 'segunda', label: 'Segunda-feira', short: 'Seg' },
   { id: 'terca', label: 'Terça-feira', short: 'Ter' },
@@ -22,6 +24,9 @@ const DIAS_DA_SEMANA: DiaSemana[] = [
   { id: 'sabado', label: 'Sábado', short: 'Sáb' },
   { id: 'domingo', label: 'Domingo', short: 'Dom' },
 ]
+
+const numeroOuNull = (v: number | string | '') =>
+  v === '' || v === null || v === undefined ? null : Number(v)
 
 const CriarDieta = () => {
   // --- Metadados da Dieta ---
@@ -57,6 +62,11 @@ const CriarDieta = () => {
   const [horarioNovaRefeicao, setHorarioNovaRefeicao] = useState('')
   const [refeicaoAberta, setRefeicaoAberta] = useState<string | null>(null)
   const [observacoesFinais, setObservacoesFinais] = useState('')
+
+  // --- Envio para o back-end ---
+  const [salvando, setSalvando] = useState(false)
+  const [erros, setErros] = useState<Record<string, string[]>>({})
+  const salvandoRef = useRef(false) // evita envio duplicado
 
   // Refeições do dia selecionado
   const refeicoesDoDia = useMemo(() => refeicoesPorDia[diaAtivo] || [], [refeicoesPorDia, diaAtivo])
@@ -201,24 +211,81 @@ const CriarDieta = () => {
     })
   }
 
-  function salvarDieta(e: React.FormEvent) {
-    e.preventDefault()
+  // SALVAR NO LARAVEL
+  async function salvarDieta(e?: React.FormEvent) {
+    e?.preventDefault()
+    if (salvandoRef.current) return
     if (!nome.trim()) return alert('Informe o nome da dieta.')
 
-    const dietaCompleta = {
-      nome,
-      descricao,
-      objetivo,
-      nivel,
-      duracao,
-      metaAgua,
-      metasAlvo,
-      observacoesFinais,
-      planilhaPorDia: refeicoesPorDia,
+    const payload = {
+      nome: nome.trim(),
+      descricao: descricao || null,
+      objetivo: objetivo || null,
+      nivel: nivel || null,
+      duracao: duracao || null,
+      meta_agua: numeroOuNull(metaAgua),
+      meta_calorias: numeroOuNull(metasAlvo.calorias),
+      meta_proteinas: numeroOuNull(metasAlvo.proteinas),
+      meta_carboidratos: numeroOuNull(metasAlvo.carboidratos),
+      meta_gorduras: numeroOuNull(metasAlvo.gorduras),
+      observacoes_finais: observacoesFinais || null,
+
+      // Transforma { segunda: [...], terca: [...] } em uma lista única
+      refeicoes: DIAS_DA_SEMANA.flatMap(dia =>
+        (refeicoesPorDia[dia.id] || []).map((ref, indice) => ({
+          dia_semana: dia.id,
+          nome: ref.nome,
+          horario: ref.horario === '--:--' ? null : ref.horario,
+          ordem: indice,
+          alimentos: ref.alimentos
+            .filter(a => a.nome.trim() !== '') // ignora alimentos em branco
+            .map(a => ({
+              nome: a.nome.trim(),
+              quantidade: a.quantidade || null,
+              calorias: numeroOuNull(a.calorias),
+              proteinas: numeroOuNull(a.proteinas),
+              carboidratos: numeroOuNull(a.carboidratos),
+              gorduras: numeroOuNull(a.gorduras),
+            })),
+        }))
+      ),
     }
 
-    console.log('Dieta completa:', dietaCompleta)
-    alert('Dieta cadastrada com sucesso!')
+    salvandoRef.current = true
+    setSalvando(true)
+    setErros({})
+
+    try {
+      const token = localStorage.getItem('token') // ajuste para onde você guarda o token
+
+      const resposta = await fetch(`${API_URL}/dietas`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      })
+
+      if (resposta.status === 422) {
+        const data = await resposta.json()
+        setErros(data.errors ?? {})
+        alert(data.message ?? 'Verifique os campos informados.')
+        return
+      }
+
+      if (!resposta.ok) throw new Error(`Erro ${resposta.status}`)
+
+      alert('Dieta cadastrada com sucesso!')
+      // aqui você pode redirecionar (ex.: navigate('/dietas')) ou limpar o formulário
+    } catch (err) {
+      console.error(err)
+      alert('Não foi possível salvar a dieta. Tente novamente.')
+    } finally {
+      salvandoRef.current = false
+      setSalvando(false)
+    }
   }
 
   return (
@@ -239,6 +306,7 @@ const CriarDieta = () => {
           Nome da dieta
         </Texto>
         <InputSimples valor={nome} onChange={e => setNome(e.target.value)} placeholder="ex: Plano Cutting" />
+        {erros.nome && <p className="text-red-500 text-sm">{erros.nome[0]}</p>}
 
         <Texto tipo="titulo" className="font-thin">
           Descrição / Orientações Gerais
@@ -419,7 +487,11 @@ const CriarDieta = () => {
           placeholder="ex: Creatina, Glutamina..."
         />
 
-        <BotaoPrimario texto="salvar dieta completa" icone={Plus} onClick={() => salvarDieta} />
+        <BotaoPrimario
+          texto={salvando ? 'salvando...' : 'salvar dieta completa'}
+          icone={Plus}
+          onClick={() => salvarDieta()}
+        />
       </form>
     </div>
   )

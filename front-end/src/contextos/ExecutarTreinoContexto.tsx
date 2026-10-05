@@ -1,47 +1,78 @@
-import type { ReactNode } from 'react'
-import { createContext, useContext, useState } from 'react'
-import useCadastro, { UseCadastroReturn } from '../logicas/cadastro/useCadastro.js'
-import { ExecutarTreinoType } from '../logicas/dashboard/treinos/execução/ExercutarTreinoProps.js'
-import useExecutarTreino from '../logicas/dashboard/treinos/execução/ExecutarSerie.js'
-import useExercuçãoTreino from '../logicas/dashboard/treinos/execução/useExercuçãoTreino.js'
+import type { ReactNode } from 'react';
+import { createContext, useContext, useState } from 'react';
+import { ExecutarTreinoType } from '../logicas/dashboard/treinos/execução/ExercutarTreinoProps.js';
+import useExecuçãoTreino from '../logicas/dashboard/treinos/execução/useExercuçãoTreino.js';
 
 interface TreinoProviderProps {
-  children: ReactNode
+    children: ReactNode;
 }
 
-const ExecutarTreino = createContext<ExecutarTreinoType | null>(null)
+const ExecutarTreino = createContext<ExecutarTreinoType | null>(null);
 
-export const TreinoProvider = ({
-  children
-}: TreinoProviderProps) => {
-    const [treino, setTreino] = useState<number>(1)
+export const TreinoProvider = ({ children }: TreinoProviderProps) => {
+    // Permite inicializar sem nenhum treino ativo (null)
+    const [treino, setTreino] = useState<number | null>(null);
+
     const {
+        temTreinoAtivo,
+        modalAberto,
+        setModalAberto,
         treinoQuery,
         exercicioData,
         exercicioExecucao,
+        seriesExecutadas,
         ordem,
-        setOrdem
-    } = useExercuçãoTreino(treino)
-    const {treino: treinoData, ...query} = treinoQuery
+        proximoExercicio,
+        exercicioAnterior,
+        cancelarTreino,
+        podeAvancar,
+        podeVoltar,
+        ultimoExercicio,
+        totalExercicios,
+        treinoFinalizado,
+        tempoGasto,
+        tempoFormatado,
+        dataInicio,
+    } = useExecuçãoTreino(treino);
 
-  return (
-    <ExecutarTreino.Provider value={{
-        exercicioData: exercicioData,
-        exercicioExecucao: exercicioExecucao,
-        ordem,
-        setOrdem,
-        treinoQuery: query,
-        treino: treinoData,
-        treinoAtual: treino,
-        setTreinoAtual: setTreino
+    const { treino: treinoData, ...query } = treinoQuery ?? {};
 
-    }}>
-      {children}
-    </ExecutarTreino.Provider>
-  )
-}
+    return (
+        <ExecutarTreino.Provider
+            value={{
+                temTreinoAtivo,
+                modalAberto,
+                setModalAberto,
+                exercicioData,
+                exercicioExecucao,
+                seriesExecutadas,
+                ordem,
+                proximoExercicio,
+                exercicioAnterior,
+                cancelarTreino,
+                podeAvancar,
+                podeVoltar,
+                ultimoExercicio,
+                totalExercicios,
+                treinoFinalizado,
+                tempoGasto,
+                tempoFormatado,
+                dataInicio,
+                treinoQuery: query,
+                treino: treinoData,
+                treinoAtual: treino,
+                setTreinoAtual: setTreino,
+            }}
+        >
+            {children}
+        </ExecutarTreino.Provider>
+    );
+};
 
 export default function useExecutarTreinoContext() {
-  const dados = useContext(ExecutarTreino) as ExecutarTreinoType | null
-  return dados
+    const dados = useContext(ExecutarTreino);
+    if (!dados) {
+        throw new Error('useExecutarTreinoContext deve ser usado dentro de um TreinoProvider');
+    }
+    return dados;
 }

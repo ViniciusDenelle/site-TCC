@@ -140,7 +140,7 @@ class FichaController extends Controller
     public function meusCriados(Request $request)
     {
         $fichas = $request->user()
-            ->fichasCriados()
+            ->fichasCriadas()
             ->with([
                     'criador',
                     'dias.treino', 
@@ -149,13 +149,13 @@ class FichaController extends Controller
             ->latest()
             ->paginate(10);
 
-        return TreinoResource::collection($fichas);
+        return FichaResource::collection($fichas);
     }
 
     public function meusAdicionados(Request $request)
     {
         $fichas = $request->user()
-            ->fichasAdicionados()
+            ->fichasAdicionadas()
             ->with([
                     'criador',
                     'dias.treino', 
@@ -164,6 +164,6 @@ class FichaController extends Controller
             ->latest()
             ->paginate(10);
 
-        return TreinoResource::collection($fichas);
+        return FichaResource::collection($fichas);
     }
 }

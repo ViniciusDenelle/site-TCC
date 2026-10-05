@@ -2,7 +2,6 @@ import LinkNavDashboard from "../links/LinkNavDashboard"
 import PlayerInferior from "./player/PlayerInferior"
 
 const DashboardMenuInferior = ({
-    setModalPlayer,
     linksNav
 }) => {
 
@@ -10,9 +9,7 @@ const DashboardMenuInferior = ({
         <div className="fixed z-100 bottom-0 left-1/2 -translate-x-1/2 w-full md:hidden">
             <div className="container mx-auto">
 
-                <PlayerInferior
-                    setModalPlayer={setModalPlayer}
-                />
+                <PlayerInferior />
 
                 <nav className="
                         border-base-terciaria border-0 rounded-none bg-base-terciaria/60 

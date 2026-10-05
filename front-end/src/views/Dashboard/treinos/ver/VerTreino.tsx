@@ -7,6 +7,7 @@ import WrapperIcone from '../../../../componentes/organizacao/WrapperIcone';
 import BotaoTerciario from '../../../../componentes/botoes/BotaoTerciario';
 import { useState } from 'react';
 import MenuTreino from '../../../../componentes/dashboard/player/menus/MenuTreino';
+import HistoricoTreino from '../../../../componentes/dashboard/treino/HistoricoTreino';
 
 const VerTreino = () => {
     const { id } = useParams<{ id: string }>();
@@ -124,6 +125,8 @@ const VerTreino = () => {
                             </CardHorizontal>
                         ))}
                 </div>
+
+                <HistoricoTreino />
 
             </div>
         </div>

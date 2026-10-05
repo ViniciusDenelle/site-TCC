@@ -10,12 +10,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\DietaController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/usuario', [UsuarioController::class, 'fetch']);
     Route::get('/logout', [UsuarioController::class, 'logout']);
     Route::put('/atualizarUsuario', [UsuarioController::class], 'update');
-
+    Route::apiResource('dietas', DietaController::class)->only(['index', 'store', 'show']);
     Route::prefix('dashboard')->group(function() {
         // treinos 
         Route::prefix('treinos')->group(function() {
@@ -24,9 +25,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::prefix('ficha')->controller(FichaController::class)->group(function() {
                 Route::post('/', 'create');
                 Route::get('/meus-criados', 'meusCriados');
-                Route::get('/meus-adcionados', 'meusAdcionados');
-                Route::get('/{ficha}', 'show');
+                Route::get('/meus-adicionados', 'meusAdicionados');
                 Route::get('/', 'fetch');
+                Route::get('/{ficha}', 'show');
                 Route::put('/{ficha}', 'update');
                 Route::delete('/{ficha}', 'delete');
             });
@@ -36,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::post('/', 'store');
                 Route::get('/meus-criados', 'meusCriados');
                 Route::get('/meus-adicionados', 'meusAdicionados');
+                Route::get('/{treino}/historico', 'historico');
                 Route::get('/{treino}', 'show');
                 Route::get('/', 'fetch');
                 Route::put('/{treino}', 'update');
@@ -85,3 +87,6 @@ Route::controller(AuthController::class)->group(function() {
     Route::post('/cadastro', 'cadastro');
     Route::post('/cadastroEmail', 'cadastroEmail');
 });
+
+
+

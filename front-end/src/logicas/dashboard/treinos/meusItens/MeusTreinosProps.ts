@@ -1,3 +1,4 @@
+import { SerieExecutada } from "../execução/ExercutarTreinoProps"
 import { ResExercicioProps } from "../exercicios/FetchExercicio"
 import { Ficha } from "../fichas/FichaProps"
 import { ResTreinoProps } from "../treino/TreinoProps"

@@ -1,164 +1,79 @@
-// import React, { useEffect, useMemo, useState } from 'react'
-// import { ResExercicioTreinoProps } from '../treino/FetchTreinos'
-// import { SerieExecutada, UseExecucaoExercicio } from './ExercutarTreinoProps'
-// import useTimer from '../../../useTimer'
-
-// const useExecuçãoExercicio = (
-//     exercicio: Partial<ResExercicioTreinoProps>,
-//     adcionarSerieExecutada: (serieExecutada: SerieExecutada) => void
-// ): UseExecucaoExercicio => {
-
-
-//     const [serieAtual, setSerieAtual] = useState<number>(1)
-
-//     const [peso, setPeso] = useState<number>(exercicio.peso)
-//     const [reps, setReps] = useState<number>(exercicio.repsMin)
-//     const [serieCompleta, setSerieCompleta] = useState<boolean>(false)
-
-//     const [series, setSeries] = useState<SerieExecutada[]>([])
-
-//     const timer = useTimer({
-//         tempoInicial: exercicio?.descanso ?? 0,
-//         onFinish: () => executarSerie()
-//     })
-
-//     console.log(series)
-
-//     // const proximaSerie = () => {
-//     //     // if (serieAtual >= exercicio?.sets) return
-//     //     console.log(series)
-//     //     setSerieAtual(prev => {
-//     //         let proxima = series.find(
-//     //             serie => !serie.concluida && serie.serie > prev
-//     //         );
-
-//     //         if (!proxima) {
-//     //             proxima = series.find(serie => !serie.concluida);
-//     //         }
-
-//     //         return proxima?.serie ?? prev;
-//     //     })
-
-
-//     // }
-
-//     const executarSerie = () => {
-
-//         setSeries(prev => {
-//             return [
-//                 ...prev,
-//                 {
-//                     exercicioTreinoId: exercicio?.id,
-//                     serie: serieAtual,
-//                     repeticoes: reps,
-//                     peso: peso,
-//                     concluida: true
-//                 }
-//             ]
-//         })
-
-//     }
-
-//     useEffect(() => {
-//         let proxima = series.find(
-//             serie => !serie.concluida && serie.serie > serieAtual
-//         );
-
-//         if (!proxima) {
-//             proxima = series.find(serie => !serie.concluida);
-//         }
-
-//         if (proxima) {
-//             setSerieAtual(proxima.serie);
-//         }
-//     }, [series]);
-
-//     useEffect(() => {
-//         if (!exercicio) return;
-
-//         setPeso(exercicio.peso);
-//         setReps(exercicio.repsMin);
-//     }, [exercicio]);
-
-//     const refazerSerie = (serie: number) => {
-//         setSeries(prev => {
-//             return prev.filter(serieA => serieA.serie !== serie)
-//         })
-//     }
-
-//     return {
-//         peso,
-//         setPeso,
-//         reps,
-//         setReps,
-//         serieCompleta,
-//         setSerieCompleta,
-//         serieAtual,
-//         setSerieAtual,
-//         executarSerie,
-//         refazerSerie,
-//         series,
-//         timer
-//     }
-// }
-
-// export default useExecuçãoExercicio
 import { useEffect, useState } from "react";
-import { ResExercicioTreinoProps } from "../treino/FetchTreinos";
 import { SerieExecutada, UseExecucaoExercicio } from "./ExercutarTreinoProps";
 import useTimer from "../../../useTimer";
+import { ExercicioDoTreino } from "../treino/TreinoProps";
 
 const useExecuçãoExercicio = (
-    exercicio: Partial<ResExercicioTreinoProps>,
+    exercicio: Partial<ExercicioDoTreino>,
     adicionarSerieExecutada: (serie: SerieExecutada) => void,
-    removerSerieExecutada: (serie: SerieExecutada) => void
+    removerSerieExecutada: (serie: SerieExecutada) => void,
+    seriesExecutadas: SerieExecutada[],
+    onExercicioConcluido?: () => void
 ): UseExecucaoExercicio => {
 
     const [serieAtual, setSerieAtual] = useState(1);
-
     const [peso, setPeso] = useState(0);
     const [reps, setReps] = useState(0);
-
     const [series, setSeries] = useState<SerieExecutada[]>([]);
+    const [concluida, setConcluida] = useState<boolean>(false);
 
     const timer = useTimer({
         tempoInicial: exercicio.descanso ?? 0,
         onFinish: () => executarSerie(),
     });
 
-
-    /**
-     * Sempre que trocar de exercício,
-     * reinicia toda a execução.
-     */
     useEffect(() => {
         if (!exercicio.id) return;
 
-        setPeso(exercicio.peso ?? 0);
-        setReps(exercicio.repsMin ?? 0);
-
-        setSerieAtual(1);
-
-        setSeries(
-            Array.from(
-                { length: exercicio.sets ?? 0 },
-                (_, index): SerieExecutada => ({
-                    exercicioTreinoId: exercicio.id!,
-                    serie: index + 1,
-                    repeticoes: exercicio.repsMin ?? 0,
-                    peso: exercicio.peso ?? 0,
-                    concluida: false,
-                })
-            )
+        const salvasDoExercicio = seriesExecutadas.filter(
+            sr => sr.exercicioTreinoId === exercicio.id
         );
 
+        const totalSets = exercicio.sets ?? 0;
+        const seriesMontadas: SerieExecutada[] = Array.from(
+            { length: totalSets },
+            (_, index): SerieExecutada => {
+                const numeroSerie = index + 1;
+                const serieSalva = salvasDoExercicio.find(s => s.serie === numeroSerie);
+
+                if (serieSalva) {
+                    return { ...serieSalva };
+                }
+
+                return {
+                    exercicioTreinoId: exercicio.id!,
+                    serie: numeroSerie,
+                    repeticoes: exercicio.repeticoes_maximas ?? 0,
+                    peso: exercicio.peso ?? 0,
+                    concluida: false,
+                };
+            }
+        );
+
+        setSeries(seriesMontadas);
+
+        const proximaPendente = seriesMontadas.find(s => !s.concluida);
+
+        if (proximaPendente) {
+            setConcluida(false);
+            setSerieAtual(proximaPendente.serie);
+            setPeso(proximaPendente.peso);
+            setReps(proximaPendente.repeticoes);
+        } else {
+            setConcluida(true);
+            const ultimaSerie = seriesMontadas[seriesMontadas.length - 1];
+            if (ultimaSerie) {
+                setSerieAtual(ultimaSerie.serie);
+                setPeso(ultimaSerie.peso);
+                setReps(ultimaSerie.repeticoes);
+            }
+        }
+
         timer.parar();
-    }, [exercicio]);
+    }, [exercicio.id]);
 
     const executarSerie = () => {
-        
         setSeries(prev => {
-
             const novasSeries = prev.map(serie =>
                 serie.serie === serieAtual
                     ? {
@@ -170,28 +85,27 @@ const useExecuçãoExercicio = (
                     : serie
             );
 
-            const serieConcluida = novasSeries.find(
-                s => s.serie === serieAtual
-            );
+            const serieConcluida = novasSeries.find(s => s.serie === serieAtual);
 
             if (serieConcluida) {
                 adicionarSerieExecutada(serieConcluida);
             }
 
             const proxima =
-                novasSeries.find(
-                    s => !s.concluida && s.serie > serieAtual
-                ) ??
-                novasSeries.find(
-                    s => !s.concluida
-                );
+                novasSeries.find(s => !s.concluida && s.serie > serieAtual) ??
+                novasSeries.find(s => !s.concluida);
 
             if (proxima) {
                 setSerieAtual(proxima.serie);
-
                 setPeso(proxima.peso);
                 setReps(proxima.repeticoes);
-
+            } else {
+                // Se não há mais séries pendentes neste exercício
+                setConcluida(true);
+                if (onExercicioConcluido) {
+                    // Chama a transição diretamente na ação do usuário
+                    onExercicioConcluido();
+                }
             }
 
             return novasSeries;
@@ -199,9 +113,13 @@ const useExecuçãoExercicio = (
     };
 
     const refazerSerie = (numeroSerie: number) => {
-        const serieAlvo = series.find(serieA => serieA.serie === numeroSerie)
-        removerSerieExecutada(serieAlvo)
-        
+        setConcluida(false);
+
+        const serieAlvo = series.find(serieA => serieA.serie === numeroSerie);
+        if (serieAlvo) {
+            removerSerieExecutada(serieAlvo);
+        }
+
         setSeries(prev =>
             prev.map(serie =>
                 serie.serie === numeroSerie
@@ -212,28 +130,22 @@ const useExecuçãoExercicio = (
                     : serie
             )
         );
-        
 
         setSerieAtual(numeroSerie);
     };
-    
 
     return {
         peso,
         setPeso,
-
         reps,
         setReps,
-
         serieAtual,
         setSerieAtual,
-
         executarSerie,
         refazerSerie,
-
         series,
-
         timer,
+        concluida
     };
 };
 
