@@ -10,29 +10,21 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-export interface ExercicioSeries {
+export interface ExercicioRepeticoes {
   nome: string;
-  seriesIniciais: number;
-  seriesAtuais: number;
+  repeticoesIniciais: number;
+  repeticoesAtuais: number;
 }
 
-interface GraficoSeriesProps {
-  dados: ExercicioSeries[];
+interface GraficoRepeticoesProps {
+  dados: ExercicioRepeticoes[];
 }
 
-const GraficoSeries: React.FC<GraficoSeriesProps> = ({ dados }) => {
+const GraficoRepeticoes: React.FC<GraficoRepeticoesProps> = ({ dados }) => {
   return (
     <div className="w-full h-[300px] flex items-center justify-center pt-2">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          data={dados}
-          margin={{
-            top: 20,
-            right: 10,
-            left: -20,
-            bottom: 5,
-          }}
-        >
+        <BarChart data={dados} margin={{ top: 20, right: 10, left: -20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
 
           <XAxis
@@ -58,7 +50,7 @@ const GraficoSeries: React.FC<GraficoSeriesProps> = ({ dados }) => {
               color: '#fff',
               fontSize: '12px',
             }}
-            formatter={(value: number) => [`${value} séries`, '']}
+            formatter={(value: number) => [`${value} repetições`, '']}
           />
 
           <Legend
@@ -67,19 +59,17 @@ const GraficoSeries: React.FC<GraficoSeriesProps> = ({ dados }) => {
             wrapperStyle={{ paddingBottom: '15px', fontSize: '12px' }}
           />
 
-          {/* Pillar Iniciais */}
           <Bar
-            name="Séries Iniciais"
-            dataKey="seriesIniciais"
+            name="Repetições Iniciais"
+            dataKey="repeticoesIniciais"
             fill="#71717a"
             radius={[6, 6, 0, 0]}
             maxBarSize={32}
           />
 
-          {/* Pillar Atuais */}
           <Bar
-            name="Séries Atuais"
-            dataKey="seriesAtuais"
+            name="Repetições Atuais"
+            dataKey="repeticoesAtuais"
             fill="#10b981"
             radius={[6, 6, 0, 0]}
             maxBarSize={32}
@@ -90,4 +80,4 @@ const GraficoSeries: React.FC<GraficoSeriesProps> = ({ dados }) => {
   );
 };
 
-export default GraficoSeries;
+export default GraficoRepeticoes;

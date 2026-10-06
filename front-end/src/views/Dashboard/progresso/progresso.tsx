@@ -8,7 +8,7 @@ import {
   CardMetrica,
   CardMedicao,
 } from '../../../componentes/CardProgresso';
-import GraficoSeries from '../../../componentes/graficos/GraficoSeries';
+import GraficoRepeticoes from '../../../componentes/graficos/GraficoRepeticoes';
 import GraficoPeso from '../../../componentes/graficos/GraficoPeso';
 import GraficoFrequencia from '../../../componentes/graficos/GraficoFrequencia';
 import GraficoCargas from '../../../componentes/graficos/GraficoCargas';
@@ -19,7 +19,7 @@ import {
   useFetchPesoProgresso,
   useFetchFrequenciaProgresso,
   useFetchCargasProgresso,
-  useFetchSeriesProgresso,
+  useFetchRepeticoesProgresso,
   useRegistrarPeso,
 } from '../../../logicas/dashboard/treinos/treino/Fetchprogresso';
 
@@ -82,6 +82,7 @@ const EstadoGrafico = ({ altura, texto }: { altura: string; texto: string }) => 
 const Progresso = () => {
   const [periodoSelecionado, setPeriodoSelecionado] = useState('Mes Atual');
   const [pesoInput, setPesoInput] = useState('');
+  const [dataInput, setDataInput] = useState('');
 
   const dias = DIAS_POR_PERIODO[periodoSelecionado]();
 
@@ -94,7 +95,7 @@ const Progresso = () => {
   const { historicoPeso = [], isPending: carregandoPeso } = useFetchPesoProgresso(dias);
   const { frequencia = [], isPending: carregandoFrequencia } = useFetchFrequenciaProgresso(7);
   const { cargas = [], isPending: carregandoCargas } = useFetchCargasProgresso(dias);
-  const { series = [], isPending: carregandoSeries } = useFetchSeriesProgresso(dias);
+  const { repeticoes = [], isPending: carregandoRepeticoes } = useFetchRepeticoesProgresso(dias);
 
   const { registrarPeso, isPending: registrandoPeso, isError: erroRegistroPeso } = useRegistrarPeso();
 
@@ -117,7 +118,7 @@ const Progresso = () => {
     },
     {
       id: 2,
-      titulo: 'Treinos no Mês',
+      titulo: 'Treinos no Período',
       valor: `${resumo?.treinosNoMes ?? 0} treinos`,
       variacao: textoVariacao(resumo?.variacaoTreinos),
       icon: 'calendar',
@@ -136,7 +137,15 @@ const Progresso = () => {
 
     if (!valor || valor <= 0 || registrandoPeso) return;
 
-    registrarPeso(valor, { onSuccess: () => setPesoInput('') });
+    registrarPeso(
+      { peso: valor, data: dataInput || undefined },
+      {
+        onSuccess: () => {
+          setPesoInput('');
+          setDataInput('');
+        },
+      }
+    );
   };
 
   /* =====================================================
@@ -361,11 +370,11 @@ const Progresso = () => {
             </div>
           </div>
 
-          {/* REGISTRAR PESO DE HOJE */}
+          {/* REGISTRAR PESO */}
           <div className="flex flex-wrap items-end gap-2 mb-3">
             <div>
               <label className="text-xs text-t-secundaria/70 block mb-1">
-                Registrar peso de hoje ({unidadePeso})
+                Peso ({unidadePeso})
               </label>
 
               <input
@@ -377,6 +386,32 @@ const Progresso = () => {
                 placeholder="ex: 82.5"
                 className="
                   w-32
+                  px-3
+                  py-2
+                  bg-base-terciaria
+                  ring-1
+                  ring-base-quaternaria/80
+                  focus:ring-destaque-p-medio
+                  rounded-xl
+                  text-sm
+                  text-t-primaria
+                  outline-none
+                  transition-all
+                "
+              />
+            </div>
+
+            <div>
+              <label className="text-xs text-t-secundaria/70 block mb-1">
+                Data (opcional)
+              </label>
+
+              <input
+                type="date"
+                max={new Date().toISOString().slice(0, 10)}
+                value={dataInput}
+                onChange={(e) => setDataInput(e.target.value)}
+                className="
                   px-3
                   py-2
                   bg-base-terciaria
@@ -478,7 +513,7 @@ const Progresso = () => {
       </section>
 
       {/* =====================================================
-          CARGAS E SÉRIES (LADO A LADO)
+          CARGAS E REPETIÇÕES (LADO A LADO)
       ===================================================== */}
       <section className="
         grid
@@ -528,7 +563,7 @@ const Progresso = () => {
           )}
         </div>
 
-        {/* SÉRIES */}
+        {/* REPETIÇÕES */}
         <div className={CARD_CLASSES}>
           <div className="
             flex
@@ -547,7 +582,7 @@ const Progresso = () => {
               </p>
 
               <h2 className="text-lg font-bold text-t-primaria">
-                Evolução do nº de séries
+                Evolução das repetições
               </h2>
             </div>
 
@@ -561,12 +596,12 @@ const Progresso = () => {
             </button>
           </div>
 
-          {carregandoSeries ? (
+          {carregandoRepeticoes ? (
             <EstadoGrafico altura="h-[300px]" texto="Carregando..." />
-          ) : series.length > 0 ? (
-            <GraficoSeries dados={series} />
+          ) : repeticoes.length > 0 ? (
+            <GraficoRepeticoes dados={repeticoes} />
           ) : (
-            <EstadoGrafico altura="h-[300px]" texto="Nenhum registro de série neste período." />
+            <EstadoGrafico altura="h-[300px]" texto="Nenhum registro de repetições neste período." />
           )}
         </div>
       </section>
