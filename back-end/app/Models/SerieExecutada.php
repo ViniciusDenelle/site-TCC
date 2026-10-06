@@ -14,6 +14,7 @@ class SerieExecutada extends Model
         'serie',
         'peso',
         'repeticoes',
+        'duracao_segundos',
         'concluida'
     ];
 
