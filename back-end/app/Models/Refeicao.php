@@ -26,7 +26,7 @@ class Refeicao extends Model
     public function alimentos()
     {
         return $this->belongsToMany(Alimento::class, 'refeicao_alimento')
-            ->withPivot('quantidade_porcoes')
+            ->withPivot('quantidade_gramas')
             ->withTimestamps();
     }
 }

@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError, AxiosResponse } from 'axios';
-import api from '../../../api';
-import { NivelDieta } from './DietaProps';
+import api from '../../../../api';
+import Dieta from '../DietaProps';
 
-const useShowNivelDieta = (id?: number) => {
+const useShowDieta = (id?: string | number) => {
 
     const {
-        data: nivel,
+        data: dieta,
         isPending,
         isSuccess,
         isError,
@@ -14,20 +14,20 @@ const useShowNivelDieta = (id?: number) => {
     } = useQuery<
         AxiosResponse,
         AxiosError,
-        NivelDieta
+        Dieta
     >({
-        queryKey: ['nivel-dieta', id],
+        queryKey: ['dieta', id],
 
         queryFn: async () => {
-            const res = await api.get(`/dashboard/dietas/niveis/${id}`)
-            return res.data
+            const res = await api.get(`dashboard/dietas/dieta/${id}`)
+            return res.data.data
         },
 
         enabled: !!id
     })
 
     return {
-        nivel,
+        dieta,
         isPending,
         isSuccess,
         isError,
@@ -35,4 +35,4 @@ const useShowNivelDieta = (id?: number) => {
     }
 }
 
-export default useShowNivelDieta
+export default useShowDieta

@@ -20,7 +20,7 @@ const useFetchNiveisDieta = () => {
 
         queryFn: async () => {
             const res = await api.get('/dashboard/dietas/niveis')
-            return res.data
+            return res.data.data
         }
     })
 

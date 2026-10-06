@@ -25,62 +25,62 @@ class RefeicaoSeeder extends Seeder
             [
                 'nome' => 'Café da manhã', 'dia' => 'segunda', 'horario' => '07:00', 'ordem' => 1,
                 'alimentos' => [
-                    ['nome' => 'Pão francês', 'porcoes' => 2],
-                    ['nome' => 'Queijo minas', 'porcoes' => 1],
-                    ['nome' => 'Ovo cozido', 'porcoes' => 2],
+                    ['nome' => 'Pão francês', 'gramas' => 100],
+                    ['nome' => 'Queijo minas', 'gramas' => 30],
+                    ['nome' => 'Ovo cozido', 'gramas' => 100],
                 ],
             ],
             [
                 'nome' => 'Shake proteico', 'dia' => 'segunda', 'horario' => '12:00', 'ordem' => 2,
                 'alimentos' => [
-                    ['nome' => 'Whey protein (pó)', 'porcoes' => 1],
-                    ['nome' => 'Leite desnatado', 'porcoes' => 1],
-                    ['nome' => 'Banana', 'porcoes' => 1],
+                    ['nome' => 'Whey protein (pó)', 'gramas' => 30],
+                    ['nome' => 'Leite desnatado', 'gramas' => 200],
+                    ['nome' => 'Banana', 'gramas' => 100],
                 ],
             ],
             [
                 'nome' => 'Almoço', 'dia' => 'segunda', 'horario' => '13:00', 'ordem' => 3,
                 'alimentos' => [
-                    ['nome' => 'Peito de frango grelhado', 'porcoes' => 1],
-                    ['nome' => 'Arroz branco cozido', 'porcoes' => 2],
-                    ['nome' => 'Feijão carioca cozido', 'porcoes' => 1],
+                    ['nome' => 'Peito de frango grelhado', 'gramas' => 150],
+                    ['nome' => 'Arroz branco cozido', 'gramas' => 200],
+                    ['nome' => 'Feijão carioca cozido', 'gramas' => 80],
                 ],
             ],
             [
                 'nome' => 'Pós-treino', 'dia' => 'segunda', 'horario' => '18:30', 'ordem' => 4,
                 'alimentos' => [
-                    ['nome' => 'Whey protein (pó)', 'porcoes' => 1],
-                    ['nome' => 'Batata doce cozida', 'porcoes' => 2],
+                    ['nome' => 'Whey protein (pó)', 'gramas' => 30],
+                    ['nome' => 'Batata doce cozida', 'gramas' => 260],
                 ],
             ],
             [
                 'nome' => 'Jantar', 'dia' => 'segunda', 'horario' => '20:00', 'ordem' => 5,
                 'alimentos' => [
-                    ['nome' => 'Peito de frango grelhado', 'porcoes' => 1],
-                    ['nome' => 'Batata doce cozida', 'porcoes' => 1],
+                    ['nome' => 'Peito de frango grelhado', 'gramas' => 150],
+                    ['nome' => 'Batata doce cozida', 'gramas' => 130],
                 ],
             ],
             [
                 'nome' => 'Café da manhã', 'dia' => 'terca', 'horario' => '07:00', 'ordem' => 1,
                 'alimentos' => [
-                    ['nome' => 'Aveia em flocos', 'porcoes' => 3],
-                    ['nome' => 'Leite desnatado', 'porcoes' => 1],
-                    ['nome' => 'Banana', 'porcoes' => 1],
+                    ['nome' => 'Aveia em flocos', 'gramas' => 45],
+                    ['nome' => 'Leite desnatado', 'gramas' => 200],
+                    ['nome' => 'Banana', 'gramas' => 100],
                 ],
             ],
             [
                 'nome' => 'Almoço', 'dia' => 'terca', 'horario' => '13:00', 'ordem' => 2,
                 'alimentos' => [
-                    ['nome' => 'Peito de frango grelhado', 'porcoes' => 1],
-                    ['nome' => 'Arroz branco cozido', 'porcoes' => 2],
-                    ['nome' => 'Azeite de oliva', 'porcoes' => 1],
+                    ['nome' => 'Peito de frango grelhado', 'gramas' => 150],
+                    ['nome' => 'Arroz branco cozido', 'gramas' => 200],
+                    ['nome' => 'Azeite de oliva', 'gramas' => 13],
                 ],
             ],
             [
                 'nome' => 'Jantar', 'dia' => 'terca', 'horario' => '20:00', 'ordem' => 3,
                 'alimentos' => [
-                    ['nome' => 'Ovo cozido', 'porcoes' => 3],
-                    ['nome' => 'Batata doce cozida', 'porcoes' => 1],
+                    ['nome' => 'Ovo cozido', 'gramas' => 150],
+                    ['nome' => 'Batata doce cozida', 'gramas' => 130],
                 ],
             ],
         ];
@@ -108,7 +108,7 @@ class RefeicaoSeeder extends Seeder
                 }
 
                 $refeicao->alimentos()->syncWithoutDetaching([
-                    $alimento->id => ['quantidade_porcoes' => $itemAlimento['porcoes']],
+                    $alimento->id => ['quantidade_gramas' => $itemAlimento['gramas']],
                 ]);
             }
         }

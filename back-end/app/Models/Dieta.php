@@ -32,4 +32,10 @@ class Dieta extends Model
     {
         return $this->hasMany(Refeicao::class);
     }
+
+    public function usuariosQueAdicionaram()
+    {
+        return $this->belongsToMany(User::class, 'dieta_usuario', 'dieta_id', 'user_id')
+            ->withTimestamps();
+    }
 }

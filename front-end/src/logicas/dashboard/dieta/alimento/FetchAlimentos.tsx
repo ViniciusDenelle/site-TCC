@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError, AxiosResponse } from 'axios';
-import api from '../../../api';
-import { Paginacao } from '../../tipagens/PaginacaoProps';
-import { Alimento } from './DietaProps';
+import api from '../../../../api';
+import { Paginacao } from '../../../tipagens/PaginacaoProps';
+import { Alimento } from '../DietaProps';
 
 
 type ReqFetchAlimentos = {
