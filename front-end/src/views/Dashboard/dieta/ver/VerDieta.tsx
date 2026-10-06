@@ -4,7 +4,7 @@ import { Utensils, Clock, Flame, Dumbbell, Wheat, Droplet, TrendingUp, TrendingD
 import Texto from '../../../../componentes/organizacao/Texto'
 import CardHorizontal from '../../../../componentes/CardHorizontal'
 import useFetchUsuario from '../../../../logicas/usuario/FetchUsuario'
-import useShowDieta from '../../../../logicas/dashboard/dieta/ShowDieta'
+import useShowDieta from '../../../../logicas/dashboard/dieta/dieta/ShowDieta'
 
 const nomesDias: Record<number, string> = {
     0: 'Domingo', 1: 'Segunda', 2: 'Terça', 3: 'Quarta',

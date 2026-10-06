@@ -116,6 +116,42 @@ class DietaController extends Controller
         return new DietaResource($dieta->load(['objetivo', 'nivel', 'refeicoes.alimentos']));
     }
 
+    public function adicionar(Request $request, Dieta $dieta)
+    {
+        $request->user()->dietasAdicionadas()->syncWithoutDetaching([$dieta->id]);
+
+        return response()->json(['mensagem' => 'Dieta adicionada com sucesso']);
+    }
+
+    public function remover(Request $request, Dieta $dieta)
+    {
+        $request->user()->dietasAdicionadas()->detach($dieta->id);
+
+        return response()->json(['mensagem' => 'Dieta removida dos seus itens']);
+    }
+
+    public function meusCriados(Request $request)
+    {
+        $dietas = $request->user()
+            ->dietasCriadas()
+            ->with(['objetivo', 'nivel', 'refeicoes.alimentos'])
+            ->latest()
+            ->paginate(10);
+
+        return DietaResource::collection($dietas);
+    }
+
+    public function meusAdicionados(Request $request)
+    {
+        $dietas = $request->user()
+            ->dietasAdicionadas()
+            ->with(['objetivo', 'nivel', 'refeicoes.alimentos'])
+            ->orderByDesc('dieta_usuario.created_at')
+            ->paginate(10);
+
+        return DietaResource::collection($dietas);
+    }
+
     public function niveis()
     {
         return BadgeResource::collection(NivelDieta::limit(12)->get());

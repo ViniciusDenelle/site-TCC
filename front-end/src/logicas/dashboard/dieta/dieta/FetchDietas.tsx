@@ -22,7 +22,7 @@ const useFetchDietas = (filtros: Filtros, pagina: number) => {
         queryKey: ['dietas', filtros, pagina],
 
         queryFn: async () => {
-            const res = await api.get('dashboard/dietas', {
+            const res = await api.get('dashboard/dietas/dieta', {
                 params: { ...filtros, page: pagina }
             })
             return res.data

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError, AxiosResponse } from 'axios';
-import api from '../../../api';
-import { NivelDieta } from './DietaProps';
+import api from '../../../../api';
+import { NivelDieta } from '../DietaProps';
 
 const useShowNivelDieta = (id?: number) => {
 
@@ -19,7 +19,7 @@ const useShowNivelDieta = (id?: number) => {
         queryKey: ['nivel-dieta', id],
 
         queryFn: async () => {
-            const res = await api.get(`/dashboard/dietas/niveis/${id}`)
+            const res = await api.get(`/dashboard/dietas/dieta/niveis/${id}`)
             return res.data
         },
 
