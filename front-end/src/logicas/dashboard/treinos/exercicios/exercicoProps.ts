@@ -27,9 +27,11 @@ export type RespostaErroLaravel = {
 };
 
 export type MetadadoExercicio = {
+    tipo_execucao: 'repeticoes' | 'tempo';
     sets: number;
-    repeticoes_minimas: number;
-    repeticoes_maximas: number;
+    repeticoes_minimas: number | null;
+    repeticoes_maximas: number | null;
+    duracao_segundos: number | null;
     peso: number;
     descanso: number;
 };

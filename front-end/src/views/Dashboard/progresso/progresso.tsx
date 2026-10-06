@@ -2,85 +2,151 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 import BotaoPrimario from '../../../componentes/botoes/BotaoPrimario';
+import BotaoSecundario from '../../../componentes/botoes/BotaoSecundario';
 
 import {
   CardMetrica,
   CardMedicao,
 } from '../../../componentes/CardProgresso';
-import GraficoSeries from '../../../componentes/graficos/GraficoSeries';
+import GraficoRepeticoes from '../../../componentes/graficos/GraficoRepeticoes';
 import GraficoPeso from '../../../componentes/graficos/GraficoPeso';
 import GraficoFrequencia from '../../../componentes/graficos/GraficoFrequencia';
 import GraficoCargas from '../../../componentes/graficos/GraficoCargas';
 
-// =====================================================
-// DADOS SIMULADOS (MOCK) - Substituto temporário da API
-// =====================================================
-const DADOS_MOCK = {
-  tendencia: 'Tendência de Queda',
-  metaPeso: 75,
-  inicioPeso: 88,
-  mediaSemanal: '81.5 kg',
-  totalTreinos: 18,
-  metricas: [
-    { id: 1, titulo: 'Peso Atual', valor: '81.2 kg', variacao: '-0.8 kg', icon: 'scale' },
-    { id: 2, titulo: 'Gordura Corporal', valor: '18.4%', variacao: '-1.2%', icon: 'activity' },
-    { id: 3, titulo: 'Massa Magra', valor: '66.2 kg', variacao: '+0.5 kg', icon: 'biceps' },
-    { id: 4, titulo: 'Treinos no Mês', valor: '18 treinos', variacao: '+2', icon: 'calendar' },
-    { id: 5, titulo: 'Carga Máxima', valor: '110 kg', variacao: '+5 kg', icon: 'dumbbell' },
-  ],
-  historicoPeso: [
-    { data: '01/05', peso: 85.0 },
-    { data: '08/05', peso: 84.2 },
-    { data: '15/05', peso: 83.5 },
-    { data: '22/05', peso: 82.8 },
-    { data: '29/05', peso: 82.0 },
-    { data: '05/06', peso: 81.2 },
-  ],
-  frequenciaSemanal: [
-    { dia: 'Seg', treinos: 1 },
-    { dia: 'Ter', treinos: 1 },
-    { dia: 'Qua', treinos: 0 },
-    { dia: 'Qui', treinos: 1 },
-    { dia: 'Sex', treinos: 1 },
-    { dia: 'Sáb', treinos: 1 },
-    { dia: 'Dom', treinos: 0 },
-  ],
-  exerciciosCargas: [
-    { nome: 'Supino Reto', cargaInicial: 60, cargaAtual: 80 },
-    { nome: 'Agachamento Livre', cargaInicial: 80, cargaAtual: 110 },
-    { nome: 'Levantamento Terra', cargaInicial: 90, cargaAtual: 120 },
-    { nome: 'Desenvolvimento', cargaInicial: 30, cargaAtual: 45 },
-  ],
-  exerciciosSeries: [
-    { nome: 'Supino Reto', seriesIniciais: 3, seriesAtuais: 4 },
-    { nome: 'Agachamento Livre', seriesIniciais: 3, seriesAtuais: 5 },
-    { nome: 'Levantamento Terra', seriesIniciais: 2, seriesAtuais: 4 },
-    { nome: 'Desenvolvimento', seriesIniciais: 3, seriesAtuais: 4 },
-  ],
-  registrosMedidas: [
-    { id: 1, nome: 'Tórax / Peitoral', valor: '102 cm', data: '10/05/2026', periodo: 'Último mês' },
-    { id: 2, nome: 'Braço Direito', valor: '38.5 cm', data: '10/05/2026', periodo: 'Último mês' },
-    { id: 3, nome: 'Cintura', valor: '82 cm', data: '10/05/2026', periodo: 'Último mês' },
-    { id: 4, nome: 'Coxa Direita', valor: '58 cm', data: '10/05/2026', periodo: 'Último mês' },
-  ],
+import useFetchUsuario from '../../../logicas/usuario/FetchUsuario';
+import {
+  useFetchResumoProgresso,
+  useFetchPesoProgresso,
+  useFetchFrequenciaProgresso,
+  useFetchCargasProgresso,
+  useFetchRepeticoesProgresso,
+  useRegistrarPeso,
+} from '../../../logicas/dashboard/treinos/treino/Fetchprogresso';
+
+/* =====================================================
+   PERÍODOS DO SELETOR (valor -> quantidade de dias)
+===================================================== */
+const diasDesdeInicioDoAno = () => {
+  const hoje = new Date();
+  const inicio = new Date(hoje.getFullYear(), 0, 1);
+  const umDia = 1000 * 60 * 60 * 24;
+
+  return Math.max(1, Math.ceil((hoje.getTime() - inicio.getTime()) / umDia) + 1);
 };
+
+const DIAS_POR_PERIODO: Record<string, () => number> = {
+  'Mes Atual': () => 30,
+  Trimestre: () => 90,
+  Ano: diasDesdeInicioDoAno,
+};
+
+/* =====================================================
+   AUXILIARES DE FORMATAÇÃO
+===================================================== */
+const formatarNumero = (valor: number) =>
+  valor.toLocaleString('pt-BR', { maximumFractionDigits: 1 });
+
+const textoVariacao = (valor: number | null | undefined, sufixo = '') => {
+  if (valor === null || valor === undefined) return '--';
+
+  const sinal = valor > 0 ? '+' : '';
+
+  return `${sinal}${formatarNumero(valor)}${sufixo ? ` ${sufixo}` : ''}`;
+};
+
+const CARD_CLASSES = `
+  p-5
+  md:p-6
+  bg-base-terciaria/30
+  ring-1
+  ring-base-quaternaria
+  rounded-3xl
+  shadow-sm
+`;
+
+const EstadoGrafico = ({ altura, texto }: { altura: string; texto: string }) => (
+  <div
+    className={`
+      ${altura}
+      flex
+      items-center
+      justify-center
+      text-sm
+      text-t-secundaria/60
+    `}
+  >
+    {texto}
+  </div>
+);
 
 const Progresso = () => {
   const [periodoSelecionado, setPeriodoSelecionado] = useState('Mes Atual');
+  const [pesoInput, setPesoInput] = useState('');
+  const [dataInput, setDataInput] = useState('');
 
-  const data = DADOS_MOCK;
+  const dias = DIAS_POR_PERIODO[periodoSelecionado]();
 
   /* =====================================================
-     DESESTRUTURAÇÃO DOS DADOS
+     DADOS DA API
   ===================================================== */
-  const {
-    metricas = [],
-    historicoPeso = [],
-    frequenciaSemanal = [],
-    exerciciosCargas = [],
-    exerciciosSeries = [],
-    registrosMedidas = [],
-  } = data;
+  const { dadosUsuario } = useFetchUsuario();
+
+  const { resumo } = useFetchResumoProgresso(dias);
+  const { historicoPeso = [], isPending: carregandoPeso } = useFetchPesoProgresso(dias);
+  const { frequencia = [], isPending: carregandoFrequencia } = useFetchFrequenciaProgresso(7);
+  const { cargas = [], isPending: carregandoCargas } = useFetchCargasProgresso(dias);
+  const { repeticoes = [], isPending: carregandoRepeticoes } = useFetchRepeticoesProgresso(dias);
+
+  const { registrarPeso, isPending: registrandoPeso, isError: erroRegistroPeso } = useRegistrarPeso();
+
+  // TODO: ligar ao back-end quando existir a tabela de medições corporais
+  const registrosMedidas: any[] = [];
+
+  /* =====================================================
+     VALORES DERIVADOS
+  ===================================================== */
+  const unidadePeso = dadosUsuario?.tipoPeso ?? 'kg';
+  const pesoAtual = resumo?.pesoAtual ?? dadosUsuario?.peso ?? null;
+
+  const metricas = [
+    {
+      id: 1,
+      titulo: 'Peso Atual',
+      valor: pesoAtual !== null ? `${formatarNumero(Number(pesoAtual))} ${unidadePeso}` : '--',
+      variacao: textoVariacao(resumo?.variacaoPeso, unidadePeso),
+      icon: 'scale',
+    },
+    {
+      id: 2,
+      titulo: 'Treinos no Período',
+      valor: `${resumo?.treinosNoMes ?? 0} treinos`,
+      variacao: textoVariacao(resumo?.variacaoTreinos),
+      icon: 'calendar',
+    },
+    {
+      id: 3,
+      titulo: 'Carga Máxima',
+      valor: resumo?.cargaMaxima != null ? `${formatarNumero(resumo.cargaMaxima)} kg` : '--',
+      variacao: textoVariacao(resumo?.variacaoCarga, 'kg'),
+      icon: 'dumbbell',
+    },
+  ];
+
+  const registrar = () => {
+    const valor = Number(pesoInput.replace(',', '.'));
+
+    if (!valor || valor <= 0 || registrandoPeso) return;
+
+    registrarPeso(
+      { peso: valor, data: dataInput || undefined },
+      {
+        onSuccess: () => {
+          setPesoInput('');
+          setDataInput('');
+        },
+      }
+    );
+  };
 
   /* =====================================================
      ANIMAÇÃO
@@ -207,10 +273,9 @@ const Progresso = () => {
         grid-cols-1
         sm:grid-cols-2
         lg:grid-cols-3
-        xl:grid-cols-5
         gap-4
       ">
-        {metricas.map((metrica: any) => (
+        {metricas.map((metrica) => (
           <CardMetrica
             key={metrica.id}
             titulo={metrica.titulo}
@@ -231,16 +296,7 @@ const Progresso = () => {
         gap-6
       ">
         {/* PESO */}
-        <div className="
-          xl:col-span-2
-          p-5
-          md:p-6
-          bg-base-terciaria/30
-          ring-1
-          ring-base-quaternaria
-          rounded-3xl
-          shadow-sm
-        ">
+        <div className={`xl:col-span-2 ${CARD_CLASSES}`}>
           <div className="
             flex
             flex-col
@@ -281,7 +337,7 @@ const Progresso = () => {
               ring-1
               ring-green-500/20
             ">
-              {data.tendencia || 'Tendência de Queda'}
+              {resumo?.tendencia ?? 'Sem dados'}
             </span>
           </div>
 
@@ -289,57 +345,115 @@ const Progresso = () => {
             flex
             flex-wrap
             gap-6
-            mb-2
+            mb-3
             text-xs
           ">
             <div>
               <span className="text-t-secundaria/70">Meta</span>
               <p className="text-sm font-bold text-t-primaria">
-                {data.metaPeso || 0} kg
+                {dadosUsuario?.pesoIdeal ?? '--'} {unidadePeso}
               </p>
             </div>
 
             <div>
               <span className="text-t-secundaria/70">Peso inicial</span>
               <p className="text-sm font-bold text-t-primaria">
-                {data.inicioPeso || 0} kg
+                {resumo?.inicioPeso != null ? formatarNumero(resumo.inicioPeso) : '--'} {unidadePeso}
               </p>
             </div>
 
             <div>
               <span className="text-t-secundaria/70">Média semanal</span>
               <p className="text-sm font-bold text-t-primaria">
-                {data.mediaSemanal || '0 kg'}
+                {resumo?.mediaSemanal != null ? formatarNumero(resumo.mediaSemanal) : '--'} {unidadePeso}
               </p>
             </div>
           </div>
 
-          {historicoPeso.length > 0 ? (
+          {/* REGISTRAR PESO */}
+          <div className="flex flex-wrap items-end gap-2 mb-3">
+            <div>
+              <label className="text-xs text-t-secundaria/70 block mb-1">
+                Peso ({unidadePeso})
+              </label>
+
+              <input
+                type="number"
+                step="0.1"
+                min="1"
+                value={pesoInput}
+                onChange={(e) => setPesoInput(e.target.value)}
+                placeholder="ex: 82.5"
+                className="
+                  w-32
+                  px-3
+                  py-2
+                  bg-base-terciaria
+                  ring-1
+                  ring-base-quaternaria/80
+                  focus:ring-destaque-p-medio
+                  rounded-xl
+                  text-sm
+                  text-t-primaria
+                  outline-none
+                  transition-all
+                "
+              />
+            </div>
+
+            <div>
+              <label className="text-xs text-t-secundaria/70 block mb-1">
+                Data (opcional)
+              </label>
+
+              <input
+                type="date"
+                max={new Date().toISOString().slice(0, 10)}
+                value={dataInput}
+                onChange={(e) => setDataInput(e.target.value)}
+                className="
+                  px-3
+                  py-2
+                  bg-base-terciaria
+                  ring-1
+                  ring-base-quaternaria/80
+                  focus:ring-destaque-p-medio
+                  rounded-xl
+                  text-sm
+                  text-t-primaria
+                  outline-none
+                  transition-all
+                "
+              />
+            </div>
+
+            <BotaoSecundario
+              tipo="cheio"
+              texto={registrandoPeso ? 'salvando...' : 'Registrar'}
+              onClick={registrar}
+            />
+
+            {erroRegistroPeso && (
+              <span className="text-xs text-red-400">
+                Não foi possível registrar o peso.
+              </span>
+            )}
+          </div>
+
+          {carregandoPeso ? (
+            <EstadoGrafico altura="h-[300px]" texto="Carregando..." />
+          ) : historicoPeso.length > 0 ? (
             <GraficoPeso dados={historicoPeso} />
           ) : (
-            <div className="
-              h-[300px]
-              flex
-              items-center
-              justify-center
-              text-sm
-              text-t-secundaria/60
-            ">
-              Nenhum registro de peso encontrado.
-            </div>
+            <EstadoGrafico
+              altura="h-[300px]"
+              texto="Nenhum registro de peso neste período."
+            />
           )}
         </div>
 
         {/* FREQUÊNCIA */}
-        <div className="
-          p-5
-          md:p-6
-          bg-base-terciaria/30
-          ring-1
-          ring-base-quaternaria
-          rounded-3xl
-          shadow-sm
-        ">
+        <div className={CARD_CLASSES}>
           <div className="
             flex
             items-start
@@ -366,23 +480,16 @@ const Progresso = () => {
             </div>
 
             <span className="text-xs text-t-secundaria/60">
-              Por semana
+              Últimos 7 dias
             </span>
           </div>
 
-          {frequenciaSemanal.length > 0 ? (
-            <GraficoFrequencia dados={frequenciaSemanal} />
+          {carregandoFrequencia ? (
+            <EstadoGrafico altura="h-[280px]" texto="Carregando..." />
+          ) : frequencia.length > 0 ? (
+            <GraficoFrequencia dados={frequencia} />
           ) : (
-            <div className="
-              h-[280px]
-              flex
-              items-center
-              justify-center
-              text-sm
-              text-t-secundaria/60
-            ">
-              Nenhum treino registrado.
-            </div>
+            <EstadoGrafico altura="h-[280px]" texto="Nenhum treino registrado." />
           )}
 
           <div className="
@@ -399,14 +506,14 @@ const Progresso = () => {
             </span>
 
             <p className="text-sm font-bold text-t-primaria mt-1">
-              {data.totalTreinos || 0} treinos concluídos
+              {resumo?.totalTreinos ?? 0} treinos concluídos
             </p>
           </div>
         </div>
       </section>
 
       {/* =====================================================
-          CARGAS E SÉRIES (LADO A LADO)
+          CARGAS E REPETIÇÕES (LADO A LADO)
       ===================================================== */}
       <section className="
         grid
@@ -415,15 +522,7 @@ const Progresso = () => {
         gap-6
       ">
         {/* CARGAS */}
-        <div className="
-          p-5
-          md:p-6
-          bg-base-terciaria/30
-          ring-1
-          ring-base-quaternaria
-          rounded-3xl
-          shadow-sm
-        ">
+        <div className={CARD_CLASSES}>
           <div className="
             flex
             items-center
@@ -455,32 +554,17 @@ const Progresso = () => {
             </button>
           </div>
 
-          {exerciciosCargas.length > 0 ? (
-            <GraficoCargas dados={exerciciosCargas} />
+          {carregandoCargas ? (
+            <EstadoGrafico altura="h-[300px]" texto="Carregando..." />
+          ) : cargas.length > 0 ? (
+            <GraficoCargas dados={cargas} />
           ) : (
-            <div className="
-              h-[300px]
-              flex
-              items-center
-              justify-center
-              text-sm
-              text-t-secundaria/60
-            ">
-              Nenhum exercício registrado.
-            </div>
+            <EstadoGrafico altura="h-[300px]" texto="Nenhum exercício com carga neste período." />
           )}
         </div>
 
-        {/* SÉRIES */}
-        <div className="
-          p-5
-          md:p-6
-          bg-base-terciaria/30
-          ring-1
-          ring-base-quaternaria
-          rounded-3xl
-          shadow-sm
-        ">
+        {/* REPETIÇÕES */}
+        <div className={CARD_CLASSES}>
           <div className="
             flex
             items-center
@@ -498,7 +582,7 @@ const Progresso = () => {
               </p>
 
               <h2 className="text-lg font-bold text-t-primaria">
-                Evolução do nº de séries
+                Evolução das repetições
               </h2>
             </div>
 
@@ -512,19 +596,12 @@ const Progresso = () => {
             </button>
           </div>
 
-          {exerciciosSeries.length > 0 ? (
-            <GraficoSeries dados={exerciciosSeries} />
+          {carregandoRepeticoes ? (
+            <EstadoGrafico altura="h-[300px]" texto="Carregando..." />
+          ) : repeticoes.length > 0 ? (
+            <GraficoRepeticoes dados={repeticoes} />
           ) : (
-            <div className="
-              h-[300px]
-              flex
-              items-center
-              justify-center
-              text-sm
-              text-t-secundaria/60
-            ">
-              Nenhum registro de série.
-            </div>
+            <EstadoGrafico altura="h-[300px]" texto="Nenhum registro de repetições neste período." />
           )}
         </div>
       </section>
@@ -532,15 +609,7 @@ const Progresso = () => {
       {/* =====================================================
           MEDIÇÕES
       ===================================================== */}
-      <section className="
-        p-5
-        md:p-6
-        bg-base-terciaria/30
-        ring-1
-        ring-base-quaternaria
-        rounded-3xl
-        shadow-sm
-      ">
+      <section className={CARD_CLASSES}>
         <div className="
           flex
           items-center
@@ -572,23 +641,27 @@ const Progresso = () => {
           </button>
         </div>
 
-        <div className="
-          grid
-          grid-cols-1
-          md:grid-cols-2
-          xl:grid-cols-4
-          gap-3
-        ">
-          {registrosMedidas.map((item: any) => (
-            <CardMedicao
-              key={item.id}
-              nome={item.nome}
-              valor={item.valor}
-              data={item.data}
-              periodo={item.periodo}
-            />
-          ))}
-        </div>
+        {registrosMedidas.length > 0 ? (
+          <div className="
+            grid
+            grid-cols-1
+            md:grid-cols-2
+            xl:grid-cols-4
+            gap-3
+          ">
+            {registrosMedidas.map((item: any) => (
+              <CardMedicao
+                key={item.id}
+                nome={item.nome}
+                valor={item.valor}
+                data={item.data}
+                periodo={item.periodo}
+              />
+            ))}
+          </div>
+        ) : (
+          <EstadoGrafico altura="h-[120px]" texto="Nenhuma medição registrada." />
+        )}
 
         <div className="mt-5 flex justify-end">
           <BotaoPrimario tipo="vazio" texto="Nova Avaliação Física" />

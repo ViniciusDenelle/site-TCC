@@ -56,7 +56,10 @@ const MenuPlayer = ({
             nome: 'Remover Exercicio',
             icone: Trash,
             tipo: 'botao',
-            onclick: () => deletarExercicio(),
+            onclick: () => {
+                deletarExercicio()
+                setMenuAberto(false)
+            },
             corIcone: 'text-red-600',
             publico: false
         },

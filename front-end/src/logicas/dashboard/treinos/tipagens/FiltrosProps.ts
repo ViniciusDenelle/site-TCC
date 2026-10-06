@@ -37,12 +37,9 @@ export interface UseFiltrosProps {
 
 export type TipoFiltros =  'musculos' | 'equipamentos' | 'focos' | 'tipos' | 'niveis' | 'duracao'
 
-type render = 'checkbox' | 'range'
-
 export type SecaoFiltro = {
     titulo: string,
     tipo: TipoFiltros,
-    render: render
     dados?: Badge[] 
     componente?: ReactNode
 }

@@ -23,8 +23,11 @@ return new class extends Migration {
 
             $table->integer('ordem');
 
-            $table->integer('repeticoes_minimas');
-            $table->integer('repeticoes_maximas');
+            $table->string('tipo_execucao')->default('repeticoes'); // 'repeticoes' | 'tempo'
+            $table->unsignedInteger('duracao_segundos')->nullable();
+
+            $table->integer('repeticoes_minimas')->nullable();
+            $table->integer('repeticoes_maximas')->nullable();
             $table->integer('sets');
 
             $table->integer('peso')->nullable();

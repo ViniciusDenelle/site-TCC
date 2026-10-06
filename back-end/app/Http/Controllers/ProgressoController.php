@@ -1,0 +1,320 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Exercicio;
+use App\Models\RegistroPeso;
+use App\Models\SerieExecutada;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+class ProgressoController extends Controller
+{
+    // CONFIRA: coluna da tabela de sessões que guarda o dono do treino
+    private const COLUNA_USUARIO_SESSAO = 'user_id';
+
+    private string $serie;
+    private string $sessao;
+    private string $exTreino;
+    private string $exercicio;
+
+    /**
+     * Séries concluídas do usuário logado, com joins já feitos.
+     */
+    private function base(?Carbon $desde = null, ?Carbon $ate = null): Builder
+    {
+        $userId = auth()->id();
+        abort_if($userId === null, 401, 'Não autenticado.');
+
+        $serie = new SerieExecutada();
+        $relSessao = $serie->sessao();
+        $relExTreino = $serie->exercicioTreino();
+
+        $this->serie = $serie->getTable();
+        $this->sessao = $relSessao->getRelated()->getTable();
+        $this->exTreino = $relExTreino->getRelated()->getTable();
+        $this->exercicio = (new Exercicio())->getTable();
+
+        $q = SerieExecutada::query()
+            ->join(
+                $this->exTreino,
+                $relExTreino->getQualifiedOwnerKeyName(),
+                '=',
+                $relExTreino->getQualifiedForeignKeyName()
+            )
+            ->join(
+                $this->sessao,
+                $relSessao->getQualifiedOwnerKeyName(),
+                '=',
+                $relSessao->getQualifiedForeignKeyName()
+            )
+            ->join(
+                $this->exercicio,
+                "{$this->exTreino}.exercicio_id",
+                '=',
+                "{$this->exercicio}.id"
+            )
+            ->where("{$this->sessao}.".self::COLUNA_USUARIO_SESSAO, $userId)
+            ->where("{$this->serie}.concluida", true);
+
+        if ($desde) {
+            $q->where("{$this->sessao}.iniciado_em", '>=', $desde);
+        }
+        if ($ate) {
+            $q->where("{$this->sessao}.iniciado_em", '<', $ate);
+        }
+
+        return $q;
+    }
+
+    private function dias(Request $request): int
+    {
+        return min(max((int) $request->query('dias', 30), 1), 366);
+    }
+
+    private function contarTreinos(?Carbon $desde, ?Carbon $ate): int
+    {
+        $q = $this->base($desde, $ate);
+
+        return (int) $q->distinct()->count("{$this->sessao}.id");
+    }
+
+    private function cargaMaxima(?Carbon $desde, ?Carbon $ate): ?float
+    {
+        $q = $this->base($desde, $ate);
+        $max = $q->max("{$this->serie}.peso");
+
+        return $max !== null && $max > 0 ? (float) $max : null;
+    }
+
+    /**
+     * Por exercício: primeira x última sessão do período.
+     */
+    private function evolucaoPorExercicio(int $dias)
+    {
+        $inicio = now()->subDays($dias);
+
+        $q = $this->base($inicio);
+        $linhas = $q->get([
+            "{$this->sessao}.id as sessao_id",
+            "{$this->sessao}.iniciado_em as data",
+            "{$this->exTreino}.exercicio_id as exercicio_id",
+            "{$this->exercicio}.nome as nome",
+            "{$this->serie}.peso as peso",
+            "{$this->serie}.repeticoes as repeticoes",
+        ]);
+
+        return $linhas
+            ->groupBy('exercicio_id')
+            ->map(function ($grupo) {
+                $sessoes = $grupo->groupBy('sessao_id')
+                    ->sortBy(fn ($s) => $s->first()->data);
+
+                $primeira = $sessoes->first();
+                $ultima = $sessoes->last();
+
+                return [
+                    'nome' => $grupo->first()->nome,
+                    'sessoes' => $sessoes->count(),
+                    'cargaInicial' => (float) $primeira->max('peso'),
+                    'cargaAtual' => (float) $ultima->max('peso'),
+                    'repeticoesIniciais' => (int) $primeira->sum('repeticoes'),
+                    'repeticoesAtuais' => (int) $ultima->sum('repeticoes'),
+                ];
+            })
+            ->sortByDesc('sessoes')
+            ->values();
+    }
+
+    /* =====================================================
+       GET /progresso/resumo?dias=30
+    ===================================================== */
+    public function resumo(Request $request): JsonResponse
+    {
+        $userId = auth()->id();
+        abort_if($userId === null, 401, 'Não autenticado.');
+
+        $dias = $this->dias($request);
+        $agora = now();
+        $inicio = $agora->copy()->subDays($dias);
+        $inicioAnterior = $inicio->copy()->subDays($dias);
+
+        // Treinos
+        $treinosAtual = $this->contarTreinos($inicio, null);
+        $treinosAnterior = $this->contarTreinos($inicioAnterior, $inicio);
+        $totalTreinos = $this->contarTreinos(null, null);
+
+        // Carga máxima
+        $cargaAtual = $this->cargaMaxima($inicio, null);
+        $cargaAnterior = $this->cargaMaxima($inicioAnterior, $inicio);
+        $variacaoCarga = ($cargaAtual !== null && $cargaAnterior !== null)
+            ? round($cargaAtual - $cargaAnterior, 1)
+            : null;
+
+        // Peso
+        $registros = RegistroPeso::where('user_id', $userId)
+            ->where('registrado_em', '>=', $inicio->toDateString())
+            ->orderBy('registrado_em')
+            ->get();
+
+        $ultimo = RegistroPeso::where('user_id', $userId)
+            ->orderByDesc('registrado_em')
+            ->first();
+
+        $variacaoPeso = null;
+        $mediaSemanal = null;
+
+        if ($registros->count() >= 2) {
+            $primeiro = $registros->first();
+            $final = $registros->last();
+
+            $variacaoPeso = round($final->peso - $primeiro->peso, 1);
+
+            $diasEntre = $primeiro->registrado_em->diffInDays($final->registrado_em);
+            $semanas = max($diasEntre / 7, 1);
+            $mediaSemanal = round($variacaoPeso / $semanas, 2);
+        }
+
+        $tendencia = match (true) {
+            $variacaoPeso === null => 'Sem dados',
+            $variacaoPeso < -0.2 => 'Em queda',
+            $variacaoPeso > 0.2 => 'Em alta',
+            default => 'Estável',
+        };
+
+        return response()->json([
+            'data' => [
+                'pesoAtual' => $ultimo?->peso,
+                'inicioPeso' => $registros->first()?->peso,
+                'variacaoPeso' => $variacaoPeso,
+                'mediaSemanal' => $mediaSemanal,
+                'tendencia' => $tendencia,
+                'treinosNoMes' => $treinosAtual,
+                'variacaoTreinos' => $treinosAtual - $treinosAnterior,
+                'totalTreinos' => $totalTreinos,
+                'cargaMaxima' => $cargaAtual,
+                'variacaoCarga' => $variacaoCarga,
+            ],
+        ]);
+    }
+
+    /* =====================================================
+       GET /progresso/peso?dias=30
+    ===================================================== */
+    public function peso(Request $request): JsonResponse
+    {
+        $userId = auth()->id();
+        abort_if($userId === null, 401, 'Não autenticado.');
+
+        $inicio = now()->subDays($this->dias($request))->toDateString();
+
+        $historico = RegistroPeso::where('user_id', $userId)
+            ->where('registrado_em', '>=', $inicio)
+            ->orderBy('registrado_em')
+            ->get()
+            ->map(fn ($r) => [
+                'data' => $r->registrado_em->format('d/m'),
+                'valor' => $r->peso,
+            ]);
+
+        return response()->json(['data' => $historico]);
+    }
+
+    /* =====================================================
+       GET /progresso/frequencia?dias=7
+    ===================================================== */
+    public function frequencia(Request $request): JsonResponse
+    {
+        $dias = min(max((int) $request->query('dias', 7), 1), 31);
+        $inicio = today()->subDays($dias - 1);
+
+        $q = $this->base($inicio);
+        $sessoes = $q->distinct()->get([
+            "{$this->sessao}.id as sessao_id",
+            "{$this->sessao}.iniciado_em as data",
+        ]);
+
+        $porDia = $sessoes
+            ->groupBy(fn ($s) => Carbon::parse($s->data)->toDateString())
+            ->map->count();
+
+        $nomes = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+        $resultado = [];
+        for ($i = 0; $i < $dias; $i++) {
+            $d = $inicio->copy()->addDays($i);
+            $resultado[] = [
+                'dia' => $nomes[$d->dayOfWeek],
+                'qtd' => $porDia[$d->toDateString()] ?? 0,
+            ];
+        }
+
+        return response()->json(['data' => $resultado]);
+    }
+
+    /* =====================================================
+       GET /progresso/cargas?dias=30
+    ===================================================== */
+    public function cargas(Request $request): JsonResponse
+    {
+        $dados = $this->evolucaoPorExercicio($this->dias($request))
+            ->filter(fn ($e) => $e['cargaAtual'] > 0)
+            ->take(6)
+            ->map(fn ($e) => [
+                'nome' => $e['nome'],
+                'cargaInicial' => $e['cargaInicial'],
+                'cargaAtual' => $e['cargaAtual'],
+            ])
+            ->values();
+
+        return response()->json(['data' => $dados]);
+    }
+
+    /* =====================================================
+       GET /progresso/repeticoes?dias=30
+    ===================================================== */
+    public function repeticoes(Request $request): JsonResponse
+    {
+        $dados = $this->evolucaoPorExercicio($this->dias($request))
+            ->take(6)
+            ->map(fn ($e) => [
+                'nome' => $e['nome'],
+                'repeticoesIniciais' => $e['repeticoesIniciais'],
+                'repeticoesAtuais' => $e['repeticoesAtuais'],
+            ])
+            ->values();
+
+        return response()->json(['data' => $dados]);
+    }
+
+    /* =====================================================
+       POST /progresso/peso   { peso: 82.5, data?: "2026-10-01" }
+    ===================================================== */
+    public function registrarPeso(Request $request): JsonResponse
+    {
+        $userId = auth()->id();
+        abort_if($userId === null, 401, 'Não autenticado.');
+
+        $validado = $request->validate([
+            'peso' => ['required', 'numeric', 'min:1', 'max:700'],
+            'data' => ['nullable', 'date', 'before_or_equal:today'],
+        ]);
+
+        $data = isset($validado['data'])
+            ? Carbon::parse($validado['data'])->toDateString()
+            : today()->toDateString();
+
+        // 1 registro por dia: se já existe, atualiza
+        $registro = RegistroPeso::updateOrCreate(
+            ['user_id' => $userId, 'registrado_em' => $data],
+            ['peso' => $validado['peso']]
+        );
+
+        // Opcional: manter o peso do perfil sincronizado (ajuste o nome da coluna)
+        // auth()->user()->update(['peso' => $validado['peso']]);
+
+        return response()->json(['data' => $registro], 201);
+    }
+}

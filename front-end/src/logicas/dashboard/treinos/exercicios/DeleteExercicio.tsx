@@ -23,7 +23,7 @@ const   useDeleteExercicio = (id: number) => {
         },
 
         onSuccess: (res) => {
-            toast.success('Treino removido com sucesso')
+            toast.success('Exercicio removido com sucesso')
             navigate(-1)
         },
 

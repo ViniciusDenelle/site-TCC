@@ -25,7 +25,7 @@ type AlimentoNaRefeicao = {
     id: number;
     nome: string;
     porcao_descricao: string;
-    quantidade_porcoes: number;
+    quantidade_gramas: number;
     calorias: number;
     proteinas: number;
     carboidratos: number;

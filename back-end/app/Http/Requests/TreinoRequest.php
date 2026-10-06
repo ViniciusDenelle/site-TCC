@@ -31,8 +31,11 @@ class TreinoRequest extends FormRequest
             'exercicios.*.exercicio_id' => 'required|integer|exists:exercicios,id',
             'exercicios.*.ordem' => 'required|integer|min:1',
             'exercicios.*.sets' => 'required|integer|min:1',
-            'exercicios.*.repeticoes_minimas' => 'required|integer|min:0',
-            'exercicios.*.repeticoes_maximas' => 'required|integer|gte:exercicios.*.repeticoes_minimas',
+            'exercicios.*.tipo_execucao' => ['required', 'in:repeticoes,tempo'],
+
+            'exercicios.*.repeticoes_minimas' => ['required_if:exercicios.*.tipo_execucao,repeticoes', 'nullable', 'integer', 'min:1'],
+            'exercicios.*.repeticoes_maximas' => ['required_if:exercicios.*.tipo_execucao,repeticoes', 'nullable', 'integer', 'min:1'],
+            'exercicios.*.duracao_segundos' => ['required_if:exercicios.*.tipo_execucao,tempo', 'nullable', 'integer', 'min:1'],
             'exercicios.*.peso' => 'required|numeric|min:0',
             'exercicios.*.descanso' => 'required|integer|min:0',
         ];

@@ -16,7 +16,7 @@ interface ExercicioSelecionadoCardProps {
     id: number;
     nome: string;
     metadado: MetadadoExercicio;
-    onAtualizarMetadado: (campo: keyof MetadadoExercicio, valor: number) => void;
+    onAtualizarMetadado: (campo: keyof MetadadoExercicio, valor: number | string) => void;
 }
 
 const ExercicioSelecionadoCard = ({
@@ -97,25 +97,37 @@ const ExercicioSelecionadoCard = ({
                                             />
                                         </div>
 
-                                        <div className="flex flex-col w-2/3">
-
-                                            <Texto tipo="subtexto" className="opacity-60 mb-1">Repetições</Texto>
-                                            <div className="flex items-center gap-2">
-                                                <InputSimples
-                                                    tipo="number"
-                                                    valor={String(metadado.repeticoes_minimas)}
-                                                    onChange={e => onAtualizarMetadado('repeticoes_minimas', Number(e.target.value))}
-                                                    classeAdicional="text-center w-1/2"
+                                        <div>
+                                            <Texto tipo="subtexto" className="opacity-60 mb-1">Tipo</Texto>
+                                            <div className="flex gap-2">
+                                                <BotaoTerciario
+                                                    texto="Repetições"
+                                                    onClick={() => onAtualizarMetadado('tipo_execucao', 'repeticoes')}
+                                                    classeAdicional={metadado.tipo_execucao === 'repeticoes' ? 'border-primaria bg-primaria/10' : ''}
                                                 />
-                                                <Texto className="opacity-50">até</Texto>
-                                                <InputSimples
-                                                    tipo="number"
-                                                    valor={String(metadado.repeticoes_maximas)}
-                                                    onChange={e => onAtualizarMetadado('repeticoes_maximas', Number(e.target.value))}
-                                                    classeAdicional="text-center w-1/2"
+                                                <BotaoTerciario
+                                                    texto="Tempo"
+                                                    onClick={() => onAtualizarMetadado('tipo_execucao', 'tempo')}
+                                                    classeAdicional={metadado.tipo_execucao === 'tempo' ? 'border-primaria bg-primaria/10' : ''}
                                                 />
                                             </div>
                                         </div>
+
+                                        {metadado.tipo_execucao === 'repeticoes' ? (
+                                            <div>
+                                                <Texto tipo="subtexto" className="opacity-60 mb-1">Repetições</Texto>
+                                                <div className="flex items-center gap-2">
+                                                    <InputSimples tipo="number" valor={metadado.repeticoes_minimas ?? ''} onChange={e => onAtualizarMetadado('repeticoes_minimas', Number(e.target.value))} />
+                                                    <Texto className="opacity-50">até</Texto>
+                                                    <InputSimples tipo="number" valor={metadado.repeticoes_maximas ?? ''} onChange={e => onAtualizarMetadado('repeticoes_maximas', Number(e.target.value))} />
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <Texto tipo="subtexto" className="opacity-60 mb-1">Duração (segundos)</Texto>
+                                                <InputSimples tipo="number" valor={metadado.duracao_segundos ?? ''} onChange={e => onAtualizarMetadado('duracao_segundos', Number(e.target.value))} />
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className='flex gap-2'>

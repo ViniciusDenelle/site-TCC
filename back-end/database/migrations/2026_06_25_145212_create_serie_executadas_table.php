@@ -25,7 +25,9 @@ return new class extends Migration {
 
             $table->decimal('peso', 8, 2)->nullable();
 
-            $table->integer('repeticoes');
+            $table->integer('repeticoes')->nullable();
+
+            $table->unsignedInteger('duracao_segundos')->nullable();
 
             $table->boolean('concluida')
                 ->default(false);

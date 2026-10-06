@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError, AxiosResponse } from 'axios';
-import api from '../../../api';
-import Dieta from './DietaProps';
+import api from '../../../../api';
+import { Alimento } from '../DietaProps';
 
-const useShowDieta = (id?: string | number) => {
+const useShowAlimento = (id?: number) => {
 
     const {
-        data: dieta,
+        data: alimento,
         isPending,
         isSuccess,
         isError,
@@ -14,12 +14,12 @@ const useShowDieta = (id?: string | number) => {
     } = useQuery<
         AxiosResponse,
         AxiosError,
-        Dieta
+        Alimento
     >({
-        queryKey: ['dieta', id],
+        queryKey: ['alimento', id],
 
         queryFn: async () => {
-            const res = await api.get(`/dietas/${id}`)
+            const res = await api.get(`/dashboard/dietas/alimentos/${id}`)
             return res.data
         },
 
@@ -27,7 +27,7 @@ const useShowDieta = (id?: string | number) => {
     })
 
     return {
-        dieta,
+        alimento,
         isPending,
         isSuccess,
         isError,
@@ -35,4 +35,4 @@ const useShowDieta = (id?: string | number) => {
     }
 }
 
-export default useShowDieta
+export default useShowAlimento

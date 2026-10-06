@@ -18,7 +18,6 @@ import CriarPrincipal from './views/Dashboard/treinos/criar/CriarPrincipal'
 import CriarExercicios from './views/Dashboard/treinos/criar/CriarExercicios'
 import CriarTreinos from './views/Dashboard/treinos/criar/CriarTreinos'
 import DietaLayout from './layouts/dashboard/dieta/DietaLayout'
-import DashboardDietas from './views/Dashboard/dieta/DashboardDietas'
 import Home from './views/Dashboard/Home/Home'
 import AtualizarPerfil from './views/Dashboard/Home/AtualizarPerfil'
 import VerTreino from './views/Dashboard/treinos/ver/VerTreino'
@@ -40,6 +39,9 @@ import VerDieta from './views/Dashboard/dieta/ver/VerDieta'
 import MeusTreinosLayout from './layouts/dashboard/treino/MeusTreinosLayout'
 import BibliotecaTreinosHome from './views/Dashboard/treinos/meusTreinos/BibliotecaTreinosHome'
 import SobreNos from './views/Dashboard/SobreNos'
+import PesquisarDietas from './views/Dashboard/dieta/pesquisar/PesquisarDietas'
+import PesquisarDietaHome from './views/Dashboard/dieta/pesquisar/PesquisarDietaHome'
+import PesquisarAlimentos from './views/Dashboard/dieta/pesquisar/PesquisarAlimentos'
 
 const Rota = createBrowserRouter(
     createRoutesFromElements(
@@ -111,7 +113,6 @@ const Rota = createBrowserRouter(
 
                 {/* Rotas de Dieta */}
                 <Route path='dieta' element={<DietaLayout />}>
-                    <Route index element={<DashboardDietas />} />
                     <Route path='pesquisar' element={<div>Pesquisar Dietas</div>} />
 
                     {/* Página com as duas opções (Criar Dieta / Criar Alimento) */}
@@ -122,6 +123,10 @@ const Rota = createBrowserRouter(
                     <Route path='CriarAlimento' element={<CriarAlimento />} />
 
                     <Route path='verDieta/:id' element={<VerDieta />} />
+
+                    <Route path='pesquisarPrincipal' element={<PesquisarDietaHome />} />
+                    <Route path='pesquisarDietas' element={<PesquisarDietas />} />
+                    <Route path='pesquisarAlimentos' element={<PesquisarAlimentos />} />
                 </Route>
             </Route>
 
