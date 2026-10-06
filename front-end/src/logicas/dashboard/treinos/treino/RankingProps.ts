@@ -10,7 +10,7 @@ export interface PosicaoRankingProps {
     posicao: number
     user_id: number
     nome: string
-    valor: number        // kg, repetições ou segundos, conforme o tipo
+    valor: number        
     repeticoes: number
     data: string
     voce: boolean
