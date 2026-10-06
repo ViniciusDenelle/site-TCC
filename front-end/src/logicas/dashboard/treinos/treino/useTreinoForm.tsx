@@ -12,9 +12,11 @@ export const useTreinoForm = () => {
     const foco = useSelecaoUnica();
 
     const metadadoPadrao: MetadadoExercicio = {
+        tipo_execucao: 'repeticoes',
         sets: 3,
         repeticoes_minimas: 8,
         repeticoes_maximas: 12,
+        duracao_segundos: null,
         peso: 0,
         descanso: 60,
     };
@@ -81,6 +83,8 @@ export const useTreinoForm = () => {
                 exercicio_id: item.id,
                 ordem: index + 1,
                 sets: item.metadado.sets,
+                tipo_execucao: item.metadado.tipo_execucao,
+                duracao_segundos: item.metadado.duracao_segundos,
                 repeticoes_minimas: item.metadado.repeticoes_minimas,
                 repeticoes_maximas: item.metadado.repeticoes_maximas,
                 peso: item.metadado.peso,

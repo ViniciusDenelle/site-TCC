@@ -12,8 +12,10 @@ class ExercicioTreino extends Model
         'exercicio_id',
         'treino_id',
         'ordem',
+        'tipo_execucao',
         'repeticoes_minimas',
         'repeticoes_maximas',
+        'duracao_segundos',
         'sets',
         'peso',
         'descanso'
