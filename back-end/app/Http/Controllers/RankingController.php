@@ -6,6 +6,8 @@ use App\Models\Exercicio;
 use App\Models\SerieExecutada;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class RankingController extends Controller
@@ -14,19 +16,24 @@ class RankingController extends Controller
      * CONFIRA estas constantes no seu projeto:
      * - COLUNA_USUARIO_SESSAO: coluna da tabela de sessões que guarda o dono do treino
      * - COLUNA_NOME_USUARIO: coluna da tabela de usuários com o nome de exibição
-     * - COLUNA_TEMPO_SERIE: coluna da série executada que guarda o tempo (em segundos)
+     * - COLUNA_TEMPO_SERIE: coluna da série executada que guarda o tempo (em segundos).
+     *   Se a coluna não existir, o tempo passa a ser lido da coluna "repeticoes".
      */
     private const COLUNA_USUARIO_SESSAO = 'user_id';
     private const COLUNA_NOME_USUARIO = 'name';
     private const COLUNA_TEMPO_SERIE = 'duracao';
 
     /**
-     * Palavras (sem acento, minúsculas) que definem o tipo de competição pelo nome do exercício.
+     * Palavras (sem acento, minúsculas) que FORÇAM o tipo pelo nome do exercício.
+     * Esses exercícios aparecem sempre no seletor, mesmo que ninguém tenha feito ainda.
      */
     private const PALAVRAS_TEMPO = ['prancha'];
     private const PALAVRAS_REPETICOES = ['flexao', 'flexoes'];
 
-    private function tipoDoExercicio(string $nome): string
+    /**
+     * Tipo definido apenas pelo nome (ou null se o nome não define).
+     */
+    private function tipoPorNome(string $nome): ?string
     {
         $nome = Str::lower(Str::ascii($nome));
 
@@ -38,24 +45,59 @@ class RankingController extends Controller
             return 'REPETICOES';
         }
 
-        return 'PESO';
+        return null;
     }
 
     /**
-     * Exercícios do seletor:
-     * - os que qualquer usuário já executou com carga (peso > 0)
-     * - + flexão e prancha, que ficam sempre disponíveis
+     * Tipo final: o nome manda; se não definir, descobre pelos dados já registrados.
      */
-    public function exercicios(): JsonResponse
+    private function tipoDoExercicio(string $nome, float $maxPeso = 0, float $maxTempo = 0): string
     {
-        abort_if(auth()->id() === null, 401, 'Não autenticado.');
+        $porNome = $this->tipoPorNome($nome);
 
+        if ($porNome !== null) {
+            return $porNome;
+        }
+
+        if ($maxPeso > 0) {
+            return 'PESO';
+        }
+
+        if ($maxTempo > 0) {
+            return 'TEMPO';
+        }
+
+        return 'REPETICOES';
+    }
+
+    /**
+     * Coluna usada para o tempo (cai para "repeticoes" se a coluna de tempo não existir).
+     */
+    private function colunaTempo(SerieExecutada $serie): string
+    {
+        return Schema::hasColumn($serie->getTable(), self::COLUNA_TEMPO_SERIE)
+            ? self::COLUNA_TEMPO_SERIE
+            : 'repeticoes';
+    }
+
+    /**
+     * Maior peso e maior tempo já registrados (de qualquer usuário) em séries concluídas,
+     * agrupados por exercício. Se $exercicioId for informado, só daquele exercício.
+     */
+    private function agregadosPorExercicio(?int $exercicioId = null): Collection
+    {
         $serie = new SerieExecutada();
         $relExercicioTreino = $serie->exercicioTreino();
-
         $exercicioTreinoTabela = $relExercicioTreino->getRelated()->getTable();
 
-        $idsComPeso = SerieExecutada::query()
+        $colunaExercicio = "{$exercicioTreinoTabela}.exercicio_id";
+
+        $selecao = "{$colunaExercicio} as exercicio_id, MAX(".$serie->qualifyColumn('peso').') as max_peso';
+        $selecao .= Schema::hasColumn($serie->getTable(), self::COLUNA_TEMPO_SERIE)
+            ? ', MAX('.$serie->qualifyColumn(self::COLUNA_TEMPO_SERIE).') as max_tempo'
+            : ', 0 as max_tempo';
+
+        return SerieExecutada::query()
             ->join(
                 $exercicioTreinoTabela,
                 $relExercicioTreino->getQualifiedOwnerKeyName(),
@@ -63,19 +105,40 @@ class RankingController extends Controller
                 $relExercicioTreino->getQualifiedForeignKeyName()
             )
             ->where($serie->qualifyColumn('concluida'), true)
-            ->where($serie->qualifyColumn('peso'), '>', 0)
-            ->distinct()
-            ->pluck("{$exercicioTreinoTabela}.exercicio_id");
+            ->when($exercicioId !== null, fn ($consulta) => $consulta->where($colunaExercicio, $exercicioId))
+            ->groupBy($colunaExercicio)
+            ->selectRaw($selecao)
+            ->get()
+            ->keyBy('exercicio_id');
+    }
+
+    /**
+     * Exercícios do seletor:
+     * - todo exercício que já teve ao menos uma série concluída (de qualquer usuário)
+     * - + flexão e prancha, que ficam sempre disponíveis
+     */
+    public function exercicios(): JsonResponse
+    {
+        abort_if(auth()->id() === null, 401, 'Não autenticado.');
+
+        $agregados = $this->agregadosPorExercicio();
 
         $exercicios = Exercicio::orderBy('nome')
             ->get(['id', 'nome'])
-            ->filter(fn ($e) => $idsComPeso->contains($e->id)
-                || $this->tipoDoExercicio($e->nome) !== 'PESO')
-            ->map(fn ($e) => [
-                'id' => $e->id,
-                'nome' => $e->nome,
-                'tipo' => $this->tipoDoExercicio($e->nome),
-            ])
+            ->filter(fn ($e) => $agregados->has($e->id) || $this->tipoPorNome($e->nome) !== null)
+            ->map(function ($e) use ($agregados) {
+                $agregado = $agregados->get($e->id);
+
+                return [
+                    'id' => $e->id,
+                    'nome' => $e->nome,
+                    'tipo' => $this->tipoDoExercicio(
+                        $e->nome,
+                        (float) ($agregado->max_peso ?? 0),
+                        (float) ($agregado->max_tempo ?? 0)
+                    ),
+                ];
+            })
             ->values();
 
         return response()->json(['data' => $exercicios]);
@@ -89,7 +152,13 @@ class RankingController extends Controller
         $userId = auth()->id();
         abort_if($userId === null, 401, 'Não autenticado.');
 
-        $tipo = $this->tipoDoExercicio($exercicio->nome);
+        $agregado = $this->agregadosPorExercicio($exercicio->id)->get($exercicio->id);
+
+        $tipo = $this->tipoDoExercicio(
+            $exercicio->nome,
+            (float) ($agregado->max_peso ?? 0),
+            (float) ($agregado->max_tempo ?? 0)
+        );
 
         $serie = new SerieExecutada();
         $relSessao = $serie->sessao();
@@ -105,7 +174,7 @@ class RankingController extends Controller
         // Coluna que define quem vence neste exercício
         $colunaValor = match ($tipo) {
             'REPETICOES' => $serie->qualifyColumn('repeticoes'),
-            'TEMPO' => $serie->qualifyColumn(self::COLUNA_TEMPO_SERIE),
+            'TEMPO' => $serie->qualifyColumn($this->colunaTempo($serie)),
             default => $serie->qualifyColumn('peso'),
         };
 
