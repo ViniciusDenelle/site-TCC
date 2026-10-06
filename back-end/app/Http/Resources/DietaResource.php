@@ -14,38 +14,45 @@ class DietaResource extends JsonResource
             'nome' => $this->nome,
             'descricao' => $this->descricao,
 
-            'objetivo' => $this->whenLoaded('objetivo', fn () => [
+            'objetivo' => $this->whenLoaded('objetivo', fn() => [
                 'id' => $this->objetivo->id,
                 'nome' => $this->objetivo->nome,
             ]),
 
-            'nivel' => $this->whenLoaded('nivel', fn () => [
+            'nivel' => $this->whenLoaded('nivel', fn() => [
                 'id' => $this->nivel->id,
                 'nome' => $this->nivel->nome,
             ]),
 
-            'refeicoes' => $this->whenLoaded('refeicoes', fn () =>
-                $this->refeicoes
-                    ->sortBy(['dia_semana', 'ordem'])
-                    ->values()
-                    ->map(fn ($refeicao) => [
-                        'id' => $refeicao->id,
-                        'nome' => $refeicao->nome,
-                        'dia_semana' => $refeicao->dia_semana,
-                        'horario' => $refeicao->horario,
-                        'alimentos' => $refeicao->relationLoaded('alimentos')
-                            ? $refeicao->alimentos->map(fn ($alimento) => [
-                                'id' => $alimento->id,
-                                'nome' => $alimento->nome,
-                                'porcao_descricao' => $alimento->porcao_descricao,
-                                'quantidade_porcoes' => $alimento->pivot->quantidade_porcoes,
-                                'calorias' => round($alimento->calorias * $alimento->pivot->quantidade_porcoes),
-                                'proteinas' => round($alimento->proteinas * $alimento->pivot->quantidade_porcoes, 1),
-                                'carboidratos' => round($alimento->carboidratos * $alimento->pivot->quantidade_porcoes, 1),
-                                'gorduras' => round($alimento->gorduras * $alimento->pivot->quantidade_porcoes, 1),
-                            ])
-                            : [],
-                    ])
+            'refeicoes' => $this->whenLoaded(
+                'refeicoes',
+                fn() =>
+                    $this->refeicoes
+                        ->sortBy(['dia_semana', 'ordem'])
+                        ->values()
+                        ->map(fn($refeicao) => [
+                            'id' => $refeicao->id,
+                            'nome' => $refeicao->nome,
+                            'dia_semana' => $refeicao->dia_semana,
+                            'horario' => $refeicao->horario,
+                            'alimentos' => $refeicao->relationLoaded('alimentos')
+                                ? $refeicao->alimentos->map(function ($alimento) {
+                                    $fator = $alimento->pivot->quantidade_gramas / $alimento->porcao_gramas;
+
+                                    return [
+                                        'id' => $alimento->id,
+                                        'nome' => $alimento->nome,
+                                        'porcao_descricao' => $alimento->porcao_descricao,
+                                        'porcao_gramas' => $alimento->porcao_gramas,
+                                        'quantidade_gramas' => $alimento->pivot->quantidade_gramas,
+                                        'calorias' => round($alimento->calorias * $fator),
+                                        'proteinas' => round($alimento->proteinas * $fator, 1),
+                                        'carboidratos' => round($alimento->carboidratos * $fator, 1),
+                                        'gorduras' => round($alimento->gorduras * $fator, 1),
+                                    ];
+                                })
+                                : [],
+                        ])
             ),
         ];
     }

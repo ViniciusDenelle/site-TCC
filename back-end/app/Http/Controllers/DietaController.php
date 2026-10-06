@@ -2,21 +2,75 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\DietaFilter;
 use App\Http\Requests\DietaRequest;
+use App\Http\Resources\BadgeResource;
 use App\Http\Resources\DietaResource;
 use App\Models\Dieta;
+use App\Models\NivelDieta;
+use App\Models\ObjetivoDieta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DietaController extends Controller
 {
+    // DietaController.php
+
     public function fetch(Request $request)
     {
-        $dietas = Dieta::with(['objetivo', 'nivel', 'refeicoes.alimentos'])
-            ->latest()
-            ->paginate(10);
+        $query = DietaFilter::apply(
+            Dieta::query()
+                ->with(['objetivo', 'nivel', 'refeicoes.alimentos']),
+            $request
+        )->latest();
 
+        if ($request->filled('calorias_meta') && $request->filled('tolerancia_kcal')) {
+            $meta = (float) $request->calorias_meta;
+            $tolerancia = (float) $request->tolerancia_kcal;
+
+            $todasDietas = $query->get();
+
+            $filtradas = $todasDietas->filter(function ($dieta) use ($meta, $tolerancia) {
+                $media = $this->calcularMediaCaloriasDia($dieta);
+                return abs($media - $meta) <= $tolerancia;
+            });
+
+            $pagina = (int) $request->get('page', 1);
+            $porPagina = 10;
+            $paginadas = $filtradas->slice(($pagina - 1) * $porPagina, $porPagina)->values();
+
+            return DietaResource::collection($paginadas)
+                ->additional([
+                    'meta' => [
+                        'current_page' => $pagina,
+                        'total' => $filtradas->count(),
+                        'last_page' => (int) ceil($filtradas->count() / $porPagina),
+                    ]
+                ]);
+        }
+
+        $dietas = $query->paginate(10);
         return DietaResource::collection($dietas);
+    }
+
+    private function calcularMediaCaloriasDia(Dieta $dieta): float
+    {
+        $caloriasPorDia = [];
+
+        foreach ($dieta->refeicoes as $refeicao) {
+            $caloriasPorDia[$refeicao->dia_semana] ??= 0;
+
+            foreach ($refeicao->alimentos as $alimento) {
+                $fator = $alimento->pivot->quantidade_gramas / $alimento->porcao_gramas;
+                $caloriasPorDia[$refeicao->dia_semana] += $alimento->calorias * $fator;
+            }
+        }
+
+        if (empty($caloriasPorDia)) {
+            return 0;
+        }
+
+        return array_sum($caloriasPorDia) / count($caloriasPorDia);
     }
 
     public function store(DietaRequest $request)
@@ -42,7 +96,7 @@ class DietaController extends Controller
 
                 foreach (($dadosRefeicao['alimentos'] ?? []) as $itemAlimento) {
                     $refeicao->alimentos()->attach($itemAlimento['alimento_id'], [
-                        'quantidade_porcoes' => $itemAlimento['quantidade_porcoes'],
+                        'quantidade_gramas' => $itemAlimento['quantidade_gramas'],
                     ]);
                 }
             }
@@ -60,5 +114,15 @@ class DietaController extends Controller
         // }
 
         return new DietaResource($dieta->load(['objetivo', 'nivel', 'refeicoes.alimentos']));
+    }
+
+    public function niveis()
+    {
+        return BadgeResource::collection(NivelDieta::limit(12)->get());
+    }
+
+    public function objetivos()
+    {
+        return BadgeResource::collection(ObjetivoDieta::limit(12)->get());
     }
 }

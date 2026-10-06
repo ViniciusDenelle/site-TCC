@@ -30,7 +30,7 @@ export function DietaCard({ dieta, onAdicionar }: Props) {
     >
       <div
         className="bg-base-secundaria rounded-3xl p-5 border border-base-terciaria/20 shadow-xl flex flex-col gap-4 overflow-hidden cursor-pointer"
-        onClick={() => navigate(`/dashboard/dietas/${dieta.id}`)}
+        onClick={() => navigate(`/dashboard/dieta/verDieta/${dieta.id}`)}
       >
 
         <div className="w-full h-24 rounded-2xl bg-base-terciaria flex items-center justify-center">
@@ -44,12 +44,12 @@ export function DietaCard({ dieta, onAdicionar }: Props) {
 
           <div className="flex flex-wrap items-center gap-1.5">
             <div className="rounded-full bg-destaque-s-medio/10 border border-destaque-p-claro/20 px-2 py-0.5">
-              <Texto tipo="subtexto" className="!text-xs text-destaque-s-medio font-medium">
+              <Texto tipo="subtexto" className=" text-destaque-s-medio font-medium">
                 {dieta.objetivo.nome}
               </Texto>
             </div>
             <div className="rounded-full bg-base-terciaria/20 border border-base-terciaria/30 px-2 py-0.5">
-              <Texto tipo="subtexto" className="!text-xs text-t-primaria font-medium">
+              <Texto tipo="subtexto" className=" text-t-primaria font-medium">
                 {dieta.nivel.nome}
               </Texto>
             </div>
@@ -62,7 +62,7 @@ export function DietaCard({ dieta, onAdicionar }: Props) {
           )}
         </div>
 
-        <div className="pt-3 border-t border-base-terciaria/40 flex items-center justify-between">
+        <div className="relative pt-3 border-t border-base-terciaria/40 flex items-center justify-between">
           <div className="flex flex-col">
             <div className="flex items-center gap-1">
               <WrapperIcone tamanho='sm'>
@@ -72,14 +72,16 @@ export function DietaCard({ dieta, onAdicionar }: Props) {
                 {totalCaloriasDia} kcal
               </Texto>
             </div>
-            <Texto tipo="subtexto" className="!text-xs text-t-terciaria">
+            <Texto tipo="subtexto" className=" text-t-terciaria">
               {dieta.refeicoes.length} refeições
             </Texto>
           </div>
 
-          <BotaoPrimario 
+          <BotaoTerciario 
             icone={EllipsisVertical}
             tamanhoIcone='md'
+            classeAdicional='absolute bottom-0 right-0 z-10'
+            onClick={() => console.log('clique')}
           />
         </div>
 

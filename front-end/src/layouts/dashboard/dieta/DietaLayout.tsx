@@ -42,7 +42,7 @@ const DietaLayout = () => {
     },
     {
       nome: 'Pesquisar',
-      to: 'pesquisar',
+      to: 'pesquisarPrincipal',
     },
     {
       nome: 'Criar',

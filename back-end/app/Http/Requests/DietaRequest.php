@@ -27,7 +27,7 @@ class DietaRequest extends FormRequest
 
             'refeicoes.*.alimentos' => ['nullable', 'array'],
             'refeicoes.*.alimentos.*.alimento_id' => ['required', 'integer', 'exists:alimentos,id'],
-            'refeicoes.*.alimentos.*.quantidade_porcoes' => ['required', 'numeric', 'min:0.1'],
+            'refeicoes.*.alimentos.*.quantidade_gramas' => ['required', 'integer', 'min:1'],
         ];
     }
 

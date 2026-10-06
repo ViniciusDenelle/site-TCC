@@ -20,7 +20,7 @@ const useFetchObjetivosDieta = () => {
 
         queryFn: async () => {
             const res = await api.get('/dashboard/dietas/objetivos')
-            return res.data
+            return res.data.data
         }
     })
 

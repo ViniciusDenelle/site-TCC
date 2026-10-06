@@ -11,7 +11,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('refeicao_id')->constrained('refeicoes')->cascadeOnDelete();
             $table->foreignId('alimento_id')->constrained('alimentos')->cascadeOnDelete();
-            $table->decimal('quantidade_porcoes', 8, 2)->default(1);
+            $table->decimal('quantidade_gramas', 8, 2)->default(1);
             $table->timestamps();
 
             $table->unique(['refeicao_id', 'alimento_id']);
