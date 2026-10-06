@@ -19,8 +19,8 @@ const useShowDieta = (id?: string | number) => {
         queryKey: ['dieta', id],
 
         queryFn: async () => {
-            const res = await api.get(`/dietas/${id}`)
-            return res.data
+            const res = await api.get(`dashboard/dietas/${id}`)
+            return res.data.data
         },
 
         enabled: !!id

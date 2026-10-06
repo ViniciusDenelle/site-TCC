@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nome')->unique();
             $table->string('porcao_descricao')->nullable();
-            $table->decimal('porcao_gramas', 8, 2)->nullable();
+            $table->decimal('porcao_gramas', 8, 2)->default(0);
             $table->decimal('calorias', 8, 2);
             $table->decimal('proteinas', 8, 2);
             $table->decimal('carboidratos', 8, 2);

@@ -9,8 +9,8 @@ type Props = {
     itens: Badge[];
     isSelecionado: (id: number) => boolean;
     onToggle: (item: Badge) => void;
-    limiteItems?: number
-    error?: string
+    limiteItems?: number;
+    error?: string;
 };
 
 const SecaoBadges = ({
@@ -25,7 +25,7 @@ const SecaoBadges = ({
     const [expandido, setExpandido] = useState<boolean>(false)
 
     const itensVisiveis = (expandido || !limiteItems) ? itens : itens.slice(0, limiteItems)
-    const itensRestantes = itens ? itens.length - limiteItems : null
+    const itensRestantes = limiteItems ? itens.length - limiteItems : null
 
     return (
         <div>
@@ -37,22 +37,21 @@ const SecaoBadges = ({
                     <BotaoTerciario
                         key={item.id}
                         texto={item.nome}
-                        classeAdicional={`p-1
-                        bg-base-terciaria/80 rounded-lg ${isSelecionado(item.id) && `bg-base-secundaria`}`}
+                        classeAdicional={`p-1 bg-base-terciaria/80 rounded-lg ${isSelecionado(item.id) ? 'bg-base-secundaria' : ''}`}
                         onClick={() => onToggle(item)}
-                        textoClassName={isSelecionado(item.id) && `text-destaque-p-escuro`}
+                        textoClassName={isSelecionado(item.id) ? 'text-destaque-p-escuro' : ''}
                     />
                 ))}
             </div>
-            {(itens.length > limiteItems && limiteItems) && (
+            {(limiteItems && itens.length > limiteItems) && (
                 <BotaoTerciario
                     classeAdicional="flex items-center mx-auto"
                     onClick={() => setExpandido(prev => !prev)}
-                    texto={`${expandido ? `mostrar menos` : `mostrar mais`} ${itensRestantes}`}
+                    texto={`${expandido ? 'mostrar menos' : 'mostrar mais'} ${itensRestantes}`}
                     icone={expandido ? Minus : Plus}
                 />
             )}
-            {error?.length > 0 && (
+            {error && error.length > 0 && (
                 <Texto tipo="subtexto" className="text-red-500">
                     *{error}
                 </Texto>

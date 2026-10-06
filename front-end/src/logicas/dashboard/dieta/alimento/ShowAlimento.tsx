@@ -1,13 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError, AxiosResponse } from 'axios';
-import api from '../../../api';
-import { Paginacao } from '../../tipagens/PaginacaoProps';
-import Dieta from './DietaProps';
+import api from '../../../../api';
+import { Alimento } from '../DietaProps';
 
-const useFetchDietas = (pagina: number) => {
+const useShowAlimento = (id?: number) => {
 
     const {
-        data: dietas,
+        data: alimento,
         isPending,
         isSuccess,
         isError,
@@ -15,18 +14,20 @@ const useFetchDietas = (pagina: number) => {
     } = useQuery<
         AxiosResponse,
         AxiosError,
-        Paginacao<Dieta>
+        Alimento
     >({
-        queryKey: ['dietas', pagina],
+        queryKey: ['alimento', id],
 
         queryFn: async () => {
-            const res = await api.get('/dashboard/dietas', { params: { page: pagina } })
+            const res = await api.get(`/dashboard/dietas/alimentos/${id}`)
             return res.data
-        }
+        },
+
+        enabled: !!id
     })
 
     return {
-        dietas,
+        alimento,
         isPending,
         isSuccess,
         isError,
@@ -34,4 +35,4 @@ const useFetchDietas = (pagina: number) => {
     }
 }
 
-export default useFetchDietas
+export default useShowAlimento
