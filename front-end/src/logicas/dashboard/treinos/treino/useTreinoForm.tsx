@@ -73,6 +73,29 @@ export const useTreinoForm = () => {
         exercicios.atualizarDados(id, novoMetadado);
     };
 
+    function alternarTipoExecucao(id: number, novoTipo: 'tempo' | 'repeticoes') {
+        const exercicioAtual = exercicios.selecionados.find(e => e.id === id)
+        if (!exercicioAtual) return
+
+        const novoMetadado: MetadadoExercicio = novoTipo === 'tempo'
+            ? {
+                ...exercicioAtual.metadado,
+                tipo_execucao: 'tempo',
+                repeticoes_minimas: null,
+                repeticoes_maximas: null,
+                duracao_segundos: 30,
+            }
+            : {
+                ...exercicioAtual.metadado,
+                tipo_execucao: 'repeticoes',
+                repeticoes_minimas: 8,
+                repeticoes_maximas: 12,
+                duracao_segundos: null,
+            }
+
+        exercicios.atualizarDados(id, novoMetadado)
+    }
+
     const montarPayload = () => {
         return {
             nome,
@@ -98,14 +121,15 @@ export const useTreinoForm = () => {
         setNome,
         descricao,
         setDescricao,
-        tipo,
-        foco,
         exercicios,
         adicionarExercicio,
         atualizarMetadadoExercicio,
-        montarPayload,
+        alternarTipoExecucao,
+        tipo,
+        foco,
         popularFormulario,
-    };
+        montarPayload
+    }
 };
 
 export default useTreinoForm;

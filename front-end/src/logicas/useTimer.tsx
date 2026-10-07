@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export type UseTimerProps = {
     tempoInicial: number;
@@ -10,14 +10,13 @@ export type UseTimerReturn = {
     tempo: number;
     rodando: boolean;
     ativo: boolean;
-
     iniciar: () => void;
     pausar: () => void;
     parar: () => void;
     reiniciar: () => void;
     finalizar: () => void;
     definirTempo: (novoTempo: number) => void;
-}
+};
 
 const useTimer = ({
     tempoInicial,
@@ -27,45 +26,40 @@ const useTimer = ({
     const [tempo, setTempo] = useState<number>(tempoInicial);
     const [rodando, setRodando] = useState(autoStart);
 
-    // guarda a versão mais recente de onFinish sem forçar o efeito de baixo a recriar o interval
+    // IMPORTANTE: este efeito precisa ficar ANTES do efeito de fim, para que
+    // onFinishRef já esteja atualizado quando o fim for detectado
     const onFinishRef = useRef(onFinish);
     useEffect(() => {
         onFinishRef.current = onFinish;
     }, [onFinish]);
 
-    // um único interval por ciclo de "rodando", não recriado a cada segundo nem a cada render do pai
+    // tick: só decrementa, sem efeitos colaterais dentro do updater
     useEffect(() => {
         if (!rodando) return;
 
         const interval = setInterval(() => {
-            setTempo(prev => {
-                if (prev <= 1) {
-                    clearInterval(interval);
-                    setRodando(false);
-                    onFinishRef.current?.();
-                    return 0;
-                }
-                return prev - 1;
-            });
+            setTempo(prev => Math.max(prev - 1, 0));
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [rodando]); // só reinicia quando rodando muda de fato, nunca por causa de onFinish ou tempo
+    }, [rodando]);
+
+    // fim: dispara uma única vez, quando rodando e o tempo chegou a 0
+    useEffect(() => {
+        if (rodando && tempo <= 0) {
+            setRodando(false);
+            onFinishRef.current?.();
+        }
+    }, [tempo, rodando]);
 
     useEffect(() => {
         setTempo(tempoInicial);
     }, [tempoInicial]);
 
-    const ativo = useMemo(() => {
-        if (tempo === tempoInicial || (tempo === 0 && !rodando)) {
-            return false;
-        }
-        return true;
-    }, [tempo, rodando, tempoInicial]);
+    // ativo = rodando, ou pausado no meio do caminho
+    const ativo = rodando || (tempo > 0 && tempo < tempoInicial);
 
     const iniciar = useCallback(() => {
-        // se o timer já tinha zerado (fim do ciclo anterior com o mesmo tempoInicial),
-        // reseta antes de começar — sem isso, "iniciar" de novo cai direto no fim
         setTempo(prev => (prev <= 0 ? tempoInicial : prev));
         setRodando(true);
     }, [tempoInicial]);
@@ -94,17 +88,7 @@ const useTimer = ({
         setTempo(novoTempo);
     }, []);
 
-    return {
-        tempo,
-        rodando,
-        ativo,
-        iniciar,
-        pausar,
-        parar,
-        reiniciar,
-        finalizar,
-        definirTempo,
-    };
+    return { tempo, rodando, ativo, iniciar, pausar, parar, reiniciar, finalizar, definirTempo };
 };
 
 export default useTimer;

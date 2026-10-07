@@ -8,7 +8,6 @@ import {
   CardMetrica,
   CardMedicao,
 } from '../../../componentes/CardProgresso';
-import GraficoRepeticoes from '../../../componentes/graficos/GraficoRepeticoes';
 import GraficoPeso from '../../../componentes/graficos/GraficoPeso';
 import GraficoFrequencia from '../../../componentes/graficos/GraficoFrequencia';
 import GraficoCargas from '../../../componentes/graficos/GraficoCargas';
@@ -19,7 +18,6 @@ import {
   useFetchPesoProgresso,
   useFetchFrequenciaProgresso,
   useFetchCargasProgresso,
-  useFetchRepeticoesProgresso,
   useRegistrarPeso,
 } from '../../../logicas/dashboard/treinos/treino/Fetchprogresso';
 
@@ -95,7 +93,7 @@ const Progresso = () => {
   const { historicoPeso = [], isPending: carregandoPeso } = useFetchPesoProgresso(dias);
   const { frequencia = [], isPending: carregandoFrequencia } = useFetchFrequenciaProgresso(7);
   const { cargas = [], isPending: carregandoCargas } = useFetchCargasProgresso(dias);
-  const { repeticoes = [], isPending: carregandoRepeticoes } = useFetchRepeticoesProgresso(dias);
+  // const { repeticoes = [], isPending: carregandoRepeticoes } = useFetchRepeticoesProgresso(dias);
 
   const { registrarPeso, isPending: registrandoPeso, isError: erroRegistroPeso } = useRegistrarPeso();
 
@@ -132,21 +130,21 @@ const Progresso = () => {
     },
   ];
 
-  const registrar = () => {
-    const valor = Number(pesoInput.replace(',', '.'));
+  // const registrar = () => {
+  //   const valor = Number(pesoInput.replace(',', '.'));
 
-    if (!valor || valor <= 0 || registrandoPeso) return;
+  //   if (!valor || valor <= 0 || registrandoPeso) return;
 
-    registrarPeso(
-      { peso: valor, data: dataInput || undefined },
-      {
-        onSuccess: () => {
-          setPesoInput('');
-          setDataInput('');
-        },
-      }
-    );
-  };
+  //   registrarPeso(
+  //     { peso: valor, data: dataInput || undefined },
+  //     {
+  //       onSuccess: () => {
+  //         setPesoInput('');
+  //         setDataInput('');
+  //       },
+  //     }
+  //   );
+  // };
 
   /* =====================================================
      ANIMAÇÃO
@@ -427,11 +425,11 @@ const Progresso = () => {
               />
             </div>
 
-            <BotaoSecundario
+            {/* <BotaoSecundario
               tipo="cheio"
               texto={registrandoPeso ? 'salvando...' : 'Registrar'}
               onClick={registrar}
-            />
+            /> */}
 
             {erroRegistroPeso && (
               <span className="text-xs text-red-400">
@@ -596,13 +594,13 @@ const Progresso = () => {
             </button>
           </div>
 
-          {carregandoRepeticoes ? (
+          {/* {carregandoRepeticoes ? (
             <EstadoGrafico altura="h-[300px]" texto="Carregando..." />
           ) : repeticoes.length > 0 ? (
             <GraficoRepeticoes dados={repeticoes} />
           ) : (
             <EstadoGrafico altura="h-[300px]" texto="Nenhum registro de repetições neste período." />
-          )}
+          )} */}
         </div>
       </section>
 

@@ -21,11 +21,11 @@ const ModalPlayerCarga = () => {
         <CardHorizontal>
             <div className="flex flex-col gap-2">
 
-                {exercicioExecucao.timer.ativo && (
+                {(exercicioExecucao.timer.ativo || (exercicioExecucao.isometrico && exercicioExecucao.timerExecucao.ativo)) && (
                     <div className="absolute inset-0 bg-black/50 
                     flex justify-center items-center z-100">
                         <WrapperIcone tamanho='xl'>
-                            <Timer className='animate-pulse size-full'/>
+                            <Timer className='animate-pulse size-full' />
                         </WrapperIcone>
                     </div>
                 )}
@@ -40,10 +40,10 @@ const ModalPlayerCarga = () => {
                             key={serie}
                             serie={serie}
                             serieCompleta={exercicioExecucao.series?.find(
-                                serieE => serieE.serie === serie  
+                                serieE => serieE.serie === serie
                             )}
                             éSerieAtual={exercicioExecucao.concluida ? false : serie === exercicioExecucao.serieAtual}
-                            
+
                         />
                     ))}
                 </div>

@@ -43,16 +43,16 @@ class TreinoController extends Controller
 
             // 3. Cadastra a lista de exercícios vinculados ao treino
             foreach ($dados['exercicios'] as $exercicio) {
-                $treino->exercicios()->create([
-                    'exercicio_id' => $exercicio['exercicio_id'],
-                    'ordem' => $exercicio['ordem'],
-                    'sets' => $exercicio['sets'],
-                    'repeticoes_minimas' => $exercicio['repeticoes_minimas'],
-                    'repeticoes_maximas' => $exercicio['repeticoes_maximas'],
-                    'peso' => $exercicio['peso'],
-                    'descanso' => $exercicio['descanso'],
-                ]);
-            }
+            $treino->exercicios()->create([
+                'exercicio_id' => $exercicio['exercicio_id'],
+                'ordem' => $exercicio['ordem'],
+                'sets' => $exercicio['sets'],
+                'repeticoes_minimas' => $exercicio['repeticoes_minimas'],
+                'repeticoes_maximas' => $exercicio['repeticoes_maximas'],
+                'peso' => $exercicio['peso'],
+                'descanso' => $exercicio['descanso'],
+            ]);
+        }
 
             return $treino->load([
                 'criador',
@@ -136,9 +136,11 @@ class TreinoController extends Controller
                 $treino->exercicios()->create([
                     'exercicio_id' => $exercicio['exercicio_id'],
                     'ordem' => $exercicio['ordem'],
+                    'tipo_execucao' => $exercicio['tipo_execucao'],
                     'sets' => $exercicio['sets'],
                     'repeticoes_minimas' => $exercicio['repeticoes_minimas'],
                     'repeticoes_maximas' => $exercicio['repeticoes_maximas'],
+                    'duracao_segundos' => $exercicio['duracao_segundos'],
                     'peso' => $exercicio['peso'],
                     'descanso' => $exercicio['descanso'],
                 ]);

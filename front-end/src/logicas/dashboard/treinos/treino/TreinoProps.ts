@@ -1,28 +1,114 @@
-export type TipoRanking = 'PESO' | 'REPETICOES' | 'TEMPO'
+import { Dispatch, SetStateAction } from "react"
+import { Badge, ResExercicioProps } from "../exercicios/FetchExercicio"
+import { UseSelecaoComDadosProps } from "../selecionaveis/useSelecaoComDados";
+import { UseSelecaoUnicaProps } from "../selecionaveis/useSelecaoUnica";
+import { SerieExecutada } from "../execução/ExercutarTreinoProps";
 
-export interface ExercicioOpcaoProps {
-    id: number
-    nome: string
-    tipo: TipoRanking
+// hooks/formularios/TreinoProps.ts
+
+export type TipoExecucao = 'repeticoes' | 'tempo';
+
+export interface MetadadoExercicio {
+    tipo_execucao: TipoExecucao;
+    sets: number;
+    repeticoes_minimas: number | null;
+    repeticoes_maximas: number | null;
+    duracao_segundos: number | null;
+    peso: number;
+    descanso: number;
 }
 
-export interface PosicaoRankingProps {
-    posicao: number
-    user_id: number
-    nome: string
-    valor: number        // kg, repetições ou segundos, conforme o tipo
-    repeticoes: number
-    data: string
-    voce: boolean
+export interface useTreinoFormProps {
+    nome: string;
+    setNome: (nome: string) => void;
+    descricao: string;
+    setDescricao: (descricao: string) => void;
+    exercicios: UseSelecaoComDadosProps<ResExercicioProps, MetadadoExercicio>;
+    tipo: UseSelecaoUnicaProps<Badge>
+    foco: UseSelecaoUnicaProps<Badge>
+    adicionarExercicio: (exercicio: ResExercicioProps) => void;
+    atualizarMetadadoExercicio: (
+        id: number,
+        campo: keyof MetadadoExercicio,
+        valor: number | TipoExecucao
+    ) => void;
+    montarPayload: () => CriarTreinoPayload
+    alternarTipoExecucao: (id: number, novoTipo: TipoExecucao) => void;
 }
 
-export interface ResRankingExercicioProps {
+export interface CriarTreinoPayload {
+    nome: string;
+    descricao?: string;
+    foco_id: number;
+    tipo_id: number;
+    exercicios: {
+        exercicio_id: number;
+        ordem: number;
+        tipo_execucao: TipoExecucao;
+        sets: number;
+        repeticoes_minimas: number | null;
+        repeticoes_maximas: number | null;
+        duracao_segundos: number | null;
+        peso: number;
+        descanso: number;
+    }[];
+}
+
+export type ExercicioDoTreino = {
+    id: number; // id do registro pivot (ExercicioTreino)
+    ordem: number;
+    tipo_execucao: TipoExecucao;
+    sets: number;
+    repeticoes_minimas: number | null;
+    repeticoes_maximas: number | null;
+    duracao_segundos: number | null;
+    peso: number;
+    descanso: number;
     exercicio: {
-        id: number
-        nome: string
-        tipo: TipoRanking
-    }
-    total_participantes: number
-    ranking: PosicaoRankingProps[]
-    minha_posicao: PosicaoRankingProps | null
-}
+        id: number;
+        nome: string;
+        descricao: string;
+        imagem: string | null;
+    } | null;
+};
+
+export type TempoEstimado = {
+    minutos: number;
+    segundos: number;
+    segundos_totais: number;
+};
+
+export type ResTreinoProps = {
+    id: number;
+    nome: string;
+    descricao: string;
+    calorias_estimadas: number;
+    tempo_estimado: TempoEstimado;
+    tipo: { id: number; nome: string };
+    foco: { id: number; nome: string };
+    nivel: { id: number; nome: string };
+    exercicios: ExercicioDoTreino[];
+};
+
+export type ExercicioDaSessao = {
+    exercicio_treino_id: number;
+    exercicio: { id: number; nome: string } | null;
+    ordem: number;
+    planejado: {
+        tipo_execucao: TipoExecucao;
+        sets: number;
+        repeticoes_minimas: number | null;
+        repeticoes_maximas: number | null;
+        duracao_segundos: number | null;
+        peso: number;
+    };
+    series_executadas: SerieExecutada[];
+};
+
+export type SessaoTreino = {
+    id: number;
+    iniciado_em: string;
+    finalizado_em: string | null;
+    duracao: number | null;
+    exercicios: ExercicioDaSessao[];
+};

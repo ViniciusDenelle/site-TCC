@@ -56,6 +56,8 @@ class TreinoResource extends JsonResource
                             'sets' => $item->sets,
                             'repeticoes_minimas' => $item->repeticoes_minimas ?? $item->repsMin,
                             'repeticoes_maximas' => $item->repeticoes_maximas ?? $item->repsMax,
+                            'duracao_segundos' =>  $item->duracao_segundos ?? $item->duracaoSegundos,
+                            'tipo_execucao' => $item->tipo_execucao ?? $item->tipoExecucao,
                             'peso' => $item->peso,
                             'descanso' => $item->descanso,
 

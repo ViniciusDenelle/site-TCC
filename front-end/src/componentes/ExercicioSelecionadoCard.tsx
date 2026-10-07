@@ -2,28 +2,28 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import BotaoTerciario from './botoes/BotaoTerciario';
 import Texto from './organizacao/Texto';
 import CardHorizontal from './CardHorizontal';
 import InputSimples from './inputs/InputSimples';
-import { MetadadoExercicio } from '../logicas/dashboard/treinos/exercicios/exercicoProps';
-// ExercicioSelecionadoCard.tsx
-import React from 'react';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { MetadadoExercicio, TipoExecucao } from '../logicas/dashboard/treinos/treino/TreinoProps';
 
 interface ExercicioSelecionadoCardProps {
     id: number;
     nome: string;
     metadado: MetadadoExercicio;
     onAtualizarMetadado: (campo: keyof MetadadoExercicio, valor: number | string) => void;
+    onAlternarTipoExecucao: (tipo: TipoExecucao) => void;
 }
 
 const ExercicioSelecionadoCard = ({
     id,
     nome,
     metadado,
-    onAtualizarMetadado
+    onAtualizarMetadado,
+    onAlternarTipoExecucao,
 }: ExercicioSelecionadoCardProps) => {
     const {
         attributes,
@@ -102,12 +102,12 @@ const ExercicioSelecionadoCard = ({
                                             <div className="flex gap-2">
                                                 <BotaoTerciario
                                                     texto="Repetições"
-                                                    onClick={() => onAtualizarMetadado('tipo_execucao', 'repeticoes')}
+                                                    onClick={() => onAlternarTipoExecucao('repeticoes')}
                                                     classeAdicional={metadado.tipo_execucao === 'repeticoes' ? 'border-primaria bg-primaria/10' : ''}
                                                 />
                                                 <BotaoTerciario
                                                     texto="Tempo"
-                                                    onClick={() => onAtualizarMetadado('tipo_execucao', 'tempo')}
+                                                    onClick={() => onAlternarTipoExecucao('tempo')}
                                                     classeAdicional={metadado.tipo_execucao === 'tempo' ? 'border-primaria bg-primaria/10' : ''}
                                                 />
                                             </div>
@@ -150,7 +150,6 @@ const ExercicioSelecionadoCard = ({
                                             />
                                         </div>
                                     </div>
-
 
                                 </div>
                             </motion.div>

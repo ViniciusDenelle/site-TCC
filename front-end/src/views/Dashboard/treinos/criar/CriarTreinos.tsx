@@ -53,10 +53,14 @@ const CriarTreinos = () => {
         exercicios,
         adicionarExercicio,
         atualizarMetadadoExercicio,
+        alternarTipoExecucao, // <- isso precisa estar aqui
         tipo,
         foco,
-        montarPayload
-    } = useTreinoForm()
+        montarPayload,
+        popularFormulario,
+    } = useTreinoForm();
+
+    console.log(montarPayload())
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -161,13 +165,13 @@ const CriarTreinos = () => {
                     ) : secoes.map(secao => (
                         secao.dados && (
                             <SecaoBadges
-                            limiteItems={limiteItems}
-                            key={secao.tipo}
-                            titulo={secao.titulo}
-                            itens={secao.dados}
-                            error={erros[chaveErroPorTipo[secao.tipo]]?.[0] ?? []}
-                            {...comportamentoPorTipo[secao.tipo]}
-                        />
+                                limiteItems={limiteItems}
+                                key={secao.tipo}
+                                titulo={secao.titulo}
+                                itens={secao.dados}
+                                error={erros[chaveErroPorTipo[secao.tipo]]?.[0] ?? []}
+                                {...comportamentoPorTipo[secao.tipo]}
+                            />
                         )
                     ))}
 
@@ -195,6 +199,9 @@ const CriarTreinos = () => {
                                                     nome={exercicio.nome}
                                                     onAtualizarMetadado={(campo, valor) =>
                                                         atualizarMetadadoExercicio(exercicio.id, campo, valor)
+                                                    }
+                                                    onAlternarTipoExecucao={(tipo) =>
+                                                        alternarTipoExecucao(exercicio.id, tipo)
                                                     }
                                                     metadado={exercicio.metadado}
                                                 />

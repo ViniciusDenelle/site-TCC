@@ -65,6 +65,7 @@ const EditarTreino = () => {
         exercicios,
         adicionarExercicio,
         atualizarMetadadoExercicio,
+        alternarTipoExecucao,
         tipo,
         foco,
         montarPayload,
@@ -132,7 +133,7 @@ const EditarTreino = () => {
             <div className="container mx-auto h-full">
                 <div className="flex flex-col h-full gap-2 divide-base-terciaria">
 
-                    <BotaoTerciario 
+                    <BotaoTerciario
                         onClick={() => popularFormulario(treino)}
                         icone={RefreshCcw}
                         classeAdicional="ml-auto"
@@ -224,6 +225,9 @@ const EditarTreino = () => {
                                                     nome={exercicio.nome}
                                                     onAtualizarMetadado={(campo, valor) =>
                                                         atualizarMetadadoExercicio(exercicio.id, campo, valor)
+                                                    }
+                                                    onAlternarTipoExecucao={(tipo) =>
+                                                        alternarTipoExecucao(exercicio.id, tipo)
                                                     }
                                                     metadado={exercicio.metadado}
                                                 />

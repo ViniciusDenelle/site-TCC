@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
 import { UseTimerReturn } from "../../../useTimer";
-import { ExercicioDoTreino, ResTreinoProps } from "../treino/TreinoProps";
+import { ExercicioDoTreino, ResTreinoProps, TipoExecucao } from "../treino/TreinoProps";
 
 export interface ExecutarTreinoType {
     temTreinoAtivo: boolean;
@@ -32,7 +32,8 @@ export type SerieExecutada = {
   exercicioTreinoId: number;
   serie: number;
   peso: number;
-  repeticoes: number;
+  repeticoes: number | null;
+  duracaoSegundos: number | null;
   concluida: boolean;
 };
 
@@ -41,6 +42,7 @@ export type UseExecucaoExercicio = {
   setPeso: Dispatch<SetStateAction<number>>;
   reps: number;
   setReps: Dispatch<SetStateAction<number>>;
+  duracaoAlvo: number;
   serieAtual: number;
   setSerieAtual: Dispatch<SetStateAction<number>>;
   executarSerie: () => void;
@@ -48,4 +50,8 @@ export type UseExecucaoExercicio = {
   series: SerieExecutada[];
   concluida: boolean;
   timer: UseTimerReturn;
+  isometrico: boolean;
+  timerExecucao: UseTimerReturn;
+  iniciarExecucaoTempo: () => void;
+  encerrarExecucaoAntecipada: () => void;
 };
