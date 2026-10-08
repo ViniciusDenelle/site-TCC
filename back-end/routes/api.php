@@ -98,6 +98,28 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::get('focos', 'focos');
             });
         });
+
+        Route::prefix('dietas')->group(function () {
+
+
+            Route::prefix('alimentos')->controller(AlimentoController::class)->group(function () {
+                Route::get('/', 'fetch');
+                Route::post('/', 'store');
+                Route::get('/{alimento}', 'show');
+            });
+            Route::prefix('dieta')->controller(DietaController::class)->group(function () {
+                Route::get('/', 'fetch');
+                Route::get('/niveis', 'niveis');
+                Route::get('/objetivos', 'objetivos');
+                Route::post('/' ,'store');
+                Route::get('/meus-criados', 'meusCriados');
+                Route::get('/meus-adicionados', 'meusAdicionados');
+                Route::get('/{dieta}', 'show');
+                Route::post('/{dieta}/adicionar', 'adicionar');
+                Route::delete('/{dieta}/adicionar', 'remover');
+            });
+
+        });
     });
 });
 

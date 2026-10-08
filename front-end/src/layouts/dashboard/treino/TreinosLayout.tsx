@@ -27,10 +27,7 @@ export const NavegacaoSuperiorTreinos = ({
 const TreinosLayout = () => {
 
   const navegacaoSuperior = [
-    {
-      nome: 'Treinar',
-      to: '.',
-    },
+
     {
       nome: 'Meus Treinos',
       to: 'meusTreinos',

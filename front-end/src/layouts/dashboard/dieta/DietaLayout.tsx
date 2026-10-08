@@ -33,14 +33,6 @@ const DietaLayout = () => {
 
   const navegacaoSuperior = [
     {
-      nome: 'Dieta',
-      to: 'dieta',
-    },
-    {
-      nome: 'Minhas Dietas',
-      to: '/',
-    },
-    {
       nome: 'Pesquisar',
       to: 'pesquisarPrincipal',
     },
