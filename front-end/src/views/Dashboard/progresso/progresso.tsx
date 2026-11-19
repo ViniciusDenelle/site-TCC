@@ -12,6 +12,8 @@ import GraficoPeso from '../../../componentes/graficos/GraficoPeso';
 import GraficoFrequencia from '../../../componentes/graficos/GraficoFrequencia';
 import GraficoCargas from '../../../componentes/graficos/GraficoCargas';
 
+import AtualizarMedidas from './AtualizarMedidas';
+
 import useFetchUsuario from '../../../logicas/usuario/FetchUsuario';
 import {
   useFetchResumoProgresso,
@@ -81,6 +83,9 @@ const Progresso = () => {
   const [periodoSelecionado, setPeriodoSelecionado] = useState('Mes Atual');
   const [pesoInput, setPesoInput] = useState('');
   const [dataInput, setDataInput] = useState('');
+  
+  // Estado para controlar a visibilidade do modal de atualizar medidas
+  const [mostrarAtualizarMedidas, setMostrarAtualizarMedidas] = useState(false);
 
   const dias = DIAS_POR_PERIODO[periodoSelecionado]();
 
@@ -93,11 +98,9 @@ const Progresso = () => {
   const { historicoPeso = [], isPending: carregandoPeso } = useFetchPesoProgresso(dias);
   const { frequencia = [], isPending: carregandoFrequencia } = useFetchFrequenciaProgresso(7);
   const { cargas = [], isPending: carregandoCargas } = useFetchCargasProgresso(dias);
-  // const { repeticoes = [], isPending: carregandoRepeticoes } = useFetchRepeticoesProgresso(dias);
 
-  const { registrarPeso, isPending: registrandoPeso, isError: erroRegistroPeso } = useRegistrarPeso();
+  const { isError: erroRegistroPeso } = useRegistrarPeso();
 
-  // TODO: ligar ao back-end quando existir a tabela de medições corporais
   const registrosMedidas: any[] = [];
 
   /* =====================================================
@@ -129,22 +132,6 @@ const Progresso = () => {
       icon: 'dumbbell',
     },
   ];
-
-  // const registrar = () => {
-  //   const valor = Number(pesoInput.replace(',', '.'));
-
-  //   if (!valor || valor <= 0 || registrandoPeso) return;
-
-  //   registrarPeso(
-  //     { peso: valor, data: dataInput || undefined },
-  //     {
-  //       onSuccess: () => {
-  //         setPesoInput('');
-  //         setDataInput('');
-  //       },
-  //     }
-  //   );
-  // };
 
   /* =====================================================
      ANIMAÇÃO
@@ -183,6 +170,20 @@ const Progresso = () => {
         bg-base-primaria
       "
     >
+      {/* =====================================================
+          MODAL DE ATUALIZAR MEDIDAS (POPUP)
+      ===================================================== */}
+      {mostrarAtualizarMedidas && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <AtualizarMedidas 
+              onCancelar={() => setMostrarAtualizarMedidas(false)}
+              onSucesso={() => setMostrarAtualizarMedidas(false)}
+            />
+          </div>
+        </div>
+      )}
+
       {/* =====================================================
           CABEÇALHO
       ===================================================== */}
@@ -259,7 +260,11 @@ const Progresso = () => {
             <option value="Ano">Ano atual</option>
           </select>
 
-          <BotaoPrimario tipo="cheio" texto="+ Adicionar Medição" />
+          <BotaoPrimario 
+            tipo="cheio" 
+            texto="+ Adicionar Medição" 
+            onClick={() => setMostrarAtualizarMedidas(true)}
+          />
         </div>
       </section>
 
@@ -368,7 +373,6 @@ const Progresso = () => {
             </div>
           </div>
 
-          {/* REGISTRAR PESO */}
           <div className="flex flex-wrap items-end gap-2 mb-3">
             <div>
               <label className="text-xs text-t-secundaria/70 block mb-1">
@@ -424,12 +428,6 @@ const Progresso = () => {
                 "
               />
             </div>
-
-            {/* <BotaoSecundario
-              tipo="cheio"
-              texto={registrandoPeso ? 'salvando...' : 'Registrar'}
-              onClick={registrar}
-            /> */}
 
             {erroRegistroPeso && (
               <span className="text-xs text-red-400">
@@ -593,14 +591,6 @@ const Progresso = () => {
               VER TODOS
             </button>
           </div>
-
-          {/* {carregandoRepeticoes ? (
-            <EstadoGrafico altura="h-[300px]" texto="Carregando..." />
-          ) : repeticoes.length > 0 ? (
-            <GraficoRepeticoes dados={repeticoes} />
-          ) : (
-            <EstadoGrafico altura="h-[300px]" texto="Nenhum registro de repetições neste período." />
-          )} */}
         </div>
       </section>
 
@@ -662,7 +652,11 @@ const Progresso = () => {
         )}
 
         <div className="mt-5 flex justify-end">
-          <BotaoPrimario tipo="vazio" texto="Nova Avaliação Física" />
+          <BotaoPrimario 
+            tipo="vazio" 
+            texto="Nova Avaliação Física" 
+            onClick={() => setMostrarAtualizarMedidas(true)}
+          />
         </div>
       </section>
     </motion.main>

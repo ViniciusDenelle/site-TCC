@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlimentoController;
 use App\Http\Controllers\BadgeTreinoController;
 use App\Http\Controllers\ExercicioController;
 use App\Http\Controllers\FichaController;
@@ -101,6 +102,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::prefix('dietas')->group(function () {
 
+            // badges de filtro (usados pelo front em /dashboard/dietas/niveis e /objetivos)
+            Route::get('niveis', [DietaController::class, 'niveis']);
+            Route::get('objetivos', [DietaController::class, 'objetivos']);
 
             Route::prefix('alimentos')->controller(AlimentoController::class)->group(function () {
                 Route::get('/', 'fetch');

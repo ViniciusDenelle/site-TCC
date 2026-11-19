@@ -9,7 +9,7 @@ export const NavegacaoSuperiorDieta = ({
   to = '/'
 }) => {
   return (
-    <NavLink to={to}>
+    <NavLink to={to} end>
       {({ isActive }) => (
         <div
           className={`
@@ -32,6 +32,10 @@ export const NavegacaoSuperiorDieta = ({
 const DietaLayout = () => {
 
   const navegacaoSuperior = [
+    {
+      nome: 'Minhas dietas',
+      to: '/dashboard/dieta',
+    },
     {
       nome: 'Pesquisar',
       to: 'pesquisarPrincipal',

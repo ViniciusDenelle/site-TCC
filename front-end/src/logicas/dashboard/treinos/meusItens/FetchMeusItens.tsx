@@ -2,13 +2,14 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '../../../../api';
 
-type TipoItem = 'treinos' | 'exercicios' | 'fichas';
+type TipoItem = 'treinos' | 'exercicios' | 'fichas' | 'dietas';
 type RelacaoItem = 'criados' | 'adicionados';
 
 const rotasPorTipo: Record<TipoItem, string> = {
     treinos: '/dashboard/treinos/treino',
     exercicios: '/dashboard/treinos/exercicio',
     fichas: '/dashboard/treinos/ficha',
+    dietas: '/dashboard/dietas/dieta',
 };
 
 function useFetchMeusItens<T>(tipo: TipoItem, relacao: RelacaoItem, pagina: number) {

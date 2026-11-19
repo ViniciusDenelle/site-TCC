@@ -9,7 +9,7 @@ export const nav = [
     {
         icone: Weight,
         legenda: 'treinos',
-        to: '/dashboard/treino'
+        to: '/dashboard/treino/MeusTreinos'
     },
     {
         icone: Flame,
