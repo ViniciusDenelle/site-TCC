@@ -10,6 +10,8 @@ class ObjetivosUsuario extends Model
         'user_id',
         'tipo',
         'peso_ideal',
+        'peso_minimo',
+        'peso_maximo',
         'velocidade',
         'comeco',
         'termino',

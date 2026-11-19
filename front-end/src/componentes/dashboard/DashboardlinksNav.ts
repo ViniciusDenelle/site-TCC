@@ -4,7 +4,7 @@ export const nav = [
     {
         icone: Home,
         legenda: 'Home',
-        to: '/dashboard/home'
+        to: '/dashboard/'
     },
     {
         icone: Weight,

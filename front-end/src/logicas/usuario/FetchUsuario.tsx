@@ -12,6 +12,8 @@ export type RetornoUsuario = {
   peso: number
   tipoPeso: 'kilos' | 'libras'
   pesoIdeal: number
+  pesoMinimo?: number | null
+  pesoMaximo?: number | null
   altura: number
   dataDeNascimento: string
   nivelDeAtividade: string | number | null
@@ -22,6 +24,9 @@ export type RetornoUsuario = {
   idade: number
   TMB: number
   GET: number
+  comeco?: string | null
+  termino?: string | null
+  duracao?: string | null
 }
 
 const useFetchUsuario = () => {
@@ -57,6 +62,8 @@ const useFetchUsuario = () => {
             )
         }
     }, [dadosUsuario])
+    
+    console.log('dadosUsuario', dadosUsuario)
 
     return {
         dadosUsuario,
