@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
 
 import BotaoPrimario from '../../../componentes/botoes/BotaoPrimario';
-import BotaoSecundario from '../../../componentes/botoes/BotaoSecundario';
 
 import {
   CardMetrica,
@@ -19,7 +18,6 @@ import {
   useFetchPesoProgresso,
   useFetchFrequenciaProgresso,
   useFetchCargasProgresso,
-  useRegistrarPeso,
 } from '../../../logicas/dashboard/treinos/treino/Fetchprogresso';
 import {
   useFetchMedidas,
@@ -98,8 +96,6 @@ const EstadoGrafico = ({ altura, texto }: { altura: string; texto: string }) => 
 
 const Progresso = () => {
   const [periodoSelecionado, setPeriodoSelecionado] = useState('Mes Atual');
-  const [pesoInput, setPesoInput] = useState('');
-  const [dataInput, setDataInput] = useState('');
 
   const dias = DIAS_POR_PERIODO[periodoSelecionado]();
 
@@ -112,9 +108,6 @@ const Progresso = () => {
   const { historicoPeso = [], isPending: carregandoPeso } = useFetchPesoProgresso(dias);
   const { frequencia = [], isPending: carregandoFrequencia } = useFetchFrequenciaProgresso(7);
   const { cargas = [], isPending: carregandoCargas } = useFetchCargasProgresso(dias);
-  // const { repeticoes = [], isPending: carregandoRepeticoes } = useFetchRepeticoesProgresso(dias);
-
-  const { registrarPeso, isPending: registrandoPeso, isError: erroRegistroPeso } = useRegistrarPeso();
 
   // Última medição de cada tipo (cintura, peito, braço...)
   const { medidas = [] } = useFetchMedidas();
@@ -156,22 +149,6 @@ const Progresso = () => {
       icon: 'dumbbell',
     },
   ];
-
-  // const registrar = () => {
-  //   const valor = Number(pesoInput.replace(',', '.'));
-
-  //   if (!valor || valor <= 0 || registrandoPeso) return;
-
-  //   registrarPeso(
-  //     { peso: valor, data: dataInput || undefined },
-  //     {
-  //       onSuccess: () => {
-  //         setPesoInput('');
-  //         setDataInput('');
-  //       },
-  //     }
-  //   );
-  // };
 
   /* =====================================================
      ANIMAÇÃO
@@ -225,17 +202,6 @@ const Progresso = () => {
         pb-6
       ">
         <div>
-          <p className="
-            text-xs
-            uppercase
-            tracking-[0.2em]
-            text-destaque-p-medio
-            font-bold
-            mb-2
-          ">
-            Dashboard
-          </p>
-
           <h1 className="
             text-3xl
             md:text-4xl
@@ -257,17 +223,22 @@ const Progresso = () => {
         </div>
 
         <div className="
-          flex
-          flex-col
-          sm:flex-row
+          grid
+          grid-cols-1
+          sm:grid-cols-2
+          items-stretch
           gap-3
+          w-full
+          md:w-auto
         ">
           <select
             value={periodoSelecionado}
             onChange={(e) => setPeriodoSelecionado(e.target.value)}
             className="
+              w-full
+              sm:w-48
+              h-[44px]
               px-4
-              py-2.5
               bg-base-terciaria
               ring-1
               ring-base-quaternaria/80
@@ -286,7 +257,10 @@ const Progresso = () => {
             <option value="Ano">Ano atual</option>
           </select>
 
-          <NavLink to="/dashboard/progresso/adicionar">
+          <NavLink
+            to="/dashboard/progresso/adicionar"
+            className="w-full sm:w-48 h-[44px] flex items-center justify-center [&>*]:w-full [&>*]:h-full"
+          >
             <BotaoPrimario tipo="cheio" texto="+ Adicionar Medição" />
           </NavLink>
         </div>
@@ -372,7 +346,7 @@ const Progresso = () => {
             flex
             flex-wrap
             gap-6
-            mb-3
+            mb-6
             text-xs
           ">
             <div>
@@ -395,76 +369,6 @@ const Progresso = () => {
                 {resumo?.mediaSemanal != null ? formatarNumero(resumo.mediaSemanal) : '--'} {unidadePeso}
               </p>
             </div>
-          </div>
-
-          {/* REGISTRAR PESO */}
-          <div className="flex flex-wrap items-end gap-2 mb-3">
-            <div>
-              <label className="text-xs text-t-secundaria/70 block mb-1">
-                Peso ({unidadePeso})
-              </label>
-
-              <input
-                type="number"
-                step="0.1"
-                min="1"
-                value={pesoInput}
-                onChange={(e) => setPesoInput(e.target.value)}
-                placeholder="ex: 82.5"
-                className="
-                  w-32
-                  px-3
-                  py-2
-                  bg-base-terciaria
-                  ring-1
-                  ring-base-quaternaria/80
-                  focus:ring-destaque-p-medio
-                  rounded-xl
-                  text-sm
-                  text-t-primaria
-                  outline-none
-                  transition-all
-                "
-              />
-            </div>
-
-            <div>
-              <label className="text-xs text-t-secundaria/70 block mb-1">
-                Data (opcional)
-              </label>
-
-              <input
-                type="date"
-                max={new Date().toISOString().slice(0, 10)}
-                value={dataInput}
-                onChange={(e) => setDataInput(e.target.value)}
-                className="
-                  px-3
-                  py-2
-                  bg-base-terciaria
-                  ring-1
-                  ring-base-quaternaria/80
-                  focus:ring-destaque-p-medio
-                  rounded-xl
-                  text-sm
-                  text-t-primaria
-                  outline-none
-                  transition-all
-                "
-              />
-            </div>
-
-            {/* <BotaoSecundario
-              tipo="cheio"
-              texto={registrandoPeso ? 'salvando...' : 'Registrar'}
-              onClick={registrar}
-            /> */}
-
-            {erroRegistroPeso && (
-              <span className="text-xs text-red-400">
-                Não foi possível registrar o peso.
-              </span>
-            )}
           </div>
 
           {carregandoPeso ? (
@@ -570,15 +474,6 @@ const Progresso = () => {
                 Evolução das cargas
               </h2>
             </div>
-
-            <button className="
-              text-xs
-              text-destaque-p-medio
-              hover:underline
-              font-bold
-            ">
-              VER TODOS
-            </button>
           </div>
 
           {carregandoCargas ? (
@@ -612,24 +507,9 @@ const Progresso = () => {
                 Evolução das repetições
               </h2>
             </div>
-
-            <button className="
-              text-xs
-              text-destaque-p-medio
-              hover:underline
-              font-bold
-            ">
-              VER TODOS
-            </button>
           </div>
 
-          {/* {carregandoRepeticoes ? (
-            <EstadoGrafico altura="h-[300px]" texto="Carregando..." />
-          ) : repeticoes.length > 0 ? (
-            <GraficoRepeticoes dados={repeticoes} />
-          ) : (
-            <EstadoGrafico altura="h-[300px]" texto="Nenhum registro de repetições neste período." />
-          )} */}
+          <EstadoGrafico altura="h-[300px]" texto="Nenhum registro de repetições neste período." />
         </div>
       </section>
 
@@ -657,15 +537,6 @@ const Progresso = () => {
               Últimas medições
             </h2>
           </div>
-
-          <button className="
-            text-xs
-            text-destaque-p-medio
-            hover:underline
-            font-bold
-          ">
-            HISTÓRICO
-          </button>
         </div>
 
         {registrosMedidas.length > 0 ? (

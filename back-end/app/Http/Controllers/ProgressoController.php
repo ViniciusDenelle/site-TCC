@@ -312,8 +312,19 @@ class ProgressoController extends Controller
             ['peso' => $validado['peso']]
         );
 
-        // Opcional: manter o peso do perfil sincronizado (ajuste o nome da coluna)
-        // auth()->user()->update(['peso' => $validado['peso']]);
+        // Mantém o peso do perfil igual ao registro MAIS RECENTE. Um registro com
+        // data antiga não mexe no perfil. A home (/api/usuario) lê perfil_usuarios.peso,
+        // que é uma coluna inteira, por isso o arredondamento.
+        $maisRecente = RegistroPeso::where('user_id', $userId)
+            ->orderByDesc('registrado_em')
+            ->orderByDesc('id')
+            ->first();
+
+        if ($maisRecente && $maisRecente->id === $registro->id) {
+            auth()->user()->perfil()->update([
+                'peso' => (int) round($registro->peso),
+            ]);
+        }
 
         return response()->json(['data' => $registro], 201);
     }
