@@ -1,9 +1,7 @@
-import { Link } from "react-router-dom";
-import { Utensils, Flame, CalendarDays } from "lucide-react";
-
-import Texto from "../../../../componentes/organizacao/Texto";
-
-import useFetchMeusItens from "../../../../logicas/dashboard/treinos/meusItens/FetchMeusItens";
+import { Link } from 'react-router-dom'
+import { Utensils, Flame, CalendarDays } from 'lucide-react'
+import Texto from '../../../../componentes/organizacao/Texto'
+import useFetchMeusItens from '../../../../logicas/dashboard/treinos/meusItens/FetchMeusItens'
 
 // Formato mínimo que a página usa (baseado no que o VerDieta lê da dieta)
 interface AlimentoResumo {

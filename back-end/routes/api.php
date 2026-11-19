@@ -4,6 +4,7 @@ use App\Http\Controllers\AlimentoController;
 use App\Http\Controllers\BadgeTreinoController;
 use App\Http\Controllers\ExercicioController;
 use App\Http\Controllers\FichaController;
+use App\Http\Controllers\MedidaCorporalController;
 use App\Http\Controllers\TreinoController;
 use App\Http\Controllers\TreinoHistoricoController;
 use App\Http\Controllers\treinosExecucaoController;
@@ -31,6 +32,10 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('frequencia', 'frequencia');
             Route::get('peso', 'peso');
             Route::post('peso', 'registrarPeso');
+
+            // medidas corporais (cintura, peito, braço...)
+            Route::get('medidas', [MedidaCorporalController::class, 'index']);
+            Route::post('medidas', [MedidaCorporalController::class, 'store']);
         });
 
         // treinos 

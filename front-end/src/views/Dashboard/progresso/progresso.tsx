@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { NavLink } from 'react-router-dom';
 
 import BotaoPrimario from '../../../componentes/botoes/BotaoPrimario';
 import BotaoSecundario from '../../../componentes/botoes/BotaoSecundario';
@@ -12,8 +13,6 @@ import GraficoPeso from '../../../componentes/graficos/GraficoPeso';
 import GraficoFrequencia from '../../../componentes/graficos/GraficoFrequencia';
 import GraficoCargas from '../../../componentes/graficos/GraficoCargas';
 
-import AtualizarMedidas from './AtualizarMedidas';
-
 import useFetchUsuario from '../../../logicas/usuario/FetchUsuario';
 import {
   useFetchResumoProgresso,
@@ -22,6 +21,10 @@ import {
   useFetchCargasProgresso,
   useRegistrarPeso,
 } from '../../../logicas/dashboard/treinos/treino/Fetchprogresso';
+import {
+  useFetchMedidas,
+  MEDIDAS_CONFIG,
+} from '../../../logicas/progresso/Medidas';
 
 /* =====================================================
    PERÍODOS DO SELETOR (valor -> quantidade de dias)
@@ -54,6 +57,20 @@ const textoVariacao = (valor: number | null | undefined, sufixo = '') => {
   return `${sinal}${formatarNumero(valor)}${sufixo ? ` ${sufixo}` : ''}`;
 };
 
+const formatarData = (dataIso: string) =>
+  new Date(`${dataIso}T00:00:00`).toLocaleDateString('pt-BR');
+
+const textoPeriodo = (dataIso: string) => {
+  const dias = Math.floor(
+    (Date.now() - new Date(`${dataIso}T00:00:00`).getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  if (dias <= 0) return 'Hoje';
+  if (dias === 1) return 'Ontem';
+
+  return `há ${dias} dias`;
+};
+
 const CARD_CLASSES = `
   p-5
   md:p-6
@@ -83,9 +100,6 @@ const Progresso = () => {
   const [periodoSelecionado, setPeriodoSelecionado] = useState('Mes Atual');
   const [pesoInput, setPesoInput] = useState('');
   const [dataInput, setDataInput] = useState('');
-  
-  // Estado para controlar a visibilidade do modal de atualizar medidas
-  const [mostrarAtualizarMedidas, setMostrarAtualizarMedidas] = useState(false);
 
   const dias = DIAS_POR_PERIODO[periodoSelecionado]();
 
@@ -98,10 +112,20 @@ const Progresso = () => {
   const { historicoPeso = [], isPending: carregandoPeso } = useFetchPesoProgresso(dias);
   const { frequencia = [], isPending: carregandoFrequencia } = useFetchFrequenciaProgresso(7);
   const { cargas = [], isPending: carregandoCargas } = useFetchCargasProgresso(dias);
+  // const { repeticoes = [], isPending: carregandoRepeticoes } = useFetchRepeticoesProgresso(dias);
 
-  const { isError: erroRegistroPeso } = useRegistrarPeso();
+  const { registrarPeso, isPending: registrandoPeso, isError: erroRegistroPeso } = useRegistrarPeso();
 
-  const registrosMedidas: any[] = [];
+  // Última medição de cada tipo (cintura, peito, braço...)
+  const { medidas = [] } = useFetchMedidas();
+
+  const registrosMedidas = medidas.map((medida) => ({
+    id: medida.id,
+    nome: MEDIDAS_CONFIG[medida.tipo]?.nome ?? medida.tipo,
+    valor: `${formatarNumero(medida.valor)} ${MEDIDAS_CONFIG[medida.tipo]?.unidade ?? ''}`.trim(),
+    data: formatarData(medida.data),
+    periodo: textoPeriodo(medida.data),
+  }));
 
   /* =====================================================
      VALORES DERIVADOS
@@ -132,6 +156,22 @@ const Progresso = () => {
       icon: 'dumbbell',
     },
   ];
+
+  // const registrar = () => {
+  //   const valor = Number(pesoInput.replace(',', '.'));
+
+  //   if (!valor || valor <= 0 || registrandoPeso) return;
+
+  //   registrarPeso(
+  //     { peso: valor, data: dataInput || undefined },
+  //     {
+  //       onSuccess: () => {
+  //         setPesoInput('');
+  //         setDataInput('');
+  //       },
+  //     }
+  //   );
+  // };
 
   /* =====================================================
      ANIMAÇÃO
@@ -170,20 +210,6 @@ const Progresso = () => {
         bg-base-primaria
       "
     >
-      {/* =====================================================
-          MODAL DE ATUALIZAR MEDIDAS (POPUP)
-      ===================================================== */}
-      {mostrarAtualizarMedidas && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-            <AtualizarMedidas 
-              onCancelar={() => setMostrarAtualizarMedidas(false)}
-              onSucesso={() => setMostrarAtualizarMedidas(false)}
-            />
-          </div>
-        </div>
-      )}
-
       {/* =====================================================
           CABEÇALHO
       ===================================================== */}
@@ -260,11 +286,9 @@ const Progresso = () => {
             <option value="Ano">Ano atual</option>
           </select>
 
-          <BotaoPrimario 
-            tipo="cheio" 
-            texto="+ Adicionar Medição" 
-            onClick={() => setMostrarAtualizarMedidas(true)}
-          />
+          <NavLink to="/dashboard/progresso/adicionar">
+            <BotaoPrimario tipo="cheio" texto="+ Adicionar Medição" />
+          </NavLink>
         </div>
       </section>
 
@@ -373,6 +397,7 @@ const Progresso = () => {
             </div>
           </div>
 
+          {/* REGISTRAR PESO */}
           <div className="flex flex-wrap items-end gap-2 mb-3">
             <div>
               <label className="text-xs text-t-secundaria/70 block mb-1">
@@ -428,6 +453,12 @@ const Progresso = () => {
                 "
               />
             </div>
+
+            {/* <BotaoSecundario
+              tipo="cheio"
+              texto={registrandoPeso ? 'salvando...' : 'Registrar'}
+              onClick={registrar}
+            /> */}
 
             {erroRegistroPeso && (
               <span className="text-xs text-red-400">
@@ -591,6 +622,14 @@ const Progresso = () => {
               VER TODOS
             </button>
           </div>
+
+          {/* {carregandoRepeticoes ? (
+            <EstadoGrafico altura="h-[300px]" texto="Carregando..." />
+          ) : repeticoes.length > 0 ? (
+            <GraficoRepeticoes dados={repeticoes} />
+          ) : (
+            <EstadoGrafico altura="h-[300px]" texto="Nenhum registro de repetições neste período." />
+          )} */}
         </div>
       </section>
 
@@ -652,11 +691,9 @@ const Progresso = () => {
         )}
 
         <div className="mt-5 flex justify-end">
-          <BotaoPrimario 
-            tipo="vazio" 
-            texto="Nova Avaliação Física" 
-            onClick={() => setMostrarAtualizarMedidas(true)}
-          />
+          <NavLink to="/dashboard/progresso/adicionar">
+            <BotaoPrimario tipo="vazio" texto="Nova Avaliação Física" />
+          </NavLink>
         </div>
       </section>
     </motion.main>
