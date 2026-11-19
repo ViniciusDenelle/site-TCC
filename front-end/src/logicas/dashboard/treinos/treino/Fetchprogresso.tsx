@@ -42,6 +42,11 @@ export interface SeriesExercicioProps {
     seriesAtuais: number
 }
 
+export interface NovoPesoProps {
+    peso: number
+    data?: string // yyyy-mm-dd
+}
+
 
 /* ===================================================== */
 /* HOOKS                                                  */
@@ -107,14 +112,29 @@ export const useFetchSeriesProgresso = (dias: number) => {
     return { series, isPending, isError }
 }
 
-/** Registra o peso de hoje e atualiza todos os dados de progresso na tela. */
+/**
+- Registra o peso e atualiza todos os dados de progresso na tela.
+- Aceita um número (peso de hoje) ou um objeto { peso, data }.
+- Sempre envia { peso: number, data: 'yyyy-mm-dd' } para a API.
+ */
 export const useRegistrarPeso = () => {
     const queryClient = useQueryClient()
 
-    const { mutate, isPending, isError } = useMutation<unknown, AxiosError, number>({
-        mutationFn: (peso) => api.post('/dashboard/progresso/peso', { peso }),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['progresso'] }),
+    const { mutate, isPending, isError, error } = useMutation<unknown, AxiosError, number | NovoPesoProps>({
+        mutationFn: async (novo) => {
+            const dados: NovoPesoProps = typeof novo === 'number' ? { peso: novo } : novo
+            const body = {
+                ...dados,
+                data: dados.data ?? new Date().toLocaleDateString('en-CA'),
+            }
+            return (await api.post('/dashboard/progresso/peso', body)).data
+        },
+        onSuccess: () => {
+            // Invalida especificamente as queries de progresso e de usuário (para atualizar a Home)
+            queryClient.invalidateQueries({ queryKey: ['progresso'] })
+            queryClient.invalidateQueries({ queryKey: ['usuario'] })
+        },
     })
 
-    return { registrarPeso: mutate, isPending, isError }
+    return { registrarPeso: mutate, isPending, isError, error }
 }

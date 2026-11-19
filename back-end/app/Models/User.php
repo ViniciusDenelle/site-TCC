@@ -115,14 +115,14 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
-    public function dietasCriadas()
+     public function dietasCriadas()
     {
-        return $this->hasMany(Dieta::class, 'user_id');
+    return $this->hasMany(Dieta::class, 'user_id');
     }
 
     public function dietasAdicionadas()
     {
-        return $this->belongsToMany(Dieta::class, 'dieta_usuario', 'user_id', 'dieta_id')
-            ->withTimestamps();
+    return $this->belongsToMany(Dieta::class, 'dieta_usuario', 'user_id', 'dieta_id')
+        ->withTimestamps();
     }
 }

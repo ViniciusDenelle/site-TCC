@@ -1,5 +1,6 @@
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
-import { Plus, Flame, Utensils, EllipsisVertical } from 'lucide-react'
+import { Plus, Flame, Utensils, EllipsisVertical, Check } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Texto from '../organizacao/Texto'
 import BotaoPrimario from '../botoes/BotaoPrimario'
@@ -9,17 +10,58 @@ import BotaoTerciario from '../botoes/BotaoTerciario'
 
 type Props = {
   dieta: Dieta
-  onAdicionar?: (dieta: Dieta) => void
+  onAdicionar?: (dieta: Dieta) => void | Promise<void>
 }
+
+type EstadoAdicionar = 'parado' | 'adicionando' | 'adicionada' | 'erro'
 
 export function DietaCard({ dieta, onAdicionar }: Props) {
   const navigate = useNavigate()
+
+  const [menuAberto, setMenuAberto] = useState(false)
+  const [estado, setEstado] = useState<EstadoAdicionar>('parado')
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  // Fecha o menu ao clicar fora dele
+  useEffect(() => {
+    if (!menuAberto) return
+
+    const aoClicarFora = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuAberto(false)
+      }
+    }
+
+    document.addEventListener('mousedown', aoClicarFora)
+    return () => document.removeEventListener('mousedown', aoClicarFora)
+  }, [menuAberto])
+
+  const adicionar = async () => {
+    if (!onAdicionar || estado === 'adicionando' || estado === 'adicionada') return
+
+    setEstado('adicionando')
+
+    try {
+      await onAdicionar(dieta)
+      setEstado('adicionada')
+      setTimeout(() => setMenuAberto(false), 1200)
+    } catch {
+      setEstado('erro')
+    }
+  }
 
   const totalCaloriasDia = dieta.refeicoes.reduce(
     (soma, refeicao) =>
       soma + refeicao.alimentos.reduce((s, a) => s + a.calorias, 0),
     0
   )
+
+  const textoAdicionar = {
+    parado: 'Adicionar às minhas dietas',
+    adicionando: 'Adicionando...',
+    adicionada: 'Adicionada!',
+    erro: 'Erro. Tentar de novo',
+  }[estado]
 
   return (
     <motion.div
@@ -77,12 +119,39 @@ export function DietaCard({ dieta, onAdicionar }: Props) {
             </Texto>
           </div>
 
-          <BotaoTerciario 
-            icone={EllipsisVertical}
-            tamanhoIcone='md'
-            classeAdicional='absolute bottom-0 right-0 z-10'
-            onClick={() => console.log('clique')}
-          />
+          {(
+            <div
+              ref={menuRef}
+              className="absolute bottom-0 right-0 z-10"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <BotaoTerciario
+                icone={EllipsisVertical}
+                tamanhoIcone='md'
+                onClick={() => setMenuAberto((aberto) => !aberto)}
+              />
+
+              {menuAberto && (
+                <div className="absolute bottom-full right-0 mb-1 z-20 rounded-xl bg-base-secundaria border border-base-terciaria/30 shadow-xl p-1 whitespace-nowrap">
+                  <button
+                    type="button"
+                    onClick={adicionar}
+                    disabled={!onAdicionar || estado === 'adicionando' || estado === 'adicionada'}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 w-full text-left hover:bg-destaque-p-claro/10 disabled:opacity-70 disabled:hover:bg-transparent"
+                  >
+                    {estado === 'adicionada' ? (
+                      <Check className="size-4 text-destaque-p-claro" />
+                    ) : (
+                      <Plus className="size-4 text-destaque-p-claro" />
+                    )}
+                    <Texto tipo="subtexto" className="text-t-primaria">
+                      {textoAdicionar}
+                    </Texto>
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
       </div>

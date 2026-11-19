@@ -1,4 +1,7 @@
 import { useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import api from '../../../../api';
+import Dieta from '../../../../logicas/dashboard/dieta/DietaProps';
 import Texto from '../../../../componentes/organizacao/Texto';
 import Paginacao from '../../../../componentes/outros/Paginacao';
 import FiltrosPesquisa from '../../../../componentes/filtros/FiltrosPesquisa';
@@ -17,6 +20,7 @@ import useFetchDietas from '../../../../logicas/dashboard/dieta/dieta/FetchDieta
 const PesquisarDietas = () => {
     const filtros = useFiltrosDieta();
     const [pagina, setPagina] = useState(1);
+    const queryClient = useQueryClient();
 
     const { objetivos } = useFetchObjetivosDieta();
     const { niveis } = useFetchNiveisDieta();
@@ -40,6 +44,12 @@ const PesquisarDietas = () => {
     }), [pesquisaDebounce, filtros.filtros, filtroCalorias]);
 
     const { dietas, isPending } = useFetchDietas(filtrosPesquisa, pagina);
+
+    // Adiciona a dieta às "Minhas dietas" e atualiza a lista de adicionadas
+    const adicionarDieta = async (dieta: Dieta) => {
+        await api.post(`/dashboard/dietas/dieta/${dieta.id}/adicionar`);
+        queryClient.invalidateQueries({ queryKey: ['dietas', 'adicionados'] });
+    };
 
     return (
         <div className="flex flex-col gap-2 w-full">
@@ -82,7 +92,11 @@ const PesquisarDietas = () => {
                 <>
                     <div className="flex flex-col gap-3">
                         {dietas?.data.map(dieta => (
-                            <DietaCard key={dieta.id} dieta={dieta} />
+                            <DietaCard
+                                key={dieta.id}
+                                dieta={dieta}
+                                onAdicionar={adicionarDieta}
+                            />
                         ))}
                     </div>
 
