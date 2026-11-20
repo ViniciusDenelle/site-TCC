@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AxiosError, AxiosResponse } from 'axios'
 import React from 'react'
 import api from '../../../../api'
@@ -10,6 +10,7 @@ import { paraFormData } from '../../../paraFormData'
 const useCriarTreino = () => {
 
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
 
     const {
         mutate,
@@ -26,7 +27,7 @@ const useCriarTreino = () => {
             const res =  await api.post(`dashboard/treinos/treino`, paraFormData(dados))
             return res.data
         } ,onSuccess: (res) => {
-            console.log(res)
+            queryClient.invalidateQueries({ queryKey: ['treinos'] })
             toast.success('treino criado com sucesso')
             navigate('/dashboard/treino/verTreino/' + res.data.id)
         },

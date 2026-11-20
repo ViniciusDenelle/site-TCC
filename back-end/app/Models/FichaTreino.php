@@ -12,6 +12,7 @@ class FichaTreino extends Model
         'user_id',
         'nome',
         'descricao',
+        'imagem',
     ];
 
     public function criador()

@@ -5,6 +5,7 @@ import { FichaPayload } from './CriarFicha'
 import { AxiosError, AxiosResponse } from 'axios'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
+import { paraFormData } from '../../../paraFormData'
 
 const useUpdateFicha = (id:string|number) => {
 
@@ -21,7 +22,7 @@ const useUpdateFicha = (id:string|number) => {
         FichaPayload
     >({
         mutationFn: async (payload:FichaPayload) => {
-            const res = await api.put(`dashboard/treinos/ficha/${id}`, payload)
+            const res = await api.post(`dashboard/treinos/ficha/${id}`, paraFormData({ ...payload, _method: 'PUT' }))
             return res.data
         },
         onSuccess: (res) => {

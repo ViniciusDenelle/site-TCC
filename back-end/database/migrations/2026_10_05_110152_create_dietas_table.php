@@ -14,6 +14,7 @@ return new class extends Migration
             $table->foreignId('nivel_id')->constrained('niveis_dieta')->restrictOnDelete();
             $table->string('nome');
             $table->text('descricao')->nullable();
+            $table->string('imagem')->nullable();
             $table->timestamps();
         });
     }

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('proteinas', 8, 2);
             $table->decimal('carboidratos', 8, 2);
             $table->decimal('gorduras', 8, 2);
+            $table->string('imagem')->nullable();
             $table->timestamps();
         });
     }

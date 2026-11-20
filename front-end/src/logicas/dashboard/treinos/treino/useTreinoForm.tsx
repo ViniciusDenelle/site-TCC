@@ -56,6 +56,8 @@ export const useTreinoForm = () => {
                         repeticoes_maximas: item.repeticoes_maximas,
                         peso: item.peso,
                         descanso: item.descanso,
+                        tipo_execucao: item.tipo_execucao,
+                        duracao_segundos: item.duracao_segundos,
                     },
                 }));
 

@@ -18,6 +18,7 @@ import useShowExercicio from "../../../../logicas/dashboard/treinos/exercicios/S
 import useUpdateExercicio from "../../../../logicas/dashboard/treinos/exercicios/UpdateExercicio"
 import { AxiosError } from "axios"
 import BotaoTerciario from "../../../../componentes/botoes/BotaoTerciario"
+import InputImagem from "../../../../componentes/inputs/InputImagem"
 
 const EditarExercicio = () => {
     const { id } = useParams<{ id: string }>()
@@ -47,7 +48,10 @@ const EditarExercicio = () => {
         equipamentos,
         musculos,
         montarPayload,
-        preencherFormulario
+        preencherFormulario,
+        imagem,
+        imagemAtual,
+        trocarImagem
     } = useExercicioForm()
 
     // Preenche o formulário quando os dados do exercício terminarem de carregar
@@ -108,6 +112,8 @@ const EditarExercicio = () => {
         )
     }
 
+    console.log(montarPayload())
+
     return (
         <div className="min-h-screen w-full">
             <div className="container mx-auto h-full">
@@ -119,16 +125,14 @@ const EditarExercicio = () => {
                         onClick={() => preencherFormulario(exercicio)}
                     />
 
-                    <Texto tipo="titulo" className="font-thin">
-                        Editar imagem
-                    </Texto>
-                    <CardHorizontal>
-                        <div className="flex items-center justify-center h-20">
-                            <WrapperIcone>
-                                <ImagePlus className="size-full" />
-                            </WrapperIcone>
-                        </div>
-                    </CardHorizontal>
+                    <div className="w-full md:w-6/10 mx-auto">
+                        <InputImagem 
+                            valor={imagem}
+                            urlAtual={imagemAtual}
+                            onChange={trocarImagem}
+                            placeholder="adicione uma imagem do exercicio"
+                        />
+                    </div>
 
                     <Texto tipo="titulo" className="font-thin">
                         Nome do exercício

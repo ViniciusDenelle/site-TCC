@@ -113,15 +113,14 @@ const CriarTreinos = () => {
             <div className="container mx-auto h-full">
                 <div className="flex flex-col h-full gap-2 divide-base-terciaria">
 
-                    <Texto tipo="titulo" className="font-thin">
-                        Adcione imagem
-                    </Texto>
-                    <InputImagem 
+                    <div className="w-full md:w-6/10 mx-auto">
+                        <InputImagem 
                             valor={imagem}
                             urlAtual={imagemAtual}
                             onChange={trocarImagem}
                             placeholder="adicione uma imagem do treino"
                         />
+                    </div>
 
                     <Texto tipo="titulo" className="font-thin">
                         nome do Treino

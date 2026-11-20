@@ -30,8 +30,6 @@ const ExercicioCard = ({
 
   const [menuAdcionar, setMenuAdcionar] = useState<boolean>(false)
 
-  console.log('exercicio', exercicio)
-
   return (
     <>
       {menuAdcionar && (

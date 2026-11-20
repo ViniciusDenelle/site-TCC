@@ -62,7 +62,7 @@ const useExercicioForm = () => {
             foco_id: foco.selecionado?.id ?? null,
             musculos: musculos.selecionados.map(({ id, metadado }) => ({ id, tipo: metadado })),
             equipamentos: equipamentos.selecionados.map(e => e.id),
-            imagem,                                  // File | null
+            imagem,                                  
             remover_imagem: removerImagem ? 1 : 0
         };
     }
