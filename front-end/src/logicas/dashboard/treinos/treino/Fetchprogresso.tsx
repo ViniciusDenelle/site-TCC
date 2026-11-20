@@ -42,6 +42,12 @@ export interface SeriesExercicioProps {
     seriesAtuais: number
 }
 
+export interface RepeticoesExercicioProps {
+    nome: string
+    repeticoesIniciais: number
+    repeticoesAtuais: number
+}
+
 export interface NovoPesoProps {
     peso: number
     data?: string // yyyy-mm-dd
@@ -112,10 +118,22 @@ export const useFetchSeriesProgresso = (dias: number) => {
     return { series, isPending, isError }
 }
 
+export const useFetchRepeticoesProgresso = (dias: number) => {
+    const { data: repeticoes, isPending, isError } = useQuery<RepeticoesExercicioProps[], AxiosError>({
+        queryKey: ['progresso', 'repeticoes', dias],
+        queryFn: async () => {
+            const res = await api.get('/dashboard/progresso/repeticoes', { params: { dias } })
+            return res.data.data
+        },
+    })
+
+    return { repeticoes, isPending, isError }
+}
+
 /**
-- Registra o peso e atualiza todos os dados de progresso na tela.
-- Aceita um número (peso de hoje) ou um objeto { peso, data }.
-- Sempre envia { peso: number, data: 'yyyy-mm-dd' } para a API.
+ * Registra o peso e atualiza todos os dados de progresso na tela.
+ * Aceita um número (peso de hoje) ou um objeto { peso, data }.
+ * Sempre envia { peso: number, data: 'yyyy-mm-dd' } para a API.
  */
 export const useRegistrarPeso = () => {
     const queryClient = useQueryClient()
@@ -129,11 +147,8 @@ export const useRegistrarPeso = () => {
             }
             return (await api.post('/dashboard/progresso/peso', body)).data
         },
-        onSuccess: () => {
-            // Invalida especificamente as queries de progresso e de usuário (para atualizar a Home)
-            queryClient.invalidateQueries({ queryKey: ['progresso'] })
-            queryClient.invalidateQueries({ queryKey: ['usuario'] })
-        },
+        // Sem filtro de chave: atualiza também a home e o perfil (/usuario), não só o progresso
+        onSuccess: () => queryClient.invalidateQueries(),
     })
 
     return { registrarPeso: mutate, isPending, isError, error }
