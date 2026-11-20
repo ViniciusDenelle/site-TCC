@@ -1,97 +1,106 @@
-import { Cog, Dumbbell, Plus, PlusCircle, Settings, Trash } from "lucide-react"
-import { AnimatePresence, motion, PanInfo } from "motion/react"
-import CardHorizontal from "../../../CardHorizontal"
+import { Dispatch, SetStateAction, useState } from "react"
+import { Check, Eye, Plus, Trash } from "lucide-react"
 import Texto from "../../../organizacao/Texto"
-import WrapperIcone from "../../../organizacao/WrapperIcone"
 import OpcoesMenuPlayer from "../../../organizacao/opcoesMenuPlayer"
-import { Dispatch, SetStateAction } from "react"
-import BotaoPrimario from "../../../botoes/BotaoPrimario"
-import { ResTreinoProps } from "../../../../logicas/dashboard/treinos/treino/TreinoProps"
-import useDeleteTreino from "../../../../logicas/dashboard/treinos/treino/DeleteTreino"
-import MenuLayout from "./MenuLayout"
-import BotaoTerciario from "../../../botoes/BotaoTerciario"
-import useDeleteFicha from "../../../../logicas/dashboard/treinos/fichas/DeleteFicha"
 import Dieta from "../../../../logicas/dashboard/dieta/DietaProps"
-import useAdicionarDieta from "../../../../logicas/dashboard/dieta/dieta/AdcionarDieta"
+import MenuLayout from "./MenuLayout"
 
 type MenuDietaProps = {
     menuAberto: boolean
     setMenuAberto: Dispatch<SetStateAction<boolean>>
     dieta: Dieta
+    adicionar?: (dieta: Dieta) => void | Promise<void>
+    remover?: (dieta: Dieta) => void | Promise<void>
 }
 
+type Acao = 'adicionar' | 'remover'
+type Status = 'parado' | 'carregando' | 'ok' | 'erro'
+
 const MenuDieta = ({
-    dieta,
     menuAberto,
     setMenuAberto,
+    dieta,
+    adicionar,
+    remover
 }: MenuDietaProps) => {
 
-    const {
-        mutate
-    } = useAdicionarDieta()
+    const [acao, setAcao] = useState<Acao | null>(null)
+    const [status, setStatus] = useState<Status>('parado')
 
-    const opcoesBotao = [
-        {
-            titulo: 'Deletar dieta',
-            icone: Trash,
-            corIcone: 'text-red-600',
-            onclick: () => console.log('deletar')
-        },
-        {
-            titulo: 'Adcionar a biblioteca',
-            icone: Plus,
-            corIcone: 'text-destaque-s-claro',
-            onclick: () => mutate(dieta.id)
-        },
-        
-    ]
+    const executar = async (
+        qual: Acao,
+        funcao: (dieta: Dieta) => void | Promise<void>
+    ) => {
+        if (status === 'carregando') return
 
-    const opcoesLink = [
-        {
-            titulo: 'Editar dieta',
-            icone: Settings,
-            to:  `/dashboard/treino/editarDieta/${dieta.id}`,
-            corIcone: 'text-blue-500'
+        setAcao(qual)
+        setStatus('carregando')
+
+        try {
+            await funcao(dieta)
+            setStatus('ok')
+
+            setTimeout(() => {
+                setMenuAberto(false)
+                setStatus('parado')
+                setAcao(null)
+            }, 900)
+        } catch {
+            setStatus('erro')
         }
-    ]
+    }
+
+    const textoAdicionar =
+        acao === 'adicionar' && status === 'carregando' ? 'Salvando...'
+            : acao === 'adicionar' && status === 'ok' ? 'Dieta salva!'
+                : 'Adicionar às minhas dietas'
+
+    const textoRemover =
+        acao === 'remover' && status === 'carregando' ? 'Removendo...'
+            : acao === 'remover' && status === 'ok' ? 'Dieta removida!'
+                : 'Remover das minhas dietas'
 
     return (
-        <AnimatePresence>
-            {menuAberto && (
-                <MenuLayout
-                    menuAberto={menuAberto}
-                    setMenuAberto={setMenuAberto}
-                >   
-                    {/* opcoes */}
+        <MenuLayout
+            menuAberto={menuAberto}
+            setMenuAberto={setMenuAberto}
+        >
+            <Texto tipo="titulo" className="font-thin text-t-primaria">
+                {dieta?.nome}
+            </Texto>
 
-                    <Texto tipo="titulo" className="font-thin text-t-primaria">
-                        {dieta?.nome}
-                    </Texto>
+            <OpcoesMenuPlayer
+                tipo="link"
+                to={`/dashboard/dieta/verDieta/${dieta.id}`}
+                nome="Ver dieta"
+                icone={Eye}
+                corIcone="text-blue-500"
+            />
 
-                    {opcoesBotao.map(opcao => (
-                        <OpcoesMenuPlayer
-                            key={opcao.titulo}
-                            nome={opcao.titulo}
-                            onclick={opcao.onclick}
-                            icone={opcao.icone}
-                            corIcone={opcao.corIcone}
-                        />
-                    ))}
-
-                    {opcoesLink.map(opcao => (
-                        <OpcoesMenuPlayer
-                            key={opcao.titulo}
-                            nome={opcao.titulo}
-                            to={opcao.to}
-                            icone={opcao.icone}
-                            corIcone={opcao.corIcone}
-                            tipo="link"
-                        />
-                    ))}
-                </MenuLayout>
-
+            {adicionar && (
+                <OpcoesMenuPlayer
+                    nome={textoAdicionar}
+                    icone={acao === 'adicionar' && status === 'ok' ? Check : Plus}
+                    corIcone="text-destaque-p-medio"
+                    onclick={() => executar('adicionar', adicionar)}
+                />
             )}
-        </AnimatePresence>
+
+            {remover && (
+                <OpcoesMenuPlayer
+                    nome={textoRemover}
+                    icone={acao === 'remover' && status === 'ok' ? Check : Trash}
+                    corIcone="text-red-600"
+                    onclick={() => executar('remover', remover)}
+                />
+            )}
+
+            {status === 'erro' && (
+                <Texto tipo="subtexto" className="text-red-400">
+                    Não foi possível concluir. Tente de novo.
+                </Texto>
+            )}
+        </MenuLayout>
     )
 }
 

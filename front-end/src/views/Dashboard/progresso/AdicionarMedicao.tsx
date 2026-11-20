@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { ArrowLeft, Scale, Ruler, Dumbbell, Save, Loader2, CheckCircle2 } from 'lucide-react'
+import { Scale, Ruler, Dumbbell, Save, Loader2, CheckCircle2 } from 'lucide-react'
 
 import CardHorizontal from '../../../componentes/CardHorizontal'
 import Texto from '../../../componentes/organizacao/Texto'
@@ -14,7 +14,7 @@ import {
     MEDIDAS_CONFIG,
     TIPOS_MEDIDA,
     TipoMedida,
-} from '../../../logicas/progresso/Medidas'
+} from '../../../logicas/Progresso/Medidas'
 
 const valoresIniciais = (): Record<TipoMedida, string> => ({
     cintura: '',
@@ -99,23 +99,10 @@ const AdicionarMedicao = () => {
         <div className="w-full min-h-screen bg-base-primaria p-4 sm:p-6 md:p-8 text-white font-poppins space-y-6 pt-6">
 
             {/* Cabeçalho */}
-            <div className="flex flex-col gap-3">
-                <NavLink
-                    to="/dashboard/progresso"
-                    className="flex w-fit items-center gap-2 text-t-terciaria hover:text-t-primaria transition-colors"
-                >
-                    <ArrowLeft size={18} />
-                    <Texto tipo="subtexto">Voltar ao progresso</Texto>
-                </NavLink>
-
-                <div>
-                    <Texto tipo="titulo" className="text-t-primaria text-2xl font-bold">
-                        Adicionar medição
-                    </Texto>
-                    <Texto tipo="subtexto" className="text-t-terciaria">
-                        Registre seu peso e suas medidas para atualizar os gráficos de progresso.
-                    </Texto>
-                </div>
+            <div className="flex flex-col gap-4 pt-12 md:pt-10">
+                <Texto tipo="subtitulo" className="text-t-primaria text-lg md:text-xl font-medium max-w-2xl">
+                    Preencha só o que você quer registrar e toque em salvar.
+                </Texto>
             </div>
 
             {/* 1. PESO */}
