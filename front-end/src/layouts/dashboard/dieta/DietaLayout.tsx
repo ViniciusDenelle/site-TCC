@@ -48,7 +48,7 @@ const DietaLayout = () => {
 
   return (
     <>
-      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-full">
+      <div className="mt-12 w-full">
         <div className="container mx-auto px-4">
 
           <div
@@ -78,7 +78,7 @@ const DietaLayout = () => {
 
       <div className="bg-base-primaria">
         <div className="container mx-auto">
-          <div className="flex min-h-screen w-full px-4 pb-37 pt-27">
+          <div className="flex min-h-screen w-full px-4 pb-37 pt-10">
             <Outlet />
           </div>
         </div>
