@@ -4,13 +4,11 @@ import { NavLink } from 'react-router-dom';
 
 import BotaoPrimario from '../../../componentes/botoes/BotaoPrimario';
 
-import {
-  CardMetrica,
-  CardMedicao,
-} from '../../../componentes/CardProgresso';
+import { CardMetrica } from '../../../componentes/CardProgresso';
 import GraficoPeso from '../../../componentes/graficos/GraficoPeso';
 import GraficoFrequencia from '../../../componentes/graficos/GraficoFrequencia';
 import GraficoCargas from '../../../componentes/graficos/GraficoCargas';
+import GraficoSeries from '../../../componentes/graficos/GraficoSeries';
 
 import useFetchUsuario from '../../../logicas/usuario/FetchUsuario';
 import {
@@ -18,11 +16,12 @@ import {
   useFetchPesoProgresso,
   useFetchFrequenciaProgresso,
   useFetchCargasProgresso,
+  useFetchSeriesProgresso,
 } from '../../../logicas/dashboard/treinos/treino/Fetchprogresso';
 import {
   useFetchMedidas,
   MEDIDAS_CONFIG,
-} from '../../../logicas/progresso/Medidas';
+} from '../../../logicas/Progresso/Medidas';
 
 /* =====================================================
    PERÍODOS DO SELETOR (valor -> quantidade de dias)
@@ -108,6 +107,7 @@ const Progresso = () => {
   const { historicoPeso = [], isPending: carregandoPeso } = useFetchPesoProgresso(dias);
   const { frequencia = [], isPending: carregandoFrequencia } = useFetchFrequenciaProgresso(7);
   const { cargas = [], isPending: carregandoCargas } = useFetchCargasProgresso(dias);
+  const { series = [], isPending: carregandoSeries } = useFetchSeriesProgresso(dias);
 
   // Última medição de cada tipo (cintura, peito, braço...)
   const { medidas = [] } = useFetchMedidas();
@@ -132,21 +132,21 @@ const Progresso = () => {
       titulo: 'Peso Atual',
       valor: pesoAtual !== null ? `${formatarNumero(Number(pesoAtual))} ${unidadePeso}` : '--',
       variacao: textoVariacao(resumo?.variacaoPeso, unidadePeso),
-      icon: 'scale',
+      icon: '',
     },
     {
       id: 2,
       titulo: 'Treinos no Período',
       valor: `${resumo?.treinosNoMes ?? 0} treinos`,
       variacao: textoVariacao(resumo?.variacaoTreinos),
-      icon: 'calendar',
+      icon: '',
     },
     {
       id: 3,
       titulo: 'Carga Máxima',
       valor: resumo?.cargaMaxima != null ? `${formatarNumero(resumo.cargaMaxima)} kg` : '--',
       variacao: textoVariacao(resumo?.variacaoCarga, 'kg'),
-      icon: 'dumbbell',
+      icon: '',
     },
   ];
 
@@ -350,16 +350,23 @@ const Progresso = () => {
             text-xs
           ">
             <div>
-              <span className="text-t-secundaria/70">Meta</span>
+              <span className="text-t-secundaria/70">Peso inicial</span>
               <p className="text-sm font-bold text-t-primaria">
-                {dadosUsuario?.pesoIdeal ?? '--'} {unidadePeso}
+                {resumo?.inicioPeso != null ? formatarNumero(Number(resumo.inicioPeso)) : '--'} {unidadePeso}
               </p>
             </div>
 
             <div>
-              <span className="text-t-secundaria/70">Peso inicial</span>
+              <span className="text-t-secundaria/70">Peso atual</span>
               <p className="text-sm font-bold text-t-primaria">
-                {resumo?.inicioPeso != null ? formatarNumero(resumo.inicioPeso) : '--'} {unidadePeso}
+                {pesoAtual !== null ? formatarNumero(Number(pesoAtual)) : '--'} {unidadePeso}
+              </p>
+            </div>
+
+            <div>
+              <span className="text-t-secundaria/70">Meta</span>
+              <p className="text-sm font-bold text-t-primaria">
+                {dadosUsuario?.pesoIdeal ?? '--'} {unidadePeso}
               </p>
             </div>
 
@@ -504,12 +511,18 @@ const Progresso = () => {
               </p>
 
               <h2 className="text-lg font-bold text-t-primaria">
-                Evolução das repetições
+                Evolução das séries
               </h2>
             </div>
           </div>
 
-          <EstadoGrafico altura="h-[300px]" texto="Nenhum registro de repetições neste período." />
+          {carregandoSeries ? (
+            <EstadoGrafico altura="h-[300px]" texto="Carregando..." />
+          ) : series.length > 0 ? (
+            <GraficoSeries dados={series} />
+          ) : (
+            <EstadoGrafico altura="h-[300px]" texto="Nenhum registro de séries neste período." />
+          )}
         </div>
       </section>
 
@@ -542,19 +555,60 @@ const Progresso = () => {
         {registrosMedidas.length > 0 ? (
           <div className="
             grid
-            grid-cols-1
-            md:grid-cols-2
-            xl:grid-cols-4
+            grid-cols-2
+            md:grid-cols-3
+            xl:grid-cols-6
             gap-3
           ">
-            {registrosMedidas.map((item: any) => (
-              <CardMedicao
+            {registrosMedidas.map((item) => (
+              <div
                 key={item.id}
-                nome={item.nome}
-                valor={item.valor}
-                data={item.data}
-                periodo={item.periodo}
-              />
+                className="
+                  px-3
+                  py-3
+                  bg-gradient-to-br
+                  from-white/20
+                  to-white/[0.08]
+                  backdrop-blur-md
+                  ring-1
+                  ring-white/25
+                  hover:from-white/25
+                  hover:to-white/[0.12]
+                  hover:ring-white/40
+                  rounded-xl
+                  shadow-md
+                  shadow-black/20
+                  transition-all
+                "
+              >
+                <p className="
+                  text-xs
+                  font-medium
+                  uppercase
+                  tracking-wider
+                  text-t-secundaria
+                ">
+                  {item.nome}
+                </p>
+
+                <p className="
+                  text-lg
+                  font-bold
+                  text-t-primaria
+                  leading-tight
+                  mt-1
+                ">
+                  {item.valor}
+                </p>
+
+                <p className="
+                  text-xs
+                  text-t-secundaria/80
+                  mt-1.5
+                ">
+                  {item.data} · {item.periodo}
+                </p>
+              </div>
             ))}
           </div>
         ) : (
