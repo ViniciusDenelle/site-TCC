@@ -1,10 +1,11 @@
-import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
-import type { UseMutationResult } from '@tanstack/react-query' // Importado para tipar a mutation
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import type { UseMutationResult } from '@tanstack/react-query'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { AxiosError } from 'axios'
+import { useNavigate } from 'react-router-dom'
 import api from '../../api.js'
-import Objetivo from '../../views/cadastro/passos/Objetivo.js'
-import { Route, useNavigate } from 'react-router-dom'
+import { paraFormData } from '../paraFormData.js'
+
 
 /* ================= TYPES ================= */
 
@@ -35,9 +36,10 @@ export type ReqUsuarioProps = {
         previsao: string
     }
     veloPerda: number
+    foto?: File | null
 }
 
-type DadosCadastro = ReqUsuarioProps & {
+export type DadosCadastro = ReqUsuarioProps & {
     codigoConfirmacao: string
     passo?: number
 }
@@ -76,11 +78,56 @@ export type UseCadastroReturn = {
     >
     cadastroHandler: () => void
     emailMutation: UseMutationResult<any, AxiosError, {
-            email?: string
-            tipo?: string
-        }
-    >
+        email?: string
+        tipo?: string
+    }>
 }
+
+/* ================= CONSTANTES ================= */
+
+// campo com erro vindo do back -> passo onde o usuário corrige
+const campoParaPasso: Partial<Record<keyof DadosCadastro, Passo>> = {
+    genero: 1,
+    peso: 1,
+    altura: 1,
+    dataDeNascimento: 1,
+    nivelAtividade: 2,
+    veloPerda: 4,
+    pesoIdeal: 4,
+    nome: 6,
+    email: 6,
+    senha: 6,
+    foto: 6,
+}
+
+const estadoInicial = (): DadosCadastro => ({
+    nome: '',
+    email: '',
+    senha: '',
+    genero: '',
+    peso: 20,
+    pesoMinimo: null,
+    pesoMaximo: null,
+    tipoPeso: 'kilos',
+    pesoIdeal: 0,
+    altura: 80,
+    dataDeNascimento: '',
+    idade: '',
+    nivelAtividade: 0,
+    objetivo: '',
+    experiencia: '',
+    TMB: '',
+    GET: '',
+    calDiaria: '',
+    tempo: {
+        semanas: 0,
+        meses: 0,
+        previsao: ''
+    },
+    veloPerda: 0,
+    codigoConfirmacao: '',
+    foto: null,
+})
 
 /* ================= HOOK ================= */
 
@@ -89,41 +136,17 @@ const useCadastro = (): UseCadastroReturn => {
     const [dados, setDados] = useState<DadosCadastro>(() => {
         const salvo = localStorage.getItem('dados_cadastro')
 
+        // um File não sobrevive ao JSON (vira {}), então a foto nunca é restaurada
         return salvo
-            ? JSON.parse(salvo)
-            : {
-                nome: '',
-                email: '',
-                senha: '',
-                genero: '',
-                peso: 20,
-                pesoMinimo: null,
-                pesoMaximo: null,
-                tipoPeso: 'kilos',
-                pesoIdeal: 0,
-                altura: 80,
-                dataDeNascimento: '',
-                idade: '',
-                nivelAtividade: 0,
-                objetivo: '',
-                experiencia: '',
-                TMB: '',
-                GET: '',
-                calDiaria: '',
-                tempo: {
-                    semanas: 0,
-                    meses: 0,
-                    previsao: ''
-                },
-                veloPerda: '',
-                codigoConfirmacao: '',
-            }
+            ? { ...estadoInicial(), ...JSON.parse(salvo), foto: null }
+            : estadoInicial()
     })
 
     const [passo, setPasso] = useState<Passo>(1)
     const [erro, setErro] = useState(false)
     const [errosCampo, setErrosCampo] = useState<ErrosCampoCadastro>({})
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
 
     const validacoes: Record<Passo, () => boolean> = {
         1: () =>
@@ -133,20 +156,18 @@ const useCadastro = (): UseCadastroReturn => {
             dados.dataDeNascimento !== '',
 
         2: () =>
-            dados.nivelAtividade !== null,
+            Number(dados.nivelAtividade) > 0,
 
         3: () =>
             dados.objetivo !== '' &&
             dados.experiencia !== '',
 
         4: () => {
-            if(dados.objetivo !== 'manter_peso'){
-                if (dados.pesoIdeal !== 0 && dados.veloPerda !== 0 ) return true
-            } else {
-                if (dados.pesoIdeal !== 0 ) return true
+            if (dados.objetivo !== 'manter_peso') {
+                return Number(dados.pesoIdeal) !== 0 && Number(dados.veloPerda) !== 0
             }
-        }
-            ,
+            return Number(dados.pesoIdeal) !== 0
+        },
 
         5: () => true,
 
@@ -172,6 +193,7 @@ const useCadastro = (): UseCadastroReturn => {
             }))
 
             setErrosCampo(prev => {
+                if (!(campo in prev)) return prev
                 const novo = { ...prev }
                 delete novo[campo]
                 return novo
@@ -179,6 +201,8 @@ const useCadastro = (): UseCadastroReturn => {
 
         }, []
     )
+
+    /* ---------- cálculos ---------- */
 
     const idade = useMemo(() => {
         if (!dados.dataDeNascimento) return 0
@@ -188,24 +212,17 @@ const useCadastro = (): UseCadastroReturn => {
 
         let idade = hoje.getFullYear() - nascimento.getFullYear()
 
-        const mesAtual = hoje.getMonth()
-        const mesNascimento = nascimento.getMonth()
+        const antesDoAniversario =
+            hoje.getMonth() < nascimento.getMonth() ||
+            (hoje.getMonth() === nascimento.getMonth() &&
+                hoje.getDate() < nascimento.getDate())
 
-        const diaAtual = hoje.getDate()
-        const diaNascimento = nascimento.getDate()
-
-        if (
-            mesAtual < mesNascimento ||
-            (mesAtual === mesNascimento && diaAtual < diaNascimento)
-        ) {
-            idade--
-        }
+        if (antesDoAniversario) idade--
 
         return idade
     }, [dados.dataDeNascimento])
 
     const TMB = useMemo(() => {
-
         if (!idade || !dados.genero || !dados.altura || !dados.peso) {
             return 0
         }
@@ -230,7 +247,6 @@ const useCadastro = (): UseCadastroReturn => {
             (4.799 * dados.altura) -
             (5.677 * idade)
         )
-
     }, [idade, dados.genero, dados.altura, dados.peso, dados.tipoPeso])
 
     const GET = useMemo(() => {
@@ -238,57 +254,60 @@ const useCadastro = (): UseCadastroReturn => {
         return Math.round(TMB * Number(dados.nivelAtividade))
     }, [dados.nivelAtividade, TMB])
 
-    // persistencia dos dados no localStorage
+    /* ---------- persistência (sem foto e sem código) ---------- */
+
     useEffect(() => {
         const timeout = setTimeout(() => {
-            const {codigoConfirmacao, ...dadosLimpos} = dados
+            const { codigoConfirmacao, foto, ...dadosLimpos } = dados
             localStorage.setItem('dados_cadastro', JSON.stringify(dadosLimpos))
-            
-        }, 500);
+        }, 500)
 
         return () => clearTimeout(timeout)
     }, [dados])
 
+    /* ---------- reset de meta só quando o objetivo MUDA ---------- */
+
+    const objetivoAnterior = useRef(dados.objetivo)
+
     useEffect(() => {
+        if (objetivoAnterior.current === dados.objetivo) return
+        objetivoAnterior.current = dados.objetivo
+
         mudarDados('veloPerda', 0)
         mudarDados('pesoIdeal', dados.peso)
     }, [dados.objetivo])
 
-    
-    const queryClient = useQueryClient()
+    /* ---------- mutations ---------- */
 
     const cadastrarMutation = useMutation<
         any,
         AxiosError<ErroApi>,
         CadastroInfo
     >({
-        mutationFn: async (dados) => {
-            const res = await api.post('/cadastro', dados)
-            
+        mutationFn: async (info) => {
+            // multipart/form-data: necessário para enviar o arquivo da foto
+            const res = await api.post('/cadastro', paraFormData(info))
             return res.data
         },
 
         onError: (error) => {
-            console.log(error)
             const erros = error.response?.data?.errors
             if (!erros) return
 
             setErrosCampo(erros)
 
             const primeiro = Object.keys(erros)[0] as keyof DadosCadastro
+            const passoErrado = campoParaPasso[primeiro]
 
-            if (primeiro) {
-                const passoErrado = campoParaPasso[primeiro]
-                if (passoErrado) setPasso(passoErrado)
-            }
+            if (passoErrado) setPasso(passoErrado)
         },
-        onSuccess: ({token, usuario}) => {
+
+        onSuccess: ({ token, usuario }) => {
             queryClient.setQueryData(['usuario'], usuario)
             localStorage.setItem('token', String(token))
             localStorage.setItem('usuario', JSON.stringify(usuario))
             localStorage.removeItem('dados_cadastro')
             navigate('/dashboard')
-            
         }
     })
 
@@ -297,7 +316,9 @@ const useCadastro = (): UseCadastroReturn => {
             ...dados,
             GET,
             TMB,
-            idade
+            idade,
+            // o back valida "integer"
+            calDiaria: String(Math.round(Number(dados.calDiaria) || 0)),
         })
     }
 
@@ -315,19 +336,6 @@ const useCadastro = (): UseCadastroReturn => {
     useEffect(() => {
         emailMutation.reset()
     }, [dados.email])
-
-    const campoParaPasso: Partial<Record<keyof DadosCadastro, Passo>> = {
-        genero: 1,
-        peso: 1,
-        altura: 1,
-        dataDeNascimento: 1,
-        nivelAtividade: 2,
-        veloPerda: 4,
-        pesoIdeal: 4,
-        nome: 6,
-        email: 6,
-        senha: 6
-    }
 
     return {
         passo,

@@ -22,6 +22,7 @@ class UsuarioResource extends JsonResource
             'nivelDeAtividade'    => $this->perfil?->nivel_de_atividade,
             'experiencia'        => $this->perfil?->experiencia,
             'idade'              => $this->perfil?->idade,
+            'foto' => $this->perfil?->foto? asset('storage/' . $this->perfil->foto): null,
             
             'pesoIdeal'         => $this->objetivos?->peso_ideal,
             'pesoMinimo'         => $this->objetivos?->peso_minimo,

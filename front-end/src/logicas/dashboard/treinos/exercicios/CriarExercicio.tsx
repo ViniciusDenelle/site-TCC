@@ -4,6 +4,7 @@ import api from '../../../../api'
 import { ExercicioPayload } from './exercicoProps'
 import toast from 'react-hot-toast'
 import { useState } from 'react'
+import { paraFormData } from '../../../paraFormData'
 
 const useCriarExercicio = () => {
 
@@ -19,7 +20,7 @@ const useCriarExercicio = () => {
         ExercicioPayload
     >({
         mutationFn: async (dados) =>{
-            const res = await api.post('/dashboard/treinos/exercicio', dados)
+            const res = await api.post('/dashboard/treinos/exercicio', paraFormData(dados))
             return res.data
         },
 

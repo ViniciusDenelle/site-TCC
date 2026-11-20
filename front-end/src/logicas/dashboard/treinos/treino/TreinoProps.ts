@@ -82,6 +82,7 @@ export type ResTreinoProps = {
     id: number;
     nome: string;
     descricao: string;
+    imagem: string | null;
     calorias_estimadas: number;
     tempo_estimado: TempoEstimado;
     tipo: { id: number; nome: string };

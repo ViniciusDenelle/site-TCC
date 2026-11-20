@@ -27,6 +27,7 @@ export type RetornoUsuario = {
   comeco?: string | null
   termino?: string | null
   duracao?: string | null
+  foto?: string | null
 }
 
 const useFetchUsuario = () => {
@@ -63,8 +64,6 @@ const useFetchUsuario = () => {
         }
     }, [dadosUsuario])
     
-    console.log('dadosUsuario', dadosUsuario)
-
     return {
         dadosUsuario,
         isSuccess,

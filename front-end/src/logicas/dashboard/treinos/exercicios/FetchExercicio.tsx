@@ -23,6 +23,7 @@ export type ResExercicioProps = {
     id: number
     nome: string
     descricao: string | null
+    imagem: string | null
 
     criador: Criador
 

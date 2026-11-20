@@ -66,7 +66,8 @@ class UsuarioRequest extends FormRequest
             'duracao' => 'integer',
             'termino' => 'nullable',
             'veloPerda' => 'numeric',
-            'codigoConfirmacao' => 'required|string'
+            'codigoConfirmacao' => 'required|string',
+            'foto'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
         ];
     }
 

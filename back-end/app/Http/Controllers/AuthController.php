@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\ObjetivoUsuario;
 use App\Models\MetricasUsuario;
 use App\Models\EmailConfirmacao;
+use App\Services\ImagemService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -44,7 +45,6 @@ class AuthController extends Controller
         return response()->json([
             'mensagem' => 'sucesso'
         ]);
-
     }
 
     public function login(Request $request)
@@ -61,7 +61,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $dados['email'])->first();
 
-        if(!$user || !Hash::check($dados['senha'], $user->password))
+        if (!$user || !Hash::check($dados['senha'], $user->password))
             return response()->json([
                 'mensagem' => 'validação deu erro'
             ], 401);
@@ -79,7 +79,7 @@ class AuthController extends Controller
         $dados = $request->validate([
             'email' => 'required|exists:users,email',
             'senhaNova' => 'required',
-            'codigo' => 'required' 
+            'codigo' => 'required'
         ], [
             'email.required' => 'o email está faltando',
             'email.email' => 'email invalido',
@@ -88,10 +88,10 @@ class AuthController extends Controller
         ]);
 
         $email = EmailConfirmacao::where('codigo', $dados['codigo'])
-        ->where('email', $dados['email'])
-        ->where('expiracao', '>', now())->first();
+            ->where('email', $dados['email'])
+            ->where('expiracao', '>', now())->first();
 
-        if(!$email) return response()->json([
+        if (!$email) return response()->json([
             'mensagem' => 'codigo de confirmação esta errado ou expirou'
         ]);
 
@@ -117,70 +117,72 @@ class AuthController extends Controller
         ]);
     }
 
-    public function cadastro(UsuarioRequest $request)
+    public function cadastro(UsuarioRequest $request, ImagemService $imagemService)
     {
-        
+
         $dados = $request->validated();
-        
+
         $email = EmailConfirmacao::where('codigo', $dados['codigoConfirmacao'])
             ->where('email', $dados['email'])
             ->where('expiracao', '>', now())->first();
 
         if (!$email)
             return response()->json([
-               'mensagem' => 'codigo esta errado ou expirou' ,
-               'request' => $request->codigoConfirmacao,
-               'dados' => $dados['codigoConfirmacao']
+                'mensagem' => 'codigo esta errado ou expirou',
+                'request' => $request->codigoConfirmacao,
+                'dados' => $dados['codigoConfirmacao']
             ], 401);
 
-        $usuario = DB::transaction(function () use ($dados, $email) {
+        $usuario = DB::transaction(function () use ($dados, $email, $imagemService) {
             $usuario = User::create([
                 'name' => $dados['nome'],
                 'email' => $dados['email'],
                 'password' => $dados['senha'],
                 'role_id' => 1
             ]);
-    
+
             $usuario->perfil()->create([
                 'genero' => $dados['genero'],
-                'peso' => $dados['peso'], 
+                'peso' => $dados['peso'],
                 'tipo_do_peso' => $dados['tipoPeso'],
                 'altura' => $dados['altura'],
                 'idade' => $dados['idade'],
                 'data_de_nascimento' => $dados['dataDeNascimento'],
                 'nivel_de_atividade' => $dados['nivelAtividade'],
                 'experiencia' => $dados['experiencia'],
+                'foto' => $imagemService->salvar($dados['foto'], 'perfis'),
             ]);
-    
+
             $usuario->objetivos()->create([
-                'tipo' => $dados['objetivo'],
-                'peso_ideal' => $dados['pesoIdeal'],
-                'peso_minimo' => $dados['pesoMinimo'],
-                'peso_maximo' => $dados['pesoMaximo'],
-                'velocidade' => $dados['veloPerda'],
-                'comeco' => now(),
-                'termino' => $dados['objetivo'] !== 'manter_peso' ? Carbon::createFromFormat('d/m/Y', $dados['termino'])->format('Y-m-d') : null,
-                'duracao' => $dados['duracao']
+                'tipo'        => $dados['objetivo'],
+                'peso_ideal'  => $dados['pesoIdeal'],
+                'peso_minimo' => $dados['pesoMinimo'] ?? null,
+                'peso_maximo' => $dados['pesoMaximo'] ?? null,
+                'velocidade'  => $dados['veloPerda'] ?? null,
+                'comeco'      => now(),
+                'termino'     => $dados['objetivo'] !== 'manter_peso' && !empty($dados['termino'])
+                    ? Carbon::createFromFormat('d/m/Y', $dados['termino'])->format('Y-m-d')
+                    : null,
+                'duracao'     => $dados['duracao'] ?? null,
             ]);
-    
+
             $usuario->metricas()->create([
                 'peso' => $dados['peso'],
-                'calorias_diarias' => $dados['calDiaria'],
+                'calorias_diarias' => $dados['calDiaria'] ?? null,
                 'GET' => $dados['GET'],
                 'TMB' => $dados['TMB']
             ]);
 
             return $usuario;
         });
- 
+
         $email->delete();
 
         $token =  $usuario->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'token' => $token,
-            'usuario' => new UsuarioResource($usuario->load(['metricas', 'objetivos', 'perfil'])) ,
+            'usuario' => new UsuarioResource($usuario->load(['metricas', 'objetivos', 'perfil'])),
         ]);
     }
-
 }

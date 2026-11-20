@@ -24,6 +24,8 @@ class TreinoRequest extends FormRequest
         return [
             'nome' => 'required|string|max:255',
             'descricao' => 'nullable|string',
+            'imagem'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'remover_imagem' => 'nullable|boolean',
             'foco_id' => 'required|integer|exists:focos,id',
             'tipo_id' => 'required|integer|exists:tipos_treino,id', // ajuste o nome da tabela se for diferente (ex: tipo_treinos)
             

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->date('data_de_nascimento');
             $table->decimal('nivel_de_atividade', 3, 2);
             $table->string('experiencia');
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }

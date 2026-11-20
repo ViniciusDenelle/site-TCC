@@ -20,6 +20,7 @@ class ExercicioResource extends JsonResource
 
             'nome' => $this->nome,
             'descricao' => $this->descricao,
+            'imagem' => $this->imagem ? asset('storage/' . $this->imagem) : null,
 
             'foco' => [
                 'id' => $this->foco?->id,
