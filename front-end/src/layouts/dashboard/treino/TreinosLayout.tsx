@@ -44,7 +44,7 @@ const TreinosLayout = () => {
 
   return (
     <>
-      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-full">
+      <div className="w-full mt-12">
         <div className="container mx-auto px-4">
           <div className="flex gap-2 justify-around items-center w-full 
               bg-base-secundaria rounded-lg p-2 text-t-terciaria/80">
@@ -63,7 +63,7 @@ const TreinosLayout = () => {
 
       <div className="bg-base-primaria">
         <div className="container mx-auto">
-          <div className="flex min-h-screen w-full px-4 pb-37 pt-27">
+          <div className="flex min-h-screen w-full px-4 pb-37 pt-10">
 
             <Outlet />
           </div>

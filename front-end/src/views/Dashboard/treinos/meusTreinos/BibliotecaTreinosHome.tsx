@@ -45,7 +45,7 @@ const BibliotecaTreinosHome = () => {
     console.log(treinosAdicionados, treinosCriados, )
 
     return (
-        <div className="w-full h-full pt-5">
+        <div className="w-full h-full">
             <div className="flex flex-col gap-2">
 
                 <Texto tipo="subtitulo" className="text-t-secundaria">

@@ -8,8 +8,8 @@ const PesquisarTreinosLayout = () => {
 
   return (
     <>
-        <div className="absolute top-22 left-0 w-full">
-            <div className="container mx-auto px-4">
+        <div className="w-full -mt-8">
+            <div className="container mx-auto">
                 <nav className='w-full flex justify-around items-center 
                 bg-base-terciaria rounded-lg p-1'>
                     {navPesquisa.map(link => (

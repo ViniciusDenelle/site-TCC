@@ -62,12 +62,12 @@ const RecuperarSenha = () => {
             <div className="flex flex-col gap-1">
                 <label htmlFor="email">email:</label>
                 <InputSimples
-                    type={"email"}
+                    tipo={"email"}
                     name={"email"}
                     value={email}
                     maximo={30}
                     minimo={7}
-                    dataBinding={ev => setEmail(ev.target.value)}
+                    onChange={ev => setEmail(ev.target.value)}
                 />
                 {erros['email'] && (
                     <span className='text-red-500 text-sm'>
@@ -85,9 +85,9 @@ const RecuperarSenha = () => {
                         </h2>
 
                         <InputSimples
-                            type='number'
+                            tipo='number'
                             value={codigo}
-                            dataBinding={ev => setCodigo(ev.target.value)}
+                            onChange={ev => setCodigo(ev.target.value)}
                         />
 
                         {errosRec['codigo'] && (
@@ -99,12 +99,12 @@ const RecuperarSenha = () => {
                         <div className="flex flex-col gap-1">
                             <label htmlFor="senha">nova senha:</label>
                             <InputSimples
-                                type={"password"}
+                                tipo={"password"}
                                 name={"senha"}
                                 value={senhaNova}
                                 maximo={30}
                                 minimo={4}
-                                dataBinding={ev => setSenhaNova(ev.target.value)}
+                                onChange={ev => setSenhaNova(ev.target.value)}
                             />
 
                             {errosRec['senhaNova'] && (
@@ -120,20 +120,10 @@ const RecuperarSenha = () => {
 
                 <BotaoSimples
                     disabled={contagem > 0}
-                    onClick={enviarEmailHandler}>
-                    {isLoading ? (
-                        <p>carregando</p>
-                    ) : contagem > 0 ? (
-                        <p>
-                            reenviar codigo em {contagem}s
-                        </p>
-                    ) : (
-                        <p className='flex gap-2'>
-                            enviar codigo <Mail />
-                        </p>
-                    )}
-
-                </BotaoSimples>
+                    onClick={() => enviarEmailHandler()}
+                    texto={isLoading ? 'carregando' : contagem > 0 ? `reenviar codigo em ${contagem}s` : 'enviar codigo'} 
+                    icone={!isLoading && contagem === 0 ? Mail : null}
+                />
 
             </div>
 
@@ -142,9 +132,8 @@ const RecuperarSenha = () => {
                 classeAdcional="mt-1"
                 disabled={!isSuccess}
                 onClick={recuperarSenhaHandler}
-            >
-                login
-            </BotaoPrimario>
+                texto={'login'}
+            />
 
             <div className='flex flex-col items-center gap-1'>
 

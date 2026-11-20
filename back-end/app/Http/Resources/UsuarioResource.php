@@ -24,8 +24,13 @@ class UsuarioResource extends JsonResource
             'idade'              => $this->perfil?->idade,
             
             'pesoIdeal'         => $this->objetivos?->peso_ideal,
+            'pesoMinimo'         => $this->objetivos?->peso_minimo,
+            'pesoMaximo'         => $this->objetivos?->peso_maximo,
             'objetivo'           => $this->objetivos?->tipo,
             'veloPerda'          => $this->objetivos?->velocidade,
+            'duracao'            => $this->objetivos?->duracao,
+            'comeco'             => $this->objetivos?->comeco,
+            'termino'            => $this->objetivos?->termino,
             
             'caloriasDiarias'          => $this->metricas?->calorias_diarias,
             'TMB'                => $this->metricas?->TMB,

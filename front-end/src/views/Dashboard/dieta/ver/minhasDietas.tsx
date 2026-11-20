@@ -167,7 +167,7 @@ const MinhasDietas = () => {
 
     if (criadas.length === 0 && adicionadas.length === 0) {
         return (
-            <div className="rounded-3xl bg-base-secundaria border border-base-terciaria/30 p-6 text-center">
+            <div className="rounded-3xl bg-base-secundaria border border-base-terciaria/30 px-6 text-center">
                 <Texto tipo="subtitulo" className="text-t-primaria">
                     Você ainda não tem dietas
                 </Texto>
