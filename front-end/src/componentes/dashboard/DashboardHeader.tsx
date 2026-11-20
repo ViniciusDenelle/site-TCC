@@ -7,6 +7,7 @@ import WrapperIcone from "../organizacao/WrapperIcone"
 import Texto from "../organizacao/Texto"
 import BotaoPrimario from "../botoes/BotaoPrimario"
 import {motion} from 'framer-motion'
+import useFetchUsuario from "../../logicas/usuario/FetchUsuario"
 
 const DashboardHeader = ({
     abrirMenu,
@@ -27,6 +28,9 @@ const DashboardHeader = ({
             x: 0,
         }
     }
+
+    const { dadosUsuario } = useFetchUsuario()
+    console.log('dadosUsuario', dadosUsuario)
 
     return (
         <header className="fixed top-0 left-0 w-full z-1000 text-t-terciaria">
@@ -75,19 +79,23 @@ const DashboardHeader = ({
                             </div>
                             <CardHorizontal>
                                 <div className="flex gap-2 items-center">
-                                    <LinkSimples to="/perfil" classeAdicional="flex gap-1 items-center">
-
-                                        <WrapperIcone tamanho="lg">
-                                            <UserCircle className="size-full" />
-                                        </WrapperIcone>
-
-
-                                        {/* <h1 className="text-lg">
-                                                    {dadosUsuario.nome}
-                                                </h1> */}
-
+                                    <LinkSimples to="/perfil" className="flex gap-1 items-center">
+                                        {dadosUsuario?.foto ? (
+                                            <div className="size-15 rounded-full object-cover border-2 border-t-terciaria/50 p-1">
+                                                <img src={dadosUsuario.foto} alt="" className="size-full rounded-full object-cover" />
+                                            </div>
+                                        ) : (
+                                            <WrapperIcone tamanho="lg">
+                                                <UserCircle className="size-full" />
+                                            </WrapperIcone>
+                                        )}
                                     </LinkSimples>
+
+                                    <Texto tipo="titulo" className="font-medium">
+                                        {dadosUsuario?.nome}
+                                    </Texto>
                                 </div>
+                            
                             </CardHorizontal>
 
                             <div className="flex flex-col gap-4 w-full mt-5">

@@ -8,6 +8,8 @@ const PesquisarTreinosLayout = () => {
 
   return (
     <>
+    <div className="flex flex-col w-full">
+
         <div className="w-full -mt-8">
             <div className="container mx-auto">
                 <nav className='w-full flex justify-around items-center 
@@ -23,6 +25,7 @@ const PesquisarTreinosLayout = () => {
             </div>
         </div>
         <Outlet/>
+    </div>
     
     </>
   )

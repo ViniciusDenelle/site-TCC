@@ -33,18 +33,19 @@ const FichaCardHorizontal = ({
           adicionar={adicionarFicha ?? null}
         />
       )}
-      <CardHorizontal className='hover:bg-base-terciaria/60'>
-        <div className="flex justify-between items-center gap-2 text-base h-10">
+      <CardHorizontal className='relative overflow-hidden hover:bg-base-terciaria/60'>
+      <div className="absolute inset-0 -z-90 bg-linear-to-b from-base-secundaria to-transparent"/>
+        <div className="absolute inset-0 -z-100 opacity-30">
+          {ficha?.imagem && (
+                <img src={ficha.imagem} alt="" className="size-full object-cover" />
+          )}
+        </div>
+
+        <div className="flex justify-between items-center gap-2 text-base h-12">
 
           <div className="flex gap-1 items-center">
 
-            <div className="size-10 rounded-md bg-base-terciaria/40 flex items-center justify-center relative">
-              <Clipboard className='size-full p-1.5' strokeWidth={1.5} />
-              <span className="absolute -top-1 -left-1 bg-destaque-s-medio
-              text-[12px] size-4 rounded-full flex items-center justify-center">
-                {totalTreinos}
-              </span>
-            </div>
+           
 
             <div className="flex flex-col min-w-0 gap-1 flex-1">
 

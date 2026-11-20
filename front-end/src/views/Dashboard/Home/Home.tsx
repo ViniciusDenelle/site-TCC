@@ -61,7 +61,7 @@ export default function Home() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-base-primaria p-4 sm:p-6 md:p-8 text-white font-poppins space-y-6 pt-6">
+    <div className="w-full min-h-screen bg-base-primaria p-4 sm:p-6 md:p-8 text-white font-poppins space-y-6 pt-12 pb-20">
 
       {/* ===================================================== */}
       {/* 1. HEADER DO USUÁRIO */}
@@ -77,7 +77,7 @@ export default function Home() {
 
           <div className="space-y-1">
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-start justify-center gap-1 md:gap-3">
 
               <Texto
                 tipo="titulo"
@@ -86,10 +86,10 @@ export default function Home() {
                 {dadosUsuario.nome}
               </Texto>
 
-              <div className="rounded-full border-2 border-blue-500 px-2.5 py-0.5 text-blue-400">
+              <div className="rounded-full flex justify-center border-2 border-blue-500 px-2.5 py-0.5 text-blue-400">
 
                 <Texto
-                  tipo="subtitulo"
+                  tipo="paragrafo"
                   className="font-semibold capitalize"
                 >
                   {dadosUsuario.experiencia}

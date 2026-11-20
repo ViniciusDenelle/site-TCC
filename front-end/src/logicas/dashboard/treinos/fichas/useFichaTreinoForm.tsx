@@ -12,6 +12,9 @@ type DivisaoBase = {
 const useFichaTreinoForm = () => {
     const [nome, setNome] = useState('');
     const [descricao, setDescricao] = useState('');
+    const [imagem, setImagem] = useState<File | null>(null);
+    const [imagemAtual, setImagemAtual] = useState<string | File | null>(null);
+    const [removerImagem, setRemoverImagem] = useState(false);
     const [divisoes, setDivisoes] = useState<DivisaoBase[]>([]);
     const [treinosPorDivisao, setTreinosPorDivisao] = useState<Record<string, { id: number; nome: string }[]>>({});
     const [dias, setDias] = useState<Record<DiaSemana, number | null>>({
@@ -52,6 +55,8 @@ const useFichaTreinoForm = () => {
                 treino_ids: (treinosPorDivisao[d.id] ?? []).map(t => t.id),
             })),
             dias,
+            imagem,                                
+            remover_imagem: removerImagem ? 1 : 0
         };
     }
 
@@ -68,11 +73,17 @@ const useFichaTreinoForm = () => {
     function preencherFormulario(ficha: {
         nome: string;
         descricao: string;
+        imagem: File | null;
+        imagemAtual: string | null;
+        removerImagem: boolean;
         divisoes: { id: number; nome: string; treinos: { id: number; nome: string }[] }[];
         dias: Record<number, { id: number; nome: string } | null>;
     }) {
         setNome(ficha.nome);
         setDescricao(ficha.descricao ?? '');
+        setImagemAtual(ficha.imagem);
+        setImagem(null);
+        setRemoverImagem(ficha.removerImagem ?? false);
 
         const novasDivisoes: DivisaoBase[] = [];
         const novosTreinosPorDivisao: Record<string, { id: number; nome: string }[]> = {};
@@ -100,6 +111,12 @@ const useFichaTreinoForm = () => {
         setDias(novosDias);
     }
 
+    const trocarImagem = (arquivo: File | null) => {
+        setImagem(arquivo);
+        // lixeira sem arquivo novo = apagar a imagem que já estava salva
+        setRemoverImagem(arquivo === null && !!imagemAtual);
+    };
+
     return {
         nome, setNome,
         descricao, setDescricao,
@@ -107,7 +124,11 @@ const useFichaTreinoForm = () => {
         treinosPorDivisao, atualizarTreinosDaDivisao,
         dias, definirTreinoNoDia, diasDaSemana,
         todosOsTreinosSelecionados,
-        montarPayload, preencherFormulario
+        montarPayload, preencherFormulario,
+        imagem, setImagem,
+        imagemAtual, setImagemAtual,
+        removerImagem, setRemoverImagem,
+        trocarImagem
     };
 };
 

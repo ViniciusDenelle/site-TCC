@@ -56,9 +56,9 @@ const MenuTreino = ({
 
     const opcoesLink = [
         {
-            titulo: 'Atualizar treino',
+            titulo: 'Editar treino',
             icone: Settings,
-            to:  `atualizarTreino/${treino.id}`,
+            to:  `/dashboard/treino/editarTreino/${treino.id}`,
             corIcone: 'text-blue-500'
         }
     ]
@@ -97,6 +97,7 @@ const MenuTreino = ({
 
                     {opcoesLink.map(opcao => (
                         <OpcoesMenuPlayer
+                            tipo="link"
                             key={opcao.titulo}
                             nome={opcao.titulo}
                             to={opcao.to}

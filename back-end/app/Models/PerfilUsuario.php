@@ -16,5 +16,6 @@ class PerfilUsuario extends Model
         'data_de_nascimento',
         'nivel_de_atividade',
         'experiencia',
+        'foto',
     ];
 }

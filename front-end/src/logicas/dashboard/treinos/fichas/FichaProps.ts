@@ -33,6 +33,7 @@ export type DivisaoDaFicha = {
 export type Ficha = {
     id: number;
     nome: string;
+    imagem: string | null;
     criador: Criador
     descricao: string;
     divisoes: DivisaoDaFicha[];

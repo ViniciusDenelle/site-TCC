@@ -16,6 +16,8 @@ class CreateFichaRequest extends FormRequest
         return [
             'nome' => ['required', 'string', 'max:255'],
             'descricao' => ['nullable', 'string'],
+            'imagem'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'remover_imagem' => 'nullable|boolean',
 
             'divisoes' => ['required', 'array', 'min:1'],
             'divisoes.*.nome' => ['required', 'string'],

@@ -27,6 +27,8 @@ const VerTreino = () => {
         return <Texto>Treino não encontrado.</Texto>;
     }
 
+    console.log(treino)
+
     return (
         <div className="min-h-screen w-full">
 
@@ -45,9 +47,17 @@ const VerTreino = () => {
                             classeAdicional='ml-auto'
                             onClick={() => setMenuAberto(true)}
                         />
-                    <div className="size-7/10 mx-auto flex items-center 
+                    <div className="size-7/10 md:size-80 mx-auto flex items-center 
                     justify-center bg-base-terciaria rounded-lg p-2">
-                        <Weight className='size-full'/>
+                        {treino.imagem ? (
+                            <img 
+                                src={treino.imagem} 
+                                alt={treino.nome} 
+                                className="size-full rounded-md overflow-hidden shrink-0"
+                            />
+                        ) : (
+                            <Weight className="size-full" strokeWidth={1} />
+                        )}
                     </div>
 
                     <div className="flex items-center gap-2">

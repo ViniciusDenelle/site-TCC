@@ -1,12 +1,14 @@
 import { useContext, useState } from 'react'
 import { motion } from 'motion/react'
-import { Eye, EyeOff, Mail } from 'lucide-react'
+import { Eye, EyeOff, Mail, User2Icon } from 'lucide-react'
 
 import BotaoPrimario from '../../../componentes/botoes/BotaoPrimario'
 import InputSimples from '../../../componentes/inputs/InputSimples'
 import useConfirmacao from '../../../logicas/usuario/useConfirmacao'
 import useCadastroContexto from '../../../contextos/CadastroContexto'
 import BotaoSecundario from '../../../componentes/botoes/BotaoSecundario'
+import CardHorizontal from '../../../componentes/CardHorizontal'
+import InputImagem from '../../../componentes/inputs/InputImagem'
 
 const Credenciais = () => {
   const contexto = useCadastroContexto()
@@ -44,6 +46,8 @@ const Credenciais = () => {
 
   const [senhaVisivel, setSenhaVisivel] = useState(false)
 
+  console.log('foto', dados.foto)
+
   return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -57,12 +61,38 @@ const Credenciais = () => {
         </h2>
 
         {/* Google */}
-        <BotaoPrimario
+        {/* <BotaoPrimario
           texto='google'
         />
 
-        <p className="mx-auto">ou</p>
+        <p className="mx-auto">ou</p> */}
 
+        {/* <div 
+        onClick={() => setMenuFotoAberto(prev => !prev)}
+        className="relative size-40 group cursor-pointer border-full flex justify-center items-center mx-auto 
+        bg-base-terciaria border border-base-terciaria/30 rounded-full p-4">
+          {menuFotoAberto && (
+            <div className="absolute bottom-1/2 left-1/2 transform -translate-x-1/2 translate-y-1/2 
+            bg-base-terciaria border border-base-terciaria/30 rounded-md p-2">
+              <CardHorizontal>
+                <div className="flex gap-2 items-center">
+                  
+                </div>
+              </CardHorizontal>
+            </div>
+          )}
+
+          <User2Icon className="size-full group-hover:text-destaque-p-medio transition-colors"/>
+        </div> */}
+
+        <InputImagem 
+          valor={dados.foto}
+          onChange={(ev) => mudarDados('foto', ev)}
+          redondo
+          disabled={false}
+        />
+
+        
         {/* Nome */}
         <div className="flex flex-col gap-1">
           <label>nome:</label>

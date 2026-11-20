@@ -7,6 +7,9 @@ import { MetadadoExercicio } from '../exercicios/exercicoProps';
 export const useTreinoForm = () => {
     const [nome, setNome] = useState('');
     const [descricao, setDescricao] = useState('');
+    const [imagem, setImagem] = useState<File | null>(null);
+    const [imagemAtual, setImagemAtual] = useState<string | null>(null);
+    const [removerImagem, setRemoverImagem] = useState(false);
 
     const tipo = useSelecaoUnica();
     const foco = useSelecaoUnica();
@@ -29,6 +32,9 @@ export const useTreinoForm = () => {
 
         setNome(treino.nome || '');
         setDescricao(treino.descricao || '');
+        setImagem(null);
+        setImagemAtual(treino.imagem ?? null);
+        setRemoverImagem(false);
 
         if (treino.tipo) {
             tipo.selecionar(treino.tipo);
@@ -50,6 +56,8 @@ export const useTreinoForm = () => {
                         repeticoes_maximas: item.repeticoes_maximas,
                         peso: item.peso,
                         descanso: item.descanso,
+                        tipo_execucao: item.tipo_execucao,
+                        duracao_segundos: item.duracao_segundos,
                     },
                 }));
 
@@ -96,6 +104,12 @@ export const useTreinoForm = () => {
         exercicios.atualizarDados(id, novoMetadado)
     }
 
+     const trocarImagem = (arquivo: File | null) => {
+        setImagem(arquivo);
+        // lixeira sem arquivo novo = apagar a imagem que já estava salva
+        setRemoverImagem(arquivo === null && !!imagemAtual);
+    };
+
     const montarPayload = () => {
         return {
             nome,
@@ -113,6 +127,8 @@ export const useTreinoForm = () => {
                 peso: item.metadado.peso,
                 descanso: item.metadado.descanso,
             })),
+            imagem,                                  
+            remover_imagem: removerImagem ? 1 : 0
         };
     };
 
@@ -128,7 +144,10 @@ export const useTreinoForm = () => {
         tipo,
         foco,
         popularFormulario,
-        montarPayload
+        montarPayload,
+        imagem,
+        imagemAtual,
+        trocarImagem, 
     }
 };
 

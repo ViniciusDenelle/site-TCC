@@ -46,7 +46,11 @@ const ExercicioCard = ({
           <div className="flex gap-1 items-center">
 
             <div className="size-10 rounded-md overflow-hidden">
+              {exercicio.imagem ? (
+                <img src={exercicio?.imagem} alt="" className="size-full object-cover" />
+              ) : (
               <Dumbbell className='size-full' strokeWidth={1} />
+              )}
             </div>
 
             <div className="flex flex-col min-w-0 gap-1 flex-1">

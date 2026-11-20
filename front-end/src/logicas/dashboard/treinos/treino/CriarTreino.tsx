@@ -1,14 +1,16 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AxiosError, AxiosResponse } from 'axios'
 import React from 'react'
 import api from '../../../../api'
 import { CriarTreinoPayload } from './TreinoProps'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
+import { paraFormData } from '../../../paraFormData'
 
 const useCriarTreino = () => {
 
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
 
     const {
         mutate,
@@ -22,10 +24,10 @@ const useCriarTreino = () => {
         CriarTreinoPayload
     >({
         mutationFn: async (dados:CriarTreinoPayload) => {
-            const res =  await api.post(`dashboard/treinos/treino`, dados)
+            const res =  await api.post(`dashboard/treinos/treino`, paraFormData(dados))
             return res.data
         } ,onSuccess: (res) => {
-            console.log(res)
+            queryClient.invalidateQueries({ queryKey: ['treinos'] })
             toast.success('treino criado com sucesso')
             navigate('/dashboard/treino/verTreino/' + res.data.id)
         },

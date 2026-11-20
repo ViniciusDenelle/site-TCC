@@ -23,6 +23,7 @@ import useCriarFicha from '../../../../logicas/dashboard/treinos/fichas/CriarFic
 import TreinoArrastavel from '../../../../componentes/dashboard/treino/TreinoArrastavel';
 import DiaDropzone from '../../../../componentes/dashboard/treino/DIaDropzone';
 import { nomesDias } from '../../../../logicas/dashboard/treinos/fichas/nomesDias';
+import InputImagem from '../../../../componentes/inputs/InputImagem';
 
 
 const CriarFichaTreino = () => {
@@ -34,6 +35,9 @@ const CriarFichaTreino = () => {
         dias, definirTreinoNoDia, diasDaSemana,
         todosOsTreinosSelecionados,
         montarPayload,
+        imagem,
+        imagemAtual,
+        trocarImagem
     } = useFichaTreinoForm();
 
     const {
@@ -87,6 +91,16 @@ const CriarFichaTreino = () => {
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
             <div className="min-h-screen w-full">
                 <div className="container mx-auto flex flex-col gap-3">
+
+
+                    <div className="w-full md:w-6/10 mx-auto">
+                        <InputImagem 
+                            valor={imagem}
+                            urlAtual={imagemAtual}
+                            onChange={trocarImagem}
+                            placeholder="adicione uma imagem do exercicio"
+                        />
+                    </div>
 
                     <Texto tipo="titulo" className="font-thin">Nome da ficha</Texto>
                     <InputSimples
