@@ -1,350 +1,253 @@
-import React, { useState, useEffect } from 'react'
-import { User, Scale, Target, Save, X, Loader2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import type { FormEvent } from 'react'
+import { motion } from 'motion/react'
+import {
+    Activity, Eye, EyeOff, Flame, Loader2, Save, Scale, Target, User, X, Zap
+} from 'lucide-react'
 
 import CardHorizontal from '../../../componentes/CardHorizontal'
 import Texto from '../../../componentes/organizacao/Texto'
+import WrapperIcone from '../../../componentes/organizacao/WrapperIcone'
 import BotaoPrimario from '../../../componentes/botoes/BotaoPrimario'
-import useUpdateUsuario from '../../../logicas/usuario/UpdateUsuario'
-import InputRange from '../../../componentes/inputs/InputRange'
-import RadioCustomizado from '../../../componentes/inputs/RadioCustomizado'
 import InputSimples from '../../../componentes/inputs/InputSimples'
-import useFetchUsuario, { RetornoUsuario } from '../../../logicas/usuario/FetchUsuario'
+import InputImagem from '../../../componentes/inputs/InputImagem'
 
-interface FormEditarPerfilProps {
-    dadosUsuario?: Partial<RetornoUsuario>
+// mesmos passos do cadastro, sem alteração
+import Informacoes from '../../cadastro/passos/Informacoes'
+import NivelAtividade from '../../cadastro/passos/NivelAtividade'
+import Objetivo from '../../cadastro/passos/Objetivo'
+import Metas from '../../cadastro/passos/Metas'
+import MetasManterPeso from '../../cadastro/passos/MetasManterPeso'
+
+// o contexto precisa ser exportado com nome (veja as notas)
+import type { UseCadastroReturn } from '../../../logicas/cadastro/useCadastro'
+import useMetas from '../../../logicas/cadastro/useMetas'
+import useAtualizarPerfil from '../../../logicas/usuario/useAtualizarPerfil'
+import useFetchUsuario, { RetornoUsuario } from '../../../logicas/usuario/FetchUsuario'
+import { CadastroContext, CadastroProvider } from '../../../contextos/CadastroContexto'
+
+type Props = {
     onCancelar?: () => void
     onSucesso?: () => void
 }
 
-const montarEstadoInicial = (dados?: Partial<RetornoUsuario>): RetornoUsuario => ({
-    id: dados?.id ?? 0,
-    nome: dados?.nome ?? '',
-    email: dados?.email ?? '',
-    senha: '',
-    genero: dados?.genero ?? 'Masculino',
-    peso: dados?.peso ?? 70,
-    tipoPeso: dados?.tipoPeso ?? 'kilos',
-    pesoIdeal: dados?.pesoIdeal ?? 70,
-    pesoMinimo: dados?.pesoMinimo ?? null,
-    pesoMaximo: dados?.pesoMaximo ?? null,
-    altura: dados?.altura ?? 170,
-    dataDeNascimento: dados?.dataDeNascimento ?? '',
-    idade: dados?.idade ?? 25,
-    nivelDeAtividade: dados?.nivelDeAtividade ?? 1.2,
-    objetivo: dados?.objetivo ?? 'Emagrecimento',
-    experiencia: dados?.experiencia ?? 'Iniciante',
-    TMB: dados?.TMB ?? 1600,
-    GET: dados?.GET ?? 2000,
-    caloriasDiarias: dados?.caloriasDiarias ?? 1800,
-    veloPerda: dados?.veloPerda ?? 0.5,
-    comeco: dados?.comeco ?? null,
-    termino: dados?.termino ?? new Date().toISOString().split('T')[0],
-    duracao: dados?.duracao ?? null,
-})
+const PASSOS = [
+    { rotulo: 'Conta', icone: User },
+    { rotulo: 'Informações', icone: Scale },
+    { rotulo: 'Atividade', icone: Activity },
+    { rotulo: 'Objetivo', icone: Target },
+    { rotulo: 'Metas', icone: Flame },
+]
 
-const AtualizarPerfil = ({
-    onCancelar,
-    onSucesso
-}: FormEditarPerfilProps) => {
-    const { dadosUsuario } = useFetchUsuario()
-    const { atualizarUsuario, isPending } = useUpdateUsuario()
+// campo com erro vindo do back -> aba onde o usuário corrige
+const campoParaPasso: Record<string, number> = {
+    nome: 0, email: 0, senha: 0, foto: 0,
+    genero: 1, peso: 1, altura: 1, dataDeNascimento: 1, tipoPeso: 1,
+    nivelAtividade: 2,
+    objetivo: 3, experiencia: 3,
+    pesoIdeal: 4, pesoMinimo: 4, pesoMaximo: 4, veloPerda: 4,
+}
 
-    const [formData, setFormData] = useState<RetornoUsuario>(() =>
-        montarEstadoInicial(dadosUsuario)
+const FormPerfil = ({ usuario, onCancelar, onSucesso }: Props & { usuario: RetornoUsuario }) => {
+    const {
+        dados, mudarDados, errosCampo, idade, TMB, GET, trocarFoto, atualizarMutation
+    } = useAtualizarPerfil(usuario)
+
+    const [passo, setPasso] = useState(0)
+    const [senhaVisivel, setSenhaVisivel] = useState(false)
+
+    // Mantém calorias e tempo estimado sempre atualizados, mesmo sem abrir a aba "Metas".
+    // Também alimenta o resumo em tempo real no topo.
+    const { calorias, tempoEstimado } = useMetas(dados, mudarDados, GET)
+
+    // erro do back -> abre a aba do primeiro campo com problema
+    useEffect(() => {
+        if (!atualizarMutation.isError) return
+        const primeiro = Object.keys(errosCampo)[0]
+        if (primeiro && campoParaPasso[primeiro] !== undefined) setPasso(campoParaPasso[primeiro])
+    }, [atualizarMutation.isError, errosCampo])
+
+    const salvar = (e: FormEvent) => {
+        e.preventDefault()
+        atualizarMutation.mutate(undefined, { onSuccess: () => onSucesso?.() })
+    }
+
+    const erro = (campo: keyof typeof dados) =>
+        errosCampo[campo] ? (
+            <span className="text-red-500 text-sm">{errosCampo[campo]?.[0]}</span>
+        ) : null
+
+    const conta = (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
+            className="flex flex-col gap-3 w-full"
+        >
+            <Texto tipo="subtitulo" className="text-t-primaria mx-auto">
+                Sua conta
+            </Texto>
+
+            <InputImagem
+                redondo
+                valor={dados.foto ?? null}
+                urlAtual={(usuario as any).foto ?? null}
+                onChange={trocarFoto}
+                erro={errosCampo.foto?.[0]}
+                disabled={atualizarMutation.isPending}
+            />
+
+            <div className="flex flex-col gap-1">
+                <label>nome:</label>
+                <InputSimples
+                    valor={dados.nome}
+                    placeholder="seu nome"
+                    maximo={50}
+                    minimo={2}
+                    onChange={(ev) => mudarDados('nome', ev.target.value)}
+                />
+                {erro('nome')}
+            </div>
+
+            <div className="flex flex-col gap-1">
+                <label>email:</label>
+                <InputSimples
+                    tipo="email"
+                    valor={dados.email}
+                    placeholder="seu@email.com"
+                    maximo={40}
+                    minimo={7}
+                    onChange={(ev) => mudarDados('email', ev.target.value)}
+                />
+                {erro('email')}
+            </div>
+
+            <div className="flex flex-col gap-1">
+                <label>nova senha:</label>
+                <div className="relative">
+                    <InputSimples
+                        tipo={senhaVisivel ? 'text' : 'password'}
+                        valor={dados.senha}
+                        placeholder="deixe em branco para não alterar"
+                        maximo={30}
+                        onChange={(ev) => mudarDados('senha', ev.target.value)}
+                        classeAdicional="w-full"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setSenhaVisivel(prev => !prev)}
+                        className="absolute right-3 top-2 z-10 cursor-pointer"
+                    >
+                        {senhaVisivel ? <Eye size={20} /> : <EyeOff size={20} />}
+                    </button>
+                </div>
+                {erro('senha')}
+            </div>
+        </motion.div>
     )
 
-    useEffect(() => {
-        if (dadosUsuario) {
-            setFormData(montarEstadoInicial(dadosUsuario))
-        }
-    }, [dadosUsuario])
+    const conteudo = [
+        conta,
+        <Informacoes />,
+        <NivelAtividade />,
+        <Objetivo />,
+        dados.objetivo === 'manter_peso' ? <MetasManterPeso /> : <Metas />,
+    ][passo]
 
-    const handleChange = (field: keyof RetornoUsuario, value: any) => {
-        setFormData((prev) => ({ ...prev, [field]: value }))
-    }
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-
-        // atualizarUsuario(formData, {
-        //     onSuccess: () => {
-        //         if (onSucesso) onSucesso()
-        //     }
-        // })
-    }
+    console.log('usuario recebido:', usuario)
+console.log('chaves:', Object.keys(usuario ?? {}))
+console.log('dados do form:', dados)
 
     return (
-        <form onSubmit={handleSubmit} className="w-full space-y-6">
-            <CardHorizontal className="flex flex-col gap-6 p-6">
+        // Os passos do cadastro leem tudo daqui. Só usam dados, mudarDados, GET e errosCampo.
+        <CadastroContext.Provider
+            value={{ dados, mudarDados, errosCampo, idade, TMB, GET } as unknown as UseCadastroReturn}
+        >
+            <form onSubmit={salvar} className="flex flex-col gap-4 w-full w-full px-6 pt-12 pb-40 mx-auto">
 
-                {/* Cabeçalho */}
-                <div className="flex items-center justify-between border-b border-base-terciaria pb-4">
+                <div className="flex items-center justify-between">
                     <Texto tipo="titulo" className="text-t-primaria text-xl font-bold">
                         Editar Perfil
                     </Texto>
                     {onCancelar && (
-                        <button
-                            type="button"
-                            onClick={onCancelar}
-                            className="text-t-terciaria hover:text-t-primaria transition-colors"
-                        >
+                        <button type="button" onClick={onCancelar} aria-label="Fechar">
                             <X size={20} />
                         </button>
                     )}
                 </div>
 
-                {/* 1. Informações Pessoais */}
-                <div className="space-y-4">
+                {/* Resumo em tempo real */}
+                <CardHorizontal>
                     <div className="flex items-center gap-2">
-                        <User size={18} className="text-t-secundaria" />
-                        <Texto tipo="subtitulo" className="text-t-primaria text-sm font-semibold">
-                            Informações Pessoais
-                        </Texto>
-                    </div>
+                        <WrapperIcone tamanho="md">
+                            <Zap className="size-full" />
+                        </WrapperIcone>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-1">
-                            <Texto tipo="subtitulo" className="text-xs text-t-secundaria">Nome</Texto>
-                            <InputSimples
-                                tipo="text"
-                                name="nome"
-                                valor={formData.nome}
-                                onChange={(e) => handleChange('nome', e.target.value)}
-                                placeholder="Seu nome completo"
-                                classeAdicional="w-full px-3 py-2 text-t-primaria text-sm"
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <Texto tipo="subtitulo" className="text-xs text-t-secundaria">E-mail</Texto>
-                            <InputSimples
-                                tipo="email"
-                                name="email"
-                                valor={formData.email}
-                                onChange={(e) => handleChange('email', e.target.value)}
-                                placeholder="seu@email.com"
-                                classeAdicional="w-full px-3 py-2 text-t-primaria text-sm"
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <Texto tipo="subtitulo" className="text-xs text-t-secundaria">Nova Senha</Texto>
-                            <InputSimples
-                                tipo="password"
-                                name="senha"
-                                valor={formData.senha || ''}
-                                onChange={(e) => handleChange('senha', e.target.value)}
-                                placeholder="Deixe em branco para não alterar"
-                                classeAdicional="w-full px-3 py-2 text-t-primaria text-sm"
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <Texto tipo="subtitulo" className="text-xs text-t-secundaria">Data de Nascimento</Texto>
-                            <InputSimples
-                                tipo="date"
-                                name="dataDeNascimento"
-                                valor={formData.dataDeNascimento}
-                                onChange={(e) => handleChange('dataDeNascimento', e.target.value)}
-                                classeAdicional="w-full px-3 py-2 text-t-primaria text-sm"
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <Texto tipo="subtitulo" className="text-xs text-t-secundaria">Altura (cm)</Texto>
-                            <InputSimples
-                                tipo="number"
-                                name="altura"
-                                valor={formData.altura}
-                                minimo={50}
-                                maximo={250}
-                                onChange={(e) => handleChange('altura', Number(e.target.value))}
-                                placeholder="170"
-                                classeAdicional="w-full px-3 py-2 text-t-primaria text-sm"
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <Texto tipo="subtitulo" className="text-xs text-t-secundaria mb-1">Gênero</Texto>
-                            <div className="flex flex-wrap gap-2">
-                                {['Masculino', 'Feminino', 'Outro'].map((gen) => (
-                                    <RadioCustomizado
-                                        key={gen}
-                                        name="genero"
-                                        valor={gen}
-                                        checked={formData.genero === gen}
-                                        onChange={(e) => handleChange('genero', e.target.value)}
-                                        classeAdicional="px-3 h-10 w-auto"
-                                    >
-                                        <Texto tipo="paragrafo" className="text-xs text-t-primaria">{gen}</Texto>
-                                    </RadioCustomizado>
-                                ))}
-                            </div>
+                        <div className="flex flex-col">
+                            <Texto className="text-t-primaria">Seus números</Texto>
+                            <Texto tipo="subtexto">
+                                {idade} anos · TMB {TMB} kcal · GET {GET} kcal
+                            </Texto>
+                            <Texto tipo="subtexto">
+                                {calorias.calorias} kcal/dia
+                                {dados.objetivo !== 'manter_peso' && tempoEstimado.previsao
+                                    ? ` · meta até ${tempoEstimado.previsao}`
+                                    : ''}
+                            </Texto>
                         </div>
                     </div>
+                </CardHorizontal>
+
+                {/* Abas, no lugar do "próximo/voltar" do cadastro */}
+                <div className="grid grid-cols-3 grid-rows-2 gap-1 md:gap-4">
+                    {PASSOS.map(({ rotulo, icone }, i) => (
+                        <BotaoPrimario
+                            key={rotulo}
+                            tipo={i === passo ? 'cheio' : 'vazio'}
+                            icone={icone}
+                            texto={rotulo}
+                            tipoFonte="subtexto"
+                            classeAdicional="flex-col h-14 ring-transparent"
+                            onClick={() => setPasso(i)}
+                        />
+                    ))}
                 </div>
 
-                {/* 2. Métricas Corporais */}
-                <div className="space-y-4">
-                    <div className="flex items-center gap-2">
-                        <Scale size={18} className="text-t-secundaria" />
-                        <Texto tipo="subtitulo" className="text-t-primaria text-sm font-semibold">
-                            Métricas Corporais
-                        </Texto>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                        <div className="flex flex-col gap-1">
-                            <Texto tipo="subtitulo" className="text-xs text-t-secundaria">Peso Atual</Texto>
-                            <InputSimples
-                                tipo="number"
-                                name="peso"
-                                valor={formData.peso}
-                                minimo={20}
-                                maximo={300}
-                                onChange={(e) => handleChange('peso', Number(e.target.value))}
-                                classeAdicional="w-full px-3 py-2 text-t-primaria text-sm"
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <Texto tipo="subtitulo" className="text-xs text-t-secundaria">Peso Ideal</Texto>
-                            <InputSimples
-                                tipo="number"
-                                name="pesoIdeal"
-                                valor={formData.pesoIdeal}
-                                minimo={20}
-                                maximo={300}
-                                onChange={(e) => handleChange('pesoIdeal', Number(e.target.value))}
-                                classeAdicional="w-full px-3 py-2 text-t-primaria text-sm"
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <Texto tipo="subtitulo" className="text-xs text-t-secundaria mb-1">Unidade de Medida</Texto>
-                            <div className="flex gap-2">
-                                {(['kilos', 'libras'] as const).map((tipo) => (
-                                    <RadioCustomizado
-                                        key={tipo}
-                                        name="tipoPeso"
-                                        valor={tipo}
-                                        checked={formData.tipoPeso === tipo}
-                                        onChange={(e) => handleChange('tipoPeso', e.target.value)}
-                                        classeAdicional="px-4 h-10 w-full"
-                                    >
-                                        <Texto tipo="paragrafo" className="text-xs text-t-primaria capitalize">{tipo}</Texto>
-                                    </RadioCustomizado>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+                {/* min-h e pt: o passo "Informações" usa grid de altura cheia e título absoluto */}
+                <div key={passo} className="relative min-h-[28rem] pt-8">
+                    {conteudo}
                 </div>
 
-                {/* 3. Objetivo e Treino */}
-                <div className="space-y-4">
-                    <div className="flex items-center gap-2">
-                        <Target size={18} className="text-t-secundaria" />
-                        <Texto tipo="subtitulo" className="text-t-primaria text-sm font-semibold">
-                            Objetivo e Atividade
-                        </Texto>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-1">
-                            <Texto tipo="subtitulo" className="text-xs text-t-secundaria">Objetivo</Texto>
-                            <InputSimples
-                                tipo="text"
-                                name="objetivo"
-                                valor={formData.objetivo}
-                                onChange={(e) => handleChange('objetivo', e.target.value)}
-                                placeholder="Ex: Emagrecimento, Hipertrofia"
-                                classeAdicional="w-full px-3 py-2 text-t-primaria text-sm"
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <Texto tipo="subtitulo" className="text-xs text-t-secundaria">Previsão de Término</Texto>
-                            <InputSimples
-                                tipo="date"
-                                name="termino"
-                                valor={formData.termino || ''}
-                                onChange={(e) => handleChange('termino', e.target.value)}
-                                classeAdicional="w-full px-3 py-2 text-t-primaria text-sm"
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1 md:col-span-2">
-                            <Texto tipo="subtitulo" className="text-xs text-t-secundaria mb-1">Nível de Experiência</Texto>
-                            <div className="flex flex-wrap gap-2">
-                                {['Iniciante', 'Intermediário', 'Avançado'].map((exp) => (
-                                    <RadioCustomizado
-                                        key={exp}
-                                        name="experiencia"
-                                        valor={exp}
-                                        checked={formData.experiencia === exp}
-                                        onChange={(e) => handleChange('experiencia', e.target.value)}
-                                        classeAdicional="px-4 h-10 w-auto"
-                                    >
-                                        <Texto tipo="paragrafo" className="text-xs text-t-primaria">{exp}</Texto>
-                                    </RadioCustomizado>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Sliders (InputRange) */}
-                        <div className="flex flex-col gap-2 pt-2">
-                            <div className="flex justify-between items-center">
-                                <Texto tipo="subtitulo" className="text-xs text-t-secundaria">Nível de Atividade</Texto>
-                                <span className="text-xs text-t-primaria font-bold">{formData.nivelDeAtividade}x</span>
-                            </div>
-                            <div className="h-6 flex items-center">
-                                <InputRange
-                                    valor={Number(formData.nivelDeAtividade) || 1.2}
-                                    onChange={(val) => handleChange('nivelDeAtividade', val)}
-                                    min={1.2}
-                                    max={2.0}
-                                    step={0.05}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col gap-2 pt-2">
-                            <div className="flex justify-between items-center">
-                                <Texto tipo="subtitulo" className="text-xs text-t-secundaria">Velocidade de Perda</Texto>
-                                <span className="text-xs text-t-primaria font-bold">{formData.veloPerda} kg/sem</span>
-                            </div>
-                            <div className="h-6 flex items-center">
-                                <InputRange
-                                    valor={Number(formData.veloPerda) || 0.5}
-                                    onChange={(val) => handleChange('veloPerda', val)}
-                                    min={0.1}
-                                    max={1.5}
-                                    step={0.1}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Botões de Ação */}
                 <div className="flex items-center justify-end gap-3 pt-4 border-t border-base-terciaria">
                     {onCancelar && (
-                        <BotaoPrimario
-                            tipo="vazio"
-                            onClick={onCancelar}
-                            texto="Cancelar"
-                        />
+                        <BotaoPrimario tipo="vazio" texto="Cancelar" onClick={onCancelar} />
                     )}
 
                     <BotaoPrimario
                         tipo="cheio"
-                        icone={isPending ? Loader2 : Save}
-                        texto={isPending ? 'Salvando...' : 'Salvar Alterações'}
+                        type="submit"
+                        disabled={atualizarMutation.isPending}
+                        icone={atualizarMutation.isPending ? Loader2 : Save}
+                        texto={atualizarMutation.isPending ? 'Salvando...' : 'Salvar alterações'}
                     />
                 </div>
+            </form>
+        </CadastroContext.Provider>
+    )
+}
 
-            </CardHorizontal>
-        </form>
+// espera o usuário carregar antes de montar o formulário (evita estado inicial vazio)
+const AtualizarPerfil = (props: Props) => {
+    const { dadosUsuario } = useFetchUsuario()
+
+    if (!dadosUsuario) return <Loader2 className="animate-spin mx-auto" />
+
+    return (
+        <FormPerfil
+            key={JSON.stringify(dadosUsuario)}
+            usuario={dadosUsuario as RetornoUsuario}
+            {...props}
+        />
     )
 }
 

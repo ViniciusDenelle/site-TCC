@@ -1,47 +1,43 @@
-import { ChartBarIncreasing, CogIcon, Flame, Home, InfoIcon, NewspaperIcon, UserCircle, Weight } from "lucide-react"
+import { ChartBarIncreasing, CogIcon, Flame, Hammer, Home, InfoIcon, NewspaperIcon, UserCircle, Weight } from "lucide-react"
 
 export const nav = [
     {
         icone: Home,
         legenda: 'Home',
-        to: '/dashboard/'
+        to: '/dashboard/',
+        end: false
     },
     {
         icone: Weight,
         legenda: 'treinos',
-        to: '/dashboard/treino/MeusTreinos'
+        to: '/dashboard/treino/MeusTreinos',
+        end: false
     },
     {
         icone: Flame,
         legenda: 'dieta',
-        to: '/dashboard/dieta'
+        to: '/dashboard/dieta',
+        end: false
     },
     {
         icone: ChartBarIncreasing,
         legenda: 'progresso',
-        to: '/dashboard/progresso'
-    },
-    {
-        icone: UserCircle,
-        legenda: 'perfil',
-        to: '/dashboard/perfil'
+        to: '/dashboard/progresso',
+        end: false
     },
 ]
 
 export const menu = [
     {
-        legenda: 'Configurações',
-        to: '/dashboard',
-        icone: CogIcon,
-    },
-    {
         legenda: 'Sobre Nós',
         to: '/dashboard/sobre-nos',
         icone: InfoIcon,
+        end: false
     },
     {
-        legenda: 'Novidades',
-        to: '/dashboard',
-        icone: NewspaperIcon,
+        legenda: 'Página Inicial',
+        to: '/',
+        icone: Hammer,
+        end: true
     }
 ]

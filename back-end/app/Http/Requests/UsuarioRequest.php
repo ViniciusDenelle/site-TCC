@@ -43,7 +43,7 @@ class UsuarioRequest extends FormRequest
             'email' => 'required|email|unique:users,email',
             'senha' => 'required|min:4',
             'genero' => 'required|string',
-            'idade' => 'required|integer',
+            'idade' => 'required|integer|max:120|min:1',
             'dataDeNascimento' => 'required|date',
             'peso' => 'required|integer|min:20|max:500',
             'pesoMinimo' => [
@@ -88,6 +88,8 @@ class UsuarioRequest extends FormRequest
 
             'idade.required' => 'Informe sua idade',
             'idade.integer' => 'A idade deve ser um número válido',
+            'idade.max' => 'A idade deve ser no máximo 120 anos',
+            'idade.min' => 'A idade deve ser no mínimo 1 ano',
 
             'dataDeNascimento.required' => 'Informe sua data de nascimento',
             'dataDeNascimento.date' => 'Data de nascimento inválida',

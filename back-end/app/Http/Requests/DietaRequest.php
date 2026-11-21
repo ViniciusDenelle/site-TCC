@@ -16,6 +16,8 @@ class DietaRequest extends FormRequest
         return [
             'nome' => ['required', 'string', 'max:255'],
             'descricao' => ['nullable', 'string'],
+            'imagem'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'remover_imagem' => 'nullable|boolean',
             'objetivo_id' => ['required', 'integer', 'exists:objetivos_dieta,id'],
             'nivel_id' => ['required', 'integer', 'exists:niveis_dieta,id'],
 

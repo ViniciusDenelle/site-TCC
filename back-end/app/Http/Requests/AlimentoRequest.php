@@ -15,6 +15,8 @@ class AlimentoRequest extends FormRequest
     {
         return [
             'nome' => ['required', 'string', 'max:255'],
+            'imagem'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'remover_imagem' => 'nullable|boolean',
             'porcao_descricao' => ['required', 'string', 'max:255'],
             'porcao_gramas' => ['required', 'integer', 'min:1'],
             'calorias' => ['required', 'integer', 'min:0'],

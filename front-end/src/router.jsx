@@ -71,8 +71,6 @@ const Rota = createBrowserRouter(
 
                 <Route path='atualizarPerfil' element={<AtualizarPerfil />} />
 
-                <Route path='perfil' element={<Home />} />
-
                 {/* Sobre Nós */}
                 <Route path='sobre-nos' element={<SobreNos />} />
 

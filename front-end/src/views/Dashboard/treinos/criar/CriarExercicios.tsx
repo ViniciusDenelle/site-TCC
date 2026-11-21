@@ -98,7 +98,7 @@ const CriarExercicios = () => {
             <div className="container mx-auto h-full">
                 <div className="flex flex-col h-full gap-2 divide-base-terciaria">
 
-                    <div className="w-6/10 mx-auto">
+                    <div className="w-full md:w-6/10 mx-auto">
                         <InputImagem 
                             valor={imagem}
                             urlAtual={imagemAtual}

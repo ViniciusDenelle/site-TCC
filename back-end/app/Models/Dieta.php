@@ -11,6 +11,7 @@ class Dieta extends Model
         'nivel_id',
         'nome',
         'descricao',
+        'imagem',
     ];
 
     public function usuario()

@@ -13,6 +13,7 @@ class DietaResource extends JsonResource
             'id' => $this->id,
             'nome' => $this->nome,
             'descricao' => $this->descricao,
+            'imagem' => $this->imagem ? asset('storage/' . $this->imagem) : null,
 
             'objetivo' => $this->whenLoaded('objetivo', fn() => [
                 'id' => $this->objetivo->id,

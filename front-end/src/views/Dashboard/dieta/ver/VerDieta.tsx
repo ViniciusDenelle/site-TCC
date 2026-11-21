@@ -87,11 +87,18 @@ const VerDieta = () => {
 
                 {/* CABEÇALHO */}
                 <div className="flex flex-col gap-3">
-                    <div className="w-full flex justify-center">
-                        <div className="size-24 flex items-center justify-center rounded-3xl bg-base-secundaria p-5">
-                            <Utensils className="size-full text-destaque-p-claro" strokeWidth={1.5} />
+                    <div className="w-full md:size-80 mx-auto flex items-center 
+                            justify-center bg-base-terciaria rounded-xl p-2">
+                            {dieta.imagem ? (
+                                <img 
+                                    src={dieta.imagem} 
+                                    alt={dieta.nome} 
+                                    className="size-full rounded-md overflow-hidden shrink-0"
+                                />
+                            ) : (
+                                <Utensils className="size-full text-destaque-p-claro" strokeWidth={1} />
+                            )}
                         </div>
-                    </div>
 
                     <div className="text-center">
                         <Texto tipo="titulo" className="text-t-primaria">{dieta.nome}</Texto>

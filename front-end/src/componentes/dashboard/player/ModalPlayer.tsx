@@ -25,9 +25,10 @@ const ModalPlayer = () => {
 
     const emDescanso = exercicioExecucao?.timer?.ativo;
     const emExecucaoTempo = exercicioExecucao?.isometrico && exercicioExecucao?.timerExecucao?.ativo;
+    console.log(exercicioData?.exercicio?.imagem)
 
     return (
-        <div className="fixed inset-0 bg-base-primaria z-1000000 min-h-screen overflow-scroll 
+        <div className="fixed inset-0 bg-base-primaria z-1000000 min-h-screen md:h-full overflow-scroll 
         lg:relative lg:inset-auto lg:w-full">
             <div className="absolute w-full h-screen bg-linear-to-b from-destaque-s-claro/30 to-base-primaria" />
 
@@ -81,7 +82,11 @@ const ModalPlayer = () => {
                 </div>
                 ) : (
                 <div className="absolute w-full h-65 left-1/2 top-10 -translate-x-1/2 bg-base-terciaria rounded-lg">
-                    <Dumbbell className="size-full" />
+                    {exercicioData?.exercicio?.imagem ? (
+                        <img src={exercicioData.exercicio.imagem} alt={exercicioData.exercicio.nome} className="size-full" />
+                    ) : (
+                        <Dumbbell className="size-full" />
+                    )}
                 </div>
                 )}
 
