@@ -94,7 +94,7 @@ const DashboardHeader = ({
                                 <CardHorizontal className="hidden md:flex">
                                     <div className="flex flex-col gap-4">
                                         {linksNav.map(link => (
-                                            <LinkSimples key={link.legenda} to={link.to}>
+                                            <LinkSimples key={link.legenda} end={link.end} to={link.to}>
                                                 <div className="flex w-full gap-2 items-center">
                                                     <WrapperIcone>
                                                         <link.icone className="size-full" />
@@ -108,7 +108,7 @@ const DashboardHeader = ({
                                     </div>
                                 </CardHorizontal>
                                 {linksMenu.map(link => (
-                                    <LinkSimples key={link.legenda} to={link.to}>
+                                    <LinkSimples key={link.legenda} end={link.end} to={link.to}>
                                         <div className="flex w-full gap-2 items-center">
                                             <WrapperIcone>
                                                 <link.icone className="size-full" />

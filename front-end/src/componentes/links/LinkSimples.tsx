@@ -5,12 +5,14 @@ interface LinkSimplesProps {
   children: ReactNode
   to: string
   className?: string
+  end?: boolean
 }
 
 const LinkSimples = ({
   children,
   to,
-  className
+  className,
+  end = false
 }: LinkSimplesProps) => {
 
   const classeBase = `
@@ -30,6 +32,7 @@ const LinkSimples = ({
         isActive ? classeAtivo : classeBase
       }
       to={to}
+      end={end}
     >
       {children}
     </NavLink>
