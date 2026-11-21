@@ -3,6 +3,7 @@ import { AxiosError, AxiosResponse } from 'axios'
 import api from '../../../../api'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
+import { paraFormData } from '../../../paraFormData'
 
 export type ReqExercicioProps = {
     nome: string
@@ -25,7 +26,7 @@ const useUpdateExercicio = (id:string|number) => {
         ReqExercicioProps
     >({
         mutationFn: async (dados) => {
-            const res = await api.put(`/dashboard/treinos/exercicio/${id}`, dados)
+            const res = await api.post(`/dashboard/treinos/exercicio/${id}`, paraFormData({...dados, _method: 'PUT'}))
             return res.data
         },
             

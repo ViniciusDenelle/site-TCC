@@ -4,6 +4,7 @@ import api from '../../../../api'
 import { CriarTreinoPayload, ResTreinoProps } from './TreinoProps'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
+import { paraFormData } from '../../../paraFormData'
 
 const useUpdateTreino = (id:string) => {
 
@@ -20,12 +21,14 @@ const useUpdateTreino = (id:string) => {
         AxiosError,
         CriarTreinoPayload
     >({
-        mutationFn: (dados: CriarTreinoPayload) =>
-            api.put(`dashboard/treinos/treino/${id}`, dados),
-
+        mutationFn: async (dados: CriarTreinoPayload) => {
+            const res = await api.post(`dashboard/treinos/treino/${id}`, paraFormData({ ...dados, _method: 'PUT' }))
+            return res.data
+        },
+            
         onSuccess: (res) => {
-            toast.success('exercicio editado com sucesso')
-            navigate(`/dashboard/treinos/verTreino/${id}`);
+            toast.success('treino editado com sucesso')
+            navigate('/dashboard/treino/verTreino/' + res.data.id)
             
         },
 

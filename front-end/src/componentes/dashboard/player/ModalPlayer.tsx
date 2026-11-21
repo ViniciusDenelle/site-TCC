@@ -27,7 +27,8 @@ const ModalPlayer = () => {
     const emExecucaoTempo = exercicioExecucao?.isometrico && exercicioExecucao?.timerExecucao?.ativo;
 
     return (
-        <div className="fixed inset-0 bg-base-primaria z-1000000 min-h-screen overflow-scroll">
+        <div className="fixed inset-0 bg-base-primaria z-1000000 min-h-screen overflow-scroll 
+        lg:relative lg:inset-auto lg:w-full">
             <div className="absolute w-full h-screen bg-linear-to-b from-destaque-s-claro/30 to-base-primaria" />
 
             <div className="relative w-9/10 mx-auto h-full">

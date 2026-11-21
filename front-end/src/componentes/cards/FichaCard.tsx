@@ -22,7 +22,13 @@ const FichaCard = ({ ficha }: { ficha: Ficha }) => {
 
     
     return (
-            <CardHorizontal className='hover:bg-base-terciaria/60 h-80 w-full'>
+            <CardHorizontal className='hover:bg-base-terciaria/60 h-80 w-full overflow-hidden relative'>
+                <div className="absolute inset-0 -z-90 bg-linear-to-b from-base-secundaria to-transparent"/>
+                <div className="absolute inset-0 -z-100 opacity-40">
+                    {ficha.imagem && (
+                        <img src={ficha.imagem} alt="" className="size-full object-cover rounded-lg" />
+                    )}
+                </div>
                 <div className="flex flex-col gap-5 text-base h-full py-4">
 
                     <div className="flex justify-between items-center gap-2 h-10">

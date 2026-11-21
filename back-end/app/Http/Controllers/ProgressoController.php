@@ -120,6 +120,8 @@ class ProgressoController extends Controller
                     'sessoes' => $sessoes->count(),
                     'cargaInicial' => (float) $primeira->max('peso'),
                     'cargaAtual' => (float) $ultima->max('peso'),
+                    'seriesIniciais' => (int) $primeira->count(),
+                    'seriesAtuais' => (int) $ultima->count(),
                     'repeticoesIniciais' => (int) $primeira->sum('repeticoes'),
                     'repeticoesAtuais' => (int) $ultima->sum('repeticoes'),
                 ];
@@ -163,6 +165,12 @@ class ProgressoController extends Controller
             ->orderByDesc('registrado_em')
             ->first();
 
+        // Peso inicial = primeiro registro de todos os tempos (não só do período)
+        $primeiroRegistro = RegistroPeso::where('user_id', $userId)
+            ->orderBy('registrado_em')
+            ->orderBy('id')
+            ->first();
+
         $variacaoPeso = null;
         $mediaSemanal = null;
 
@@ -187,7 +195,7 @@ class ProgressoController extends Controller
         return response()->json([
             'data' => [
                 'pesoAtual' => $ultimo?->peso,
-                'inicioPeso' => $registros->first()?->peso,
+                'inicioPeso' => $primeiroRegistro?->peso,
                 'variacaoPeso' => $variacaoPeso,
                 'mediaSemanal' => $mediaSemanal,
                 'tendencia' => $tendencia,
@@ -210,14 +218,28 @@ class ProgressoController extends Controller
 
         $inicio = now()->subDays($this->dias($request))->toDateString();
 
-        $historico = RegistroPeso::where('user_id', $userId)
+        $registros = RegistroPeso::where('user_id', $userId)
             ->where('registrado_em', '>=', $inicio)
             ->orderBy('registrado_em')
-            ->get()
+            ->get();
+
+        // Ponto de partida: último registro ANTES do período. Assim a linha do
+        // gráfico se forma mesmo quando há só um registro dentro do período.
+        $anterior = RegistroPeso::where('user_id', $userId)
+            ->where('registrado_em', '<', $inicio)
+            ->orderByDesc('registrado_em')
+            ->first();
+
+        if ($anterior) {
+            $registros->prepend($anterior);
+        }
+
+        $historico = $registros
             ->map(fn ($r) => [
                 'data' => $r->registrado_em->format('d/m'),
                 'valor' => $r->peso,
-            ]);
+            ])
+            ->values();
 
         return response()->json(['data' => $historico]);
     }
@@ -273,6 +295,24 @@ class ProgressoController extends Controller
     }
 
     /* =====================================================
+       GET /progresso/series?dias=30
+       Quantidade de séries concluídas: primeira x última sessão do período
+    ===================================================== */
+    public function series(Request $request): JsonResponse
+    {
+        $dados = $this->evolucaoPorExercicio($this->dias($request))
+            ->take(6)
+            ->map(fn ($e) => [
+                'nome' => $e['nome'],
+                'seriesIniciais' => $e['seriesIniciais'],
+                'seriesAtuais' => $e['seriesAtuais'],
+            ])
+            ->values();
+
+        return response()->json(['data' => $dados]);
+    }
+
+    /* =====================================================
        GET /progresso/repeticoes?dias=30
     ===================================================== */
     public function repeticoes(Request $request): JsonResponse
@@ -305,6 +345,25 @@ class ProgressoController extends Controller
         $data = isset($validado['data'])
             ? Carbon::parse($validado['data'])->toDateString()
             : today()->toDateString();
+
+        // Primeiro registro do usuário: guarda antes o peso do cadastro (perfil)
+        // como ponto de partida, numa data anterior. Esse vira o "peso inicial".
+        $primeiroRegistro = ! RegistroPeso::where('user_id', $userId)->exists();
+        $pesoCadastro = auth()->user()->perfil?->peso;
+
+        if ($primeiroRegistro && $pesoCadastro) {
+            $dataBase = auth()->user()->created_at?->toDateString() ?? $data;
+
+            if ($dataBase >= $data) {
+                $dataBase = Carbon::parse($data)->subDay()->toDateString();
+            }
+
+            RegistroPeso::create([
+                'user_id' => $userId,
+                'peso' => $pesoCadastro,
+                'registrado_em' => $dataBase,
+            ]);
+        }
 
         // 1 registro por dia: se já existe, atualiza
         $registro = RegistroPeso::updateOrCreate(

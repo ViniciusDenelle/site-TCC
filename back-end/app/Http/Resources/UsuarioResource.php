@@ -22,10 +22,16 @@ class UsuarioResource extends JsonResource
             'nivelDeAtividade'    => $this->perfil?->nivel_de_atividade,
             'experiencia'        => $this->perfil?->experiencia,
             'idade'              => $this->perfil?->idade,
+            'foto' => $this->perfil?->foto? asset('storage/' . $this->perfil->foto): null,
             
             'pesoIdeal'         => $this->objetivos?->peso_ideal,
+            'pesoMinimo'         => $this->objetivos?->peso_minimo,
+            'pesoMaximo'         => $this->objetivos?->peso_maximo,
             'objetivo'           => $this->objetivos?->tipo,
             'veloPerda'          => $this->objetivos?->velocidade,
+            'duracao'            => $this->objetivos?->duracao,
+            'comeco'             => $this->objetivos?->comeco,
+            'termino'            => $this->objetivos?->termino,
             
             'caloriasDiarias'          => $this->metricas?->calorias_diarias,
             'TMB'                => $this->metricas?->TMB,

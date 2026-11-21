@@ -35,7 +35,11 @@ const TreinoCard = ({
           <div className="flex gap-1 items-center">
 
             <div className="size-10 rounded-md bg-base-terciaria/40 flex items-center justify-center relative">
-              <Layers className='size-full p-1.5' strokeWidth={1} />
+              {treino.imagem ? (
+                <img src={treino.imagem} alt="" className="size-full object-cover" />
+              ) : (
+                <Layers className='size-full' strokeWidth={1} />
+              )}
               <span className="absolute -top-1 -left-1 bg-destaque-s-medio 
               text-[12px] size-4 rounded-full flex items-center justify-center">
                 {treino.exercicios.length}

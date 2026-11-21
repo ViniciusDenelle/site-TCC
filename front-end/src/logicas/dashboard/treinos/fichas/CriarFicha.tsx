@@ -1,8 +1,9 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 import api from '../../../../api';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { paraFormData } from '../../../paraFormData';
 
 type DiaSemana = 'segunda' | 'terca' | 'quarta' | 'quinta' | 'sexta' | 'sabado' | 'domingo';
 
@@ -16,6 +17,7 @@ export type FichaPayload = {
 const useCriarFicha = () => {
 
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
 
     const {
         mutate,
@@ -25,11 +27,11 @@ const useCriarFicha = () => {
         error,
     } = useMutation<AxiosResponse, AxiosError, FichaPayload>({
         mutationFn: async (dados: FichaPayload) => {
-            const res = await api.post('/dashboard/treinos/ficha', dados)
+            const res = await api.post('/dashboard/treinos/ficha', paraFormData(dados))
             return res.data
         },
         onSuccess: (res) => {
-            console.log(res)
+            queryClient.invalidateQueries({ queryKey: ['fichas'] })
             toast.success('Ficha criada com sucesso')
             navigate(`/dashboard/treino/verFicha/${res.data.id}`)
         },

@@ -9,6 +9,7 @@ class Exercicio extends Model
     protected $fillable = [
         'user_id',
         'nome',
+        'imagem',
         'descricao',
         'tipo_id',
         'nivel_id',

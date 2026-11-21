@@ -9,6 +9,9 @@ import useSelecaoComDados from '../selecionaveis/useSelecaoComDados';
 const useExercicioForm = () => {
     const [nome, setNome] = useState('');
     const [descricao, setDescricao] = useState('');
+    const [imagem, setImagem] = useState<File | null>(null);
+    const [imagemAtual, setImagemAtual] = useState<string | null>(null);
+    const [removerImagem, setRemoverImagem] = useState(false);
 
     const tipo = useSelecaoUnica<Badge>();
     const nivel = useSelecaoUnica<Badge>();
@@ -19,6 +22,10 @@ const useExercicioForm = () => {
     const preencherFormulario = (dados: ResExercicioProps) => {
         setNome(dados.nome || '');
         setDescricao(dados.descricao || '');
+
+        setImagem(null);
+        setImagemAtual(dados.imagem ?? null);
+        setRemoverImagem(false);
 
         if (dados.tipo) tipo.selecionar(dados.tipo);
         if (dados.nivel) nivel.selecionar(dados.nivel);
@@ -40,6 +47,12 @@ const useExercicioForm = () => {
         }
     };
 
+    const trocarImagem = (arquivo: File | null) => {
+        setImagem(arquivo);
+        // lixeira sem arquivo novo = apagar a imagem que já estava salva
+        setRemoverImagem(arquivo === null && !!imagemAtual);
+    };
+
     function montarPayload() {
         return {
             nome,
@@ -49,6 +62,8 @@ const useExercicioForm = () => {
             foco_id: foco.selecionado?.id ?? null,
             musculos: musculos.selecionados.map(({ id, metadado }) => ({ id, tipo: metadado })),
             equipamentos: equipamentos.selecionados.map(e => e.id),
+            imagem,                                  
+            remover_imagem: removerImagem ? 1 : 0
         };
     }
 
@@ -57,13 +72,16 @@ const useExercicioForm = () => {
         setNome,
         descricao,
         setDescricao,
+        imagem,
+        imagemAtual,
+        trocarImagem, 
+        montarPayload,
+        preencherFormulario,
         tipo,
         nivel,
         foco,
         equipamentos,
         musculos,
-        montarPayload,
-        preencherFormulario
     };
 };
 

@@ -4,20 +4,20 @@ import { User, Scale, Target, Save, X, Loader2 } from 'lucide-react'
 import CardHorizontal from '../../../componentes/CardHorizontal'
 import Texto from '../../../componentes/organizacao/Texto'
 import BotaoPrimario from '../../../componentes/botoes/BotaoPrimario'
-import { ReqUsuarioProps } from '../../../logicas/cadastro/useCadastro'
 import useUpdateUsuario from '../../../logicas/usuario/UpdateUsuario'
 import InputRange from '../../../componentes/inputs/InputRange'
 import RadioCustomizado from '../../../componentes/inputs/RadioCustomizado'
 import InputSimples from '../../../componentes/inputs/InputSimples'
-import useFetchUsuario from '../../../logicas/usuario/FetchUsuario'
+import useFetchUsuario, { RetornoUsuario } from '../../../logicas/usuario/FetchUsuario'
 
 interface FormEditarPerfilProps {
-    dadosUsuario?: Partial<ReqUsuarioProps>
+    dadosUsuario?: Partial<RetornoUsuario>
     onCancelar?: () => void
     onSucesso?: () => void
 }
 
-const montarEstadoInicial = (dados?: Partial<ReqUsuarioProps>): ReqUsuarioProps => ({
+const montarEstadoInicial = (dados?: Partial<RetornoUsuario>): RetornoUsuario => ({
+    id: dados?.id ?? 0,
     nome: dados?.nome ?? '',
     email: dados?.email ?? '',
     senha: '',
@@ -30,59 +30,47 @@ const montarEstadoInicial = (dados?: Partial<ReqUsuarioProps>): ReqUsuarioProps 
     altura: dados?.altura ?? 170,
     dataDeNascimento: dados?.dataDeNascimento ?? '',
     idade: dados?.idade ?? 25,
-    nivelAtividade: dados?.nivelAtividade ?? 1.2,
+    nivelDeAtividade: dados?.nivelDeAtividade ?? 1.2,
     objetivo: dados?.objetivo ?? 'Emagrecimento',
     experiencia: dados?.experiencia ?? 'Iniciante',
     TMB: dados?.TMB ?? 1600,
     GET: dados?.GET ?? 2000,
-    calDiaria: dados?.calDiaria ?? '1800',
+    caloriasDiarias: dados?.caloriasDiarias ?? 1800,
     veloPerda: dados?.veloPerda ?? 0.5,
-    tempo: {
-        semanas: dados?.tempo?.semanas ?? 12,
-        meses: dados?.tempo?.meses ?? 3,
-        previsao: dados?.tempo?.previsao ?? new Date().toISOString().split('T')[0],
-    },
+    comeco: dados?.comeco ?? null,
+    termino: dados?.termino ?? new Date().toISOString().split('T')[0],
+    duracao: dados?.duracao ?? null,
 })
 
 const AtualizarPerfil = ({
-    dadosUsuario: dadosUsuarioProp,
     onCancelar,
     onSucesso
 }: FormEditarPerfilProps) => {
-    const { dadosUsuario: dadosUsuarioFetch } = useFetchUsuario()
+    const { dadosUsuario } = useFetchUsuario()
     const { atualizarUsuario, isPending } = useUpdateUsuario()
 
-    const usuarioAtual = dadosUsuarioProp ?? dadosUsuarioFetch
-
-    const [formData, setFormData] = useState<ReqUsuarioProps>(() =>
-        montarEstadoInicial(usuarioAtual)
+    const [formData, setFormData] = useState<RetornoUsuario>(() =>
+        montarEstadoInicial(dadosUsuario)
     )
 
     useEffect(() => {
-        if (usuarioAtual) {
-            setFormData(montarEstadoInicial(usuarioAtual))
+        if (dadosUsuario) {
+            setFormData(montarEstadoInicial(dadosUsuario))
         }
-    }, [usuarioAtual])
+    }, [dadosUsuario])
 
-    const handleChange = (field: keyof ReqUsuarioProps, value: any) => {
+    const handleChange = (field: keyof RetornoUsuario, value: any) => {
         setFormData((prev) => ({ ...prev, [field]: value }))
-    }
-
-    const handleTempoChange = (field: keyof ReqUsuarioProps['tempo'], value: any) => {
-        setFormData((prev) => ({
-            ...prev,
-            tempo: { ...prev.tempo, [field]: value },
-        }))
     }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
 
-        atualizarUsuario(formData, {
-            onSuccess: () => {
-                if (onSucesso) onSucesso()
-            }
-        })
+        // atualizarUsuario(formData, {
+        //     onSuccess: () => {
+        //         if (onSucesso) onSucesso()
+        //     }
+        // })
     }
 
     return (
@@ -144,7 +132,7 @@ const AtualizarPerfil = ({
                             <InputSimples
                                 tipo="password"
                                 name="senha"
-                                valor={formData.senha}
+                                valor={formData.senha || ''}
                                 onChange={(e) => handleChange('senha', e.target.value)}
                                 placeholder="Deixe em branco para não alterar"
                                 classeAdicional="w-full px-3 py-2 text-t-primaria text-sm"
@@ -278,9 +266,9 @@ const AtualizarPerfil = ({
                             <Texto tipo="subtitulo" className="text-xs text-t-secundaria">Previsão de Término</Texto>
                             <InputSimples
                                 tipo="date"
-                                name="previsao"
-                                valor={formData.tempo.previsao}
-                                onChange={(e) => handleTempoChange('previsao', e.target.value)}
+                                name="termino"
+                                valor={formData.termino || ''}
+                                onChange={(e) => handleChange('termino', e.target.value)}
                                 classeAdicional="w-full px-3 py-2 text-t-primaria text-sm"
                             />
                         </div>
@@ -307,12 +295,12 @@ const AtualizarPerfil = ({
                         <div className="flex flex-col gap-2 pt-2">
                             <div className="flex justify-between items-center">
                                 <Texto tipo="subtitulo" className="text-xs text-t-secundaria">Nível de Atividade</Texto>
-                                <span className="text-xs text-t-primaria font-bold">{formData.nivelAtividade}x</span>
+                                <span className="text-xs text-t-primaria font-bold">{formData.nivelDeAtividade}x</span>
                             </div>
                             <div className="h-6 flex items-center">
                                 <InputRange
-                                    valor={Number(formData.nivelAtividade)}
-                                    onChange={(val) => handleChange('nivelAtividade', val)}
+                                    valor={Number(formData.nivelDeAtividade) || 1.2}
+                                    onChange={(val) => handleChange('nivelDeAtividade', val)}
                                     min={1.2}
                                     max={2.0}
                                     step={0.05}
@@ -327,7 +315,7 @@ const AtualizarPerfil = ({
                             </div>
                             <div className="h-6 flex items-center">
                                 <InputRange
-                                    valor={Number(formData.veloPerda)}
+                                    valor={Number(formData.veloPerda) || 0.5}
                                     onChange={(val) => handleChange('veloPerda', val)}
                                     min={0.1}
                                     max={1.5}

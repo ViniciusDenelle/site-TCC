@@ -10,17 +10,17 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-export interface ExercicioRepeticoes {
+export interface ExercicioSeries {
   nome: string;
-  repeticoesIniciais: number;
-  repeticoesAtuais: number;
+  seriesIniciais: number;
+  seriesAtuais: number;
 }
 
-interface GraficoRepeticoesProps {
-  dados: ExercicioRepeticoes[];
+interface GraficoSeriesProps {
+  dados: ExercicioSeries[];
 }
 
-const GraficoRepeticoes: React.FC<GraficoRepeticoesProps> = ({ dados }) => {
+const GraficoSeries: React.FC<GraficoSeriesProps> = ({ dados }) => {
   return (
     <div className="w-full h-[300px] flex items-center justify-center pt-2">
       <ResponsiveContainer width="100%" height="100%">
@@ -50,7 +50,7 @@ const GraficoRepeticoes: React.FC<GraficoRepeticoesProps> = ({ dados }) => {
               color: '#fff',
               fontSize: '12px',
             }}
-            formatter={(value: number) => [`${value} repetições`, '']}
+            formatter={(value) => [`${value} séries`, '']}
           />
 
           <Legend
@@ -60,16 +60,16 @@ const GraficoRepeticoes: React.FC<GraficoRepeticoesProps> = ({ dados }) => {
           />
 
           <Bar
-            name="Repetições Iniciais"
-            dataKey="repeticoesIniciais"
+            name="Séries Iniciais"
+            dataKey="seriesIniciais"
             fill="#71717a"
             radius={[6, 6, 0, 0]}
             maxBarSize={32}
           />
 
           <Bar
-            name="Repetições Atuais"
-            dataKey="repeticoesAtuais"
+            name="Séries Atuais"
+            dataKey="seriesAtuais"
             fill="#10b981"
             radius={[6, 6, 0, 0]}
             maxBarSize={32}
@@ -80,4 +80,4 @@ const GraficoRepeticoes: React.FC<GraficoRepeticoesProps> = ({ dados }) => {
   );
 };
 
-export default GraficoRepeticoes;
+export default GraficoSeries;

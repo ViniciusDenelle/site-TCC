@@ -15,6 +15,7 @@ import useFetchBadge from "../../../../logicas/dashboard/treinos/FetchBadge"
 import { ErrosValidacao, ResBadges, RespostaErroLaravel } from "../../../../logicas/dashboard/treinos/exercicios/exercicoProps"
 import { AxiosError } from "axios"
 import SecaoBadges from "../../../../componentes/SecaoBadges"
+import InputImagem from "../../../../componentes/inputs/InputImagem"
 
 const CriarExercicios = () => {
 
@@ -46,6 +47,9 @@ const CriarExercicios = () => {
         equipamentos,
         musculos,
         montarPayload,
+        imagem,
+        imagemAtual,
+        trocarImagem
     } = useExercicioForm();
 
     const comportamentoPorTipo: Record<string, { isSelecionado: (id: number) => boolean; onToggle: (item: Badge) => void }> = {
@@ -94,16 +98,14 @@ const CriarExercicios = () => {
             <div className="container mx-auto h-full">
                 <div className="flex flex-col h-full gap-2 divide-base-terciaria">
 
-                    <Texto tipo="titulo" className="font-thin">
-                        Adcione imagem
-                    </Texto>
-                    <CardHorizontal>
-                        <div className="flex items-center justify-center h-20">
-                            <WrapperIcone>
-                                <ImagePlus className="size-full" />
-                            </WrapperIcone>
-                        </div>
-                    </CardHorizontal>
+                    <div className="w-6/10 mx-auto">
+                        <InputImagem 
+                            valor={imagem}
+                            urlAtual={imagemAtual}
+                            onChange={trocarImagem}
+                            placeholder="adicione uma imagem do exercicio"
+                        />
+                    </div>
 
                     <Texto tipo="titulo" className="font-thin">
                         nome do exercicio

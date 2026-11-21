@@ -17,6 +17,7 @@ class TreinoResource extends JsonResource
             'id' => $this->id,
             'nome' => $this->nome,
             'descricao' => $this->descricao,
+            'imagem' => $this->imagem ? asset('storage/' . $this->imagem) : null,
             'criador'   => $this->when($this->relationLoaded('criador'), function () {
                 return $this->criador ? [
                     'id'   => $this->criador->id,

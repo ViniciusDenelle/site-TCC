@@ -34,6 +34,7 @@ import { Badge } from "../../../../logicas/dashboard/treinos/exercicios/FetchExe
 import { RespostaErroLaravel } from "../../../../logicas/dashboard/treinos/exercicios/exercicoProps";
 import useUpdateTreino from "../../../../logicas/dashboard/treinos/treino/UpdateTreino";
 import BotaoTerciario from "../../../../componentes/botoes/BotaoTerciario";
+import InputImagem from "../../../../componentes/inputs/InputImagem";
 
 const EditarTreino = () => {
     const { id } = useParams<{ id: string }>();
@@ -70,6 +71,9 @@ const EditarTreino = () => {
         foco,
         montarPayload,
         popularFormulario,
+        imagem,
+        imagemAtual,
+        trocarImagem
     } = useTreinoForm();
 
     // Popula o formulário automaticamente quando o treino é carregado da API
@@ -128,6 +132,8 @@ const EditarTreino = () => {
         editarTreino(montarPayload());
     };
 
+    console.log(montarPayload());
+
     return (
         <div className="min-h-screen w-full">
             <div className="container mx-auto h-full">
@@ -139,16 +145,14 @@ const EditarTreino = () => {
                         classeAdicional="ml-auto"
                     />
 
-                    <Texto tipo="titulo" className="font-thin">
-                        Editar Imagem
-                    </Texto>
-                    <CardHorizontal>
-                        <div className="flex items-center justify-center h-20">
-                            <WrapperIcone>
-                                <ImagePlus className="size-full" />
-                            </WrapperIcone>
-                        </div>
-                    </CardHorizontal>
+                    <div className="w-full md:w-6/10 mx-auto">
+                        <InputImagem 
+                            valor={imagem}
+                            urlAtual={imagemAtual}
+                            onChange={trocarImagem}
+                            placeholder="adicione uma imagem do treino"
+                        />
+                    </div>
 
                     <Texto tipo="titulo" className="font-thin">
                         Nome do Treino

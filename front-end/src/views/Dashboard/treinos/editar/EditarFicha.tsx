@@ -24,6 +24,7 @@ import useUpdateFicha from '../../../../logicas/dashboard/treinos/fichas/UpdateF
 import DiaDropzone from '../../../../componentes/dashboard/treino/DIaDropzone';
 import TreinoArrastavel from '../../../../componentes/dashboard/treino/TreinoArrastavel';
 import { nomesDias } from '../../../../logicas/dashboard/treinos/fichas/nomesDias';
+import InputImagem from '../../../../componentes/inputs/InputImagem';
 
 const EditarFicha = () => {
     const { id } = useParams<{ id: string }>();
@@ -44,6 +45,7 @@ const EditarFicha = () => {
         todosOsTreinosSelecionados,
         montarPayload,
         preencherFormulario,
+        imagem, trocarImagem, imagemAtual
     } = useFichaTreinoForm();
 
     const [hidratado, setHidratado] = useState(false);
@@ -99,9 +101,6 @@ const EditarFicha = () => {
     if (isErrorFicha || !ficha) {
         return <Texto>Ficha não encontrada.</Texto>;
     }
-
-    console.log(montarPayload())
-
     return (
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
             <div className="min-h-screen w-full">
@@ -112,6 +111,15 @@ const EditarFicha = () => {
                         classeAdicional='ml-auto'
                         onClick={() => preencherFormulario(ficha)}
                     />
+
+                    <div className="w-full md:w-6/10 mx-auto">
+                        <InputImagem 
+                            valor={imagem}
+                            urlAtual={imagemAtual}
+                            onChange={trocarImagem}
+                            placeholder="adicione uma imagem do exercicio"
+                        />
+                    </div>
 
                     <Texto tipo="titulo" className="font-thin">Nome da ficha</Texto>
                     <InputSimples tipo="text" valor={nome} onChange={e => setNome(e.target.value)} placeholder="nome da ficha" />

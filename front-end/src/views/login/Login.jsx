@@ -7,16 +7,18 @@ import GoogleIcone from '../../assets/icones/googleIcone.svg'
 import LinkSimples from '../../componentes/links/LinkSimples'
 import useCadastro from '../../logicas/cadastro/useCadastro'
 import useConfirmacao from '../../logicas/usuario/useConfirmacao'
-import { Mail } from 'lucide-react'
+import { Eye, EyeClosed, Mail } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '../../api'
 import toast from 'react-hot-toast'
 import Texto from '../../componentes/organizacao/Texto'
+import BotaoTerciario from '../../componentes/botoes/BotaoTerciario'
 
 const Login = () => {
 
     const [email, setEmail] = useState('')
     const [senha, setSenha] = useState('')
+    const [senhaVisivel, setSenhaVisivel] = useState(false)
     const [erros, setErros] = useState([])
 
     const queryClient = useQueryClient()
@@ -73,10 +75,10 @@ const Login = () => {
                 )}
             </div>
 
-            <div className="flex flex-col gap-1">
+            <div className="relative flex flex-col gap-1">
                 <label htmlFor="senha">senha:</label>
                 <InputSimples
-                    type={"password"}
+                    tipo={senhaVisivel ? "text" : "password"}
                     name={"senha"}
                     value={senha}
                     maximo={30}
@@ -88,6 +90,13 @@ const Login = () => {
                         {erros['senha']}
                     </span>
                 )}
+
+                <div className="absolute top-1/2 right-2 transform ">
+                    <BotaoTerciario 
+                        icone={senhaVisivel ? Eye : EyeClosed}
+                        onClick={() => setSenhaVisivel(!senhaVisivel)}
+                    />
+                </div>
             </div>
             
             <p className='mx-auto'>ou</p>

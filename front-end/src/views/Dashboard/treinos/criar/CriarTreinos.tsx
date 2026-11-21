@@ -35,6 +35,7 @@ import {
 import { SortableItem } from "../../../../componentes/organizacao/SortableItem"
 import SecaoBadges from "../../../../componentes/SecaoBadges"
 import useCriarTreino from "../../../../logicas/dashboard/treinos/treino/CriarTreino"
+import InputImagem from "../../../../componentes/inputs/InputImagem"
 
 
 const CriarTreinos = () => {
@@ -58,9 +59,10 @@ const CriarTreinos = () => {
         foco,
         montarPayload,
         popularFormulario,
+        imagem,
+        imagemAtual,
+        trocarImagem, 
     } = useTreinoForm();
-
-    console.log(montarPayload())
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -111,16 +113,14 @@ const CriarTreinos = () => {
             <div className="container mx-auto h-full">
                 <div className="flex flex-col h-full gap-2 divide-base-terciaria">
 
-                    <Texto tipo="titulo" className="font-thin">
-                        Adcione imagem
-                    </Texto>
-                    <CardHorizontal>
-                        <div className="flex items-center justify-center h-20">
-                            <WrapperIcone>
-                                <ImagePlus className="size-full" />
-                            </WrapperIcone>
-                        </div>
-                    </CardHorizontal>
+                    <div className="w-full md:w-6/10 mx-auto">
+                        <InputImagem 
+                            valor={imagem}
+                            urlAtual={imagemAtual}
+                            onChange={trocarImagem}
+                            placeholder="adicione uma imagem do treino"
+                        />
+                    </div>
 
                     <Texto tipo="titulo" className="font-thin">
                         nome do Treino

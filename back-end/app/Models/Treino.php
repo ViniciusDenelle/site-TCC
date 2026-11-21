@@ -15,6 +15,7 @@ class Treino extends Model
         'divisao_ficha_id',
         'nome',
         'descricao',
+        'imagem',
         'tempo_medio',
         'calorias_medias',
     ];

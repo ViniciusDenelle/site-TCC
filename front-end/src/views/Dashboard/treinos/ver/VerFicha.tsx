@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { Layers, EllipsisVertical, ArrowBigLeft, ArrowLeft } from 'lucide-react';
+import { Layers, EllipsisVertical, ArrowBigLeft, ArrowLeft, Weight } from 'lucide-react';
 import Texto from '../../../../componentes/organizacao/Texto';
 import CardHorizontal from '../../../../componentes/CardHorizontal';
 import BotaoTerciario from '../../../../componentes/botoes/BotaoTerciario';
@@ -36,6 +36,8 @@ const VerFicha = () => {
         return <Texto>Ficha não encontrada.</Texto>;
     }
 
+    console.log(ficha)
+
     return (
         <div className="min-h-screen w-full">
 
@@ -62,10 +64,18 @@ const VerFicha = () => {
                         />
                     </div>
 
-                    <div className="size-7/10 mx-auto flex items-center justify-center bg-base-terciaria rounded-lg p-2">
-                        <Layers className="size-full" strokeWidth={1} />
+                    <div className="size-7/10 md:size-80 mx-auto flex items-center 
+                    justify-center bg-base-terciaria rounded-lg p-2">
+                        {ficha.imagem ? (
+                            <img 
+                                src={ficha.imagem} 
+                                alt={ficha.nome} 
+                                className="size-full rounded-md overflow-hidden shrink-0"
+                            />
+                        ) : (
+                            <Layers className="size-full" strokeWidth={1} />
+                        )}
                     </div>
-
                     <Texto tipo="titulo" className="text-t-primaria">
                         {ficha.nome}
                     </Texto>
