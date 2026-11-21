@@ -21,6 +21,7 @@ import DashboardMenuInferior from "../../componentes/dashboard/DashboardMenuInfe
 import { menu, nav } from "../../componentes/dashboard/DashboardlinksNav"
 import ModalPlayer from "../../componentes/dashboard/player/ModalPlayer"
 import MenuPlayer from "../../componentes/dashboard/player/menus/MenuPlayer"
+import AbaTreinar from "../../componentes/dashboard/AbaTreinar"
 // import { UsuarioProvider } from "../contextos/UsuarioContexto"
 
 const DashboardLayout = () => {
@@ -88,34 +89,7 @@ const DashboardLayout = () => {
                     <div className="w-full">
                         <Outlet />
                     </div>
-                    <div className="md:w-4/10 md:border-l-2 bg-base-secundaria/50 border-base-secundaria md:p-4 ">
-
-                        <div className="hidden md:flex flex-col justify-center align-center h-screen gap-4">
-                            <Texto>
-                                você ainda não tem nenhum treino em execução, inicie um treino para acompanhar seu progresso
-                            </Texto>
-
-                            <NavLink to="/dashboard/treino/pesquisar/treino" 
-                            className="w-full flex justify-center items-center">
-                                {({ isActive }) => (
-                                    isActive ? (
-                                        <Texto className="text-destaque-s-medio text-center">
-                                            inicie um treino clicando nos tres pontinhos ao lado do treino desejado
-                                        </Texto>
-                                    ) : (
-                                        <BotaoSecundario 
-                                            texto="Iniciar Treino"
-                                        />
-                                    )
-                                )}
-                            </NavLink>
-                        </div>
-
-                        <ModalPlayer />
-                    </div>
-
-                    
-
+                    <AbaTreinar />
                 </div>
 
                 

@@ -74,11 +74,16 @@ export function DietaCard({ dieta, onAdicionar }: Props) {
         className="bg-base-secundaria rounded-3xl p-5 border border-base-terciaria/20 shadow-xl flex flex-col gap-4 overflow-hidden cursor-pointer"
         onClick={() => navigate(`/dashboard/dieta/verDieta/${dieta.id}`)}
       >
-
-        <div className="w-full h-24 rounded-2xl bg-base-terciaria flex items-center justify-center">
-          <Utensils className="size-10 text-destaque-p-claro" strokeWidth={1.5} />
-        </div>
-
+        {dieta?.imagem ? (
+            <div className="w-full h-24 rounded-2xl bg-base-terciaria flex items-center justify-center">
+              <img src={dieta.imagem} alt="" className="size-full object-cover rounded-lg" />
+            </div>
+        ) : (
+          <div className="w-full h-24 rounded-2xl bg-base-terciaria flex items-center justify-center">
+            <Utensils className="size-10 text-destaque-p-claro" strokeWidth={1.5} />
+          </div>
+        )}
+        
         <div className="flex flex-col gap-2.5">
           <Texto tipo="titulo" className="text-t-primaria leading-snug">
             {dieta.nome}

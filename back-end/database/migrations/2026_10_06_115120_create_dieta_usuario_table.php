@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('dieta_usuario', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('dieta_id')->constrained('dietas')->cascadeOnDelete();
             $table->timestamps();
+
+            $table->unique(['user_id', 'dieta_id']);   // impede adicionar a mesma dieta duas vezes
         });
     }
 

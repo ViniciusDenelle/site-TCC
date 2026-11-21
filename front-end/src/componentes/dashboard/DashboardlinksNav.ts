@@ -21,11 +21,6 @@ export const nav = [
         legenda: 'progresso',
         to: '/dashboard/progresso'
     },
-    {
-        icone: UserCircle,
-        legenda: 'perfil',
-        to: '/dashboard/perfil'
-    },
 ]
 
 export const menu = [

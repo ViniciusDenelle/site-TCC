@@ -33,25 +33,16 @@ const DashboardHeader = ({
     console.log('dadosUsuario', dadosUsuario)
 
     return (
-        <header className="fixed top-0 left-0 w-full z-1000 text-t-terciaria">
+        <header className="fixed top-0 left-0 z-1000 text-t-terciaria">
 
-            <div className="container mx-auto px-2">
+            <div className="container mx-auto px-2 ">
 
-                <nav
-                    className={`
-                            relative flex justify-between
-                            w-full p-2
-                            `}
-                >
-                    <BotaoSecundario
+                <BotaoSecundario
                         onClick={abrirMenu}
-                        classeAdicional="ring-transparent 
+                        classeAdicional="ring-transparent mt-2
                                 hover:ring-transparentlg:hidden"
                         icone={TextAlignJustify}
                     />
-                    {/* titulo */}
-
-                </nav>
                 <AnimatePresence>
 
                     {menuAberto && (

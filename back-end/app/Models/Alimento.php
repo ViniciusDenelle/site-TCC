@@ -7,6 +7,7 @@ class Alimento extends Model
 {
     protected $fillable = [
         'nome',
+        'imagem',
         'porcao_descricao',
         'porcao_gramas',
         'calorias',

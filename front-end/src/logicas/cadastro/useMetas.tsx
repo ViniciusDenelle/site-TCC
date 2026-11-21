@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo } from 'react'
 
 interface DadosMetas {
   veloPerda: number
@@ -24,23 +24,21 @@ const useMetas = (
   } = dados
 
   const calorias = useMemo(() => {
-    if (!veloPerda || !GET)
-      return { calorias: 0, diff: 0 }
+    if (!GET) return { calorias: 0, diff: 0 }
 
-    const diferencaKcal = (7000 / 7 * veloPerda)
+    // manter peso não tem velocidade: antes caía no primeiro if e dava 0 kcal
+    if (objetivo === 'manter_peso') return { calorias: GET, diff: 0 }
 
-    if (objetivo === 'perder_peso') {
-      return {
-        calorias: GET - diferencaKcal,
-        diff: diferencaKcal
-      }
-    } else if (objetivo === 'ganhar_peso') {
-      return {
-        calorias: GET + diferencaKcal,
-        diff: diferencaKcal
-      }
-    } else {
-      return { calorias: GET }
+    if (!veloPerda) return { calorias: 0, diff: 0 }
+
+    const diferencaKcal = Math.round((7000 / 7) * veloPerda)
+
+    return {
+      // o back valida calDiaria como integer
+      calorias: Math.round(
+        objetivo === 'perder_peso' ? GET - diferencaKcal : GET + diferencaKcal
+      ),
+      diff: diferencaKcal
     }
   }, [veloPerda, GET, objetivo])
 
@@ -48,15 +46,15 @@ const useMetas = (
     if (!pesoIdeal || !veloPerda)
       return { meses: 0, semanas: 0, previsao: '' }
 
-    let difPeso =
+    const difPeso =
       objetivo === 'perder_peso'
         ? peso - pesoIdeal
         : pesoIdeal - peso
 
-    let semanasTotais = difPeso / veloPerda
+    const semanasTotais = Math.max(0, difPeso / veloPerda)
 
-    let meses = Math.floor(semanasTotais / 4)
-    let semanas = Math.round(semanasTotais % 4)
+    const meses = Math.floor(semanasTotais / 4)
+    const semanas = Math.round(semanasTotais % 4)
 
     const hoje = new Date()
     const dias = Math.round(semanasTotais * 7)
@@ -67,9 +65,10 @@ const useMetas = (
     return {
       meses,
       semanas,
-      previsao: dataFinal.toLocaleDateString("pt-BR")
+      previsao: dataFinal.toLocaleDateString('pt-BR')
     }
-  }, [pesoIdeal, veloPerda])
+    // antes faltavam peso e objetivo: mudar só o peso não recalculava
+  }, [peso, pesoIdeal, veloPerda, objetivo])
 
   const minMaxPeso = useMemo(() => {
     if (objetivo === 'perder_peso') {
@@ -97,20 +96,17 @@ const useMetas = (
   }, [peso, altura, objetivo])
 
   useEffect(() => {
-    if (!tempoEstimado) return
     mudarDados('tempo', tempoEstimado)
   }, [tempoEstimado])
 
   useEffect(() => {
-    if (!calorias) return
     mudarDados('calDiaria', calorias.calorias)
   }, [calorias])
 
   useEffect(() => {
-    if (objetivo !== 'manter_peso') return 
+    if (objetivo !== 'manter_peso') return
     mudarDados('pesoMinimo', minMaxPeso.minRec)
     mudarDados('pesoMaximo', minMaxPeso.maxRec)
-
   }, [objetivo, minMaxPeso])
 
   return {

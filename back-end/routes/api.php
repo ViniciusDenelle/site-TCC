@@ -20,7 +20,7 @@ use App\Http\Controllers\ProgressoController;
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/usuario', [UsuarioController::class, 'fetch']);
     Route::get('/logout', [UsuarioController::class, 'logout']);
-    Route::put('/atualizarUsuario', [UsuarioController::class, 'update']);
+    Route::put('/atualizarUsuario', [UsuarioController::class, 'atualizar']);
     Route::apiResource('dietas', DietaController::class)->only(['index', 'store', 'show']);
     Route::prefix('dashboard')->group(function() {
 
