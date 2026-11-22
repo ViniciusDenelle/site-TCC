@@ -35,8 +35,6 @@ const useConfirmacao = (
 
     const enviarEmailHandler = (): void => {
 
-        if (!dados.email) return
-
         emailMutation.mutate(
             {
                 email: dados.email,

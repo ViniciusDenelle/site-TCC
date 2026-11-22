@@ -14,9 +14,7 @@ const ModalPlayerComando = () => {
     const emExecucaoTempo = exercicioExecucao.isometrico && exercicioExecucao.timerExecucao.ativo
 
     return (
-        <div className="absolute bottom-0 left-0  
-                        w-full bg-linear-to-t pb-5
-                        from-base-primaria to-transparent">
+        <div className="w-full bg-linear-to-t pb-5">
 
             <div className="flex flex-col gap-2">
                 <div className="flex flex-col">

@@ -173,9 +173,15 @@ const Metas = () => {
 
   {/* Velocidade de Perda / Ganho */ }
   <div className="flex flex-col gap-4">
-    <Texto tipo='subtitulo' className='text-t-primaria'>
-      Velocidade de {objetivo === 'perder_peso' ? 'perda' : 'ganho'}
-    </Texto>
+    <div className="flex flex-col gap-1">
+      <Texto tipo='subtitulo' className='text-t-primaria'>
+        Velocidade de {objetivo === 'perder_peso' ? 'perda' : 'ganho'}
+      </Texto>
+
+      <Texto tipo='subtexto' className='text-t-terciaria'>
+        esses dados são estimativas, aconsulte um profissional de saúde para definir metas mais precisas
+      </Texto>
+    </div>
     <div className="grid grid-rows-2 grid-cols-2 gap-2 w-full">
       {velocidadePerda.map(radio => (
         <RadioCustomizado

@@ -21,6 +21,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/usuario', [UsuarioController::class, 'fetch']);
     Route::get('/logout', [UsuarioController::class, 'logout']);
     Route::put('/atualizarUsuario', [UsuarioController::class, 'atualizar']);
+    Route::post('/perfil/codigo', [UsuarioController::class, 'enviarCodigoPerfil'])
+     ->middleware(['auth:sanctum', 'throttle:3,1']); 
+
     Route::apiResource('dietas', DietaController::class)->only(['index', 'store', 'show']);
     Route::prefix('dashboard')->group(function() {
 

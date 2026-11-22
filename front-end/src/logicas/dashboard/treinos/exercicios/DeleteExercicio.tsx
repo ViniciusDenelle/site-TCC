@@ -24,7 +24,7 @@ const   useDeleteExercicio = (id: number) => {
 
         onSuccess: (res) => {
             toast.success('Exercicio removido com sucesso')
-            navigate(-1)
+            navigate('/dashboard/treino/MeusTreinos')
         },
 
         onError: (error) => {

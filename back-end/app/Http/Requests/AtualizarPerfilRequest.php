@@ -24,8 +24,15 @@ class AtualizarPerfilRequest extends UsuarioRequest
         // senha só é enviada quando o usuário quer trocar
         $rules['senha'] = 'nullable|string|min:4';
 
-        // não há confirmação por código de e-mail na edição
-        unset($rules['codigoConfirmacao']);
+        // código obrigatório só quando o e-mail ou a senha estão sendo trocados.
+        // a conferência do código em si é feita no controller.
+        $mudaEmail = strcasecmp((string) $this->input('email'), $this->user()->email) !== 0;
+        $mudaSenha = filled($this->input('senha'));
+
+        $rules['codigoConfirmacao'] = [
+            ($mudaEmail || $mudaSenha) ? 'required' : 'nullable',
+            'string',
+        ];
 
         $rules['foto'] = 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048';
         $rules['remover_foto'] = 'nullable|boolean';

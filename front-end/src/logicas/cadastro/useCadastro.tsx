@@ -3,9 +3,9 @@ import type { UseMutationResult } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { AxiosError } from 'axios'
 import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import api from '../../api.js'
 import { paraFormData } from '../paraFormData.js'
-
 
 /* ================= TYPES ================= */
 
@@ -86,18 +86,43 @@ export type UseCadastroReturn = {
 /* ================= CONSTANTES ================= */
 
 // campo com erro vindo do back -> passo onde o usuário corrige
-const campoParaPasso: Partial<Record<keyof DadosCadastro, Passo>> = {
+// (chaves aninhadas como "tempo.meses" são reduzidas ao prefixo antes da busca)
+const campoParaPasso: Record<string, Passo> = {
     genero: 1,
     peso: 1,
+    tipoPeso: 1,
     altura: 1,
     dataDeNascimento: 1,
+    idade: 1,
+    TMB: 1,
+    GET: 1,
     nivelAtividade: 2,
-    veloPerda: 4,
+    objetivo: 3,
+    experiencia: 3,
     pesoIdeal: 4,
+    pesoMinimo: 4,
+    pesoMaximo: 4,
+    veloPerda: 4,
+    calDiaria: 4,
+    duracao: 4,
+    termino: 4,
+    tempo: 4,
     nome: 6,
     email: 6,
     senha: 6,
     foto: 6,
+    codigoConfirmacao: 6,
+}
+
+// aceita o erro padrão do axios (error.response.data) e também interceptors
+// que rejeitam direto o corpo da resposta
+const lerErroApi = (error: unknown) => {
+    const e = error as any
+
+    return {
+        status: e?.response?.status ?? e?.status,
+        data: e?.response?.data ?? e?.data ?? e,
+    }
 }
 
 const estadoInicial = (): DadosCadastro => ({
@@ -285,21 +310,41 @@ const useCadastro = (): UseCadastroReturn => {
         CadastroInfo
     >({
         mutationFn: async (info) => {
-            // multipart/form-data: necessário para enviar o arquivo da foto
+            console.log(paraFormData(info))
             const res = await api.post('/cadastro', paraFormData(info))
             return res.data
         },
 
         onError: (error) => {
-            const erros = error.response?.data?.errors
-            if (!erros) return
+            console.error('erro do cadastro:', error)   // temporário: mostra o formato real do erro
 
-            setErrosCampo(erros)
+            const { status, data } = lerErroApi(error)
+            const erros = data?.errors as Record<string, string[]> | undefined
 
-            const primeiro = Object.keys(erros)[0] as keyof DadosCadastro
-            const passoErrado = campoParaPasso[primeiro]
+            if (erros && Object.keys(erros).length) {
+                setErrosCampo(erros as ErrosCampoCadastro)
 
-            if (passoErrado) setPasso(passoErrado)
+                // abre o passo mais antigo que tem erro (e não só o primeiro que o back listou)
+                const passos = Object.keys(erros)
+                    .map(campo => campoParaPasso[campo.split('.')[0]])
+                    .filter((p): p is Passo => p !== undefined)
+
+                if (passos.length) setPasso(Math.min(...passos) as Passo)
+
+                // alguns campos (TMB, idade...) não aparecem em nenhum passo
+                toast.error(Object.values(erros)[0][0])
+                return
+            }
+
+            // respostas sem "errors": código de confirmação errado (401), erro 500 etc.
+            const mensagem = data?.mensagem ?? data?.message ?? 'não foi possível concluir o cadastro'
+
+            if (status === 401) {
+                setErrosCampo({ codigoConfirmacao: [mensagem] })
+                setPasso(6)
+            }
+
+            toast.error(mensagem)
         },
 
         onSuccess: ({ token, usuario }) => {
