@@ -33,25 +33,16 @@ const DashboardHeader = ({
     console.log('dadosUsuario', dadosUsuario)
 
     return (
-        <header className="fixed top-0 left-0 w-full z-1000 text-t-terciaria">
+        <header className="fixed top-0 left-0 z-1000 text-t-terciaria">
 
-            <div className="container mx-auto px-2">
+            <div className="container mx-auto px-2 ">
 
-                <nav
-                    className={`
-                            relative flex justify-between
-                            w-full p-2
-                            `}
-                >
-                    <BotaoSecundario
+                <BotaoSecundario
                         onClick={abrirMenu}
-                        classeAdicional="ring-transparent 
+                        classeAdicional="ring-transparent mt-2
                                 hover:ring-transparentlg:hidden"
                         icone={TextAlignJustify}
                     />
-                    {/* titulo */}
-
-                </nav>
                 <AnimatePresence>
 
                     {menuAberto && (
@@ -79,7 +70,7 @@ const DashboardHeader = ({
                             </div>
                             <CardHorizontal>
                                 <div className="flex gap-2 items-center">
-                                    <LinkSimples to="/perfil" className="flex gap-1 items-center">
+                                    <LinkSimples to="/dashboard" className="flex gap-1 items-center">
                                         {dadosUsuario?.foto ? (
                                             <div className="size-15 rounded-full object-cover border-2 border-t-terciaria/50 p-1">
                                                 <img src={dadosUsuario.foto} alt="" className="size-full rounded-full object-cover" />
@@ -103,7 +94,7 @@ const DashboardHeader = ({
                                 <CardHorizontal className="hidden md:flex">
                                     <div className="flex flex-col gap-4">
                                         {linksNav.map(link => (
-                                            <LinkSimples key={link.legenda} to={link.to}>
+                                            <LinkSimples key={link.legenda} end={link.end} to={link.to}>
                                                 <div className="flex w-full gap-2 items-center">
                                                     <WrapperIcone>
                                                         <link.icone className="size-full" />
@@ -117,7 +108,7 @@ const DashboardHeader = ({
                                     </div>
                                 </CardHorizontal>
                                 {linksMenu.map(link => (
-                                    <LinkSimples key={link.legenda} to={link.to}>
+                                    <LinkSimples key={link.legenda} end={link.end} to={link.to}>
                                         <div className="flex w-full gap-2 items-center">
                                             <WrapperIcone>
                                                 <link.icone className="size-full" />

@@ -10,7 +10,7 @@ interface CadastroProviderProps {
   children: ReactNode
 }
 
-const CadastroContext = createContext<CadastroContextType | null>(null)
+export const CadastroContext = createContext<CadastroContextType | null>(null)
 
 export const CadastroProvider = ({
   children

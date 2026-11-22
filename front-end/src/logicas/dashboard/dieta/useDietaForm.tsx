@@ -16,10 +16,19 @@ type RefeicaoTemp = {
 const useDietaForm = () => {
     const [nome, setNome] = useState('');
     const [descricao, setDescricao] = useState('');
+    const [imagem, setImagem] = useState<File | null>(null);
+    const [imagemAtual, setImagemAtual] = useState<string | null>(null);
+    const [removerImagem, setRemoverImagem] = useState(false);
     const objetivo = useSelecaoUnica<ObjetivoDieta>();
     const nivel = useSelecaoUnica<NivelDieta>();
 
     const [refeicoes, setRefeicoes] = useState<RefeicaoTemp[]>([]);
+
+    const trocarImagem = (arquivo: File | null) => {
+        setImagem(arquivo);
+        // lixeira sem arquivo novo = apagar a imagem que já estava salva
+        setRemoverImagem(arquivo === null && !!imagemAtual);
+    };
 
     function adicionarRefeicao(dia: number, nomeRefeicao: string, horario: string) {
         setRefeicoes(prev => [
@@ -113,9 +122,11 @@ const useDietaForm = () => {
                 ordem: index,
                 alimentos: r.alimentos.map(a => ({
                     alimento_id: a.id,
-                    quantidade_gramas: a.quantidade_gramas, // era quantidade_porcoes
+                    quantidade_gramas: Number(a.quantidade_gramas), // era quantidade_porcoes
                 })),
             })),
+            imagem,                                  
+            remover_imagem: removerImagem ? 1 : 0
         };
     }
 
@@ -127,6 +138,9 @@ const useDietaForm = () => {
         adicionarAlimento, removerAlimento, atualizarQuantidade,
         carregarDieta,
         montarPayload,
+        imagem,
+        imagemAtual,
+        trocarImagem, 
     };
 };
 

@@ -66,7 +66,7 @@ class TreinoResource extends JsonResource
                                 'id' => $item->exercicio->id,
                                 'nome' => $item->exercicio->nome,
                                 'descricao' => $item->exercicio->descricao,
-                                'imagem' => $item->exercicio->imagem ?? null,
+                                'imagem' => $this->imagem ? asset('storage/' . $this->imagem) : null,
                             ],
                         ];
                     });

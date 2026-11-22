@@ -13,6 +13,7 @@ type NivelDieta = {
 type Alimento = {
     id: number;
     nome: string;
+    imagem: string | null;
     porcao_descricao: string;
     porcao_gramas: number | null;
     calorias: number;
@@ -45,6 +46,7 @@ type Dieta = {
     id: number;
     user_id: number | null; // quem criou a dieta
     nome: string;
+    imagem: string | null;
     descricao: string;
     objetivo: ObjetivoDieta;
     nivel: NivelDieta;

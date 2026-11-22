@@ -33,6 +33,8 @@ const Informacoes = () => {
     }
   }
 
+  console.log(errosCampo)
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -99,6 +101,9 @@ const Informacoes = () => {
             mudarDados('dataDeNascimento', ev.target.value)
           }
         />
+        {errosCampo.idade && (
+          <span className="text-red-500 text-sm">{errosCampo.idade}</span>
+        )}
       </div>
 
       {/* peso */}

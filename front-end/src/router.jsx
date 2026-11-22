@@ -68,9 +68,10 @@ const Rota = createBrowserRouter(
                 <Route index element={<Dashboard />} />
 
                 {/* Home e Perfil */}
-                <Route path='home' element={<Home />}>
-                    <Route path='atualizarPerfil' element={<AtualizarPerfil />} />
-                </Route>
+                <Route index element={<Home />}/>
+
+                <Route path='atualizarPerfil' element={<AtualizarPerfil />} />
+
                 <Route path='perfil' element={<Home />} />
 
                 {/* Sobre Nós */}

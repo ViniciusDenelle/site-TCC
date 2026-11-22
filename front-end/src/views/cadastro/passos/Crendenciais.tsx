@@ -46,8 +46,6 @@ const Credenciais = () => {
 
   const [senhaVisivel, setSenhaVisivel] = useState(false)
 
-  console.log('foto', dados.foto)
-
   return (
       <motion.div
         initial={{ opacity: 0 }}

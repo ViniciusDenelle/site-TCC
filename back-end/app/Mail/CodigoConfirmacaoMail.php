@@ -13,39 +13,28 @@ class CodigoConfirmacaoMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct()
+    // Propriedade pública fica disponível automaticamente na view Blade
+    public $codigo;
+
+    public function __construct($codigo)
     {
-        //
+        $this->codigo = $codigo;
     }
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Codigo Confirmacao email',
+            subject: 'Seu Código de Confirmação',
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.codigo',
+            markdown: 'emails.codigo', // Certifique-se de que o arquivo resources/views/emails/codigo.blade.php existe
         );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
     public function attachments(): array
     {
         return [];

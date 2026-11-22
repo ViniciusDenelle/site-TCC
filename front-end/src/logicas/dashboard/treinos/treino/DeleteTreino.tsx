@@ -22,7 +22,7 @@ const useDeleteTreino = (id: number) => {
                 
         onSuccess: (res) => {
             toast.success('treino deletado com sucesso')
-            navigate(-1)
+            navigate('/dashboard/treino/MeusTreinos')
         },
 
         onError: (error) => {

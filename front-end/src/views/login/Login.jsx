@@ -99,13 +99,13 @@ const Login = () => {
                 </div>
             </div>
             
-            <p className='mx-auto'>ou</p>
+            {/* <p className='mx-auto'>ou</p>
 
             <BotaoPrimario
                 tipo='vazio'
                 classeAdcional="gap-4"
                 texto='google'
-            />
+            /> */}
                 
             
 

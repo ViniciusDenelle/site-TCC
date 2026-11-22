@@ -1,4 +1,4 @@
-import { Flame } from "lucide-react"
+import { Apple, Flame } from "lucide-react"
 import CardHorizontal from "../CardHorizontal"
 import { Alimento } from "../../logicas/dashboard/dieta/DietaProps"
 import Texto from "../organizacao/Texto"
@@ -10,6 +10,7 @@ const AlimentoCard = ({
   alimento: Alimento
   onSelecionar?: (alimento: Alimento) => void
 }) => {
+
   return (
     <button
       onClick={() => onSelecionar?.(alimento)}
@@ -18,6 +19,14 @@ const AlimentoCard = ({
     >
       <CardHorizontal className={onSelecionar ? 'hover:bg-base-terciaria/60' : ''}>
         <div className="flex justify-between items-center gap-2 text-base">
+
+           <div className="size-10 rounded-md overflow-hidden bg-base-terciaria/40 flex items-center justify-center relative">
+              {alimento.imagem ? (
+                <img src={alimento.imagem} alt="" className="size-full object-cover" />
+              ) : (
+                <Apple className='size-full' strokeWidth={2} />
+              )}
+            </div>
 
           <div className="flex flex-col min-w-0 gap-0.5 flex-1">
             <Texto tipo="paragrafo" className="font-semibold">

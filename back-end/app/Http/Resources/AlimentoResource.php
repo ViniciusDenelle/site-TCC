@@ -12,6 +12,7 @@ class AlimentoResource extends JsonResource
         return [
             'id' => $this->id,
             'nome' => $this->nome,
+            'imagem' => $this->imagem ? asset('storage/' . $this->imagem) : null,
             'porcao_descricao' => $this->porcao_descricao,
             'porcao_gramas' => $this->porcao_gramas,
             'calorias' => $this->calorias,

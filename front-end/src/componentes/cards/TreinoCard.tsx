@@ -18,6 +18,7 @@ const TreinoCard = ({
 }) => {
 
   const [menuAdcionar, setMenuAdcionar] = useState<boolean>(false)
+  console.log(treino.imagem)
   
   return (
     <>

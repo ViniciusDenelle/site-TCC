@@ -31,8 +31,7 @@ export function DietaCard({ dieta, onAdicionar, onRemover }: Props) {
 
   return (
     <>
-      {/* O menu fica FORA do card animado: o card tem scale (transform) e clique,
-          e isso quebraria o "fixed" do menu e dispararia o navigate */}
+      {/* O menu fica FORA do card animado */}
       <MenuDieta
         menuAberto={menuAberto}
         setMenuAberto={setMenuAberto}
@@ -52,11 +51,16 @@ export function DietaCard({ dieta, onAdicionar, onRemover }: Props) {
           className="bg-base-secundaria rounded-3xl p-5 border border-base-terciaria/20 shadow-xl flex flex-col gap-4 overflow-hidden cursor-pointer"
           onClick={() => navigate(`/dashboard/dieta/verDieta/${dieta.id}`)}
         >
-
-          <div className="w-full h-24 rounded-2xl bg-base-terciaria flex items-center justify-center">
-            <Utensils className="size-10 text-destaque-p-claro" strokeWidth={1.5} />
-          </div>
-
+          {dieta?.imagem ? (
+            <div className="w-full h-24 rounded-2xl bg-base-terciaria flex items-center justify-center">
+              <img src={dieta.imagem} alt="" className="size-full object-cover rounded-lg" />
+            </div>
+          ) : (
+            <div className="w-full h-24 rounded-2xl bg-base-terciaria flex items-center justify-center">
+              <Utensils className="size-10 text-destaque-p-claro" strokeWidth={1.5} />
+            </div>
+          )}
+        
           <div className="flex flex-col gap-2.5">
             <Texto tipo="titulo" className="text-t-primaria leading-snug">
               {dieta.nome}
@@ -64,12 +68,12 @@ export function DietaCard({ dieta, onAdicionar, onRemover }: Props) {
 
             <div className="flex flex-wrap items-center gap-1.5">
               <div className="rounded-full bg-destaque-s-medio/10 border border-destaque-p-claro/20 px-2 py-0.5">
-                <Texto tipo="subtexto" className=" text-destaque-s-medio font-medium">
+                <Texto tipo="subtexto" className="text-destaque-s-medio font-medium">
                   {dieta.objetivo.nome}
                 </Texto>
               </div>
               <div className="rounded-full bg-base-terciaria/20 border border-base-terciaria/30 px-2 py-0.5">
-                <Texto tipo="subtexto" className=" text-t-primaria font-medium">
+                <Texto tipo="subtexto" className="text-t-primaria font-medium">
                   {dieta.nivel.nome}
                 </Texto>
               </div>
@@ -92,7 +96,7 @@ export function DietaCard({ dieta, onAdicionar, onRemover }: Props) {
                   {totalCaloriasDia} kcal
                 </Texto>
               </div>
-              <Texto tipo="subtexto" className=" text-t-terciaria">
+              <Texto tipo="subtexto" className="text-t-terciaria">
                 {dieta.refeicoes.length} refeições
               </Texto>
             </div>

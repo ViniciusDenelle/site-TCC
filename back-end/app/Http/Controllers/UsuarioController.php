@@ -3,8 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\AtualizarPerfilRequest;
 use App\Http\Resources\UsuarioResource;
+use App\Models\EmailConfirmacao;
+use App\Services\ImagemService;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 
 class UsuarioController extends Controller
 {
@@ -15,14 +22,13 @@ class UsuarioController extends Controller
         return new UsuarioResource($usuario);
     }
 
-    public function logout(Request $request) 
+    public function logout(Request $request)
     {
         $usuario = $request->user();
 
-        if(!$usuario)
-        {
+        if (!$usuario) {
             return response([
-                'mensaegm' =>  'usuario não encontrado'
+                'mensagem' => 'usuario não encontrado'
             ], 401);
         }
 
@@ -33,64 +39,142 @@ class UsuarioController extends Controller
         ]);
     }
 
-    public function update(UpdateUsuarioRequest $request)
+    public function atualizar(AtualizarPerfilRequest $request, ImagemService $imagens)
     {
-        $user = $request->user();
         $dados = $request->validated();
+        $user = $request->user();
 
-        DB::transaction(function () use ($user, $dados) {
-            // 1. Atualiza tabela 'users'
-            
-            $user->update([
-                'name' => $dados['nome'],
-                'email' => $dados['email'],
-            ]);
+        /*
+         * 1) Confirmação por código: só quando e-mail ou senha mudam.
+         *    Vem ANTES de salvar a foto, para não deixar arquivo órfão se o código estiver errado.
+         */
+        $mudaEmail = strcasecmp($dados['email'], $user->email) !== 0;
+        $mudaSenha = !empty($dados['senha']);
 
-            // 2. Atualiza/Cria 'perfil_usuarios'
-            $user->perfil()->updateOrCreate(
-                ['user_id' => $user->id],
-                [
-                    'genero' => $dados['genero'],
-                    'peso' => $dados['peso'],
-                    'tipo_do_peso' => $dados['tipoPeso'],
-                    'altura' => $dados['altura'],
-                    'idade' => $dados['idade'],
+        $confirmacao = null;
+
+        if ($mudaEmail || $mudaSenha) {
+            // mesmo destino usado em enviarCodigoPerfil: o e-mail atual da conta
+            $destino = $user->email;
+
+            $confirmacao = EmailConfirmacao::where('codigo', $dados['codigoConfirmacao'] ?? '')
+                ->where('email', $destino)
+                ->where('tipo', 'perfil')
+                ->where('expiracao', '>', now())
+                ->first();
+
+            if (!$confirmacao) {
+                // 422 com "errors": o front mostra a mensagem no campo do código
+                throw ValidationException::withMessages([
+                    'codigoConfirmacao' => 'código errado ou expirado',
+                ]);
+            }
+        }
+
+        /*
+         * 2) Foto
+         */
+        $fotoAntiga = $user->perfil?->foto;
+
+        $novaFoto = $request->hasFile('foto')
+            ? $imagens->salvar($request->file('foto'), 'perfis')
+            : null;
+
+        $apagarFoto = !$novaFoto && $request->boolean('remover_foto');
+
+        $campoFoto = [];
+        if ($novaFoto) $campoFoto = ['foto' => $novaFoto];
+        elseif ($apagarFoto) $campoFoto = ['foto' => null];
+
+        /*
+         * 3) Salvar tudo
+         */
+        try {
+            DB::transaction(function () use ($user, $dados, $campoFoto, $confirmacao) {
+                // array_filter tira a senha quando ela não foi enviada
+                $user->update(array_filter([
+                    'name'     => $dados['nome'],
+                    'email'    => $dados['email'],
+                    'password' => $dados['senha'] ?? null,
+                ]));
+
+                $user->perfil()->update([
+                    'genero'             => $dados['genero'],
+                    'peso'               => $dados['peso'],
+                    'tipo_do_peso'       => $dados['tipoPeso'],
+                    'altura'             => $dados['altura'],
+                    'idade'              => $dados['idade'],
                     'data_de_nascimento' => $dados['dataDeNascimento'],
                     'nivel_de_atividade' => $dados['nivelAtividade'],
-                    'experiencia' => $dados['experiencia'],
-                ]
-            );
+                    'experiencia'        => $dados['experiencia'],
+                ] + $campoFoto);
 
-            // 3. Atualiza/Cria 'objetivos_usuarios'
-            $user->objetivos()->updateOrCreate(
-                ['user_id' => $user->id],
-                [
-                    'tipo' => $dados['objetivo'],
-                    'peso_ideal' => $dados['pesoIdeal'],
+                $user->objetivos()->update([
+                    'tipo'        => $dados['objetivo'],
+                    'peso_ideal'  => $dados['pesoIdeal'],
+                    // o multipart não envia null: sem ?? null o campo antigo não seria limpo
                     'peso_minimo' => $dados['pesoMinimo'] ?? null,
                     'peso_maximo' => $dados['pesoMaximo'] ?? null,
-                    'velocidade' => $dados['veloPerda'],
-                    'comeco' => now(),
-                    'termino' => $dados['tempo']['previsao'],
-                    'duracao' => $dados['tempo']['semanas'] ?? null,
-                ]
-            );
+                    'velocidade'  => $dados['veloPerda'] ?? null,
+                    'termino'     => $dados['objetivo'] !== 'manter_peso' && !empty($dados['termino'])
+                        ? Carbon::createFromFormat('d/m/Y', $dados['termino'])->format('Y-m-d')
+                        : null,
+                    'duracao'     => $dados['duracao'] ?? null,
+                ]);
 
-            // 4. Atualiza/Cria 'metricas_usuarios'
-            $user->metricas()->updateOrCreate(
-                ['user_id' => $user->id],
-                [
-                    'peso' => $dados['peso'],
-                    'calorias_diarias' => (int) $dados['calDiaria'],
-                    'TMB' => (int) $dados['TMB'],
-                    'GET' => (int) $dados['GET'],
-                ]
-            );
-        });
+                $user->metricas()->update([
+                    'peso'             => $dados['peso'],
+                    'calorias_diarias' => $dados['calDiaria'] ?? 0,
+                    'GET'              => $dados['GET'],
+                    'TMB'              => $dados['TMB'],
+                ]);
+
+                // o código só vale uma vez
+                $confirmacao?->delete();
+            });
+        } catch (\Throwable $e) {
+            $imagens->remover($novaFoto);   // desfaz o upload novo
+            throw $e;
+        }
+
+        // só apaga a foto antiga depois que o banco foi salvo
+        if ($novaFoto || $apagarFoto) {
+            $imagens->remover($fotoAntiga);
+        }
 
         return response()->json([
-            'message' => 'Perfil e métricas atualizados com sucesso!',
-            'usuario' => $user->load(['perfil', 'objetivos', 'metricas'])
+            'usuario' => new UsuarioResource($user->fresh(['metricas', 'objetivos', 'perfil'])),
         ]);
+    }
+
+    public function enviarCodigoPerfil(Request $request)
+    {
+        $user = $request->user();
+
+        $request->validate([
+            'tipo' => 'required|in:email,senha',
+        ]);
+
+        // o destino é decidido AQUI, não pelo front: sempre o e-mail atual da conta,
+        // tanto para trocar o e-mail quanto para trocar a senha
+        $destino = $user->email;
+
+        EmailConfirmacao::where('email', $destino)->where('tipo', 'perfil')->delete();
+
+        $codigo = (string) random_int(100000, 999999);
+
+        // se a coluna "tipo" for um enum, inclua o valor 'perfil' na migration
+        EmailConfirmacao::create([
+            'codigo'    => $codigo,
+            'email'     => $destino,
+            'tipo'      => 'perfil',
+            'expiracao' => now()->addMinutes(20),
+        ]);
+
+        Mail::raw("Seu código de confirmação é: {$codigo}", function ($message) use ($destino) {
+            $message->to($destino)->subject('Confirme a alteração no seu perfil');
+        });
+
+        return response()->json(['mensagem' => 'sucesso']);
     }
 }

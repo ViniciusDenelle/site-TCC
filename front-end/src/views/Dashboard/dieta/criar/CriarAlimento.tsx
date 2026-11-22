@@ -9,6 +9,7 @@ import BotaoPrimario from '../../../../componentes/botoes/BotaoPrimario';
 import WrapperIcone from '../../../../componentes/organizacao/WrapperIcone';
 import CardHorizontal from '../../../../componentes/CardHorizontal';
 import useCriarAlimento from '../../../../logicas/dashboard/dieta/alimento/CriarAlimento';
+import InputImagem from '../../../../componentes/inputs/InputImagem';
 
 type ErrosValidacao = Partial<Record<
     'nome' | 'porcao_descricao' | 'porcao_gramas' | 'calorias' | 'proteinas' | 'carboidratos' | 'gorduras',
@@ -24,6 +25,9 @@ const CriarAlimento = () => {
     const navigate = useNavigate();
 
     const [nome, setNome] = useState('');
+    const [imagem, setImagem] = useState<File | null>(null);
+    const [imagemAtual, setImagemAtual] = useState<string | null>(null);
+    const [removerImagem, setRemoverImagem] = useState(false);
     const [porcaoDescricao, setPorcaoDescricao] = useState('');
     const [porcaoGramas, setPorcaoGramas] = useState<number | ''>('');
     const [calorias, setCalorias] = useState<number | ''>('');
@@ -37,9 +41,17 @@ const CriarAlimento = () => {
         ? (error as AxiosError<RespostaErroLaravel>).response?.data.errors ?? {}
         : {};
 
+    const trocarImagem = (arquivo: File | null) => {
+        setImagem(arquivo);
+        // lixeira sem arquivo novo = apagar a imagem que já estava salva
+        setRemoverImagem(arquivo === null && !!imagemAtual);
+    };
+
     function salvar() {
         mutate({
             nome,
+            imagem,                                  
+            remover_imagem: removerImagem ? 1 : 0,
             porcao_descricao: porcaoDescricao,
             porcao_gramas: Number(porcaoGramas),
             calorias: Number(calorias),
@@ -64,6 +76,15 @@ const CriarAlimento = () => {
                 <div className="flex gap-2 items-center">
                     <WrapperIcone><Apple className="size-full" /></WrapperIcone>
                     <Texto tipo="titulo" className="font-thin">Novo alimento</Texto>
+                </div>
+
+                <div className="w-full md:w-6/10 mx-auto">
+                    <InputImagem 
+                        valor={imagem}
+                        urlAtual={imagemAtual}
+                        onChange={trocarImagem}
+                        placeholder="adicione uma imagem do exercicio"
+                    />
                 </div>
 
                 <Texto tipo="titulo" className="font-thin">Nome</Texto>
