@@ -1,4 +1,4 @@
-// tipagens/Dieta.ts
+// logicas/dashboard/dieta/DietaProps.ts
 
 type ObjetivoDieta = {
     id: number;
@@ -25,6 +25,7 @@ type AlimentoNaRefeicao = {
     id: number;
     nome: string;
     porcao_descricao: string;
+    porcao_gramas: number | null;
     quantidade_gramas: number;
     calorias: number;
     proteinas: number;
@@ -42,6 +43,7 @@ type RefeicaoDaDieta = {
 
 type Dieta = {
     id: number;
+    user_id: number | null; // quem criou a dieta
     nome: string;
     descricao: string;
     objetivo: ObjetivoDieta;

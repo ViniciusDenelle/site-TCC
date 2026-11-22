@@ -36,6 +36,7 @@ import CriarOpcoesDieta from './views/Dashboard/dieta/criar/Criar'
 import CriarDieta from './views/Dashboard/dieta/criar/CriarDieta'
 import CriarAlimento from './views/Dashboard/dieta/criar/CriarAlimento'
 import VerDieta from './views/Dashboard/dieta/ver/VerDieta'
+import EditarDieta from './views/Dashboard/dieta/editar/EditarDieta'
 
 import MeusTreinosLayout from './layouts/dashboard/treino/MeusTreinosLayout'
 import BibliotecaTreinosHome from './views/Dashboard/treinos/meusTreinos/BibliotecaTreinosHome'
@@ -64,13 +65,12 @@ const Rota = createBrowserRouter(
 
             {/* Todas as páginas do Dashboard ficam DENTRO desta Route */}
             <Route path='/dashboard' element={<DashboardLayout />}>
-                {/* <Route index element={<Dashboard />} /> */}
+                <Route index element={<Dashboard />} />
 
                 {/* Home e Perfil */}
-                <Route index element={<Home />}/>
-
-                <Route path='atualizarPerfil' element={<AtualizarPerfil />} />
-
+                <Route path='home' element={<Home />}>
+                    <Route path='atualizarPerfil' element={<AtualizarPerfil />} />
+                </Route>
                 <Route path='perfil' element={<Home />} />
 
                 {/* Sobre Nós */}
@@ -128,6 +128,7 @@ const Rota = createBrowserRouter(
                     <Route path='CriarAlimento' element={<CriarAlimento />} />
 
                     <Route path='verDieta/:id' element={<VerDieta />} />
+                    <Route path='editarDieta/:id' element={<EditarDieta />} />
 
                     <Route path='pesquisarPrincipal' element={<PesquisarDietaHome />} />
                     <Route path='pesquisarDietas' element={<PesquisarDietas />} />

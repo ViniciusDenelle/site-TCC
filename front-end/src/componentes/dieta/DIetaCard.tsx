@@ -7,6 +7,7 @@ import Dieta from '../../logicas/dashboard/dieta/DietaProps'
 import WrapperIcone from '../organizacao/WrapperIcone'
 import BotaoTerciario from '../botoes/BotaoTerciario'
 import MenuDieta from '../dashboard/player/menus/MenuDieta'
+import useFetchUsuario from '../../logicas/usuario/FetchUsuario'
 
 type Props = {
   dieta: Dieta
@@ -17,6 +18,10 @@ type Props = {
 export function DietaCard({ dieta, onAdicionar, onRemover }: Props) {
   const navigate = useNavigate()
   const [menuAberto, setMenuAberto] = useState<boolean>(false)
+  const { dadosUsuario } = useFetchUsuario()
+
+  // Só quem criou a dieta pode modificá-la
+  const ehCriador = dieta.user_id != null && dieta.user_id === dadosUsuario?.id
 
   const totalCaloriasDia = dieta.refeicoes.reduce(
     (soma, refeicao) =>
@@ -32,6 +37,7 @@ export function DietaCard({ dieta, onAdicionar, onRemover }: Props) {
         menuAberto={menuAberto}
         setMenuAberto={setMenuAberto}
         dieta={dieta}
+        podeEditar={ehCriador}
         adicionar={onAdicionar}
         remover={onRemover}
       />

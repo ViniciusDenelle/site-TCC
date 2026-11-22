@@ -124,6 +124,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::get('/meus-criados', 'meusCriados');
                 Route::get('/meus-adicionados', 'meusAdicionados');
                 Route::get('/{dieta}', 'show');
+                Route::put('/{dieta}', 'update');
                 Route::post('/{dieta}/adicionar', 'adicionar');
                 Route::delete('/{dieta}/adicionar', 'remover');
             });

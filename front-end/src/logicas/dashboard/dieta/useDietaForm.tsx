@@ -1,7 +1,7 @@
 // logicas/dashboard/dietas/useDietaForm.ts
 import { useState } from 'react';
 import useSelecaoUnica from '../treinos/selecionaveis/useSelecaoUnica';
-import { Alimento, NivelDieta, ObjetivoDieta } from './DietaProps';
+import Dieta, { Alimento, NivelDieta, ObjetivoDieta } from './DietaProps';
 
 type AlimentoSelecionado = Alimento & { quantidade_gramas: number };
 
@@ -62,6 +62,44 @@ const useDietaForm = () => {
         ));
     }
 
+    /**
+     * Preenche o formulário com uma dieta que já existe (usado na edição).
+     * A API devolve calorias e macros já calculados para a quantidade em gramas;
+     * aqui convertemos de volta para "por porção", que é o que o formulário espera.
+     */
+    function carregarDieta(dieta: Dieta) {
+        setNome(dieta.nome);
+        setDescricao(dieta.descricao ?? '');
+        objetivo.selecionar(dieta.objetivo);
+        nivel.selecionar(dieta.nivel);
+
+        setRefeicoes(
+            dieta.refeicoes.map(r => ({
+                id: crypto.randomUUID(),
+                nome: r.nome,
+                dia_semana: r.dia_semana,
+                horario: r.horario ?? '',
+                alimentos: r.alimentos.map(a => {
+                    const quantidade = a.quantidade_gramas;
+                    const porcao = a.porcao_gramas || quantidade || 1;
+                    const fator = quantidade > 0 ? porcao / quantidade : 1;
+
+                    return {
+                        id: a.id,
+                        nome: a.nome,
+                        porcao_descricao: a.porcao_descricao,
+                        porcao_gramas: a.porcao_gramas,
+                        calorias: a.calorias * fator,
+                        proteinas: a.proteinas * fator,
+                        carboidratos: a.carboidratos * fator,
+                        gorduras: a.gorduras * fator,
+                        quantidade_gramas: quantidade,
+                    };
+                }),
+            }))
+        );
+    }
+
     function montarPayload() {
         return {
             nome,
@@ -87,6 +125,7 @@ const useDietaForm = () => {
         objetivo, nivel,
         refeicoes, adicionarRefeicao, removerRefeicao,
         adicionarAlimento, removerAlimento, atualizarQuantidade,
+        carregarDieta,
         montarPayload,
     };
 };

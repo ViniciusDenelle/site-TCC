@@ -11,6 +11,7 @@ class DietaResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'user_id' => $this->user_id,
             'nome' => $this->nome,
             'descricao' => $this->descricao,
 
@@ -34,7 +35,7 @@ class DietaResource extends JsonResource
                             'id' => $refeicao->id,
                             'nome' => $refeicao->nome,
                             'dia_semana' => $refeicao->dia_semana,
-                            'horario' => $refeicao->horario,
+                            'horario' => $refeicao->horario?->format('H:i'),
                             'alimentos' => $refeicao->relationLoaded('alimentos')
                                 ? $refeicao->alimentos->map(function ($alimento) {
                                     $fator = $alimento->pivot->quantidade_gramas / $alimento->porcao_gramas;

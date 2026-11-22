@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react"
-import { Check, Eye, Plus, Trash } from "lucide-react"
+import { Check, Eye, Pencil, Plus, Trash } from "lucide-react"
 import Texto from "../../../organizacao/Texto"
 import OpcoesMenuPlayer from "../../../organizacao/opcoesMenuPlayer"
 import Dieta from "../../../../logicas/dashboard/dieta/DietaProps"
@@ -9,6 +9,7 @@ type MenuDietaProps = {
     menuAberto: boolean
     setMenuAberto: Dispatch<SetStateAction<boolean>>
     dieta: Dieta
+    podeEditar?: boolean
     adicionar?: (dieta: Dieta) => void | Promise<void>
     remover?: (dieta: Dieta) => void | Promise<void>
 }
@@ -20,6 +21,7 @@ const MenuDieta = ({
     menuAberto,
     setMenuAberto,
     dieta,
+    podeEditar = false,
     adicionar,
     remover
 }: MenuDietaProps) => {
@@ -76,6 +78,16 @@ const MenuDieta = ({
                 icone={Eye}
                 corIcone="text-blue-500"
             />
+
+            {podeEditar && (
+                <OpcoesMenuPlayer
+                    tipo="link"
+                    to={`/dashboard/dieta/editarDieta/${dieta.id}`}
+                    nome="Modificar dieta"
+                    icone={Pencil}
+                    corIcone="text-amber-500"
+                />
+            )}
 
             {adicionar && (
                 <OpcoesMenuPlayer
