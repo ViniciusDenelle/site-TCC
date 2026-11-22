@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\EnviarCodigoRequest;
 use App\Http\Requests\UsuarioRequest;
 use App\Http\Resources\UsuarioResource;
+use App\Mail\CodigoConfirmacaoMail;
 use Hash;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -15,6 +16,7 @@ use App\Models\EmailConfirmacao;
 use App\Services\ImagemService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash as FacadesHash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -37,10 +39,8 @@ class AuthController extends Controller
             'expiracao' => now()->addMinutes(20)
         ]);
 
-        Mail::raw("Seu código é: {$codigo}", function ($message) use ($dados) {
-            $message->to($dados['email'])
-                ->subject('Seu código de login');
-        });
+        // Substituição do Mail::raw pelo Mailable estruturado:
+        Mail::to($dados['email'])->send(new CodigoConfirmacaoMail($codigo));
 
         return response()->json([
             'mensagem' => 'sucesso'
@@ -61,7 +61,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $dados['email'])->first();
 
-        if (!$user || !Hash::check($dados['senha'], $user->password))
+        if (!$user || !FacadesHash::check($dados['senha'], $user->password))
             return response()->json([
                 'mensagem' => 'validação deu erro'
             ], 401);
