@@ -62,40 +62,9 @@ const MeusTreinosLayout = () => {
                                 Meus Treinos
                             </Texto>
 
-
-                            <BotaoTerciario
-                                icone={Plus}
-                                tamanhoIcone='md'
-                            />
                         </div>
 
-                        <div className="w-full relative flex">
-
-                            <BotaoSecundario
-                                icone={Filter}
-                                tipo='cheio'
-                                classeAdicional='rounded-r-none'
-                            />
-
-                            <InputSimples
-                                classeAdicional='w-full rounded-l-none'
-
-                            />
-                            <div className="absolute top-1/2 right-2 -translate-y-1/2">
-                                <WrapperIcone tamanho='sm'>
-                                    <Search className='size-full' />
-                                </WrapperIcone>
-                            </div>
-                        </div>
-
-                        <div className="flex gap-1 items-center">
-                            {nav.map(link => (
-                                <NavBola 
-                                    to={link.to}
-                                    titulo={link.titulo}
-                                />
-                            ))}
-                        </div>
+                        
                     </div>
                 </div>
             </div>

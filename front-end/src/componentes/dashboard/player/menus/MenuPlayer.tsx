@@ -87,7 +87,7 @@ const MenuPlayer = ({
                     menuAberto={menuAberto}
                     setMenuAberto={setMenuAberto}
                 >
-                    <div className="flex gap-2 item-center">
+                    <div className="flex gap-4 item-center">
                         <div className="size-10">
                             <WrapperIcone tamanho="xl">
                                 <Dumbbell className="size-full" />

@@ -48,7 +48,7 @@ const MenuLayout = ({
 
                     <motion.div
                         key="modal"
-                        className="fixed top-1/2 left-0 w-full h-1/2 z-10000 backdrop-blur-xs"
+                        className="fixed bottom-0 left-0 md:left-1/2 md:-translate-1/2 w-full  h-auto md:size-auto z-10000 backdrop-blur-xs"
                         initial={{ y: "100%", opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: "100%", opacity: 0 }}

@@ -17,7 +17,7 @@ const AbaTreinar = () => {
         } = useExecutarTreinoContext()
 
   return (
-    <div className="md:w-4/10 md:border-l-2 bg-base-secundaria/50 border-base-secundaria md:p-4 ">
+    <div className="relative md:w-4/10 md:border-l-2 bg-base-secundaria/50 border-base-secundaria md:p-4 ">
 
                         {temTreinoAtivo ? (
                             <>

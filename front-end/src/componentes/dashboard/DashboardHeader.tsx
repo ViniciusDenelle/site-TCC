@@ -70,7 +70,7 @@ const DashboardHeader = ({
                             </div>
                             <CardHorizontal>
                                 <div className="flex gap-2 items-center">
-                                    <LinkSimples to="/perfil" className="flex gap-1 items-center">
+                                    <LinkSimples to="/dashboard" className="flex gap-1 items-center">
                                         {dadosUsuario?.foto ? (
                                             <div className="size-15 rounded-full object-cover border-2 border-t-terciaria/50 p-1">
                                                 <img src={dadosUsuario.foto} alt="" className="size-full rounded-full object-cover" />

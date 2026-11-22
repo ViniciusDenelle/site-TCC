@@ -74,11 +74,11 @@ const Objetivo = () => {
       transition={{ duration: 0.4, ease: "easeOut" }}
       className="relative flex flex-col w-full gap-3 my-2"
     >
-      {aviso === objetivo && (
+      {/* {aviso === objetivo && (
         <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 text-sm text-red-500">
           não recomendado
         </span>
-      )}
+      )} */}
 
       <Texto tipo='subtitulo' className='mx-auto text-t-primaria'>
          Escolha seu Objetivo

@@ -156,6 +156,51 @@ const useAtualizarPerfil = (usuario: RetornoUsuario) => {
         mudarDados('pesoIdeal', dados.peso)
     }, [dados.objetivo])
 
+    /* ---------- confirmação por código (trocar e-mail ou senha) ---------- */
+
+    const emailOriginal = useMemo(() => doBackParaForm(usuario).email, [usuario])
+    const emailMudou = dados.email.trim().toLowerCase() !== emailOriginal.trim().toLowerCase()
+    const senhaMudou = dados.senha.length > 0
+    const precisaCodigo = emailMudou || senhaMudou
+
+    // o código sempre vai para o e-mail ORIGINAL da conta, para trocar o e-mail ou a senha
+    const emailDestino = emailOriginal
+
+    const [contagem, setContagem] = useState(0)
+
+    useEffect(() => {
+        if (contagem <= 0) return
+        const t = setTimeout(() => setContagem(c => c - 1), 1000)
+        return () => clearTimeout(t)
+    }, [contagem])
+
+    const enviarCodigoMutation = useMutation<
+        any,
+        AxiosError<{ errors?: Erros; message?: string }>,
+        void
+    >({
+        mutationFn: async () => {
+            const res = await api.post('/perfil/codigo', {
+                tipo: emailMudou ? 'email' : 'senha',
+            })
+            return res.data
+        },
+        onSuccess: () => {
+            setContagem(60)
+            toast.success(`código enviado para ${emailDestino}`)
+        },
+        onError: (error) => {
+            const erros = error.response?.data?.errors
+            if (erros) setErrosCampo(prev => ({ ...prev, ...erros }))
+
+            toast.error(
+                erros
+                    ? Object.values(erros)[0][0]
+                    : (error.response?.data?.message ?? 'não foi possível enviar o código')
+            )
+        },
+    })
+
     /* ---------- envio ---------- */
 
     const atualizarMutation = useMutation<any, AxiosError<{ errors?: Erros }>, void>({
@@ -165,7 +210,8 @@ const useAtualizarPerfil = (usuario: RetornoUsuario) => {
 
             const payload = {
                 ...resto,
-                ...(senha ? { senha } : {}),   // só envia se quiser trocar a senha
+                ...(senha ? { senha } : {}),
+                ...(precisaCodigo ? { codigoConfirmacao } : {}),   // só envia se quiser trocar a senha
                 idade,
                 TMB,
                 GET,
@@ -184,14 +230,23 @@ const useAtualizarPerfil = (usuario: RetornoUsuario) => {
 
         onError: (error) => {
             const erros = error.response?.data?.errors
-            if (erros) setErrosCampo(erros)
-            else toast.error('houve um erro ao atualizar o perfil')
+            if (erros) {
+                setErrosCampo(erros)
+                toast.error(Object.values(erros)[0][0])   // alguns campos não aparecem em nenhuma aba
+            } else {
+                toast.error('houve um erro ao atualizar o perfil')
+            }
         },
 
         onSuccess: ({ usuario: atualizado }) => {
             queryClient.setQueryData(['usuario'], atualizado)   // use a chave real do useFetchUsuario
             localStorage.setItem('usuario', JSON.stringify(atualizado))
             toast.success('perfil atualizado com sucesso')
+
+            // se só a senha mudou, o usuário retornado é igual e o formulário não remonta
+            mudarDados('senha', '')
+            mudarDados('codigoConfirmacao', '')
+            setContagem(0)
         },
     })
 
@@ -204,6 +259,13 @@ const useAtualizarPerfil = (usuario: RetornoUsuario) => {
         GET,
         trocarFoto,
         atualizarMutation,
+        emailMudou,
+        senhaMudou,
+        precisaCodigo,
+        emailOriginal,
+        emailDestino,
+        contagem,
+        enviarCodigoMutation,
     }
 }
 

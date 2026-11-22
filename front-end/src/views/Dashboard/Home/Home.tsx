@@ -328,7 +328,7 @@ export default function Home() {
                 tipo="titulo"
                 className="text-t-primaria text-lg font-bold capitalize"
               >
-                {dadosUsuario.objetivo}
+                {dadosUsuario.objetivo.replace('_', ' ')}
               </Texto>
 
               <Texto

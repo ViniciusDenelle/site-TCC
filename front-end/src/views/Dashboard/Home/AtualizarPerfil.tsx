@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { motion } from 'motion/react'
 import {
@@ -25,6 +25,7 @@ import useMetas from '../../../logicas/cadastro/useMetas'
 import useAtualizarPerfil from '../../../logicas/usuario/useAtualizarPerfil'
 import useFetchUsuario, { RetornoUsuario } from '../../../logicas/usuario/FetchUsuario'
 import { CadastroContext, CadastroProvider } from '../../../contextos/CadastroContexto'
+import ContaPerfil from '../../../componentes/dashboard/ContaPerfil'
 
 type Props = {
     onCancelar?: () => void
@@ -49,9 +50,8 @@ const campoParaPasso: Record<string, number> = {
 }
 
 const FormPerfil = ({ usuario, onCancelar, onSucesso }: Props & { usuario: RetornoUsuario }) => {
-    const {
-        dados, mudarDados, errosCampo, idade, TMB, GET, trocarFoto, atualizarMutation
-    } = useAtualizarPerfil(usuario)
+    const perfil = useAtualizarPerfil(usuario)
+    const { dados, mudarDados, errosCampo, idade, TMB, GET, trocarFoto } = perfil
 
     const [passo, setPasso] = useState(0)
     const [senhaVisivel, setSenhaVisivel] = useState(false)
@@ -62,14 +62,16 @@ const FormPerfil = ({ usuario, onCancelar, onSucesso }: Props & { usuario: Retor
 
     // erro do back -> abre a aba do primeiro campo com problema
     useEffect(() => {
-        if (!atualizarMutation.isError) return
+        if (!perfil.atualizarMutation.isError) return
         const primeiro = Object.keys(errosCampo)[0]
         if (primeiro && campoParaPasso[primeiro] !== undefined) setPasso(campoParaPasso[primeiro])
-    }, [atualizarMutation.isError, errosCampo])
+    }, [perfil.atualizarMutation.isError, errosCampo])
 
     const salvar = (e: FormEvent) => {
         e.preventDefault()
-        atualizarMutation.mutate(undefined, { onSuccess: () => onSucesso?.() })
+        // e-mail/senha alterados sem código: não envia (o back também recusaria)
+        if (perfil.precisaCodigo && !perfil.dados.codigoConfirmacao) return
+        perfil.atualizarMutation.mutate(undefined, { onSuccess: () => onSucesso?.() })
     }
 
     const erro = (campo: keyof typeof dados) =>
@@ -77,74 +79,7 @@ const FormPerfil = ({ usuario, onCancelar, onSucesso }: Props & { usuario: Retor
             <span className="text-red-500 text-sm">{errosCampo[campo]?.[0]}</span>
         ) : null
 
-    const conta = (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4 }}
-            className="flex flex-col gap-3 w-full"
-        >
-            <Texto tipo="subtitulo" className="text-t-primaria mx-auto">
-                Sua conta
-            </Texto>
-
-            <InputImagem
-                redondo
-                valor={dados.foto ?? null}
-                urlAtual={(usuario as any).foto ?? null}
-                onChange={trocarFoto}
-                erro={errosCampo.foto?.[0]}
-                disabled={atualizarMutation.isPending}
-            />
-
-            <div className="flex flex-col gap-1">
-                <label>nome:</label>
-                <InputSimples
-                    valor={dados.nome}
-                    placeholder="seu nome"
-                    maximo={50}
-                    minimo={2}
-                    onChange={(ev) => mudarDados('nome', ev.target.value)}
-                />
-                {erro('nome')}
-            </div>
-
-            <div className="flex flex-col gap-1">
-                <label>email:</label>
-                <InputSimples
-                    tipo="email"
-                    valor={dados.email}
-                    placeholder="seu@email.com"
-                    maximo={40}
-                    minimo={7}
-                    onChange={(ev) => mudarDados('email', ev.target.value)}
-                />
-                {erro('email')}
-            </div>
-
-            <div className="flex flex-col gap-1">
-                <label>nova senha:</label>
-                <div className="relative">
-                    <InputSimples
-                        tipo={senhaVisivel ? 'text' : 'password'}
-                        valor={dados.senha}
-                        placeholder="deixe em branco para não alterar"
-                        maximo={30}
-                        onChange={(ev) => mudarDados('senha', ev.target.value)}
-                        classeAdicional="w-full"
-                    />
-                    <button
-                        type="button"
-                        onClick={() => setSenhaVisivel(prev => !prev)}
-                        className="absolute right-3 top-2 z-10 cursor-pointer"
-                    >
-                        {senhaVisivel ? <Eye size={20} /> : <EyeOff size={20} />}
-                    </button>
-                </div>
-                {erro('senha')}
-            </div>
-        </motion.div>
-    )
+    const conta = <ContaPerfil perfil={perfil} fotoAtual={(usuario as any).foto ?? null} />
 
     const conteudo = [
         conta,
@@ -155,15 +90,15 @@ const FormPerfil = ({ usuario, onCancelar, onSucesso }: Props & { usuario: Retor
     ][passo]
 
     console.log('usuario recebido:', usuario)
-console.log('chaves:', Object.keys(usuario ?? {}))
-console.log('dados do form:', dados)
+    console.log('chaves:', Object.keys(usuario ?? {}))
+    console.log('dados do form:', dados)
 
     return (
         // Os passos do cadastro leem tudo daqui. Só usam dados, mudarDados, GET e errosCampo.
         <CadastroContext.Provider
             value={{ dados, mudarDados, errosCampo, idade, TMB, GET } as unknown as UseCadastroReturn}
         >
-            <form onSubmit={salvar} className="flex flex-col gap-4 w-full w-full px-6 pt-12 pb-40 mx-auto">
+            <form onSubmit={salvar} className="flex flex-col gap-4 w-full px-6 pt-12 pb-40 mx-auto">
 
                 <div className="flex items-center justify-between">
                     <Texto tipo="titulo" className="text-t-primaria text-xl font-bold">
@@ -198,8 +133,8 @@ console.log('dados do form:', dados)
                     </div>
                 </CardHorizontal>
 
-                {/* Abas, no lugar do "próximo/voltar" do cadastro */}
-                <div className="grid grid-cols-3 grid-rows-2 gap-1 md:gap-4">
+                {/* Abas centralizadas para os últimos itens */}
+                <div className="flex flex-wrap justify-center gap-1 md:gap-4">
                     {PASSOS.map(({ rotulo, icone }, i) => (
                         <BotaoPrimario
                             key={rotulo}
@@ -207,7 +142,7 @@ console.log('dados do form:', dados)
                             icone={icone}
                             texto={rotulo}
                             tipoFonte="subtexto"
-                            classeAdicional="flex-col h-14 ring-transparent"
+                            classeAdicional="flex-col h-14 ring-transparent w-[30%] md:w-auto"
                             onClick={() => setPasso(i)}
                         />
                     ))}
@@ -226,9 +161,9 @@ console.log('dados do form:', dados)
                     <BotaoPrimario
                         tipo="cheio"
                         type="submit"
-                        disabled={atualizarMutation.isPending}
-                        icone={atualizarMutation.isPending ? Loader2 : Save}
-                        texto={atualizarMutation.isPending ? 'Salvando...' : 'Salvar alterações'}
+                        disabled={perfil.atualizarMutation.isPending || (perfil.precisaCodigo && !perfil.dados.codigoConfirmacao)}
+                        icone={perfil.atualizarMutation.isPending ? Loader2 : Save}
+                        texto={perfil.atualizarMutation.isPending ? 'Salvando...' : 'Salvar alterações'}
                     />
                 </div>
             </form>
