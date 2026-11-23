@@ -89,10 +89,6 @@ const FormPerfil = ({ usuario, onCancelar, onSucesso }: Props & { usuario: Retor
         dados.objetivo === 'manter_peso' ? <MetasManterPeso /> : <Metas />,
     ][passo]
 
-    console.log('usuario recebido:', usuario)
-    console.log('chaves:', Object.keys(usuario ?? {}))
-    console.log('dados do form:', dados)
-
     return (
         // Os passos do cadastro leem tudo daqui. Só usam dados, mudarDados, GET e errosCampo.
         <CadastroContext.Provider
