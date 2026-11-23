@@ -40,7 +40,7 @@ class UsuarioController extends Controller
         ]);
     }
 
-    public function atualizar(AtualizarPerfilRequest $request, ImagemService $imagens)
+    public function update(AtualizarPerfilRequest $request, ImagemService $imagens)
     {
         $dados = $request->validated();
         $user = $request->user();
