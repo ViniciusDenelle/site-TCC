@@ -8,6 +8,7 @@ import { useMutation } from '@tanstack/react-query'
 import api from '../../api'
 import LinkSimples from '../../componentes/links/LinkSimples'
 import useCadastro from '../../logicas/cadastro/useCadastro'
+import { useNavigate } from 'react-router-dom'
 
 const RecuperarSenha = () => {
     const [email, setEmail] = useState('')
@@ -29,6 +30,8 @@ const RecuperarSenha = () => {
         tipo: 'login'
     })
 
+    const navigate = useNavigate()
+
     const recuperarMutation = useMutation({
         mutationFn: async ({email, senhaNova, codigo}) => {
             const res = await api.post('/recuperar-senha', {
@@ -39,7 +42,7 @@ const RecuperarSenha = () => {
             return res.data
         },
         onSuccess: data => {
-            console.log(data)
+            navigate('/dashboard/')
         },
         onError: error => {
             const erros = error.response?.data?.errors

@@ -62,17 +62,14 @@ const Rota = createBrowserRouter(
                 </Route>
             </Route>
 
-            {/* Todas as páginas do Dashboard ficam DENTRO desta Route */}
+            
             <Route path='/dashboard' element={<DashboardLayout />}>
                 {/* /dashboard leva direto para a Home */}
-                <Route index element={<Navigate to="home" replace />} />
+                <Route index element={<Home />} />
 
                 {/* Home e Perfil */}
-                <Route path='home' element={<Home />}>
-                    <Route path='atualizarPerfil' element={<AtualizarPerfil />} />
-                </Route>
-                <Route path='perfil' element={<Home />} />
-
+                <Route path='atualizarPerfil' element={<AtualizarPerfil />} />
+            
                 {/* Sobre Nós */}
                 <Route path='sobre-nos' element={<SobreNos />} />
 

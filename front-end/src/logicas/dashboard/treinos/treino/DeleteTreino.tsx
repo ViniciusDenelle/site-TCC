@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AxiosError, AxiosResponse } from 'axios'
 import api from '../../../../api'
 import toast from 'react-hot-toast'
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 const useDeleteTreino = (id: number) => {
 
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
 
     const {
         mutate: deletarTreino,
@@ -23,6 +24,8 @@ const useDeleteTreino = (id: number) => {
         onSuccess: (res) => {
             toast.success('treino deletado com sucesso')
             navigate('/dashboard/treino/MeusTreinos')
+            queryClient.invalidateQueries({ queryKey: ['treinos'] })
+            
         },
 
         onError: (error) => {
