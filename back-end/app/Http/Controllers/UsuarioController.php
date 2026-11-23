@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AtualizarPerfilRequest;
 use App\Http\Resources\UsuarioResource;
+use App\Mail\CodigoConfirmacaoMail;
 use App\Models\EmailConfirmacao;
 use App\Services\ImagemService;
 use Carbon\Carbon;
@@ -171,9 +172,8 @@ class UsuarioController extends Controller
             'expiracao' => now()->addMinutes(20),
         ]);
 
-        Mail::raw("Seu código de confirmação é: {$codigo}", function ($message) use ($destino) {
-            $message->to($destino)->subject('Confirme a alteração no seu perfil');
-        });
+        // Substituição do Mail::raw pelo Mailable estruturado:
+        Mail::to($destino)->send(new CodigoConfirmacaoMail($codigo));
 
         return response()->json(['mensagem' => 'sucesso']);
     }
