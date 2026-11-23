@@ -37,10 +37,6 @@ const MenuDieta = ({
     ) => {
         if (status === 'carregando') return
 
-        if (qual === 'deletar' && !window.confirm('Excluir esta dieta? Isso não pode ser desfeito.')) {
-            return
-        }
-
         setAcao(qual)
         setStatus('carregando')
 
