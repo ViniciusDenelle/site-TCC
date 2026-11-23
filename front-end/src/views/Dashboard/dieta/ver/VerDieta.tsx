@@ -36,8 +36,6 @@ const VerDieta = () => {
 
     const [diaSelecionado, setDiaSelecionado] = useState<number | null>(null)
 
-    console.log(dieta)
-
     const totaisPorDia = useMemo(() => {
         if (!dieta) return {}
 
@@ -105,19 +103,6 @@ const VerDieta = () => {
                         {dieta.descricao && (
                             <Texto tipo="subtexto" className="text-t-terciaria mt-1">{dieta.descricao}</Texto>
                         )}
-                    </div>
-
-                    <div className="flex justify-center gap-2 flex-wrap">
-                        <div className="rounded-full bg-base-secundaria px-3 py-1">
-                            <Texto tipo="subtexto" className=" text-destaque-p-claro font-medium">
-                                {dieta.objetivo.nome}
-                            </Texto>
-                        </div>
-                        <div className="rounded-full bg-base-secundaria border border-base-terciaria/30 px-3 py-1">
-                            <Texto tipo="subtexto" className=" text-t-primaria font-medium">
-                                {dieta.nivel.nome}
-                            </Texto>
-                        </div>
                     </div>
                 </div>
 

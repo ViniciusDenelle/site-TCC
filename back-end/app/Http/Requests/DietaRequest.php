@@ -15,41 +15,36 @@ class DietaRequest extends FormRequest
     {
         return [
             'nome' => ['required', 'string', 'max:255'],
-            'descricao' => ['nullable', 'string'],
-            'imagem'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
-            'remover_imagem' => 'nullable|boolean',
-            'objetivo_id' => ['required', 'integer', 'exists:objetivos_dieta,id'],
-            'nivel_id' => ['required', 'integer', 'exists:niveis_dieta,id'],
+            'descricao' => ['nullable', 'string', 'max:1000'],
 
             'refeicoes' => ['nullable', 'array'],
-            'refeicoes.*.nome' => ['required_with:refeicoes', 'string', 'max:255'],
-            'refeicoes.*.dia_semana' => ['required_with:refeicoes', 'integer', 'between:0,6'],
+            'refeicoes.*.nome' => ['required', 'string', 'max:255'],
+            'refeicoes.*.dia_semana' => ['required', 'integer', 'between:0,6'],
             'refeicoes.*.horario' => ['nullable', 'date_format:H:i'],
-            'refeicoes.*.ordem' => ['nullable', 'integer'],
+            'refeicoes.*.ordem' => ['nullable', 'integer', 'min:0'],
 
             'refeicoes.*.alimentos' => ['nullable', 'array'],
             'refeicoes.*.alimentos.*.alimento_id' => ['required', 'integer', 'exists:alimentos,id'],
-            'refeicoes.*.alimentos.*.quantidade_gramas' => ['required', 'integer', 'min:1'],
+            'refeicoes.*.alimentos.*.quantidade_gramas' => ['required', 'numeric', 'min:1'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'nome.required' => 'O nome da dieta é obrigatório.',
-            'objetivo_id.required' => 'Selecione o objetivo da dieta.',
-            'objetivo_id.exists' => 'O objetivo selecionado é inválido.',
-            'nivel_id.required' => 'Selecione o nível da dieta.',
-            'nivel_id.exists' => 'O nível selecionado é inválido.',
+            'nome.required' => 'Informe o nome da dieta.',
+            'nome.max' => 'O nome da dieta pode ter no máximo 255 caracteres.',
+            'descricao.max' => 'A descrição pode ter no máximo 1000 caracteres.',
 
-            'refeicoes.*.nome.required_with' => 'Toda refeição precisa de um nome.',
-            'refeicoes.*.dia_semana.required_with' => 'Toda refeição precisa de um dia da semana.',
-            'refeicoes.*.dia_semana.between' => 'Dia da semana inválido.',
+            'refeicoes.*.nome.required' => 'Toda refeição precisa de um nome.',
+            'refeicoes.*.dia_semana.required' => 'Toda refeição precisa de um dia da semana.',
+            'refeicoes.*.dia_semana.between' => 'O dia da semana deve ser de 0 (domingo) a 6 (sábado).',
             'refeicoes.*.horario.date_format' => 'O horário deve estar no formato HH:MM.',
 
-            'refeicoes.*.alimentos.*.alimento_id.exists' => 'Um dos alimentos selecionados não existe.',
-            'refeicoes.*.alimentos.*.quantidade_porcoes.required' => 'Informe a quantidade de porções.',
-            'refeicoes.*.alimentos.*.quantidade_porcoes.min' => 'A quantidade de porções deve ser maior que zero.',
+            'refeicoes.*.alimentos.*.alimento_id.required' => 'Alimento inválido na refeição.',
+            'refeicoes.*.alimentos.*.alimento_id.exists' => 'Um dos alimentos escolhidos não existe mais.',
+            'refeicoes.*.alimentos.*.quantidade_gramas.required' => 'Informe a quantidade em gramas de cada alimento.',
+            'refeicoes.*.alimentos.*.quantidade_gramas.min' => 'A quantidade de cada alimento deve ser de pelo menos 1 grama.',
         ];
     }
 }

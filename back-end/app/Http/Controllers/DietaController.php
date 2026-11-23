@@ -4,18 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Filters\DietaFilter;
 use App\Http\Requests\DietaRequest;
-use App\Http\Resources\BadgeResource;
 use App\Http\Resources\DietaResource;
 use App\Models\Dieta;
-use App\Models\NivelDieta;
-use App\Models\ObjetivoDieta;
 use App\Services\ImagemService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DietaController extends Controller
 {
-    private const RELACOES = ['objetivo', 'nivel', 'refeicoes.alimentos'];
+    private const RELACOES = ['refeicoes.alimentos'];
 
     public function fetch(Request $request)
     {
@@ -73,60 +70,45 @@ class DietaController extends Controller
         return array_sum($caloriasPorDia) / count($caloriasPorDia);
     }
 
-    /**
-     * Cria as refeições (e os alimentos de cada uma) de uma dieta.
-     * Usado tanto no cadastro quanto na edição.
-     */
-    private function salvarRefeicoes(Dieta $dieta, array $refeicoes): void
-    {
-        foreach ($refeicoes as $ordem => $dadosRefeicao) {
-            $refeicao = $dieta->refeicoes()->create([
-                'nome' => $dadosRefeicao['nome'],
-                'dia_semana' => $dadosRefeicao['dia_semana'],
-                'horario' => $dadosRefeicao['horario'] ?? null,
-                'ordem' => $dadosRefeicao['ordem'] ?? $ordem,
-            ]);
-
-            foreach (($dadosRefeicao['alimentos'] ?? []) as $itemAlimento) {
-                $refeicao->alimentos()->attach($itemAlimento['alimento_id'], [
-                    'quantidade_gramas' => $itemAlimento['quantidade_gramas'],
-                ]);
-            }
-        }
-    }
-
-    public function store(DietaRequest $request, ImagemService $imagens)
+    public function store(DietaRequest $request)
     {
         $dados = $request->validated();
 
         $dieta = DB::transaction(function () use ($dados, $request) {
             $dieta = Dieta::create([
                 'user_id' => $request->user()->id,
-                'objetivo_id' => $dados['objetivo_id'],
-                'nivel_id' => $dados['nivel_id'],
                 'nome' => $dados['nome'],
                 'descricao' => $dados['descricao'] ?? null,
             ]);
 
-            foreach (($dados['refeicoes'] ?? []) as $ordem => $dadosRefeicao) {
-                $refeicao = $dieta->refeicoes()->create([
-                    'nome' => $dadosRefeicao['nome'],
-                    'dia_semana' => $dadosRefeicao['dia_semana'],
-                    'horario' => $dadosRefeicao['horario'] ?? null,
-                    'ordem' => $dadosRefeicao['ordem'] ?? $ordem,
-                ]);
-
-                foreach (($dadosRefeicao['alimentos'] ?? []) as $itemAlimento) {
-                    $refeicao->alimentos()->attach($itemAlimento['alimento_id'], [
-                        'quantidade_gramas' => $itemAlimento['quantidade_gramas'],
-                    ]);
-                }
-            }
+            $this->salvarRefeicoes($dieta, $dados);
 
             return $dieta;
         });
 
         return new DietaResource($dieta->load(self::RELACOES));
+    }
+
+    public function update(DietaRequest $request, Dieta $dieta)
+    {
+        $this->autorizarCriador($request, $dieta);
+
+        $dados = $request->validated();
+
+        DB::transaction(function () use ($dieta, $dados) {
+            $dieta->update([
+                'nome' => $dados['nome'],
+                'descricao' => $dados['descricao'] ?? null,
+            ]);
+
+            // Refaz as refeições: remove os vínculos antigos e cria de novo
+            $dieta->refeicoes->each(fn ($refeicao) => $refeicao->alimentos()->detach());
+            $dieta->refeicoes()->delete();
+
+            $this->salvarRefeicoes($dieta, $dados);
+        });
+
+        return new DietaResource($dieta->fresh()->load(self::RELACOES));
     }
 
     public function delete(Request $request, Dieta $dieta, ImagemService $imagens)
@@ -146,33 +128,6 @@ class DietaController extends Controller
         $imagens->remover($caminho);
 
         return response()->json(['mensagem' => 'Dieta deletada com sucesso']);
-    }
-
-    public function update(DietaRequest $request, Dieta $dieta)
-    {
-        // Só quem criou a dieta pode modificá-la
-        if ($dieta->user_id !== $request->user()->id) {
-            abort(403, 'Somente quem criou a dieta pode modificá-la.');
-        }
-
-        $dados = $request->validated();
-
-        DB::transaction(function () use ($dieta, $dados) {
-            $dieta->update([
-                'objetivo_id' => $dados['objetivo_id'],
-                'nivel_id' => $dados['nivel_id'],
-                'nome' => $dados['nome'],
-                'descricao' => $dados['descricao'] ?? null,
-            ]);
-
-            // Refaz as refeições: remove os vínculos antigos e cria de novo
-            $dieta->refeicoes->each(fn ($refeicao) => $refeicao->alimentos()->detach());
-            $dieta->refeicoes()->delete();
-
-            $this->salvarRefeicoes($dieta, $dados['refeicoes'] ?? []);
-        });
-
-        return new DietaResource($dieta->fresh()->load(['objetivo', 'nivel', 'refeicoes.alimentos']));
     }
 
     public function show(Dieta $dieta, Request $request)
@@ -220,18 +175,9 @@ class DietaController extends Controller
         return DietaResource::collection($dietas);
     }
 
-    public function niveis()
-    {
-        return BadgeResource::collection(NivelDieta::limit(12)->get());
-    }
-
-    public function objetivos()
-    {
-        return BadgeResource::collection(ObjetivoDieta::limit(12)->get());
-    }
-
     /**
-     * Mesma lógica no store e no update.
+     * Cria as refeições (e os alimentos de cada uma) de uma dieta.
+     * Usado no store e no update.
      * ?? [] / ?? null porque o multipart não envia arrays vazios nem valores nulos.
      */
     private function salvarRefeicoes(Dieta $dieta, array $dados): void
@@ -244,9 +190,15 @@ class DietaController extends Controller
                 'ordem'      => $dadosRefeicao['ordem'] ?? $ordem,
             ]);
 
-            foreach (($dadosRefeicao['alimentos'] ?? []) as $itemAlimento) {
-                $refeicao->alimentos()->attach($itemAlimento['alimento_id'], [
-                    'quantidade_gramas' => $itemAlimento['quantidade_gramas'],
+            // o mesmo alimento não pode aparecer duas vezes na refeição (chave única):
+            // se vier repetido, soma as quantidades
+            $itens = collect($dadosRefeicao['alimentos'] ?? [])
+                ->groupBy('alimento_id')
+                ->map(fn ($grupo) => $grupo->sum('quantidade_gramas'));
+
+            foreach ($itens as $alimentoId => $gramas) {
+                $refeicao->alimentos()->attach($alimentoId, [
+                    'quantidade_gramas' => $gramas,
                 ]);
             }
         }
@@ -257,7 +209,7 @@ class DietaController extends Controller
         abort_if(
             $dieta->user_id !== $request->user()->id,
             403,
-            'Você não pode alterar esta dieta.'
+            'Somente quem criou a dieta pode modificá-la.'
         );
     }
 }

@@ -5,13 +5,9 @@ import Dieta from '../../../../logicas/dashboard/dieta/DietaProps';
 import Texto from '../../../../componentes/organizacao/Texto';
 import Paginacao from '../../../../componentes/outros/Paginacao';
 import FiltrosPesquisa from '../../../../componentes/filtros/FiltrosPesquisa';
-import FiltrosChips from '../../../../componentes/filtros/FiltrosChips';
 import FiltroTreinoModal from '../../../../componentes/filtros/FiltroTreinoModal';
-import SecaoBadges from '../../../../componentes/SecaoBadges';
 import useDebounce from '../../../../logicas/useDebounce';
 import useFiltrosDieta from '../../../../logicas/dashboard/dieta/dieta/useFIltrosDieta';
-import useFetchObjetivosDieta from '../../../../logicas/dashboard/dieta/FetchObjetivosDieta';
-import useFetchNiveisDieta from '../../../../logicas/dashboard/dieta/FetchNiveisDieta';
 import DietaCard from '../../../../componentes/dieta/DIetaCard';
 import useFetchUsuario from '../../../../logicas/usuario/FetchUsuario';
 import useFiltroCaloriasMeta from '../../../../logicas/dashboard/dieta/dieta/useFiltroCaloriaMeta';
@@ -21,16 +17,6 @@ const PesquisarDietas = () => {
     const filtros = useFiltrosDieta();
     const [pagina, setPagina] = useState(1);
     const queryClient = useQueryClient();
-
-    const { objetivos } = useFetchObjetivosDieta();
-    const { niveis } = useFetchNiveisDieta();
-
-    const secoes = useMemo(() => ([
-        { titulo: 'Objetivo', tipo: 'objetivos' as const, dados: objetivos },
-        { titulo: 'Nível', tipo: 'niveis' as const, dados: niveis },
-    ]), [objetivos, niveis]);
-
-    const isSuccessBadges = !!objetivos && !!niveis;
 
     const pesquisaDebounce = useDebounce(filtros.pesquisa, 500);
 
@@ -61,36 +47,20 @@ const PesquisarDietas = () => {
                 setPesquisa={filtros.setPesquisa}
             />
 
-            {/* <FiltrosChips
-                secoes={secoes}
-                filtros={filtros.filtros}
-                removerFiltro={filtros.removerBadgeFiltro}
-            /> */}
-
             <FiltroTreinoModal
                 menuFiltroAberto={filtros.menuFiltroAberto}
                 setMenuFiltroAberto={filtros.setMenuFiltroAberto}
                 aplicarFiltros={filtros.aplicarFiltros}
                 limparFiltros={filtros.limparFiltros}
             >
-                {!isSuccessBadges ? (
-                    <Texto className="animate-pulse">procurando filtros</Texto>
-                ) : secoes.map(secao => (
-                    secao.dados && (
-                        <SecaoBadges
-                            key={secao.tipo}
-                            titulo={secao.titulo}
-                            itens={secao.dados}
-                            isSelecionado={id => filtros.isBadgeSelecionadoTemp(id, secao.tipo)}
-                            onToggle={item => filtros.toggleBadgeTemp(item.id, secao.tipo)}
-                        />
-                    )
-                ))}
+                <Texto tipo="subtexto" className="opacity-60">
+                    Nenhum filtro disponível por enquanto.
+                </Texto>
             </FiltroTreinoModal>
 
             {!isPending ? (
                 <>
-                    <div className="flex flex-col gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 justify-items-center">
                         {dietas?.data.map(dieta => (
                             <DietaCard
                                 key={dieta.id}

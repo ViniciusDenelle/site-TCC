@@ -1,7 +1,6 @@
-// logicas/dashboard/dietas/useDietaForm.ts
+// logicas/dashboard/dieta/useDietaForm.tsx
 import { useState } from 'react';
-import useSelecaoUnica from '../treinos/selecionaveis/useSelecaoUnica';
-import Dieta, { Alimento, NivelDieta, ObjetivoDieta } from './DietaProps';
+import Dieta, { Alimento } from './DietaProps';
 
 type AlimentoSelecionado = Alimento & { quantidade_gramas: number };
 
@@ -16,19 +15,16 @@ type RefeicaoTemp = {
 const useDietaForm = () => {
     const [nome, setNome] = useState('');
     const [descricao, setDescricao] = useState('');
+
+    // imagem: arquivo novo escolhido; imagemAtual: url da imagem já salva (edição)
     const [imagem, setImagem] = useState<File | null>(null);
     const [imagemAtual, setImagemAtual] = useState<string | null>(null);
-    const [removerImagem, setRemoverImagem] = useState(false);
-    const objetivo = useSelecaoUnica<ObjetivoDieta>();
-    const nivel = useSelecaoUnica<NivelDieta>();
 
     const [refeicoes, setRefeicoes] = useState<RefeicaoTemp[]>([]);
 
-    const trocarImagem = (arquivo: File | null) => {
+    function trocarImagem(arquivo: File | null) {
         setImagem(arquivo);
-        // lixeira sem arquivo novo = apagar a imagem que já estava salva
-        setRemoverImagem(arquivo === null && !!imagemAtual);
-    };
+    }
 
     function adicionarRefeicao(dia: number, nomeRefeicao: string, horario: string) {
         setRefeicoes(prev => [
@@ -42,17 +38,29 @@ const useDietaForm = () => {
     }
 
     function adicionarAlimento(refeicaoId: string, alimento: Alimento, quantidadeGramas?: number) {
-        setRefeicoes(prev => prev.map(r =>
-            r.id === refeicaoId
-                ? {
+        const gramas = quantidadeGramas ?? alimento.porcao_gramas ?? 0;
+
+        setRefeicoes(prev => prev.map(r => {
+            if (r.id !== refeicaoId) return r;
+
+            // o mesmo alimento não entra duas vezes na mesma refeição: soma a quantidade
+            const jaTem = r.alimentos.some(a => a.id === alimento.id);
+            if (jaTem) {
+                return {
                     ...r,
-                    alimentos: [...r.alimentos, {
-                        ...alimento,
-                        quantidade_gramas: quantidadeGramas ?? alimento.porcao_gramas ?? 0,
-                    }],
-                }
-                : r
-        ));
+                    alimentos: r.alimentos.map(a =>
+                        a.id === alimento.id
+                            ? { ...a, quantidade_gramas: Number(a.quantidade_gramas) + gramas }
+                            : a
+                    ),
+                };
+            }
+
+            return {
+                ...r,
+                alimentos: [...r.alimentos, { ...alimento, quantidade_gramas: gramas }],
+            };
+        }));
     }
 
     function removerAlimento(refeicaoId: string, alimentoId: number) {
@@ -79,8 +87,7 @@ const useDietaForm = () => {
     function carregarDieta(dieta: Dieta) {
         setNome(dieta.nome);
         setDescricao(dieta.descricao ?? '');
-        objetivo.selecionar(dieta.objetivo);
-        nivel.selecionar(dieta.nivel);
+        setImagemAtual(dieta.imagem ?? null);
 
         setRefeicoes(
             dieta.refeicoes.map(r => ({
@@ -113,8 +120,7 @@ const useDietaForm = () => {
         return {
             nome,
             descricao,
-            objetivo_id: objetivo.selecionado?.id ?? null,
-            nivel_id: nivel.selecionado?.id ?? null,
+            ...(imagem ? { imagem } : {}),
             refeicoes: refeicoes.map((r, index) => ({
                 nome: r.nome,
                 dia_semana: r.dia_semana,
@@ -122,25 +128,20 @@ const useDietaForm = () => {
                 ordem: index,
                 alimentos: r.alimentos.map(a => ({
                     alimento_id: a.id,
-                    quantidade_gramas: Number(a.quantidade_gramas), // era quantidade_porcoes
+                    quantidade_gramas: a.quantidade_gramas,
                 })),
             })),
-            imagem,                                  
-            remover_imagem: removerImagem ? 1 : 0
         };
     }
 
     return {
         nome, setNome,
         descricao, setDescricao,
-        objetivo, nivel,
+        imagem, imagemAtual, trocarImagem,
         refeicoes, adicionarRefeicao, removerRefeicao,
         adicionarAlimento, removerAlimento, atualizarQuantidade,
         carregarDieta,
         montarPayload,
-        imagem,
-        imagemAtual,
-        trocarImagem, 
     };
 };
 

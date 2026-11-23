@@ -6,7 +6,6 @@ import CadastroLayout from './layouts/CadastroLayout'
 import LoginLayout from './views/login/LoginLayout'
 import Login from './views/login/Login'
 import RecuperarSenha from './views/login/RecuperarSenha'
-import Dashboard from './views/Dashboard/Dashboard'
 import DashboardLayout from './layouts/dashboard/DashboardLayout'
 import TreinosLayout from './layouts/dashboard/treino/TreinosLayout'
 import Treinos from './views/Dashboard/treinos/Treinos'
@@ -65,13 +64,13 @@ const Rota = createBrowserRouter(
 
             {/* Todas as páginas do Dashboard ficam DENTRO desta Route */}
             <Route path='/dashboard' element={<DashboardLayout />}>
-                <Route index element={<Dashboard />} />
+                {/* /dashboard leva direto para a Home */}
+                <Route index element={<Navigate to="home" replace />} />
 
                 {/* Home e Perfil */}
-                <Route index element={<Home />}/>
-
-                <Route path='atualizarPerfil' element={<AtualizarPerfil />} />
-
+                <Route path='home' element={<Home />}>
+                    <Route path='atualizarPerfil' element={<AtualizarPerfil />} />
+                </Route>
                 <Route path='perfil' element={<Home />} />
 
                 {/* Sobre Nós */}

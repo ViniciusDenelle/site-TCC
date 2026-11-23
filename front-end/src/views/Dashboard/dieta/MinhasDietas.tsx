@@ -22,7 +22,7 @@ const Secao = ({
                 {titulo}
             </Texto>
 
-            <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 justify-items-center">
                 {dietas.map(dieta => (
                     <DietaCard
                         key={dieta.id}

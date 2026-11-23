@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react"
-import { Check, Eye, Pencil, Plus, Trash } from "lucide-react"
+import { Check, Eye, Pencil, Plus, Trash, Trash2 } from "lucide-react"
 import Texto from "../../../organizacao/Texto"
 import OpcoesMenuPlayer from "../../../organizacao/opcoesMenuPlayer"
 import Dieta from "../../../../logicas/dashboard/dieta/DietaProps"
@@ -12,9 +12,10 @@ type MenuDietaProps = {
     podeEditar?: boolean
     adicionar?: (dieta: Dieta) => void | Promise<void>
     remover?: (dieta: Dieta) => void | Promise<void>
+    deletar?: (dieta: Dieta) => void | Promise<void>
 }
 
-type Acao = 'adicionar' | 'remover'
+type Acao = 'adicionar' | 'remover' | 'deletar'
 type Status = 'parado' | 'carregando' | 'ok' | 'erro'
 
 const MenuDieta = ({
@@ -23,7 +24,8 @@ const MenuDieta = ({
     dieta,
     podeEditar = false,
     adicionar,
-    remover
+    remover,
+    deletar
 }: MenuDietaProps) => {
 
     const [acao, setAcao] = useState<Acao | null>(null)
@@ -34,6 +36,10 @@ const MenuDieta = ({
         funcao: (dieta: Dieta) => void | Promise<void>
     ) => {
         if (status === 'carregando') return
+
+        if (qual === 'deletar' && !window.confirm('Excluir esta dieta? Isso não pode ser desfeito.')) {
+            return
+        }
 
         setAcao(qual)
         setStatus('carregando')
@@ -61,6 +67,11 @@ const MenuDieta = ({
         acao === 'remover' && status === 'carregando' ? 'Removendo...'
             : acao === 'remover' && status === 'ok' ? 'Dieta removida!'
                 : 'Remover das minhas dietas'
+
+    const textoDeletar =
+        acao === 'deletar' && status === 'carregando' ? 'Excluindo...'
+            : acao === 'deletar' && status === 'ok' ? 'Dieta excluída!'
+                : 'Excluir dieta'
 
     return (
         <MenuLayout
@@ -104,6 +115,16 @@ const MenuDieta = ({
                     icone={acao === 'remover' && status === 'ok' ? Check : Trash}
                     corIcone="text-red-600"
                     onclick={() => executar('remover', remover)}
+                />
+            )}
+
+            {/* Só quem criou a dieta pode excluí-la */}
+            {podeEditar && deletar && (
+                <OpcoesMenuPlayer
+                    nome={textoDeletar}
+                    icone={acao === 'deletar' && status === 'ok' ? Check : Trash2}
+                    corIcone="text-red-600"
+                    onclick={() => executar('deletar', deletar)}
                 />
             )}
 

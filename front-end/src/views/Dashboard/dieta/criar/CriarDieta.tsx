@@ -1,7 +1,5 @@
-
-
 import { useState } from 'react';
-import { Plus, Utensils, Clock, Calendar, Search, X } from 'lucide-react';
+import { Plus, Utensils, Clock, Calendar, X } from 'lucide-react';
 import Texto from '../../../../componentes/organizacao/Texto';
 import InputSimples from '../../../../componentes/inputs/InputSimples';
 import InputTextarea from '../../../../componentes/inputs/InputTextarea';
@@ -9,18 +7,11 @@ import BotaoPrimario from '../../../../componentes/botoes/BotaoPrimario';
 import BotaoSecundario from '../../../../componentes/botoes/BotaoSecundario';
 import BotaoTerciario from '../../../../componentes/botoes/BotaoTerciario';
 import WrapperIcone from '../../../../componentes/organizacao/WrapperIcone';
-import useDebounce from '../../../../logicas/useDebounce';
 import useFetchUsuario from '../../../../logicas/usuario/FetchUsuario';
-import { Alimento } from '../../../../logicas/dashboard/dieta/DietaProps';
-import useFetchAlimentos from '../../../../logicas/dashboard/dieta/alimento/FetchAlimentos';
-import useFetchObjetivosDieta from '../../../../logicas/dashboard/dieta/FetchObjetivosDieta';
-import useFetchNiveisDieta from '../../../../logicas/dashboard/dieta/FetchNiveisDieta';
 import useDietaForm from '../../../../logicas/dashboard/dieta/useDietaForm';
 import useCriarDieta from '../../../../logicas/dashboard/dieta/CriarDieta';
-import SecaoBadges from '../../../../componentes/SecaoBadges';
-import AlimentoCard from '../../../../componentes/cards/AlimentoCard';
+import BuscaAlimento from '../../../../componentes/BuscaAlimento';
 import AlimentoAdicionadoCard from '../../../../componentes/cards/AlimentoSelecionadoCard';
-import usecalcularMacrosPorGramas from '../../../../logicas/dashboard/dieta/useCalcularMacros';
 import usecalcularMacros from '../../../../logicas/dashboard/dieta/useCalcularMacros';
 import InputImagem from '../../../../componentes/inputs/InputImagem';
 
@@ -34,50 +25,15 @@ const DIAS = [
   { numero: 0, label: 'Domingo' },
 ];
 
-function BuscaAlimento({ onSelecionar }: { onSelecionar: (a: Alimento) => void }) {
-  const [termo, setTermo] = useState('');
-  const termoDebounce = useDebounce(termo, 400);
-  const { alimentos } = useFetchAlimentos({ nome: termoDebounce }, 1);
-
-  return (
-    <div className="flex flex-col gap-1">
-      <div className="relative">
-        <InputSimples
-          tipo="text"
-          valor={termo}
-          onChange={e => setTermo(e.target.value)}
-          placeholder="buscar alimento..."
-        />
-        <Search className="absolute right-3 top-1/2 -translate-y-1/2 size-4 opacity-40" />
-      </div>
-
-      {termoDebounce && alimentos?.data && alimentos.data.length > 0 && (
-        <div className="flex flex-col gap-1 max-h-60 overflow-y-auto">
-          {alimentos.data.map(alimento => (
-            <AlimentoCard
-              key={alimento.id}
-              alimento={alimento}
-              onSelecionar={(a) => { onSelecionar(a); setTermo(''); }}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 const CriarDieta = () => {
   const { dadosUsuario } = useFetchUsuario();
-  const { objetivos } = useFetchObjetivosDieta();
-  const { niveis } = useFetchNiveisDieta();
 
   const {
     nome, setNome,
     descricao, setDescricao,
-    objetivo, nivel,
     refeicoes, adicionarRefeicao, removerRefeicao,
     adicionarAlimento, removerAlimento, atualizarQuantidade,
-    montarPayload, 
+    montarPayload,
     imagem,
     imagemAtual,
     trocarImagem
@@ -89,6 +45,9 @@ const CriarDieta = () => {
   const [buscandoEm, setBuscandoEm] = useState<string | null>(null);
 
   const { mutate, isPending } = useCriarDieta();
+
+  // Domingo é 0, então não dá para usar DIAS[diaAtivo - 1]
+  const nomeDia = DIAS.find(d => d.numero === diaAtivo)?.label;
 
   const refeicoesDoDia = refeicoes.filter(r => r.dia_semana === diaAtivo);
 
@@ -127,12 +86,12 @@ const CriarDieta = () => {
         </div>
 
         <div className="w-full md:w-6/10 mx-auto">
-            <InputImagem
-                valor={imagem}
-                urlAtual={imagemAtual}
-                onChange={trocarImagem}
-                placeholder="adicione uma imagem do exercicio"
-            />
+          <InputImagem
+            valor={imagem}
+            urlAtual={imagemAtual}
+            onChange={trocarImagem}
+            placeholder="adicione uma imagem da dieta"
+          />
         </div>
 
         {dadosUsuario && (
@@ -150,23 +109,6 @@ const CriarDieta = () => {
         <Texto tipo="titulo" className="font-thin">Descrição</Texto>
         <InputTextarea valor={descricao} onChange={e => setDescricao(e.target.value)} classeAdicional="h-20" placeholder="opcional" />
 
-        {objetivos && (
-          <SecaoBadges
-            titulo="Objetivo"
-            itens={objetivos}
-            isSelecionado={(id) => objetivo.isSelecionado(id)}
-            onToggle={(item) => objetivo.selecionar(item)}
-          />
-        )}
-
-        {niveis && (
-          <SecaoBadges
-            titulo="Nível"
-            itens={niveis}
-            isSelecionado={(id) => nivel.isSelecionado(id)}
-            onToggle={(item) => nivel.selecionar(item)}
-          />
-        )}
         <div className="flex gap-2 items-center mt-2">
           <WrapperIcone><Calendar className="size-full" /></WrapperIcone>
           <Texto tipo="titulo" className="font-thin">Plano semanal</Texto>
@@ -186,10 +128,9 @@ const CriarDieta = () => {
           ))}
         </div>
 
-        <div className="rounded-xl bg-base-secundaria/50 px-3 py-2 flex flex-col gap-2 
-        ">
+        <div className="rounded-xl bg-base-secundaria/50 px-3 py-2 flex flex-col gap-2">
           <Texto>
-            Balanço geral ({DIAS[diaAtivo - 1].label}) :
+            Balanço geral ({nomeDia}) :
           </Texto>
           <div className="flex gap-4 flex-wrap">
             <Texto tipo="subtexto">
@@ -210,7 +151,7 @@ const CriarDieta = () => {
         <div className="flex gap-2 items-center mt-2">
           <WrapperIcone><Clock className="size-full" /></WrapperIcone>
           <Texto tipo="titulo" className="font-thin">
-            Refeições ({DIAS[diaAtivo - 1].label})
+            Refeições ({nomeDia})
           </Texto>
         </div>
 
@@ -238,7 +179,7 @@ const CriarDieta = () => {
 
           {refeicoesDoDia.map(refeicao => {
             const totalRefeicao = refeicao.alimentos.reduce(
-              (acc, a) => acc + a.calorias * a.quantidade_gramas, 0
+              (acc, a) => acc + usecalcularMacros(a, a.quantidade_gramas).calorias, 0
             );
 
             return (

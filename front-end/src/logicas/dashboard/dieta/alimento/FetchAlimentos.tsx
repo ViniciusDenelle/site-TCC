@@ -1,9 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
-import { AxiosError, AxiosResponse } from 'axios';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import api from '../../../../api';
 import { Paginacao } from '../../../tipagens/PaginacaoProps';
 import { Alimento } from '../DietaProps';
-
 
 type ReqFetchAlimentos = {
     nome?: string;
@@ -20,11 +19,7 @@ const useFetchAlimentos = (
         isSuccess,
         isError,
         error
-    } = useQuery<
-        AxiosResponse,
-        AxiosError,
-        Paginacao<Alimento>
-    >({
+    } = useQuery<Paginacao<Alimento>, AxiosError>({
         queryKey: ['alimentos', filtros, pagina],
 
         queryFn: async () => {
@@ -35,7 +30,10 @@ const useFetchAlimentos = (
                 }
             })
             return res.data
-        }
+        },
+
+        // mantém a lista anterior na tela enquanto a nova busca carrega
+        placeholderData: keepPreviousData,
     })
 
     return {

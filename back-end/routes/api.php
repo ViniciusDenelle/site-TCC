@@ -20,10 +20,7 @@ use App\Http\Controllers\ProgressoController;
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/usuario', [UsuarioController::class, 'fetch']);
     Route::get('/logout', [UsuarioController::class, 'logout']);
-    Route::put('/atualizarUsuario', [UsuarioController::class, 'atualizar']);
-    Route::post('/perfil/codigo', [UsuarioController::class, 'enviarCodigoPerfil'])
-     ->middleware(['auth:sanctum', 'throttle:3,1']); 
-
+    Route::put('/atualizarUsuario', [UsuarioController::class, 'update']);
     Route::apiResource('dietas', DietaController::class)->only(['index', 'store', 'show']);
     Route::prefix('dashboard')->group(function() {
 
@@ -110,10 +107,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::prefix('dietas')->group(function () {
 
-            // badges de filtro (usados pelo front em /dashboard/dietas/niveis e /objetivos)
-            Route::get('niveis', [DietaController::class, 'niveis']);
-            Route::get('objetivos', [DietaController::class, 'objetivos']);
-
             Route::prefix('alimentos')->controller(AlimentoController::class)->group(function () {
                 Route::get('/', 'fetch');
                 Route::post('/', 'store');
@@ -121,13 +114,12 @@ Route::middleware('auth:sanctum')->group(function () {
             });
             Route::prefix('dieta')->controller(DietaController::class)->group(function () {
                 Route::get('/', 'fetch');
-                Route::get('/niveis', 'niveis');
-                Route::get('/objetivos', 'objetivos');
                 Route::post('/' ,'store');
                 Route::get('/meus-criados', 'meusCriados');
                 Route::get('/meus-adicionados', 'meusAdicionados');
                 Route::get('/{dieta}', 'show');
                 Route::put('/{dieta}', 'update');
+                Route::delete('/{dieta}', 'delete');
                 Route::post('/{dieta}/adicionar', 'adicionar');
                 Route::delete('/{dieta}/adicionar', 'remover');
             });
