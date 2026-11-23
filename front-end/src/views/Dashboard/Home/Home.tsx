@@ -86,7 +86,7 @@ export default function Home() {
                 {dadosUsuario.nome}
               </Texto>
 
-              <div className="rounded-full flex justify-center border-2 border-blue-500 px-2.5 py-0.5 text-blue-400">
+              {/* <div className="rounded-full flex justify-center border-2 border-blue-500 px-2.5 py-0.5 text-blue-400">
 
                 <Texto
                   tipo="paragrafo"
@@ -95,7 +95,7 @@ export default function Home() {
                   {dadosUsuario.experiencia}
                 </Texto>
 
-              </div>
+              </div> */}
 
             </div>
 
