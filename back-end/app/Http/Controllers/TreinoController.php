@@ -10,8 +10,8 @@ use App\Http\Resources\TreinoResource;
 use App\Models\SessaoTreino;
 use App\Models\Treino;
 use App\Services\ImagemService;
-use App\services\calcularNivelPorPontuacao;
-use App\services\calcularTreinoService;
+use App\Services\CalcularNivelPorPontuacao;
+use App\Services\CalcularTreinoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
