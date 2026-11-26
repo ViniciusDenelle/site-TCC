@@ -115,8 +115,8 @@ const Cadastro: React.FC = () => {
                                 <BotaoPrimario
                                     tipo="cheio"
                                     onClick={cadastroHandler}
-                                    disabled={!emailMutation.isSuccess}
-                                    texto={emailMutation.isSuccess ? 'confirmar' : 'envie o codigo'}
+                                    // disabled={!emailMutation.isSuccess}
+                                    texto={'confirmar'}
                                 />
                             ) : (
                                 <BotaoPrimario

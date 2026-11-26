@@ -121,16 +121,16 @@ class AuthController extends Controller
     {
         $dados = $request->validated();
 
-        $email = EmailConfirmacao::where('codigo', $dados['codigoConfirmacao'])
-            ->where('email', $dados['email'])
-            ->where('expiracao', '>', now())
-            ->first();
+        // $email = EmailConfirmacao::where('codigo', $dados['codigoConfirmacao'])
+        //     ->where('email', $dados['email'])
+        //     ->where('expiracao', '>', now())
+        //     ->first();
 
-        if (!$email) {
-            return response()->json([
-                'mensagem' => 'codigo esta errado ou expirou',
-            ], 401);
-        }
+        // if (!$email) {
+        //     return response()->json([
+        //         'mensagem' => 'codigo esta errado ou expirou',
+        //     ], 401);
+        // }
 
         $caminhoFoto = $request->hasFile('foto')
             ? $imagemService->salvar($request->file('foto'), 'perfis')
@@ -186,7 +186,7 @@ class AuthController extends Controller
             throw $e;
         }
 
-        $email->delete();
+        // $email->delete();
 
         $token = $usuario->createToken('auth_token')->plainTextToken;
 

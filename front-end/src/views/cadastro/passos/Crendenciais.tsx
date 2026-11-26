@@ -33,16 +33,16 @@ const Credenciais = () => {
     codigoConfirmacao
   } = dados
 
-  const {
-    enviarEmailHandler,
-    isSuccess,
-    isPending,
-    contagem,
-    erros
-  } = useConfirmacao(emailMutation, {
-    email,
-    tipo: 'cadastro'
-  })
+  // const {
+  //   enviarEmailHandler,
+  //   isSuccess,
+  //   isPending,
+  //   contagem,
+  //   erros
+  // } = useConfirmacao(emailMutation, {
+  //   email,
+  //   tipo: 'cadastro'
+  // })
 
   const [senhaVisivel, setSenhaVisivel] = useState(false)
 
@@ -127,10 +127,9 @@ const Credenciais = () => {
             }
           />
 
-          {(erros.email || errosCampo.email) && (
+          {( errosCampo.email) && (
             <span className="text-red-500 text-sm">
-              {erros.email}
-              {' '}
+              
               {errosCampo.email}
             </span>
           )}
@@ -177,7 +176,7 @@ const Credenciais = () => {
 
         {/* Código */}
         <div className="flex flex-col gap-2">
-          <label
+          {/* <label
             className={!isSuccess ? 'opacity-70' : ''}
           >
             código de confirmação:
@@ -193,9 +192,9 @@ const Credenciais = () => {
                 ev.target.value
               )
             }
-          />
+          /> */}
 
-          <BotaoSecundario
+          {/* <BotaoSecundario
             tipo="cheio"
             disabled={contagem > 0}
             onClick={enviarEmailHandler}
@@ -206,7 +205,7 @@ const Credenciais = () => {
               ? ` reenviar em ${contagem}` 
               : `enviar codigo`
             }
-          />
+          /> */}
         </div>
       </motion.div>
   )
