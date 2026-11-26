@@ -343,14 +343,7 @@ export default function Home() {
           </div>
 
 
-          <div className="pt-2 flex gap-3">
-
-            <BotaoSecundario
-              tipo="cheio"
-              texto="alterar objetivo"
-            />
-
-          </div>
+          
 
         </CardHorizontal>
 
