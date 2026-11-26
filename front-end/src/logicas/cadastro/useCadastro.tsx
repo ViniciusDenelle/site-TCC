@@ -111,7 +111,7 @@ const campoParaPasso: Record<string, Passo> = {
     email: 6,
     senha: 6,
     foto: 6,
-    codigoConfirmacao: 6,
+    // codigoConfirmacao: 6,
 }
 
 // aceita o erro padrão do axios (error.response.data) e também interceptors
