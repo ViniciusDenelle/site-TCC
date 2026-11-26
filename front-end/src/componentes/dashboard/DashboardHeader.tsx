@@ -122,7 +122,7 @@ const DashboardHeader = ({
 
                             </div>
 
-                            <div className="absolute bottom-5 flex justify-center
+                            <div className="mt-5 flex justify-center
                                     items-center w-full gap-4">
 
 
